@@ -1,0 +1,117 @@
+// Design Tokens for Psychology Clinic
+// Australian Healthcare Colors & Professional Styling
+
+// Primary Brand Colors
+$primary-color: #2c5aa0;        // Professional blue
+$primary-dark: #1e3a8a;         // Darker blue for hover states
+$primary-light: #3b82f6;        // Lighter blue for accents
+$secondary-color: #64748b;       // Professional gray-blue
+$accent-color: #10b981;          // Calming teal for success states
+
+// Background Colors
+$background-light: #f8fafc;      // Very light gray-blue
+$background-gray: #e2e8f0;       // Light gray for cards
+$background-white: #ffffff;      // Pure white
+$background-dark: #1e293b;       // Dark mode background
+
+// Text Colors
+$text-dark: #1e293b;            // Main text color
+$text-light: #64748b;           // Secondary text
+$text-muted: #94a3b8;           // Muted text
+$text-white: #ffffff;           // White text
+
+// Australian Healthcare Specific Colors
+$medicare-green: #00a651;        // Official Medicare green
+$ahpra-blue: #0052cc;           // AHPRA registration blue
+$pbs-orange: #ff6b35;           // PBS scheme orange
+
+// Status Colors
+$success-green: #16a34a;        // Success states
+$error-red: #dc2626;            // Error states  
+$warning-orange: #ea580c;       // Warning states
+$info-blue: #0ea5e9;            // Information states
+
+// Border Colors
+$border-light: #e2e8f0;         // Light borders
+$border-medium: #cbd5e1;        // Medium borders
+$border-dark: #64748b;          // Dark borders
+
+// Border Radius
+$border-radius: 8px;
+$border-radius-sm: 4px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-radius-full: 9999px;
+
+// Shadows
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+// Responsive Breakpoints
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+$large-desktop: 1200px;
+
+// Spacing Scale (rem based)
+$spacing-xs: 0.25rem;    // 4px
+$spacing-sm: 0.5rem;     // 8px
+$spacing-md: 1rem;       // 16px
+$spacing-lg: 1.5rem;     // 24px
+$spacing-xl: 2rem;       // 32px
+$spacing-2xl: 3rem;      // 48px
+$spacing-3xl: 4rem;      // 64px
+
+// Typography
+$font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+// Font Sizes
+$font-size-xs: 0.75rem;     // 12px
+$font-size-sm: 0.875rem;    // 14px
+$font-size-base: 1rem;      // 16px
+$font-size-lg: 1.125rem;    // 18px
+$font-size-xl: 1.25rem;     // 20px
+$font-size-2xl: 1.5rem;     // 24px
+$font-size-3xl: 1.875rem;   // 30px
+$font-size-4xl: 2.25rem;    // 36px
+
+// Font Weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Line Heights
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// Z-Index Scale
+$z-dropdown: 1000;
+$z-sticky: 1020;
+$z-fixed: 1030;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-popover: 1060;
+$z-tooltip: 1070;
+
+// Transition Durations
+$transition-fast: 0.15s;
+$transition-normal: 0.3s;
+$transition-slow: 0.5s;
+
+// Component Specific Variables
+$header-height: 64px;
+$sidebar-width: 280px;
+$sidebar-collapsed-width: 64px;
+$footer-height: 80px;
+
+// Form Elements
+$input-height: 44px;
+$input-padding: $spacing-md;
+$button-height: 44px;
+$button-padding: $spacing-md $spacing-lg;

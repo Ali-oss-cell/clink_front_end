@@ -1,0 +1,255 @@
+// Base styles for Psychology Clinic
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// CSS Reset and Base Styles
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; // Base font size
+  scroll-behavior: smooth;
+}
+
+// Reduce motion for accessibility
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-normal;
+  color: $text-dark;
+  background-color: $background-light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-heading;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  margin: 0 0 $spacing-md 0;
+  color: $text-dark;
+}
+
+h1 {
+  font-size: $font-size-3xl;
+  
+  @include desktop {
+    font-size: $font-size-4xl;
+  }
+}
+
+h2 {
+  font-size: $font-size-2xl;
+  
+  @include desktop {
+    font-size: $font-size-3xl;
+  }
+}
+
+h3 {
+  font-size: $font-size-xl;
+  
+  @include desktop {
+    font-size: $font-size-2xl;
+  }
+}
+
+h4 {
+  font-size: $font-size-lg;
+  
+  @include desktop {
+    font-size: $font-size-xl;
+  }
+}
+
+h5, h6 {
+  font-size: $font-size-base;
+  
+  @include desktop {
+    font-size: $font-size-lg;
+  }
+}
+
+p {
+  margin: 0 0 $spacing-md 0;
+  line-height: $line-height-relaxed;
+}
+
+// Links
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $transition-fast ease;
+
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline;
+  }
+
+  &:focus {
+    @include focus-ring;
+  }
+}
+
+// Lists
+ul, ol {
+  margin: 0 0 $spacing-md 0;
+  padding-left: $spacing-lg;
+}
+
+li {
+  margin-bottom: $spacing-xs;
+}
+
+// Forms
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input:not([type="radio"]):not([type="checkbox"]), textarea, select {
+  @include input-base;
+}
+
+textarea {
+  height: auto;
+  min-height: 120px;
+  resize: vertical;
+}
+
+select {
+  cursor: pointer;
+}
+
+button {
+  @include button-primary;
+}
+
+// Form validation styles
+.error {
+  @include input-error;
+}
+
+.error-text {
+  color: $error-red;
+  font-size: $font-size-sm;
+  margin-top: $spacing-xs;
+  display: block;
+}
+
+// Utility classes
+.sr-only {
+  @include sr-only;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-truncate {
+  @include text-truncate;
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-between {
+  @include flex-between;
+}
+
+.flex-column {
+  @include flex-column;
+}
+
+// Spacing utilities
+.m-0 { margin: 0; }
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+.ml-0 { margin-left: 0; }
+.mr-0 { margin-right: 0; }
+
+.m-1 { margin: $spacing-xs; }
+.mt-1 { margin-top: $spacing-xs; }
+.mb-1 { margin-bottom: $spacing-xs; }
+.ml-1 { margin-left: $spacing-xs; }
+.mr-1 { margin-right: $spacing-xs; }
+
+.m-2 { margin: $spacing-sm; }
+.mt-2 { margin-top: $spacing-sm; }
+.mb-2 { margin-bottom: $spacing-sm; }
+.ml-2 { margin-left: $spacing-sm; }
+.mr-2 { margin-right: $spacing-sm; }
+
+.m-3 { margin: $spacing-md; }
+.mt-3 { margin-top: $spacing-md; }
+.mb-3 { margin-bottom: $spacing-md; }
+.ml-3 { margin-left: $spacing-md; }
+.mr-3 { margin-right: $spacing-md; }
+
+.m-4 { margin: $spacing-lg; }
+.mt-4 { margin-top: $spacing-lg; }
+.mb-4 { margin-bottom: $spacing-lg; }
+.ml-4 { margin-left: $spacing-lg; }
+.mr-4 { margin-right: $spacing-lg; }
+
+// Responsive utilities
+.hidden {
+  display: none;
+}
+
+@include mobile {
+  .hidden-mobile {
+    display: none;
+  }
+}
+
+@include tablet {
+  .hidden-tablet {
+    display: none;
+  }
+}
+
+@include desktop {
+  .hidden-desktop {
+    display: none;
+  }
+}
+
+// Loading states
+.loading {
+  @include loading-skeleton;
+  border-radius: $border-radius;
+  height: 20px;
+}
+
+// Container
+.container {
+  @include container;
+}

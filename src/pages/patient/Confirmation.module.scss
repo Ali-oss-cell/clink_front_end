@@ -1,0 +1,296 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+// Confirmation Page Styles
+.confirmationContainer {
+  padding: $spacing-lg 0;
+  min-height: 100vh;
+  background: $background-light;
+}
+
+.successMessage {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+  padding: $spacing-xl;
+  background: white;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  margin: 0 auto $spacing-xl auto;
+}
+
+.successIcon {
+  font-size: 4rem;
+  margin-bottom: $spacing-md;
+  animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.successTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $success-green;
+  margin: 0 0 $spacing-md 0;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.successSubtitle {
+  font-size: 1.1rem;
+  color: $text-light;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.bookingDetails {
+  margin-bottom: $spacing-xl;
+}
+
+.detailsCard {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  margin: 0 auto;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-lg 0;
+    text-align: center;
+  }
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-md;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  background: #f8fafc;
+  border-radius: $border-radius;
+  border: 1px solid #e2e8f0;
+}
+
+.detailLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $text-light;
+}
+
+.detailValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text-dark;
+}
+
+.nextSteps {
+  margin-bottom: $spacing-xl;
+  max-width: 1000px;
+  margin: 0 auto $spacing-xl auto;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-lg 0;
+    text-align: center;
+  }
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-lg;
+}
+
+.stepCard {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.stepIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.stepContent {
+  flex: 1;
+  
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-sm 0;
+  }
+  
+  p {
+    font-size: 0.9rem;
+    color: $text-light;
+    margin: 0 0 $spacing-xs 0;
+    line-height: 1.4;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.quickActions {
+  margin-bottom: $spacing-xl;
+  max-width: 800px;
+  margin: 0 auto $spacing-xl auto;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-lg 0;
+    text-align: center;
+  }
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.actionButton {
+  padding: $spacing-md $spacing-lg;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  
+  &:hover {
+    background: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+}
+
+.navigationActions {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.navButton {
+  padding: $spacing-md $spacing-lg;
+  background: white;
+  color: $text-dark;
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.emergencyInfo {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.emergencyBox {
+  background: #fef3cd;
+  border: 1px solid #fbbf24;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+}
+
+.emergencyIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.emergencyContent {
+  flex: 1;
+  
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #92400e;
+    margin: 0 0 $spacing-sm 0;
+  }
+  
+  p {
+    font-size: 0.9rem;
+    color: #92400e;
+    margin: 0 0 $spacing-xs 0;
+    line-height: 1.4;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

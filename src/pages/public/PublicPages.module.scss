@@ -1,0 +1,72 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+.publicLayout {
+  .main {
+    background-color: $background-white;
+  }
+}
+
+.pageContainer {
+  padding: $spacing-2xl 0;
+  min-height: 60vh;
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: $spacing-3xl;
+
+  .pageTitle {
+    color: $primary-color;
+    font-size: $font-size-3xl;
+    margin-bottom: $spacing-lg;
+
+    @include mobile {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  .pageSubtitle {
+    color: $text-light;
+    font-size: $font-size-xl;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: $line-height-relaxed;
+
+    @include mobile {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+.contentSection {
+  max-width: 800px;
+  margin: 0 auto;
+  
+  h2 {
+    color: $primary-color;
+    font-size: $font-size-2xl;
+    margin-top: $spacing-2xl;
+    margin-bottom: $spacing-lg;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  p {
+    color: $text-dark;
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-lg;
+  }
+
+  ul {
+    color: $text-dark;
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-lg;
+
+    li {
+      margin-bottom: $spacing-sm;
+    }
+  }
+}

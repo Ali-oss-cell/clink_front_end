@@ -1,0 +1,344 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+// Appointment Details Page Styles
+.appointmentDetailsContainer {
+  padding: $spacing-lg 0;
+  min-height: 100vh;
+  background: $background-light;
+}
+
+.appointmentSummary {
+  margin-bottom: $spacing-xl;
+}
+
+.summaryCard {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  margin: 0 auto;
+  
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-lg 0;
+  }
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.summaryLabel {
+  color: $text-light;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.summaryValue {
+  color: $text-dark;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.pricingSection {
+  background: #f8fafc;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pricingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+  font-size: 0.9rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.rebateAmount {
+  color: $success-green;
+  font-weight: 500;
+}
+
+.totalCost {
+  font-weight: 600;
+  font-size: 1rem;
+  color: $text-dark;
+  padding-top: $spacing-xs;
+  border-top: 1px solid #e2e8f0;
+}
+
+.appointmentDetailsForm {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: $spacing-xl;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.formSection {
+  margin-bottom: $spacing-xl;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 $spacing-lg 0;
+  padding-bottom: $spacing-sm;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-lg;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: $text-dark;
+}
+
+.input {
+  padding: $spacing-md;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+.textarea {
+  padding: $spacing-md;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius;
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+.fieldHelp {
+  font-size: 0.8rem;
+  color: $text-light;
+  font-style: italic;
+}
+
+.fieldError {
+  color: $error-red;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: $text-dark;
+  padding: $spacing-sm;
+  border-radius: $border-radius-sm;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.radioCustom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  background-color: white;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radioDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: $primary-color;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+
+.radioInput:checked + .radioCustom {
+  border-color: $primary-color;
+  
+  .radioDot {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.emergencyReminder {
+  margin: $spacing-xl 0;
+}
+
+.emergencyBox {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  gap: $spacing-md;
+  align-items: flex-start;
+}
+
+.emergencyIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.emergencyContent {
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-sm 0;
+  }
+  
+  p {
+    color: $text-dark;
+    font-size: 0.9rem;
+    margin: 0 0 $spacing-sm 0;
+    line-height: 1.5;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  ul {
+    margin: $spacing-sm 0;
+    padding-left: $spacing-lg;
+    
+    li {
+      color: $text-dark;
+      font-size: 0.9rem;
+      margin-bottom: $spacing-xs;
+      line-height: 1.4;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid #e2e8f0;
+}
+
+.cancelButton {
+  padding: $spacing-md $spacing-lg;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: $text-light;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    border-color: #cbd5e1;
+    color: $text-dark;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.submitButton {
+  padding: $spacing-md $spacing-lg;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}

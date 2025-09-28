@@ -1,0 +1,232 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+// Psychologist Selection Page Styles
+.psychologistSelectionContainer {
+  padding: $spacing-lg 0;
+  min-height: 100vh;
+  background: $background-light;
+}
+
+.filtersSection {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filtersTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin-bottom: $spacing-md;
+}
+
+.filtersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-md;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.filterLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $text-dark;
+}
+
+.filterSelect {
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius;
+  background: white;
+  color: $text-dark;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+.psychologistsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.psychologistCard {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    border-color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.psychologistCardSelected {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.02);
+    box-shadow: 0 4px 15px rgba($primary-color, 0.1);
+  }
+  
+  &.psychologistCardUnavailable {
+    opacity: 0.6;
+    cursor: not-allowed;
+    
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.psychologistHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+}
+
+.psychologistInfo {
+  flex: 1;
+}
+
+.psychologistName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 $spacing-xs 0;
+}
+
+.psychologistTitle {
+  font-size: 0.9rem;
+  color: $text-light;
+  margin: 0;
+}
+
+.psychologistStatus {
+  flex-shrink: 0;
+}
+
+.statusAvailable {
+  color: $success-green;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.statusUnavailable {
+  color: $error-red;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.psychologistDetails {
+  background: #f8fafc;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+  font-size: 0.9rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.detailLabel {
+  color: $text-light;
+  font-weight: 500;
+}
+
+.detailValue {
+  color: $text-dark;
+  font-weight: 500;
+}
+
+.specializationsSection {
+  margin-bottom: $spacing-md;
+}
+
+.specializationsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 $spacing-sm 0;
+}
+
+.specializationsList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.specializationItem {
+  color: $text-light;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.psychologistBio {
+  background: #f8fafc;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.bioTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 $spacing-xs 0;
+}
+
+.bioText {
+  color: $text-light;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  font-style: italic;
+}
+
+.availabilitySection {
+  margin-bottom: $spacing-md;
+}
+
+.availabilityRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.availabilityLabel {
+  color: $text-light;
+  font-weight: 500;
+}
+
+.availabilityValue {
+  color: $text-dark;
+  font-weight: 500;
+}

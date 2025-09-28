@@ -1,0 +1,366 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+// Date & Time Selection Page Styles
+.dateTimeSelectionContainer {
+  padding: $spacing-lg 0;
+  min-height: 100vh;
+  background: $background-light;
+}
+
+.selectionSummary {
+  margin-bottom: $spacing-xl;
+}
+
+.summaryCard {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 0 auto;
+  
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-md 0;
+  }
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.summaryLabel {
+  color: $text-light;
+  font-weight: 500;
+}
+
+.summaryValue {
+  color: $text-dark;
+  font-weight: 500;
+}
+
+.calendarSection {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.monthNavButton {
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  padding: $spacing-sm $spacing-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: $primary-dark;
+  }
+}
+
+.monthTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0;
+}
+
+.calendarGrid {
+  margin-bottom: $spacing-lg;
+}
+
+.dayHeaders {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.dayHeader {
+  text-align: center;
+  font-weight: 600;
+  color: $text-light;
+  font-size: 0.9rem;
+  padding: $spacing-sm;
+}
+
+.calendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+}
+
+.calendarDay {
+  aspect-ratio: 1;
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  
+  &.available {
+    background: white;
+    border-color: #e2e8f0;
+    
+    &:hover {
+      border-color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+    
+    &.selected {
+      border-color: $primary-color;
+      background: rgba($primary-color, 0.1);
+    }
+  }
+  
+  &.unavailable {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.dayNumber {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text-dark;
+}
+
+.dayName {
+  font-size: 0.7rem;
+  color: $text-light;
+  margin-top: 2px;
+}
+
+.availabilityIndicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.6rem;
+}
+
+.calendarLegend {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-lg;
+  margin-top: $spacing-md;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 0.9rem;
+  color: $text-light;
+}
+
+.legendIndicator {
+  font-size: 0.8rem;
+}
+
+.timeSelectionSection {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.timeSectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 $spacing-lg 0;
+}
+
+.timeSlotsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: $spacing-md;
+}
+
+.timeSlot {
+  padding: $spacing-md;
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius;
+  background: white;
+  color: $text-dark;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &.available {
+    &:hover {
+      border-color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+    
+    &.selected {
+      border-color: $primary-color;
+      background: $primary-color;
+      color: white;
+    }
+  }
+  
+  &.unavailable {
+    background: #f8fafc;
+    color: $text-light;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.sessionTypeSection {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sessionTypeTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 $spacing-lg 0;
+}
+
+.sessionTypeOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-lg;
+}
+
+.sessionTypeCard {
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  position: relative;
+  
+  &:hover {
+    border-color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.selected {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.02);
+    box-shadow: 0 4px 15px rgba($primary-color, 0.1);
+  }
+}
+
+.sessionTypeIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.sessionTypeContent {
+  flex: 1;
+  
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-sm 0;
+  }
+  
+  p {
+    color: $text-light;
+    font-size: 0.9rem;
+    margin: 0 0 $spacing-xs 0;
+    line-height: 1.4;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.sessionTypeRadio {
+  flex-shrink: 0;
+  
+  input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  margin-top: $spacing-xl;
+}
+
+.cancelButton {
+  padding: $spacing-md $spacing-lg;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: $text-light;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #cbd5e1;
+    color: $text-dark;
+  }
+}
+
+.continueButton {
+  padding: $spacing-md $spacing-lg;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}

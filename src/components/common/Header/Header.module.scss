@@ -1,0 +1,201 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/mixins' as *;
+
+.header {
+  background-color: $background-white;
+  border-bottom: 1px solid $border-light;
+  box-shadow: $shadow-sm;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  height: $header-height;
+  transition: all $transition-fast ease;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+.container {
+  @include container;
+  @include flex-between;
+  height: 100%;
+}
+
+.logo {
+  .logoLink {
+    text-decoration: none;
+    display: inline-block;
+    transition: transform $transition-fast ease;
+    
+    &:hover {
+      text-decoration: none;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .logoText {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $primary-color;
+    font-family: $font-family-heading;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, $primary-color, $accent-color);
+      transition: width $transition-fast ease;
+    }
+    
+    &:hover::after {
+      width: 100%;
+    }
+  }
+}
+
+.navigation {
+  .publicNav {
+    @include flex-center;
+    gap: $spacing-lg;
+
+    .navLink {
+      color: $text-dark;
+      font-weight: $font-weight-medium;
+      padding: $spacing-sm $spacing-md;
+      border-radius: $border-radius;
+      transition: all $transition-fast ease;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba($primary-color, 0.1), transparent);
+        transition: left 0.6s ease;
+      }
+
+      &:hover {
+        color: $primary-color;
+        background-color: rgba($primary-color, 0.1);
+        text-decoration: none;
+        transform: translateY(-1px);
+        
+        &::before {
+          left: 100%;
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .loginButton {
+      @include button-ghost;
+      padding: $spacing-sm $spacing-lg;
+      margin-left: $spacing-md;
+    }
+
+    .registerButton {
+      @include button-primary;
+      padding: $spacing-sm $spacing-lg;
+    }
+  }
+
+  .authNav {
+    @include flex-center;
+    gap: $spacing-lg;
+
+    .welcomeText {
+      color: $text-light;
+      font-size: $font-size-sm;
+      margin-right: $spacing-md;
+    }
+
+    .userMenu {
+      @include flex-center;
+      gap: $spacing-md;
+
+      .navLink {
+        color: $text-dark;
+        font-weight: $font-weight-medium;
+        padding: $spacing-sm $spacing-md;
+        border-radius: $border-radius;
+        transition: all $transition-fast ease;
+
+        &:hover {
+          color: $primary-color;
+          background-color: rgba($primary-color, 0.1);
+          text-decoration: none;
+        }
+      }
+
+      .logoutButton {
+        @include button-secondary;
+        padding: $spacing-sm $spacing-md;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+// Mobile responsive design
+@include mobile {
+  .container {
+    padding: 0 $spacing-sm;
+  }
+
+  .navigation {
+    .publicNav {
+      gap: $spacing-sm;
+
+      .navLink {
+        display: none;
+      }
+
+      .navLink:nth-last-child(-n+2) {
+        display: block;
+      }
+    }
+
+    .authNav {
+      gap: $spacing-sm;
+
+      .welcomeText {
+        display: none;
+      }
+
+      .userMenu {
+        gap: $spacing-sm;
+
+        .navLink {
+          padding: $spacing-xs $spacing-sm;
+          font-size: $font-size-sm;
+        }
+      }
+    }
+  }
+}
+
+@include tablet {
+  .navigation {
+    .publicNav {
+      .navLink:nth-child(n+3) {
+        display: none;
+      }
+    }
+  }
+}

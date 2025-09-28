@@ -1,0 +1,38 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/mixins' as *;
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  
+  // Ensure main content area has minimum height
+  min-height: calc(100vh - #{$header-height} - #{$footer-height});
+}
+
+// Layout variants for different page types
+.authLayout {
+  .main {
+    @include flex-center;
+    background: linear-gradient(135deg, $background-light 0%, $background-gray 100%);
+    min-height: calc(100vh - #{$header-height});
+  }
+}
+
+.dashboardLayout {
+  .main {
+    background-color: $background-light;
+  }
+}
+
+.publicLayout {
+  .main {
+    background-color: $background-white;
+  }
+}

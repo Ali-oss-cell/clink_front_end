@@ -1,0 +1,1096 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+.patientLayout {
+  .main {
+    background-color: $background-light;
+  }
+}
+
+.dashboardContainer {
+  padding: $spacing-2xl 0;
+}
+
+.dashboardHeader {
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+
+  .welcomeTitle {
+    color: $primary-color;
+    font-size: $font-size-3xl;
+    margin-bottom: $spacing-md;
+
+    @include mobile {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  .welcomeSubtitle {
+    color: $text-light;
+    font-size: $font-size-lg;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-xl;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
+
+// Dashboard card content styles
+.cardContent {
+  padding: $spacing-md 0;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $primary-color;
+  margin-bottom: $spacing-xs;
+}
+
+.completedStatus {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  
+  .statusIcon {
+    font-size: 1.5rem;
+  }
+}
+
+.appointmentInfo {
+  p {
+    margin: $spacing-xs 0;
+  }
+}
+
+.progressList {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.progressItem {
+  padding: $spacing-sm;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: $spacing-xs;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Loading and error states
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl;
+  text-align: center;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid $primary-color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: $spacing-md;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.errorContainer {
+  text-align: center;
+  padding: $spacing-xl;
+  
+  h2 {
+    color: $error-red;
+    margin-bottom: $spacing-md;
+  }
+  
+  p {
+    color: $text-light;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.retryButton {
+  background: $primary-color;
+  color: white;
+  border: none;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: $primary-dark;
+  }
+}
+
+.dashboardCard {
+  @include card;
+  padding: $spacing-xl;
+  transition: transform $transition-normal ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+
+  h3 {
+    color: $primary-color;
+    font-size: $font-size-xl;
+    margin-bottom: $spacing-lg;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  .placeholder {
+    text-align: center;
+    color: $text-light;
+
+    p {
+      margin-bottom: $spacing-lg;
+    }
+
+    .actionButton {
+      @include button-primary;
+      font-size: $font-size-sm;
+      padding: $spacing-sm $spacing-lg;
+    }
+  }
+}
+
+// Account Page Styles
+.accountContainer {
+  padding: $spacing-lg 0;
+  min-height: 100vh;
+  background: white;
+}
+
+.accountHeader {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
+.pageTitle {
+  color: $text-dark;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: $spacing-sm;
+}
+
+.pageSubtitle {
+  color: $text-light;
+  font-size: 0.95rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.accountContent {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: $spacing-lg;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  background: white;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  height: fit-content;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tabNavigation {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.tabButton {
+  @include flex-center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  border: none;
+  background: transparent;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+  color: $text-dark;
+
+  &:hover {
+    background: #f8fafc !important;
+    color: $text-dark !important;
+    border: 1px solid #e2e8f0;
+  }
+
+  &.active {
+    background: #f0f9ff;
+    color: $primary-color !important;
+    border: 1px solid #e0f2fe;
+    
+    &:hover {
+      background: #e0f2fe !important;
+      color: $primary-color !important;
+    }
+  }
+}
+
+.tabIcon {
+  font-size: 1rem;
+}
+
+.tabLabel {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.mainContent {
+  background: white;
+  border-radius: $border-radius;
+  padding: $spacing-lg;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tabContent {
+  max-width: 800px;
+}
+
+// Info display styles for account page - Form style
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: $spacing-md;
+}
+
+.infoValue {
+  color: $text-dark;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: $spacing-xs;
+  padding: $spacing-sm;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-sm;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+  
+  &:hover {
+    border-color: #cbd5e1;
+  }
+}
+
+.sectionTitle {
+  color: $text-dark;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: $spacing-md;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: $spacing-sm;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  color: $text-dark;
+  font-weight: 500;
+  margin-bottom: $spacing-xs;
+  font-size: 0.9rem;
+}
+
+// Field requirement labels
+.optionalLabel {
+  color: $text-muted;
+  font-weight: 400;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.recommendedLabel {
+  color: $warning-orange;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+// Requirement summary styles
+.requirementSummary {
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius;
+  padding: $spacing-lg;
+  margin-top: $spacing-lg;
+  
+  h3 {
+    color: $text-dark;
+    font-size: 1.1rem;
+    margin-bottom: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+}
+
+.requirementGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-md;
+}
+
+.requirementItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.requiredIcon {
+  color: $error-red;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.optionalIcon {
+  color: $text-muted;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.recommendedIcon {
+  color: $warning-orange;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.input, .textarea, .select {
+  padding: $spacing-sm;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-sm;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.saveButton, .primaryButton {
+  @include button-primary;
+  padding: $spacing-sm $spacing-md;
+  font-size: 0.9rem;
+}
+
+.secondaryButton {
+  @include button-secondary;
+  padding: $spacing-sm $spacing-md;
+  font-size: 0.9rem;
+}
+
+.preferencesGrid {
+  display: grid;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.preferenceSection {
+  background: white;
+  padding: $spacing-md;
+  border-radius: $border-radius;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.subsectionTitle {
+  color: $text-dark;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: $spacing-sm;
+}
+
+.preferenceItem {
+  margin-bottom: $spacing-sm;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: $text-dark;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: $primary-color;
+}
+
+.securityGrid {
+  display: grid;
+  gap: $spacing-lg;
+}
+
+.securitySection {
+  background: white;
+  padding: $spacing-md;
+  border-radius: $border-radius;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.securityStatus {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.statusLabel {
+  font-weight: 500;
+  color: $text-dark;
+}
+
+.statusInactive {
+  color: $warning-orange;
+  font-weight: 500;
+}
+
+.securityDescription {
+  color: $text-light;
+  font-size: 0.9rem;
+  margin-bottom: $spacing-md;
+}
+
+.activityItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-sm;
+  background: white;
+  border-radius: $border-radius-sm;
+  border: 1px solid $border-light;
+}
+
+.activityInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.activityDevice {
+  font-weight: 500;
+  color: $text-dark;
+  font-size: 0.9rem;
+}
+
+.activityTime {
+  color: $text-light;
+  font-size: 0.8rem;
+}
+
+.activityLocation {
+  color: $text-light;
+  font-size: 0.85rem;
+}
+
+// Mobile responsiveness for account page
+@include mobile {
+  .accountContent {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+  }
+
+  .sidebar {
+    order: 2;
+  }
+
+  .mainContent {
+    order: 1;
+  }
+
+  .tabNavigation {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: $spacing-xs;
+  }
+
+  .tabButton {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+}
+
+// Intake Form Styles
+.intakeForm {
+  background: white;
+  border-radius: $border-radius;
+  padding: $spacing-lg;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.progressIndicator {
+  margin-bottom: $spacing-lg;
+  text-align: center;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: $spacing-sm;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, $primary-color, $secondary-color);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  color: $text-light;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.formSection {
+  margin-bottom: $spacing-lg;
+}
+
+.sectionDescription {
+  color: $text-light;
+  margin-bottom: $spacing-md;
+  font-size: 0.95rem;
+}
+
+.consentSection {
+  background: #f8fafc;
+  padding: $spacing-md;
+  border-radius: $border-radius;
+  border: 1px solid #e2e8f0;
+}
+
+.consentText {
+  color: $text-dark;
+  margin-bottom: $spacing-md;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+// Radio button group container
+.radioGroup {
+  display: flex;
+  gap: $spacing-lg;
+  margin-top: $spacing-xs;
+}
+
+// Custom radio button wrapper
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: $text-dark;
+  padding: $spacing-sm;
+  border-radius: $border-radius-sm;
+  transition: all 0.2s ease;
+  position: relative;
+  
+  &:hover {
+    background-color: rgba(44, 90, 160, 0.05);
+    color: $text-dark;
+  }
+}
+
+// Hide the actual radio input
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+// Custom radio button visual
+.radioCustom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  background-color: white;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Blue center dot (always present but hidden by default)
+.radioDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: $primary-color;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+
+// When radio is checked - show the blue dot
+.radioChecked {
+  border-color: $primary-color !important;
+  
+  .radioDot {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+  }
+}
+
+// Hover state
+.radioWrapper:hover .radioCustom {
+  border-color: $primary-color;
+}
+
+// Focus state
+.radioInput:focus + .radioCustom {
+  outline: 2px solid rgba($primary-color, 0.2);
+  outline-offset: 2px;
+}
+
+.checkboxGroup {
+  margin-top: $spacing-md;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.checkbox {
+  margin: 0;
+  margin-top: 2px;
+}
+
+.checkboxText {
+  color: $text-dark;
+}
+
+.formNavigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: $spacing-lg;
+  padding-top: $spacing-md;
+  border-top: 1px solid #e2e8f0;
+}
+
+.navButton {
+  @include button-base;
+  background: #f8fafc;
+  color: $text-dark;
+  border: 1px solid #e2e8f0;
+  
+  &:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+  }
+}
+
+.submitButton {
+  @include button-base;
+  background: $primary-color;
+  color: white;
+  border: 1px solid $primary-color;
+  
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+    border-color: $primary-dark;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Appointment page styles
+.appointmentContainer {
+  padding: $spacing-lg 0;
+  min-height: 100vh;
+  background: $background-light;
+}
+
+.pageHeader {
+  margin-bottom: $spacing-xl;
+  text-align: center;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: $primary-color;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: $spacing-md;
+  padding: $spacing-sm;
+  border-radius: $border-radius-sm;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.1);
+  }
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin-bottom: $spacing-sm;
+}
+
+.pageSubtitle {
+  font-size: 1.1rem;
+  color: $text-light;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.appointmentForm {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: $spacing-xl;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.formActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid #e2e8f0;
+}
+
+.cancelButton {
+  padding: $spacing-md $spacing-lg;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: $text-light;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    border-color: #cbd5e1;
+    color: $text-dark;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.submitButton {
+  padding: $spacing-md $spacing-lg;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// Service Selection Page Styles
+.serviceSelectionContainer {
+  padding: $spacing-lg 0;
+  min-height: 100vh;
+  background: $background-light;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.serviceCard {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    border-color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.serviceCardSelected {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.02);
+    box-shadow: 0 4px 15px rgba($primary-color, 0.1);
+  }
+}
+
+.serviceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+}
+
+.serviceName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0;
+}
+
+.serviceDuration {
+  background: $primary-color;
+  color: white;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.servicePricing {
+  background: #f8fafc;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.pricingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+  font-size: 0.9rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.rebateAmount {
+  color: $success-green;
+  font-weight: 500;
+}
+
+.totalCost {
+  font-weight: 600;
+  font-size: 1rem;
+  color: $text-dark;
+  padding-top: $spacing-xs;
+  border-top: 1px solid #e2e8f0;
+}
+
+.serviceSpecializations {
+  margin-bottom: $spacing-md;
+}
+
+.specializationItem {
+  color: $text-light;
+  font-size: 0.9rem;
+  margin-bottom: $spacing-xs;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.serviceDescription {
+  color: $text-light;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: $spacing-md;
+}
+
+.selectButton {
+  width: 100%;
+  padding: $spacing-md;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius;
+  color: $text-light;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #e2e8f0;
+    color: $text-dark;
+  }
+  
+  &.selectButtonSelected {
+    background: $primary-color;
+    border-color: $primary-color;
+    color: white;
+  }
+}
+
+.infoBoxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.infoBox {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius;
+  padding: $spacing-lg;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.infoIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.infoContent {
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0 0 $spacing-xs 0;
+  }
+  
+  p {
+    color: $text-light;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.continueButton {
+  padding: $spacing-md $spacing-lg;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}

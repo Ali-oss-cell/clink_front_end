@@ -1,0 +1,643 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/mixins' as *;
+
+.registerForm {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto 0;
+}
+
+.form {
+  @include card;
+  padding: $spacing-lg;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+
+  .title {
+    color: $primary-color;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    margin-bottom: $spacing-xs;
+  }
+
+  .subtitle {
+    color: $text-light;
+    font-size: $font-size-sm;
+    margin: 0;
+  }
+}
+
+.formSection {
+  margin-bottom: $spacing-md;
+
+  .sectionTitle {
+    color: $text-dark;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    margin-bottom: $spacing-sm;
+    padding-bottom: $spacing-xs;
+    border-bottom: 1px solid $border-light;
+  }
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-sm;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.errorAlert {
+  background-color: rgba($error-red, 0.1);
+  border: 1px solid rgba($error-red, 0.3);
+  color: $error-red;
+  padding: $spacing-md;
+  border-radius: $border-radius;
+  margin-bottom: $spacing-lg;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  animation: slideInDown 0.3s ease-out;
+
+  .errorIcon {
+    font-size: $font-size-lg;
+  }
+}
+
+.successAlert {
+  background-color: rgba($success-green, 0.1);
+  border: 1px solid rgba($success-green, 0.3);
+  color: $success-green;
+  padding: $spacing-md;
+  border-radius: $border-radius;
+  margin-bottom: $spacing-lg;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  animation: slideInDown 0.3s ease-out;
+
+  .successIcon {
+    font-size: $font-size-lg;
+  }
+}
+
+.formGroup {
+  margin-bottom: $spacing-sm;
+
+  .label {
+    display: block;
+    color: $text-dark;
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-xs;
+    font-size: $font-size-xs;
+  }
+
+  .inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input {
+    @include input-base;
+    width: 100%;
+    padding: $spacing-md;
+    padding-right: 40px;
+    font-size: $font-size-base;
+    transition: all $transition-fast ease;
+
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+    
+    // Override for select elements to prevent text cutoff
+    &[type="select-one"], 
+    &[name="state"] {
+      padding: 12px 16px !important;
+      padding-right: 40px !important;
+      line-height: 1.5 !important;
+      height: auto !important;
+      min-height: 48px !important;
+      display: block !important;
+    }
+
+    &.inputError {
+      border-color: $error-red;
+      
+      &:focus {
+        border-color: $error-red;
+        box-shadow: 0 0 0 3px rgba($error-red, 0.1);
+      }
+    }
+
+    &.inputSuccess {
+      border-color: $success-green;
+      
+      &:focus {
+        border-color: $success-green;
+        box-shadow: 0 0 0 3px rgba($success-green, 0.1);
+      }
+    }
+
+    &:disabled {
+      background-color: $background-gray;
+      cursor: not-allowed;
+    }
+  }
+
+  .successIcon {
+    position: absolute;
+    right: 12px;
+    color: $success-green;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+  }
+
+  .fieldError {
+    color: $error-red;
+    font-size: $font-size-xs;
+    margin-top: $spacing-xs;
+    display: block;
+  }
+
+  .fieldSuccess {
+    color: $success-green;
+    font-size: $font-size-xs;
+    margin-top: $spacing-xs;
+    display: block;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  color: $text-light;
+  line-height: $line-height-relaxed;
+
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: $primary-color;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .checkboxText {
+    user-select: none;
+  }
+
+  .termsLink {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    transition: color $transition-fast ease;
+
+    &:hover {
+      color: $primary-dark;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Password strength indicator
+.passwordStrength {
+  margin-top: $spacing-sm;
+
+  .strengthBar {
+    width: 100%;
+    height: 4px;
+    background-color: $border-light;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: $spacing-xs;
+  }
+
+  .strengthFill {
+    height: 100%;
+    transition: all $transition-fast ease;
+    border-radius: 2px;
+
+    &.strengthWeak {
+      background-color: $error-red;
+      width: 33%;
+    }
+
+    &.strengthMedium {
+      background-color: #ffa500;
+      width: 66%;
+    }
+
+    &.strengthStrong {
+      background-color: $success-green;
+      width: 100%;
+    }
+  }
+
+  .strengthText {
+    font-size: $font-size-xs;
+    color: $text-light;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// Form progress indicator
+.formProgress {
+  margin: $spacing-lg 0;
+  padding: $spacing-md;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: $border-radius-lg;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  .progressHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-sm;
+  }
+
+  .progressTitle {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-dark;
+    margin: 0;
+  }
+
+  .progressPercentage {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: $primary-color;
+    margin: 0;
+  }
+
+  .progressBar {
+    width: 100%;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: $spacing-sm;
+    position: relative;
+  }
+
+  .progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, $primary-color 0%, $accent-color 50%, $success-green 100%);
+    border-radius: 4px;
+    transition: width $transition-normal ease;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+      animation: shimmer 2s infinite;
+    }
+  }
+
+  .progressText {
+    font-size: $font-size-xs;
+    color: $text-light;
+    font-weight: $font-weight-medium;
+    text-align: center;
+  }
+
+  .progressSteps {
+    display: flex;
+    justify-content: space-between;
+    margin-top: $spacing-sm;
+    font-size: $font-size-xs;
+    color: $text-light;
+  }
+
+  .stepIndicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+    
+    .stepDot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #e2e8f0;
+      transition: all $transition-fast ease;
+      
+      &.active {
+        background-color: $primary-color;
+        transform: scale(1.2);
+      }
+      
+      &.completed {
+        background-color: $success-green;
+        transform: scale(1.1);
+      }
+    }
+    
+    .stepLabel {
+      font-size: $font-size-xs;
+      color: $text-light;
+      text-align: center;
+      line-height: 1.2;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.submitButton {
+  @include button-primary;
+  width: 100%;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  position: relative;
+  overflow: hidden;
+  margin-top: $spacing-md;
+  transition: all $transition-fast ease;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &.submitDisabled {
+    background-color: $background-gray;
+    color: $text-light;
+    border-color: $border-light;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: $spacing-sm;
+  }
+}
+
+.formFooter {
+  text-align: center;
+  margin-top: $spacing-lg;
+
+  .footerText {
+    color: $text-light;
+    font-size: $font-size-sm;
+    margin: 0;
+  }
+
+  .footerLink {
+    color: $primary-color;
+    font-weight: $font-weight-medium;
+    text-decoration: none;
+    transition: color $transition-fast ease;
+
+    &:hover {
+      color: $primary-dark;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Step navigation styles
+.stepIndicator {
+  margin: $spacing-md 0;
+  text-align: center;
+}
+
+.stepProgress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-sm;
+}
+
+.stepNumber {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  color: $text-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
+  transition: all $transition-fast ease;
+  
+  &.active {
+    background-color: $primary-color;
+    color: white;
+    transform: scale(1.1);
+  }
+}
+
+.stepLine {
+  width: 60px;
+  height: 2px;
+  background-color: #e2e8f0;
+  margin: 0 $spacing-sm;
+  transition: all $transition-fast ease;
+  
+  &.completed {
+    background-color: $primary-color;
+  }
+}
+
+.stepLabels {
+  display: flex;
+  justify-content: space-between;
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.stepLabel {
+  font-size: $font-size-xs;
+  color: $text-light;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast ease;
+  text-align: center;
+  flex: 1;
+  
+  &.current {
+    color: $primary-color;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.stepContainer {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.stepActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-light;
+}
+
+.nextButton {
+  @include button-primary;
+  padding: $spacing-sm $spacing-lg;
+  font-weight: $font-weight-semibold;
+  height: 40px;
+  min-width: 120px;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.backButton {
+  @include button-secondary;
+  padding: $spacing-sm $spacing-lg;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-base;
+  height: 40px;
+  min-width: 120px;
+}
+
+// Additional styles for new fields
+.fieldHelp {
+  font-size: $font-size-xs;
+  color: $text-light;
+  margin-top: $spacing-xs;
+  font-style: italic;
+}
+
+// Select dropdown styles
+select.input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right $spacing-sm center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: $spacing-xl;
+  
+  // Fix text visibility issues
+  color: $text-dark !important;
+  background-color: white !important;
+  border: 2px solid $border-light !important;
+  font-weight: $font-weight-normal !important;
+  line-height: 1.5 !important;
+  height: auto !important;
+  min-height: 48px !important;
+  padding: 12px 16px !important;
+  vertical-align: middle !important;
+  
+  // Ensure text is fully visible
+  &, &:focus, &:hover, &:active {
+    color: $text-dark !important;
+    background-color: white !important;
+    line-height: 1.5 !important;
+    padding: 12px 16px !important;
+  }
+  
+  // Style dropdown options
+  option {
+    color: $text-dark !important;
+    background-color: white !important;
+    padding: 8px 12px !important;
+    line-height: 1.5 !important;
+    height: auto !important;
+    
+    &:checked, &:selected {
+      color: $text-dark !important;
+      background-color: $primary-light !important;
+    }
+  }
+}
+
+// Date input styles
+input[type="date"] {
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 2px;
+    opacity: 0.6;
+    filter: invert(0.5);
+  }
+  
+  &::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+}
+
+// Responsive design
+@include mobile {
+  .form {
+    padding: $spacing-xl;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .checkboxLabel {
+    font-size: $font-size-xs;
+  }
+}

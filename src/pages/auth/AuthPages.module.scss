@@ -1,0 +1,110 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+.authLayout {
+  .main {
+    @include flex-center;
+    background: linear-gradient(135deg, $background-light 0%, $background-gray 100%);
+    min-height: calc(100vh - #{$header-height});
+    padding: $spacing-xl $spacing-md;
+  }
+}
+
+.authContainer {
+  width: 100%;
+  max-width: 500px;
+}
+
+.registrationContainer {
+  display: flex;
+  gap: $spacing-2xl;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: $spacing-lg $spacing-md;
+  align-items: flex-start;
+
+  @include mobile {
+    flex-direction: column;
+    gap: $spacing-lg;
+    padding: $spacing-md;
+  }
+}
+
+.registrationForm {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 700px;
+}
+
+.registrationSidebar {
+  flex: 0 0 350px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.authCard {
+  @include card;
+  padding: $spacing-2xl;
+  text-align: center;
+
+  @include mobile {
+    padding: $spacing-xl;
+  }
+}
+
+.authTitle {
+  color: $primary-color;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-sm;
+
+  @include mobile {
+    font-size: $font-size-xl;
+  }
+}
+
+.authSubtitle {
+  color: $text-light;
+  margin-bottom: $spacing-xl;
+  line-height: $line-height-relaxed;
+}
+
+.placeholder {
+  background-color: $background-light;
+  border: 2px dashed $border-medium;
+  border-radius: $border-radius;
+  padding: $spacing-2xl;
+  margin: $spacing-xl 0;
+
+  p {
+    color: $text-light;
+    margin-bottom: $spacing-sm;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.authFooter {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-light;
+
+  p {
+    color: $text-light;
+    margin: 0;
+  }
+
+  .authLink {
+    color: $primary-color;
+    font-weight: $font-weight-medium;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
