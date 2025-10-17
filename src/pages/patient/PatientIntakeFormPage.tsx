@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
+import { validateIntakeForm } from '../../utils/validation';
 import styles from './PatientPages.module.scss';
 
 // Import the interface from the service
@@ -112,54 +113,9 @@ export const PatientIntakeFormPage: React.FC = () => {
     return (currentValue === true && value === 'true') || (currentValue === false && value === 'false');
   };
 
-  // Validation function based on the validation guide
+  // Use comprehensive validation from utils
   const validateForm = (data: IntakeFormData): string[] => {
-    const errors: string[] = [];
-    
-    // Required fields (9 total)
-    const requiredFields = [
-      'emergency_contact_name',
-      'emergency_contact_relationship', 
-      'emergency_contact_phone',
-      'referral_source',
-      'presenting_concerns',
-      'therapy_goals',
-      'consent_to_treatment',
-      'client_signature',
-      'consent_date'
-    ];
-    
-    // Check required fields
-    requiredFields.forEach(field => {
-      const fieldValue = data[field as keyof IntakeFormData];
-      if (!fieldValue || fieldValue === '') {
-        const fieldName = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        errors.push(`${fieldName} is required`);
-      }
-    });
-    
-    // Conditional validation for recommended fields
-    if (data.has_gp_referral && !data.gp_name) {
-      errors.push('GP name is recommended when GP referral is selected');
-    }
-    
-    if (data.previous_therapy && !data.previous_therapy_details) {
-      errors.push('Previous therapy details are recommended');
-    }
-    
-    if (data.current_medications && !data.medication_list) {
-      errors.push('Medication list is recommended when taking medications');
-    }
-    
-    if (data.other_health_professionals && !data.other_health_details) {
-      errors.push('Other health professional details are recommended');
-    }
-    
-    if (data.medical_conditions && !data.medical_conditions_details) {
-      errors.push('Medical conditions details are recommended');
-    }
-    
-    return errors;
+    return validateIntakeForm(data);
   };
 
   const onSubmit = async (data: IntakeFormData) => {
@@ -294,6 +250,28 @@ export const PatientIntakeFormPage: React.FC = () => {
                   <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
                 )}
                 {errors.suburb && <span className={styles.fieldError}>{errors.suburb.message}</span>}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>State *</label>
+                <select
+                  {...register('state', { required: 'State is required' })}
+                  className={`${styles.select} ${errors.state ? styles.inputError : ''} ${preFilledData.state ? styles.preFilled : ''}`}
+                >
+                  <option value="">Select your state</option>
+                  <option value="NSW">New South Wales (NSW)</option>
+                  <option value="VIC">Victoria (VIC)</option>
+                  <option value="QLD">Queensland (QLD)</option>
+                  <option value="WA">Western Australia (WA)</option>
+                  <option value="SA">South Australia (SA)</option>
+                  <option value="TAS">Tasmania (TAS)</option>
+                  <option value="ACT">Australian Capital Territory (ACT)</option>
+                  <option value="NT">Northern Territory (NT)</option>
+                </select>
+                {preFilledData.state && (
+                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                )}
+                {errors.state && <span className={styles.fieldError}>{errors.state.message}</span>}
               </div>
 
               <div className={styles.formGroup}>

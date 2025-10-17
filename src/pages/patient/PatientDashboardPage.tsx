@@ -149,9 +149,10 @@ export const PatientDashboardPage: React.FC = () => {
               <div className={styles.cardContent}>
                 {dashboardData?.intake_completed ? (
                   <div className={styles.completedStatus}>
-                    <div className={styles.statusIcon}>✅</div>
-                    <p><strong>Completed</strong></p>
-                    <p>Your intake form is complete</p>
+                    <div className={styles.statusText}>
+                      <p className={styles.statusTitle}>Completed</p>
+                      <p className={styles.statusDescription}>Your intake form is complete</p>
+                    </div>
                   </div>
                 ) : (
                   <div className={styles.placeholder}>

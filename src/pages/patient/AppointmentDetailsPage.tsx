@@ -1,30 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Layout } from '../../components/common/Layout/Layout';
+import { appointmentsService } from '../../services/api/appointments';
+import type { BookingSummaryResponse } from '../../services/api/appointments';
 import styles from './AppointmentDetails.module.scss';
 
 interface AppointmentDetailsFormData {
-  isFirstTime: string;
   therapyFocus: string;
-  preferredContactMethod: string;
-  emergencyContactName: string;
-  emergencyContactPhone: string;
-  emergencyContactRelationship: string;
-  additionalNotes: string;
   specialRequests: string;
+  additionalNotes: string;
 }
 
 export const AppointmentDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const selectedService = searchParams.get('service');
-  const selectedPsychologist = searchParams.get('psychologist');
-  const selectedDate = searchParams.get('date');
-  const selectedTime = searchParams.get('time');
-  const selectedSessionType = searchParams.get('sessionType');
+  const appointmentId = searchParams.get('appointment_id');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [bookingData, setBookingData] = useState<BookingSummaryResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
   // TODO: Get user data from Redux store
   const mockUser = {
@@ -38,118 +34,93 @@ export const AppointmentDetailsPage: React.FC = () => {
     created_at: '2024-01-01'
   };
 
-  // TODO: Fetch user's existing appointment history from backend
-  // TODO: Implement form validation with backend
-  // TODO: Add emergency contact validation
-  // TODO: Store appointment details in Redux store
-  // TODO: Implement form auto-save functionality
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch
+    formState: { errors }
   } = useForm<AppointmentDetailsFormData>({
     defaultValues: {
-      isFirstTime: '',
       therapyFocus: '',
-      preferredContactMethod: 'whatsapp',
-      emergencyContactName: '',
-      emergencyContactPhone: '',
-      emergencyContactRelationship: '',
       additionalNotes: '',
       specialRequests: ''
     }
   });
 
-  const watchedIsFirstTime = watch('isFirstTime');
+  // Fetch booking data from API
+  useEffect(() => {
+    if (!appointmentId) {
+      setError('No appointment ID provided');
+      setLoading(false);
+      return;
+    }
 
-  // Mock data for demonstration
-  const getPsychologistName = (id: string) => {
-    const names: { [key: string]: string } = {
-      'dr-sarah-johnson': 'Dr. Sarah Johnson',
-      'dr-michael-chen': 'Dr. Michael Chen',
-      'dr-emma-wilson': 'Dr. Emma Wilson',
-      'dr-james-martinez': 'Dr. James Martinez'
+    const fetchBookingData = async () => {
+      try {
+        setLoading(true);
+        const data = await appointmentsService.getBookingSummary(parseInt(appointmentId));
+        setBookingData(data);
+      } catch (err) {
+        console.error('Failed to load booking data:', err);
+        setError('Failed to load appointment details');
+      } finally {
+        setLoading(false);
+      }
     };
-    return names[id] || 'Selected Psychologist';
-  };
 
-  const getServiceName = (id: string) => {
-    const services: { [key: string]: string } = {
-      'individual-therapy': 'Individual Therapy Session (50 min)',
-      'couples-therapy': 'Couples Therapy Session (60 min)',
-      'psychological-assessment': 'Psychological Assessment (90 min)'
-    };
-    return services[id] || 'Selected Service';
-  };
-
-  const getServicePrice = (id: string) => {
-    const prices: { [key: string]: { standard: number; rebate: number; final: number } } = {
-      'individual-therapy': { standard: 180.00, rebate: 87.45, final: 92.55 },
-      'couples-therapy': { standard: 220.00, rebate: 0, final: 220.00 },
-      'psychological-assessment': { standard: 280.00, rebate: 126.55, final: 153.45 }
-    };
-    return prices[id] || { standard: 0, rebate: 0, final: 0 };
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  };
-
-  const formatTime = (timeString: string) => {
-    return timeString;
-  };
+    fetchBookingData();
+  }, [appointmentId]);
 
   const onSubmit = async (data: AppointmentDetailsFormData) => {
+    if (!appointmentId) return;
+    
     setIsSubmitting(true);
     try {
-      // TODO: Submit appointment details to Django backend API
-      // TODO: Validate all form data with backend
-      // TODO: Check for duplicate appointments
-      // TODO: Store appointment details in database
-      // TODO: Send confirmation email to user
-      // TODO: Notify psychologist of new appointment
-      // TODO: Log appointment creation for analytics
-      
-      console.log('Appointment details:', data);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Navigate to payment page
-      const params = new URLSearchParams({
-        service: selectedService || '',
-        psychologist: selectedPsychologist || '',
-        date: selectedDate || '',
-        time: selectedTime || '',
-        sessionType: selectedSessionType || '',
-        ...data
-      });
-      
-      navigate(`/appointments/payment?${params.toString()}`);
+      // TODO: Update appointment with additional notes via API
+      // For now, just navigate to payment with the appointment ID
+      navigate(`/appointments/payment?appointment_id=${appointmentId}`);
     } catch (error) {
       console.error('Error submitting appointment details:', error);
+      alert('Failed to save details. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleBack = () => {
-    const params = new URLSearchParams({
-      service: selectedService || '',
-      psychologist: selectedPsychologist || ''
-    });
-    navigate(`/appointments/date-time?${params.toString()}`);
+    navigate(-1); // Go back to previous page
   };
 
-  const servicePrice = getServicePrice(selectedService || '');
+  if (loading) {
+    return (
+      <Layout user={mockUser} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.appointmentDetailsContainer}>
+          <div className="container">
+            <div className={styles.loadingState}>
+              <p>Loading appointment details...</p>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !bookingData) {
+    return (
+      <Layout user={mockUser} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.appointmentDetailsContainer}>
+          <div className="container">
+            <div className={styles.errorState}>
+              <h3>⚠️ Unable to Load Appointment</h3>
+              <p>{error || 'Appointment not found'}</p>
+              <button className={styles.retryButton} onClick={() => navigate('/appointments/date-time')}>
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout 
@@ -164,11 +135,11 @@ export const AppointmentDetailsPage: React.FC = () => {
               className={styles.backButton}
               onClick={handleBack}
             >
-              ← Back to Date & Time
+              ← Back
             </button>
-            <h1 className={styles.pageTitle}>Appointment Details</h1>
+            <h1 className={styles.pageTitle}>Review Your Appointment</h1>
             <p className={styles.pageSubtitle}>
-              Please provide additional information to help us prepare for your appointment
+              Please review your appointment details before proceeding to payment
             </p>
           </div>
 
@@ -177,23 +148,40 @@ export const AppointmentDetailsPage: React.FC = () => {
               <h3>📅 Appointment Summary</h3>
               <div className={styles.summaryGrid}>
                 <div className={styles.summaryItem}>
-                  <span className={styles.summaryLabel}>Service:</span>
-                  <span className={styles.summaryValue}>{getServiceName(selectedService || '')}</span>
-                </div>
-                <div className={styles.summaryItem}>
                   <span className={styles.summaryLabel}>Psychologist:</span>
-                  <span className={styles.summaryValue}>{getPsychologistName(selectedPsychologist || '')}</span>
+                  <span className={styles.summaryValue}>{bookingData.psychologist.name}</span>
                 </div>
                 <div className={styles.summaryItem}>
-                  <span className={styles.summaryLabel}>Date & Time:</span>
-                  <span className={styles.summaryValue}>
-                    {formatDate(selectedDate || '')} at {formatTime(selectedTime || '')}
-                  </span>
+                  <span className={styles.summaryLabel}>Qualifications:</span>
+                  <span className={styles.summaryValue}>{bookingData.psychologist.qualifications}</span>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryLabel}>AHPRA Number:</span>
+                  <span className={styles.summaryValue}>{bookingData.psychologist.ahpra_number}</span>
+                </div>
+              </div>
+
+              <div className={styles.summaryGrid}>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryLabel}>Service:</span>
+                  <span className={styles.summaryValue}>{bookingData.service.name}</span>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryLabel}>Duration:</span>
+                  <span className={styles.summaryValue}>{bookingData.service.duration_minutes} minutes</span>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryLabel}>Date:</span>
+                  <span className={styles.summaryValue}>{bookingData.session.formatted_date}</span>
+                </div>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryLabel}>Time:</span>
+                  <span className={styles.summaryValue}>{bookingData.session.formatted_time}</span>
                 </div>
                 <div className={styles.summaryItem}>
                   <span className={styles.summaryLabel}>Session Type:</span>
                   <span className={styles.summaryValue}>
-                    {selectedSessionType === 'in-person' ? '🏢 In-Person Session' : '🎥 Telehealth (Video Call)'}
+                    {bookingData.session.type === 'in_person' ? '🏢 In-Person Session' : '🎥 Telehealth (Video Call)'}
                   </span>
                 </div>
               </div>
@@ -201,17 +189,17 @@ export const AppointmentDetailsPage: React.FC = () => {
               <div className={styles.pricingSection}>
                 <div className={styles.pricingRow}>
                   <span>Standard Fee:</span>
-                  <span>${servicePrice.standard.toFixed(2)}</span>
+                  <span>${bookingData.pricing.consultation_fee}</span>
                 </div>
-                {servicePrice.rebate > 0 && (
+                {parseFloat(bookingData.pricing.medicare_rebate) > 0 && (
                   <div className={styles.pricingRow}>
                     <span>Medicare Rebate:</span>
-                    <span className={styles.rebateAmount}>-${servicePrice.rebate.toFixed(2)}</span>
+                    <span className={styles.rebateAmount}>-${bookingData.pricing.medicare_rebate}</span>
                   </div>
                 )}
                 <div className={`${styles.pricingRow} ${styles.totalCost}`}>
                   <span>Your Payment:</span>
-                  <span>${servicePrice.final.toFixed(2)} (inc. GST)</span>
+                  <span>${bookingData.pricing.out_of_pocket_cost} (inc. GST)</span>
                 </div>
               </div>
             </div>
@@ -219,187 +207,41 @@ export const AppointmentDetailsPage: React.FC = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className={styles.appointmentDetailsForm}>
             <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Additional Information</h3>
+              <h3 className={styles.sectionTitle}>Session Notes (Optional)</h3>
+              <p className={styles.sectionDescription}>
+                You can provide additional information to help your psychologist prepare for this session. 
+                This is optional and can also be discussed during your appointment.
+              </p>
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Is this your first time seeing a psychologist? *</label>
-                  <div className={styles.radioGroup}>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('isFirstTime', { required: 'Please select an option' })}
-                        type="radio"
-                        value="first-session-ever"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      Yes, this is my first session ever
-                    </label>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('isFirstTime', { required: 'Please select an option' })}
-                        type="radio"
-                        value="had-therapy-before"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      No, I've had therapy before
-                    </label>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('isFirstTime', { required: 'Please select an option' })}
-                        type="radio"
-                        value="seen-other-psychologists"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      Yes, but I've seen other psychologists
-                    </label>
-                  </div>
-                  {errors.isFirstTime && <span className={styles.fieldError}>{errors.isFirstTime.message}</span>}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>What would you like to focus on in this session? *</label>
+                  <label className={styles.label}>What would you like to focus on in this session?</label>
                   <textarea
-                    {...register('therapyFocus', { required: 'Please describe what you\'d like to focus on' })}
+                    {...register('therapyFocus')}
                     className={styles.textarea}
-                    placeholder="I've been experiencing anxiety about work and would like to learn some coping strategies. I also have trouble sleeping and would like to discuss this."
+                    placeholder="Example: I've been experiencing anxiety about work and would like to learn some coping strategies..."
                     rows={4}
                   />
                   <div className={styles.fieldHelp}>
-                    (Optional - helps your psychologist prepare)
-                  </div>
-                  {errors.therapyFocus && <span className={styles.fieldError}>{errors.therapyFocus.message}</span>}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Preferred Contact Method for Reminders:</label>
-                  <div className={styles.radioGroup}>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('preferredContactMethod')}
-                        type="radio"
-                        value="whatsapp"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      📱 WhatsApp messages
-                    </label>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('preferredContactMethod')}
-                        type="radio"
-                        value="email"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      📧 Email only
-                    </label>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('preferredContactMethod')}
-                        type="radio"
-                        value="sms"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      📱 SMS text
-                    </label>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('preferredContactMethod')}
-                        type="radio"
-                        value="phone"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      📞 Phone call
-                    </label>
-                    <label className={styles.radioWrapper}>
-                      <input
-                        {...register('preferredContactMethod')}
-                        type="radio"
-                        value="none"
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.radioCustom}>
-                        <div className={styles.radioDot}></div>
-                      </div>
-                      🚫 No reminders
-                    </label>
+                    This helps your psychologist prepare but is completely optional
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Emergency Contact Information</h3>
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Emergency Contact Name</label>
-                  <input
-                    {...register('emergencyContactName')}
-                    type="text"
-                    className={styles.input}
-                    placeholder="Full name of emergency contact"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Emergency Contact Phone</label>
-                  <input
-                    {...register('emergencyContactPhone')}
-                    type="tel"
-                    className={styles.input}
-                    placeholder="Phone number"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Relationship to You</label>
-                  <input
-                    {...register('emergencyContactRelationship')}
-                    type="text"
-                    className={styles.input}
-                    placeholder="e.g., Spouse, Parent, Sibling, Friend"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Additional Notes</h3>
-              <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Special Requests or Accommodations</label>
                   <textarea
                     {...register('specialRequests')}
                     className={styles.textarea}
-                    placeholder="Any special requests, accessibility needs, or accommodations you may require"
+                    placeholder="Any accessibility needs, preferred communication style, or other accommodations..."
                     rows={3}
                   />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Additional Information</label>
+                  <label className={styles.label}>Additional Notes</label>
                   <textarea
                     {...register('additionalNotes')}
                     className={styles.textarea}
-                    placeholder="Any other information that might be helpful for your psychologist to know"
+                    placeholder="Any other information that might be helpful..."
                     rows={3}
                   />
                 </div>
@@ -429,14 +271,14 @@ export const AppointmentDetailsPage: React.FC = () => {
                 onClick={handleBack}
                 disabled={isSubmitting}
               >
-                Back to Date & Time
+                ← Back
               </button>
               <button
                 type="submit"
                 className={styles.submitButton}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Processing...' : 'Continue to Payment'}
+                {isSubmitting ? 'Processing...' : 'Continue to Payment →'}
               </button>
             </div>
           </form>

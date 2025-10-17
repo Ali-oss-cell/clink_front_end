@@ -14,6 +14,7 @@ import { PatientDashboardPage } from '../pages/patient/PatientDashboardPage';
 import { PatientAccountPage } from '../pages/patient/PatientAccountPage';
 import { PatientIntakeFormPage } from '../pages/patient/PatientIntakeFormPage';
 import { PatientAppointmentPage } from '../pages/patient/PatientAppointmentPage';
+import { PatientAppointmentsPage } from '../pages/patient/PatientAppointmentsPage';
 import { ServiceSelectionPage } from '../pages/patient/ServiceSelectionPage';
 import { PsychologistSelectionPage } from '../pages/patient/PsychologistSelectionPage';
 import { DateTimeSelectionPage } from '../pages/patient/DateTimeSelectionPage';
@@ -23,6 +24,9 @@ import { ConfirmationPage } from '../pages/patient/ConfirmationPage';
 
 // Psychologist pages
 import { PsychologistDashboardPage } from '../pages/psychologist/PsychologistDashboardPage';
+import { PsychologistProfilePage } from '../pages/psychologist/PsychologistProfilePage';
+import { PsychologistSchedulePage } from '../pages/psychologist/PsychologistSchedulePage';
+import { PsychologistPatientsPage } from '../pages/psychologist/PsychologistPatientsPage';
 
 // TODO: Import these when Redux store is set up
 interface AppRoutesProps {
@@ -187,17 +191,14 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
         </ProtectedRoute>
       } />
       
-      {/* Patient Appointments - TODO */}
+      {/* Patient Appointments */}
       <Route path="/patient/appointments" element={
         <ProtectedRoute 
           isAuthenticated={isAuthenticated} 
           user={user} 
           allowedRoles={['patient']}
         >
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>Appointments Page Coming Soon</h1>
-            <p>View and manage your appointments here.</p>
-          </div>
+          <PatientAppointmentsPage />
         </ProtectedRoute>
       } />
       
@@ -223,6 +224,26 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
         </ProtectedRoute>
       } />
       
+      <Route path="/psychologist/profile" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user}
+          allowedRoles={['psychologist']}
+        >
+          <PsychologistProfilePage />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/psychologist/schedule" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user}
+          allowedRoles={['psychologist']}
+        >
+          <PsychologistSchedulePage />
+        </ProtectedRoute>
+      } />
+      
       {/* Psychologist Schedule - TODO */}
       <Route path="/psychologist/schedule" element={
         <ProtectedRoute 
@@ -237,17 +258,14 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
         </ProtectedRoute>
       } />
       
-      {/* Psychologist Patients - TODO */}
+      {/* Psychologist Patients */}
       <Route path="/psychologist/patients" element={
         <ProtectedRoute 
           isAuthenticated={isAuthenticated} 
           user={user} 
           allowedRoles={['psychologist']}
         >
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>Patients Page Coming Soon</h1>
-            <p>View and manage your patient list here.</p>
-          </div>
+          <PsychologistPatientsPage />
         </ProtectedRoute>
       } />
 

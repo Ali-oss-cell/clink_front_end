@@ -78,6 +78,9 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link to="/psychologist/schedule" className={styles.navLink}>
                       Schedule
                     </Link>
+                    <Link to="/psychologist/profile" className={styles.navLink}>
+                      Profile
+                    </Link>
                     <Link to="/psychologist/patients" className={styles.navLink}>
                       Patients
                     </Link>

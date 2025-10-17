@@ -10,9 +10,14 @@ export const PsychologistDashboardPage: React.FC = () => {
     role: 'psychologist' as const,
     email: 'sarah@mindwellclinic.com.au',
     last_name: 'Johnson',
+    username: 'dr.sarah.johnson',
+    phone_number: '+61 3 1234 5678',
+    date_of_birth: '1985-03-15',
+    age: 39,
     is_verified: true,
     created_at: '2024-01-01'
   };
+
 
   return (
     <Layout 
@@ -28,6 +33,7 @@ export const PsychologistDashboardPage: React.FC = () => {
               Here's your schedule and patient overview for today.
             </p>
           </div>
+
 
           <div className={styles.dashboardGrid}>
             <div className={styles.dashboardCard}>

@@ -1,24 +1,38 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 
+// Patient Layout
 .patientLayout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
+  
   .main {
-    background-color: $background-light;
+    background-color: transparent;
   }
 }
 
+// Dashboard Container
 .dashboardContainer {
-  padding: $spacing-2xl 0;
+  padding: 3rem 0;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
+// Dashboard Header
 .dashboardHeader {
   text-align: center;
-  margin-bottom: $spacing-2xl;
+  margin-bottom: 3rem;
+  animation: fadeInDown 0.6s ease-out;
 
   .welcomeTitle {
-    color: $primary-color;
-    font-size: $font-size-3xl;
-    margin-bottom: $spacing-md;
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.5px;
 
     @include mobile {
       font-size: $font-size-2xl;
@@ -27,17 +41,30 @@
 
   .welcomeSubtitle {
     color: $text-light;
-    font-size: $font-size-lg;
+    font-size: 1.2rem;
     max-width: 600px;
     margin: 0 auto;
+    font-weight: 400;
   }
 }
 
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Dashboard Grid
 .dashboardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: $spacing-xl;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
   margin: 0 auto;
 
   @include mobile {
@@ -46,65 +73,189 @@
   }
 }
 
-// Dashboard card content styles
+// Dashboard Cards
+.dashboardCard {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $primary-color, $primary-light);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12);
+
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+
+  h3 {
+    color: $text-dark;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .placeholder {
+    text-align: center;
+    color: $text-light;
+    padding: 2rem 0;
+
+    p {
+      margin-bottom: $spacing-lg;
+      font-size: 1.05rem;
+    }
+
+    .actionButton {
+      background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+      color: white;
+      border: none;
+      padding: 0.875rem 2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba($primary-color, 0.4);
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Card Content
 .cardContent {
   padding: $spacing-md 0;
 }
 
 .statNumber {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: $primary-color;
-  margin-bottom: $spacing-xs;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
 }
 
 .completedStatus {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  
-  .statusIcon {
-    font-size: 1.5rem;
+  .statusText {
+    .statusTitle {
+      font-weight: 600;
+      color: $success-green;
+      margin: 0 0 $spacing-xs 0;
+      font-size: 1.1rem;
+    }
+    
+    .statusDescription {
+      color: $text-light;
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
   }
 }
 
 .appointmentInfo {
   p {
     margin: $spacing-xs 0;
+    font-size: 1rem;
+    line-height: 1.6;
   }
 }
 
 .progressList {
-  max-height: 200px;
+  max-height: 250px;
   overflow-y: auto;
+  padding-right: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $background-light;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 3px;
+
+    &:hover {
+      background: $primary-dark;
+    }
+  }
 }
 
 .progressItem {
-  padding: $spacing-sm;
-  background: #f8f9fa;
-  border-radius: 4px;
-  margin-bottom: $spacing-xs;
+  padding: 1rem;
+  background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  border: 1px solid $border-light;
+  transition: all 0.3s ease;
   
   &:last-child {
     margin-bottom: 0;
   }
+
+  &:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: $primary-light;
+  }
 }
 
-// Loading and error states
+// Loading and Error States
 .loadingContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: $spacing-xl;
+  padding: 4rem;
   text-align: center;
 }
 
 .loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid $primary-color;
+  width: 50px;
+  height: 50px;
+  border: 5px solid $background-light;
+  border-top: 5px solid $primary-color;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: $spacing-md;
@@ -117,176 +268,160 @@
 
 .errorContainer {
   text-align: center;
-  padding: $spacing-xl;
+  padding: 3rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  margin: 0 auto;
   
   h2 {
     color: $error-red;
     margin-bottom: $spacing-md;
+    font-size: 1.8rem;
   }
   
   p {
     color: $text-light;
     margin-bottom: $spacing-lg;
+    font-size: 1.05rem;
   }
 }
 
 .retryButton {
-  background: $primary-color;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   color: white;
   border: none;
-  padding: $spacing-sm $spacing-lg;
-  border-radius: $border-radius;
+  padding: 0.875rem 2rem;
+  border-radius: 50px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.2s ease;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba($primary-color, 0.3);
   
   &:hover {
-    background: $primary-dark;
-  }
-}
-
-.dashboardCard {
-  @include card;
-  padding: $spacing-xl;
-  transition: transform $transition-normal ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: $shadow-lg;
-  }
-
-  h3 {
-    color: $primary-color;
-    font-size: $font-size-xl;
-    margin-bottom: $spacing-lg;
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-  }
-
-  .placeholder {
-    text-align: center;
-    color: $text-light;
-
-    p {
-      margin-bottom: $spacing-lg;
-    }
-
-    .actionButton {
-      @include button-primary;
-      font-size: $font-size-sm;
-      padding: $spacing-sm $spacing-lg;
-    }
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba($primary-color, 0.4);
   }
 }
 
 // Account Page Styles
 .accountContainer {
-  padding: $spacing-lg 0;
+  padding: 3rem 0;
   min-height: 100vh;
-  background: white;
+  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
 }
 
 .accountHeader {
   text-align: center;
-  margin-bottom: $spacing-lg;
+  margin-bottom: 3rem;
+  animation: fadeInDown 0.6s ease-out;
 }
 
 .pageTitle {
-  color: $text-dark;
-  font-size: 1.6rem;
-  font-weight: 600;
-  margin-bottom: $spacing-sm;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
 }
 
 .pageSubtitle {
   color: $text-light;
-  font-size: 0.95rem;
-  max-width: 500px;
+  font-size: 1.2rem;
+  max-width: 600px;
   margin: 0 auto;
+  font-weight: 400;
 }
 
 .accountContent {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: $spacing-lg;
-  max-width: 1000px;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 .sidebar {
   background: white;
-  border-radius: $border-radius;
-  padding: $spacing-md;
+  border-radius: 20px;
+  padding: 1.5rem;
   height: fit-content;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .tabNavigation {
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
+  gap: 0.5rem;
 }
 
 .tabButton {
-  @include flex-center;
-  gap: $spacing-sm;
-  padding: $spacing-sm;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
   border: none;
   background: transparent;
-  border-radius: $border-radius-sm;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-align: left;
   width: 100%;
-  color: $text-dark;
+  color: $text-light;
+  font-weight: 500;
 
   &:hover {
-    background: #f8fafc !important;
-    color: $text-dark !important;
-    border: 1px solid #e2e8f0;
+    background: $background-light;
+    color: $text-dark;
+    transform: translateX(5px);
   }
 
   &.active {
-    background: #f0f9ff;
-    color: $primary-color !important;
-    border: 1px solid #e0f2fe;
+    background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($primary-light, 0.15) 100%);
+    color: $primary-color;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.15);
     
     &:hover {
-      background: #e0f2fe !important;
-      color: $primary-color !important;
+      background: linear-gradient(135deg, rgba($primary-color, 0.15) 0%, rgba($primary-light, 0.2) 100%);
+      color: $primary-dark;
     }
   }
 }
 
 .tabIcon {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .tabLabel {
-  font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .mainContent {
   background: white;
-  border-radius: $border-radius;
-  padding: $spacing-lg;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .tabContent {
-  max-width: 800px;
+  max-width: 900px;
 }
 
-// Info display styles for account page - Form style
+// Form Styles
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: $spacing-md;
-  margin-bottom: $spacing-lg;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .infoSection {
@@ -300,37 +435,48 @@
   font-size: 1rem;
   font-weight: 500;
   margin-top: $spacing-xs;
-  padding: $spacing-sm;
+  padding: 0.875rem;
   background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: $border-radius-sm;
-  transition: all 0.2s ease;
+  border: 2px solid $border-light;
+  border-radius: 12px;
+  transition: all 0.3s ease;
   
   &:focus {
     outline: none;
     border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
   }
   
   &:hover {
-    border-color: #cbd5e1;
+    border-color: $primary-light;
   }
 }
 
 .sectionTitle {
   color: $text-dark;
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: $spacing-md;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: $spacing-sm;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid $background-light;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, $primary-color, transparent);
+  }
 }
 
 .formGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: $spacing-md;
-  margin-bottom: $spacing-lg;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .formGroup {
@@ -340,226 +486,557 @@
 
 .label {
   color: $text-dark;
-  font-weight: 500;
-  margin-bottom: $spacing-xs;
-  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
-// Field requirement labels
 .optionalLabel {
   color: $text-muted;
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-style: italic;
 }
 
 .recommendedLabel {
   color: $warning-orange;
   font-weight: 500;
-  font-size: 0.8rem;
-}
-
-// Requirement summary styles
-.requirementSummary {
-  background: #f8f9fa;
-  border: 1px solid #e2e8f0;
-  border-radius: $border-radius;
-  padding: $spacing-lg;
-  margin-top: $spacing-lg;
-  
-  h3 {
-    color: $text-dark;
-    font-size: 1.1rem;
-    margin-bottom: $spacing-md;
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-  }
-}
-
-.requirementGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: $spacing-md;
-}
-
-.requirementItem {
-  display: flex;
-  align-items: flex-start;
-  gap: $spacing-sm;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.requiredIcon {
-  color: $error-red;
-  font-weight: bold;
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-
-.optionalIcon {
-  color: $text-muted;
-  font-weight: bold;
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-
-.recommendedIcon {
-  color: $warning-orange;
-  font-weight: bold;
-  font-size: 1.2rem;
-  flex-shrink: 0;
+  font-size: 0.85rem;
 }
 
 .input, .textarea, .select {
-  padding: $spacing-sm;
-  border: 1px solid #e2e8f0;
-  border-radius: $border-radius-sm;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
+  padding: 0.875rem;
+  border: 2px solid $border-light;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
 
   &:focus {
     outline: none;
     border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
   }
 
   &:hover {
-    border-color: #cbd5e1;
+    border-color: $primary-light;
   }
 }
 
 .textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 100px;
+  line-height: 1.6;
 }
 
 .saveButton, .primaryButton {
-  @include button-primary;
-  padding: $spacing-sm $spacing-md;
-  font-size: 0.9rem;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba($primary-color, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
 }
 
 .secondaryButton {
-  @include button-secondary;
-  padding: $spacing-sm $spacing-md;
-  font-size: 0.9rem;
-}
-
-.preferencesGrid {
-  display: grid;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-lg;
-}
-
-.preferenceSection {
-  background: white;
-  padding: $spacing-md;
-  border-radius: $border-radius;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.subsectionTitle {
-  color: $text-dark;
-  font-size: 1.1rem;
+  background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1.05rem;
   font-weight: 600;
-  margin-bottom: $spacing-sm;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba($secondary-color, 0.3);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba($secondary-color, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
 }
 
-.preferenceItem {
-  margin-bottom: $spacing-sm;
+// Intake Form Styles
+.intakeForm {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.progressIndicator {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.progressBar {
+  width: 100%;
+  height: 10px;
+  background: $background-light;
+  border-radius: 50px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, $primary-color, $primary-light);
+  transition: width 0.4s ease;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba($primary-color, 0.4);
+}
+
+.progressText {
+  color: $text-light;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.formSection {
+  margin-bottom: 2.5rem;
+}
+
+.sectionDescription {
+  color: $text-light;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.consentSection {
+  background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 2px solid $border-light;
+}
+
+.consentText {
+  color: $text-dark;
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.75rem;
+}
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: $text-dark;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: 500;
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radioCustom {
+  width: 22px;
+  height: 22px;
+  border: 3px solid $border-medium;
+  border-radius: 50%;
+  background-color: white;
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.radioDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: $primary-color;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba($primary-color, 0.4);
+}
+
+.radioChecked {
+  border-color: $primary-color;
+  
+  .radioDot {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.radioWrapper:hover .radioCustom {
+  border-color: $primary-color;
+}
+
+.radioInput:focus + .radioCustom {
+  box-shadow: 0 0 0 4px rgba($primary-color, 0.15);
+}
+
+.checkboxGroup {
+  margin-top: 1.5rem;
 }
 
 .checkboxLabel {
   display: flex;
-  align-items: center;
-  gap: $spacing-sm;
+  align-items: flex-start;
+  gap: 0.75rem;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: $text-dark;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 0.75rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba($primary-color, 0.05);
+  }
 }
 
 .checkbox {
-  width: 16px;
-  height: 16px;
+  margin: 0;
+  margin-top: 4px;
+  width: 20px;
+  height: 20px;
   accent-color: $primary-color;
+  cursor: pointer;
 }
 
-.securityGrid {
-  display: grid;
-  gap: $spacing-lg;
-}
-
-.securitySection {
-  background: white;
-  padding: $spacing-md;
-  border-radius: $border-radius;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.securityStatus {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-sm;
-}
-
-.statusLabel {
-  font-weight: 500;
+.checkboxText {
   color: $text-dark;
-}
-
-.statusInactive {
-  color: $warning-orange;
   font-weight: 500;
 }
 
-.securityDescription {
-  color: $text-light;
-  font-size: 0.9rem;
-  margin-bottom: $spacing-md;
-}
-
-.activityItem {
+.formNavigation {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: $spacing-sm;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid $background-light;
+}
+
+.navButton {
   background: white;
-  border-radius: $border-radius-sm;
+  color: $text-dark;
+  border: 2px solid $border-light;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.submitButton {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba($primary-color, 0.4);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// Appointment Page Styles
+.appointmentContainer {
+  padding: 3rem 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
+}
+
+.pageHeader {
+  margin-bottom: 3rem;
+  text-align: center;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.backButton {
+  background: white;
+  border: 2px solid $border-light;
+  color: $primary-color;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  
+  &:hover {
+    background: $primary-color;
+    color: white;
+    border-color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+  }
+}
+
+.appointmentForm {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.formActions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: flex-end;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid $background-light;
+}
+
+.cancelButton {
+  padding: 1rem 2rem;
+  border: 2px solid $border-light;
+  background: white;
+  color: $text-dark;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    border-color: $error-red;
+    color: $error-red;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($error-red, 0.2);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Service Selection Page
+.serviceSelectionContainer {
+  padding: 3rem 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.serviceCard {
+  background: white;
+  border: 3px solid $border-light;
+  border-radius: 20px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  animation: fadeInUp 0.8s ease-out;
+  
+  &:hover {
+    border-color: $primary-color;
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba($primary-color, 0.2);
+  }
+  
+  &.serviceCardSelected {
+    border-color: $primary-color;
+    background: linear-gradient(135deg, white 0%, rgba($primary-color, 0.03) 100%);
+    box-shadow: 0 10px 30px rgba($primary-color, 0.2);
+  }
+}
+
+.serviceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.serviceName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0;
+}
+
+.serviceDuration {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba($primary-color, 0.25);
+}
+
+.servicePricing {
+  background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
   border: 1px solid $border-light;
 }
 
-.activityInfo {
+.pricingRow {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.activityDevice {
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
   font-weight: 500;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.rebateAmount {
+  color: $success-green;
+  font-weight: 600;
+}
+
+.totalCost {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: $primary-color;
+  padding-top: 0.75rem;
+  border-top: 2px solid $border-light;
+}
+
+.serviceDescription {
+  color: $text-light;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.selectButton {
+  width: 100%;
+  padding: 1rem;
+  background: white;
+  border: 2px solid $border-light;
+  border-radius: 50px;
   color: $text-dark;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: $background-light;
+    border-color: $primary-color;
+    color: $primary-color;
+  }
+  
+  &.selectButtonSelected {
+    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+    border-color: $primary-color;
+    color: white;
+    box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+  }
 }
 
-.activityTime {
-  color: $text-light;
-  font-size: 0.8rem;
+.continueButton {
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba($primary-color, 0.4);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
 }
 
-.activityLocation {
-  color: $text-light;
-  font-size: 0.85rem;
-}
-
-// Mobile responsiveness for account page
+// Mobile Responsiveness
 @include mobile {
   .accountContent {
     grid-template-columns: 1fr;
-    gap: $spacing-md;
+    gap: 1.5rem;
   }
 
   .sidebar {
@@ -573,7 +1050,7 @@
   .tabNavigation {
     flex-direction: row;
     overflow-x: auto;
-    gap: $spacing-xs;
+    gap: 0.5rem;
   }
 
   .tabButton {
@@ -581,516 +1058,19 @@
     min-width: fit-content;
   }
 
-  .formGrid {
+  .formGrid, .infoGrid {
     grid-template-columns: 1fr;
   }
 
   .pageTitle {
     font-size: 2rem;
   }
-}
 
-// Intake Form Styles
-.intakeForm {
-  background: white;
-  border-radius: $border-radius;
-  padding: $spacing-lg;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.progressIndicator {
-  margin-bottom: $spacing-lg;
-  text-align: center;
-}
-
-.progressBar {
-  width: 100%;
-  height: 8px;
-  background: #f1f5f9;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: $spacing-sm;
-}
-
-.progressFill {
-  height: 100%;
-  background: linear-gradient(90deg, $primary-color, $secondary-color);
-  transition: width 0.3s ease;
-}
-
-.progressText {
-  color: $text-light;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.formSection {
-  margin-bottom: $spacing-lg;
-}
-
-.sectionDescription {
-  color: $text-light;
-  margin-bottom: $spacing-md;
-  font-size: 0.95rem;
-}
-
-.consentSection {
-  background: #f8fafc;
-  padding: $spacing-md;
-  border-radius: $border-radius;
-  border: 1px solid #e2e8f0;
-}
-
-.consentText {
-  color: $text-dark;
-  margin-bottom: $spacing-md;
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
-
-// Radio button group container
-.radioGroup {
-  display: flex;
-  gap: $spacing-lg;
-  margin-top: $spacing-xs;
-}
-
-// Custom radio button wrapper
-.radioWrapper {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: $text-dark;
-  padding: $spacing-sm;
-  border-radius: $border-radius-sm;
-  transition: all 0.2s ease;
-  position: relative;
-  
-  &:hover {
-    background-color: rgba(44, 90, 160, 0.05);
-    color: $text-dark;
+  .dashboardGrid {
+    grid-template-columns: 1fr;
   }
-}
 
-// Hide the actual radio input
-.radioInput {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-}
-
-// Custom radio button visual
-.radioCustom {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #cbd5e1;
-  border-radius: 50%;
-  background-color: white;
-  position: relative;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-// Blue center dot (always present but hidden by default)
-.radioDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: $primary-color;
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.2s ease;
-}
-
-// When radio is checked - show the blue dot
-.radioChecked {
-  border-color: $primary-color !important;
-  
-  .radioDot {
-    opacity: 1 !important;
-    transform: scale(1) !important;
-  }
-}
-
-// Hover state
-.radioWrapper:hover .radioCustom {
-  border-color: $primary-color;
-}
-
-// Focus state
-.radioInput:focus + .radioCustom {
-  outline: 2px solid rgba($primary-color, 0.2);
-  outline-offset: 2px;
-}
-
-.checkboxGroup {
-  margin-top: $spacing-md;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: flex-start;
-  gap: $spacing-sm;
-  cursor: pointer;
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.checkbox {
-  margin: 0;
-  margin-top: 2px;
-}
-
-.checkboxText {
-  color: $text-dark;
-}
-
-.formNavigation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: $spacing-lg;
-  padding-top: $spacing-md;
-  border-top: 1px solid #e2e8f0;
-}
-
-.navButton {
-  @include button-base;
-  background: #f8fafc;
-  color: $text-dark;
-  border: 1px solid #e2e8f0;
-  
-  &:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-  }
-}
-
-.submitButton {
-  @include button-base;
-  background: $primary-color;
-  color: white;
-  border: 1px solid $primary-color;
-  
-  &:hover:not(:disabled) {
-    background: $primary-dark;
-    border-color: $primary-dark;
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-// Appointment page styles
-.appointmentContainer {
-  padding: $spacing-lg 0;
-  min-height: 100vh;
-  background: $background-light;
-}
-
-.pageHeader {
-  margin-bottom: $spacing-xl;
-  text-align: center;
-}
-
-.backButton {
-  background: none;
-  border: none;
-  color: $primary-color;
-  font-size: 0.9rem;
-  cursor: pointer;
-  margin-bottom: $spacing-md;
-  padding: $spacing-sm;
-  border-radius: $border-radius-sm;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: rgba($primary-color, 0.1);
-  }
-}
-
-.pageTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: $text-dark;
-  margin-bottom: $spacing-sm;
-}
-
-.pageSubtitle {
-  font-size: 1.1rem;
-  color: $text-light;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.appointmentForm {
-  max-width: 800px;
-  margin: 0 auto;
-  background: white;
-  padding: $spacing-xl;
-  border-radius: $border-radius-lg;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.formActions {
-  display: flex;
-  gap: $spacing-md;
-  justify-content: flex-end;
-  margin-top: $spacing-xl;
-  padding-top: $spacing-lg;
-  border-top: 1px solid #e2e8f0;
-}
-
-.cancelButton {
-  padding: $spacing-md $spacing-lg;
-  border: 2px solid #e2e8f0;
-  background: white;
-  color: $text-light;
-  border-radius: $border-radius;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover:not(:disabled) {
-    border-color: #cbd5e1;
-    color: $text-dark;
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.submitButton {
-  padding: $spacing-md $spacing-lg;
-  background: $primary-color;
-  color: white;
-  border: none;
-  border-radius: $border-radius;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover:not(:disabled) {
-    background: $primary-dark;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-// Service Selection Page Styles
-.serviceSelectionContainer {
-  padding: $spacing-lg 0;
-  min-height: 100vh;
-  background: $background-light;
-}
-
-.servicesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: $spacing-lg;
-  margin-bottom: $spacing-xl;
-}
-
-.serviceCard {
-  background: white;
-  border: 2px solid #e2e8f0;
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  
-  &:hover {
-    border-color: $primary-color;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
-  
-  &.serviceCardSelected {
-    border-color: $primary-color;
-    background: rgba($primary-color, 0.02);
-    box-shadow: 0 4px 15px rgba($primary-color, 0.1);
-  }
-}
-
-.serviceHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: $spacing-md;
-}
-
-.serviceName {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: $text-dark;
-  margin: 0;
-}
-
-.serviceDuration {
-  background: $primary-color;
-  color: white;
-  padding: $spacing-xs $spacing-sm;
-  border-radius: $border-radius-sm;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.servicePricing {
-  background: #f8fafc;
-  border-radius: $border-radius;
-  padding: $spacing-md;
-  margin-bottom: $spacing-md;
-}
-
-.pricingRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: $spacing-xs;
-  font-size: 0.9rem;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.rebateAmount {
-  color: $success-green;
-  font-weight: 500;
-}
-
-.totalCost {
-  font-weight: 600;
-  font-size: 1rem;
-  color: $text-dark;
-  padding-top: $spacing-xs;
-  border-top: 1px solid #e2e8f0;
-}
-
-.serviceSpecializations {
-  margin-bottom: $spacing-md;
-}
-
-.specializationItem {
-  color: $text-light;
-  font-size: 0.9rem;
-  margin-bottom: $spacing-xs;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.serviceDescription {
-  color: $text-light;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: $spacing-md;
-}
-
-.selectButton {
-  width: 100%;
-  padding: $spacing-md;
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  border-radius: $border-radius;
-  color: $text-light;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: #e2e8f0;
-    color: $text-dark;
-  }
-  
-  &.selectButtonSelected {
-    background: $primary-color;
-    border-color: $primary-color;
-    color: white;
-  }
-}
-
-.infoBoxes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: $spacing-lg;
-  margin-bottom: $spacing-xl;
-}
-
-.infoBox {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: $border-radius;
-  padding: $spacing-lg;
-  display: flex;
-  gap: $spacing-md;
-}
-
-.infoIcon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.infoContent {
-  h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: $text-dark;
-    margin: 0 0 $spacing-xs 0;
-  }
-  
-  p {
-    color: $text-light;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin: 0;
-  }
-}
-
-.continueButton {
-  padding: $spacing-md $spacing-lg;
-  background: $primary-color;
-  color: white;
-  border: none;
-  border-radius: $border-radius;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover:not(:disabled) {
-    background: $primary-dark;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+  .servicesGrid {
+    grid-template-columns: 1fr;
   }
 }

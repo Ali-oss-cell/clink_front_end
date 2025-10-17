@@ -1,28 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
+import { psychologistService } from '../../services/api/psychologist';
+import type { PsychologistProfile } from '../../services/api/psychologist';
 import styles from './PsychologistSelection.module.scss';
 
 interface Psychologist {
-  id: string;
+  id: number;
   name: string;
   title: string;
   ahpraNumber: string;
   qualifications: string;
   experience: number;
-  specializations: string[];
+  specializations: Array<{ id: number; name: string; description: string }>;
   bio: string;
   acceptingNewPatients: boolean;
   nextAvailable: string;
-  gender: 'male' | 'female' | 'non-binary';
-  sessionTypes: ('in-person' | 'telehealth')[];
+  gender: string;
+  sessionTypes: string[];
+  profilePicture?: string;
+  telehealthAvailable: boolean;
+  inPersonAvailable: boolean;
+  consultationFee: string;
+  patientCostAfterRebate: string;
+  averageRating: string;
+  totalReviews: number;
 }
 
 export const PsychologistSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedService = searchParams.get('service');
-  const [selectedPsychologist, setSelectedPsychologist] = useState<string | null>(null);
+  const psychologistFromUrl = searchParams.get('psychologist');
+  const [selectedPsychologist, setSelectedPsychologist] = useState<number | null>(
+    psychologistFromUrl ? parseInt(psychologistFromUrl) : null
+  );
+  const [psychologists, setPsychologists] = useState<Psychologist[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     specialization: 'all',
     gender: 'any',
@@ -42,86 +57,108 @@ export const PsychologistSelectionPage: React.FC = () => {
     created_at: '2024-01-01'
   };
 
-  // TODO: Fetch psychologists from Django backend API
-  // TODO: Filter psychologists by service type and availability
-  // TODO: Implement psychologist search and filtering
-  // TODO: Add psychologist availability checking
-  // TODO: Implement psychologist rating and review system
+  // Fetch psychologists from backend
+  useEffect(() => {
+    const fetchPsychologists = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Fetch all psychologists - API service handles response format automatically
+        const psychologistsData = await psychologistService.getAllPsychologists();
+        
+        // Transform backend data to frontend format
+        const transformedData: Psychologist[] = psychologistsData.map((psych: PsychologistProfile) => ({
+          id: psych.id,
+          name: psych.display_name,
+          title: psych.title,
+          ahpraNumber: psych.ahpra_registration_number,
+          qualifications: psych.qualifications,
+          experience: psych.years_experience,
+          specializations: Array.isArray(psych.specializations_list) 
+            ? psych.specializations_list 
+            : [],
+          bio: psych.bio,
+          acceptingNewPatients: psych.is_accepting_new_patients,
+          nextAvailable: formatNextAvailable(psych.next_available_slot || null),
+          gender: psych.user_gender || 'not-specified',
+          sessionTypes: psych.session_types_list || [],
+          profilePicture: psych.profile_image_url || undefined,
+          telehealthAvailable: psych.telehealth_available,
+          inPersonAvailable: psych.in_person_available,
+          consultationFee: psych.consultation_fee,
+          patientCostAfterRebate: psych.patient_cost_after_rebate,
+          averageRating: psych.average_rating,
+          totalReviews: psych.total_reviews
+        }));
+        
+        setPsychologists(transformedData);
+        console.log('Transformed psychologists:', transformedData);
+      } catch (err) {
+        console.error('Failed to load psychologists:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load psychologists. Please try again.';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const psychologists: Psychologist[] = [
-    {
-      id: 'dr-sarah-johnson',
-      name: 'Dr. Sarah Johnson',
-      title: 'Clinical Psychologist',
-      ahpraNumber: 'PSY0001234567',
-      qualifications: 'M.Psych (Clinical), B.Psych (Hons)',
-      experience: 8,
-      specializations: ['Anxiety & Panic Disorders', 'Depression & Mood Disorders', 'Trauma & PTSD', 'Mindfulness-Based Therapy'],
-      bio: 'I believe in creating a safe, non-judgmental space where clients can explore their thoughts and feelings while developing practical coping strategies.',
-      acceptingNewPatients: true,
-      nextAvailable: 'Tomorrow, 2:00 PM',
-      gender: 'female',
-      sessionTypes: ['in-person', 'telehealth']
-    },
-    {
-      id: 'dr-michael-chen',
-      name: 'Dr. Michael Chen',
-      title: 'Clinical Psychologist',
-      ahpraNumber: 'PSY0001234568',
-      qualifications: 'M.Psych (Clinical), Ph.D Psychology',
-      experience: 12,
-      specializations: ['ADHD & Learning Difficulties', 'Autism Spectrum Disorders', 'Cognitive Behavioral Therapy', 'Family Therapy'],
-      bio: 'I use evidence-based approaches tailored to each individual\'s unique needs and circumstances.',
-      acceptingNewPatients: true,
-      nextAvailable: 'Friday, 10:00 AM',
-      gender: 'male',
-      sessionTypes: ['in-person', 'telehealth']
-    },
-    {
-      id: 'dr-emma-wilson',
-      name: 'Dr. Emma Wilson',
-      title: 'Clinical Psychologist',
-      ahpraNumber: 'PSY0001234569',
-      qualifications: 'M.Psych (Clinical), B.Psych (Hons)',
-      experience: 6,
-      specializations: ['Relationship Issues', 'Couples Therapy', 'Communication Skills', 'Conflict Resolution'],
-      bio: 'I specialize in helping individuals and couples build stronger, more meaningful relationships through evidence-based therapeutic approaches.',
-      acceptingNewPatients: true,
-      nextAvailable: 'Monday, 3:00 PM',
-      gender: 'female',
-      sessionTypes: ['in-person', 'telehealth']
-    },
-    {
-      id: 'dr-james-martinez',
-      name: 'Dr. James Martinez',
-      title: 'Clinical Psychologist',
-      ahpraNumber: 'PSY0001234570',
-      qualifications: 'M.Psych (Clinical), Ph.D Psychology',
-      experience: 15,
-      specializations: ['Trauma & PTSD', 'Grief & Loss', 'Substance Use Disorders', 'EMDR Therapy'],
-      bio: 'With extensive experience in trauma recovery, I help clients process difficult experiences and build resilience for the future.',
-      acceptingNewPatients: false,
-      nextAvailable: 'Currently not accepting new patients',
-      gender: 'male',
-      sessionTypes: ['in-person', 'telehealth']
+    fetchPsychologists();
+  }, []);
+
+  // Format next available slot for display
+  const formatNextAvailable = (isoDate: string | null): string => {
+    if (!isoDate) return 'No availability shown';
+    
+    try {
+      const date = new Date(isoDate);
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      if (date.toDateString() === today.toDateString()) {
+        return `Today, ${date.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+      } else if (date.toDateString() === tomorrow.toDateString()) {
+        return `Tomorrow, ${date.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+      } else {
+        return date.toLocaleDateString('en-AU', { 
+          weekday: 'long',
+          month: 'short', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+      }
+    } catch (error) {
+      return 'Check availability';
     }
-  ];
+  };
+
 
   const filteredPsychologists = psychologists.filter(psychologist => {
-    if (filters.specialization !== 'all' && !psychologist.specializations.some(spec => 
-      spec.toLowerCase().includes(filters.specialization.toLowerCase())
-    )) return false;
+    // Specialization filter
+    if (filters.specialization !== 'all') {
+      const hasSpecialization = psychologist.specializations.some(spec => 
+        spec.name.toLowerCase().includes(filters.specialization.toLowerCase())
+      );
+      if (!hasSpecialization) return false;
+    }
     
+    // Gender filter
     if (filters.gender !== 'any' && psychologist.gender !== filters.gender) return false;
     
-    if (filters.sessionType !== 'both' && !psychologist.sessionTypes.includes(filters.sessionType as 'in-person' | 'telehealth')) return false;
+    // Session type filter
+    if (filters.sessionType === 'in-person' && !psychologist.inPersonAvailable) return false;
+    if (filters.sessionType === 'telehealth' && !psychologist.telehealthAvailable) return false;
     
-    if (filters.availability === 'this-week' && psychologist.nextAvailable.includes('Currently not')) return false;
+    // Availability filter
+    if (filters.availability === 'this-week' && !psychologist.acceptingNewPatients) return false;
     
     return true;
   });
 
-  const handlePsychologistSelect = (psychologistId: string) => {
+  const handlePsychologistSelect = (psychologistId: number) => {
     setSelectedPsychologist(psychologistId);
   };
 
@@ -131,12 +168,7 @@ export const PsychologistSelectionPage: React.FC = () => {
       return;
     }
     
-    // TODO: Validate psychologist selection with backend
-    // TODO: Check psychologist availability for selected service
-    // TODO: Store psychologist selection in Redux store
-    // TODO: Log psychologist selection for analytics
-    // TODO: Check if psychologist is available for the selected service type
-    
+    // Store psychologist selection and navigate
     navigate(`/appointments/date-time?service=${selectedService}&psychologist=${selectedPsychologist}`);
   };
 
@@ -152,8 +184,14 @@ export const PsychologistSelectionPage: React.FC = () => {
   };
 
   return (
-    <Layout 
-      user={mockUser} 
+    <Layout
+      user={{
+        ...mockUser,
+        username: '', // Provide default or actual values as needed
+        phone_number: '',
+        date_of_birth: '',
+        age: 0
+      }}
       isAuthenticated={true}
       className={styles.patientLayout}
     >
@@ -233,17 +271,49 @@ export const PsychologistSelectionPage: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.psychologistsGrid}>
-            {filteredPsychologists.map((psychologist) => (
+          {loading ? (
+            <div className={styles.loadingState}>
+              <p>Loading psychologists...</p>
+            </div>
+          ) : error ? (
+            <div className={styles.errorState}>
+              <h3>⚠️ Unable to Load Psychologists</h3>
+              <p>{error}</p>
+              <button 
+                className={styles.retryButton}
+                onClick={() => window.location.reload()}
+              >
+                🔄 Retry
+              </button>
+            </div>
+          ) : filteredPsychologists.length === 0 ? (
+            <div className={styles.emptyState}>
+              <h3>No psychologists match your criteria</h3>
+              <p>Try adjusting your filters to see more options.</p>
+            </div>
+          ) : null}
+
+          {!loading && !error && filteredPsychologists.length > 0 && (
+            <div className={styles.psychologistsGrid}>
+              {filteredPsychologists.map((psychologist) => (
               <div 
                 key={psychologist.id}
                 className={`${styles.psychologistCard} ${selectedPsychologist === psychologist.id ? styles.psychologistCardSelected : ''} ${!psychologist.acceptingNewPatients ? styles.psychologistCardUnavailable : ''}`}
                 onClick={() => psychologist.acceptingNewPatients && handlePsychologistSelect(psychologist.id)}
               >
                 <div className={styles.psychologistHeader}>
-                  <div className={styles.psychologistInfo}>
-                    <h3 className={styles.psychologistName}>{psychologist.name}</h3>
-                    <p className={styles.psychologistTitle}>{psychologist.title}</p>
+                  <div className={styles.psychologistProfile}>
+                    <div className={styles.profilePicture}>
+                      <img 
+                        src={psychologist.profilePicture || '/default-psychologist.jpg'} 
+                        alt={`${psychologist.name} profile`}
+                        className={styles.profileImage}
+                      />
+                    </div>
+                    <div className={styles.psychologistInfo}>
+                      <h3 className={styles.psychologistName}>{psychologist.name}</h3>
+                      <p className={styles.psychologistTitle}>{psychologist.title}</p>
+                    </div>
                   </div>
                   <div className={styles.psychologistStatus}>
                     {psychologist.acceptingNewPatients ? (
@@ -272,10 +342,10 @@ export const PsychologistSelectionPage: React.FC = () => {
                 <div className={styles.specializationsSection}>
                   <h4 className={styles.specializationsTitle}>🎯 Specializations:</h4>
                   <div className={styles.specializationsList}>
-                    {psychologist.specializations.map((spec, index) => (
-                      <div key={index} className={styles.specializationItem}>
-                        • {spec}
-                      </div>
+                    {psychologist.specializations.map((spec) => (
+                      <span key={spec.id} className={styles.specializationItem}>
+                        {spec.name}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -300,8 +370,9 @@ export const PsychologistSelectionPage: React.FC = () => {
                   </button>
                 )}
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className={styles.formActions}>
             <button

@@ -1,32 +1,47 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 
+// Auth Layout
 .authLayout {
   .main {
     @include flex-center;
-    background: linear-gradient(135deg, $background-light 0%, $background-gray 100%);
+    background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
     min-height: calc(100vh - #{$header-height});
-    padding: $spacing-xl $spacing-md;
+    padding: 3rem $spacing-lg;
   }
 }
 
+// Auth Container
 .authContainer {
   width: 100%;
-  max-width: 500px;
+  max-width: 550px;
+  animation: fadeInUp 0.8s ease-out;
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Registration Container
 .registrationContainer {
   display: flex;
-  gap: $spacing-2xl;
+  gap: 3rem;
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: $spacing-lg $spacing-md;
+  padding: 2rem;
   align-items: flex-start;
 
   @include mobile {
     flex-direction: column;
-    gap: $spacing-lg;
+    gap: 2rem;
     padding: $spacing-md;
   }
 }
@@ -35,52 +50,79 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  max-width: 700px;
+  max-width: 800px;
 }
 
 .registrationSidebar {
-  flex: 0 0 350px;
+  flex: 0 0 400px;
   display: flex;
   justify-content: flex-start;
 }
 
+// Auth Card
 .authCard {
-  @include card;
-  padding: $spacing-2xl;
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   text-align: center;
+  transition: all 0.3s ease;
+  width: 100%;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12);
+  }
 
   @include mobile {
-    padding: $spacing-xl;
+    padding: 2rem;
   }
 }
 
+// Auth Title
 .authTitle {
-  color: $primary-color;
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-semibold;
-  margin-bottom: $spacing-sm;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
 
   @include mobile {
-    font-size: $font-size-xl;
+    font-size: 2rem;
   }
 }
 
+// Auth Subtitle
 .authSubtitle {
   color: $text-light;
-  margin-bottom: $spacing-xl;
-  line-height: $line-height-relaxed;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+  font-size: 1.1rem;
 }
 
+// Placeholder
 .placeholder {
-  background-color: $background-light;
+  background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
   border: 2px dashed $border-medium;
-  border-radius: $border-radius;
-  padding: $spacing-2xl;
-  margin: $spacing-xl 0;
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    background: linear-gradient(135deg, white 0%, rgba($primary-color, 0.02) 100%);
+  }
 
   p {
     color: $text-light;
-    margin-bottom: $spacing-sm;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.6;
 
     &:last-child {
       margin-bottom: 0;
@@ -88,23 +130,43 @@
   }
 }
 
+// Auth Footer
 .authFooter {
-  margin-top: $spacing-xl;
-  padding-top: $spacing-lg;
-  border-top: 1px solid $border-light;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid $background-light;
 
   p {
     color: $text-light;
     margin: 0;
+    font-size: 1.05rem;
   }
 
   .authLink {
     color: $primary-color;
-    font-weight: $font-weight-medium;
+    font-weight: 700;
     text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: $primary-color;
+      transition: width 0.3s ease;
+    }
 
     &:hover {
-      text-decoration: underline;
+      color: $primary-dark;
+      text-decoration: none;
+
+      &::after {
+        width: 100%;
+      }
     }
   }
 }

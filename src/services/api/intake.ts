@@ -1,6 +1,6 @@
 import { authService } from './auth';
 
-// Intake form data interface matching API specification
+// Intake form data interface matching backend serializer exactly
 export interface IntakeFormData {
   // Pre-filled from login (10 fields)
   first_name: string;
@@ -50,7 +50,7 @@ export const intakeService = {
   getIntakeForm: async (): Promise<IntakeFormData> => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://127.0.0.1:8000/api/auth/intake-form/', {
+      const response = await fetch('http://127.0.0.1:8000/api/users/intake-form/', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -72,7 +72,7 @@ export const intakeService = {
   submitIntakeForm: async (data: IntakeFormData): Promise<void> => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://127.0.0.1:8000/api/auth/intake-form/', {
+      const response = await fetch('http://127.0.0.1:8000/api/users/intake-form/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

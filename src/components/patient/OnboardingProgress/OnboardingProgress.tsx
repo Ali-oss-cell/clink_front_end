@@ -1,4 +1,7 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { dashboardService } from '../../../services/api/dashboard';
+import type { PatientDashboard } from '../../../services/api/dashboard';
 import styles from './OnboardingProgress.module.scss';
 
 interface OnboardingStep {
@@ -16,13 +19,31 @@ interface OnboardingProgressProps {
 }
 
 export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
-  // TODO: Get real user data from Redux store
+  const [dashboardData, setDashboardData] = useState<PatientDashboard | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const data = await dashboardService.getPatientDashboard();
+        setDashboardData(data);
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  // Create steps based on real dashboard data
   const steps: OnboardingStep[] = [
     {
       id: 'profile',
       title: 'Complete Your Profile',
       description: 'Add your personal information and preferences',
-      completed: false, // TODO: Check from user data
+      completed: true, // Assume profile is completed if user is logged in
       actionText: 'Go to My Account',
       actionUrl: '/patient/account',
       priority: 'high'
@@ -31,8 +52,8 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
       id: 'intake',
       title: 'Fill Out Intake Form',
       description: 'Help us understand your needs and goals',
-      completed: false, // TODO: Check from user data
-      actionText: 'Start Assessment',
+      completed: dashboardData?.intake_completed || false,
+      actionText: dashboardData?.intake_completed ? 'View Form' : 'Start Assessment',
       actionUrl: '/patient/intake-form',
       priority: 'high'
     },
@@ -40,16 +61,16 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
       id: 'appointment',
       title: 'Book Your First Appointment',
       description: 'Schedule a session with your psychologist',
-      completed: false, // TODO: Check from user data
+      completed: (dashboardData?.total_sessions || 0) > 0,
       actionText: 'Schedule Session',
-      actionUrl: '/patient/appointments',
+      actionUrl: '/appointments/book-appointment',
       priority: 'medium'
     },
     {
       id: 'resources',
       title: 'Explore Resources',
       description: 'Access mental health tools and materials',
-      completed: false, // TODO: Check from user data
+      completed: false, // Resources are always available
       actionText: 'View Resources',
       actionUrl: '/patient/resources',
       priority: 'low'
@@ -66,6 +87,20 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
   };
 
   const nextStep = getNextStep();
+
+  if (loading) {
+    return (
+      <div className={styles.onboardingProgress}>
+        <div className={styles.progressHeader}>
+          <h3 className={styles.title}>Getting Started</h3>
+          <div className={styles.progressBar}>
+            <div className={styles.progressFill} style={{ width: '0%' }}></div>
+          </div>
+          <span className={styles.progressText}>Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.onboardingProgress}>

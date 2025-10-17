@@ -1,30 +1,184 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 
-// Date & Time Selection Page Styles
-.dateTimeSelectionContainer {
-  padding: $spacing-lg 0;
-  min-height: 100vh;
-  background: $background-light;
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+// Date & Time Selection Page Styles
+.dateTimeSelectionContainer {
+  padding: 3rem 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
+}
+
+// Page Header
+.pageHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.backButton {
+  background: white;
+  border: 2px solid $border-light;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text-dark;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+
+  &:hover {
+    background: $primary-color;
+    color: white;
+    border-color: $primary-color;
+    transform: translateX(-5px);
+  }
+}
+
+.pageTitle {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.pageSubtitle {
+  font-size: 1.25rem;
+  color: $text-light;
+  margin-bottom: 0;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+// Loading and Error States
+.loadingState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.6s ease-out;
+  
+  p {
+    font-size: 1.25rem;
+    color: $text-light;
+    margin: 0;
+  }
+}
+
+.errorState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.6s ease-out;
+  
+  h3 {
+    font-size: 2rem;
+    color: $text-dark;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    font-size: 1.125rem;
+    color: $text-light;
+    margin-bottom: 2rem;
+  }
+}
+
+.retryButton {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba($primary-color, 0.3);
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.6s ease-out;
+  
+  h3 {
+    font-size: 2rem;
+    color: $text-dark;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    font-size: 1.125rem;
+    color: $text-light;
+    margin-bottom: 1rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Selection Summary
 .selectionSummary {
-  margin-bottom: $spacing-xl;
+  margin-bottom: 3rem;
+  animation: fadeInUp 0.6s ease-out;
 }
 
 .summaryCard {
   background: white;
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  max-width: 600px;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  max-width: 700px;
   margin: 0 auto;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  }
   
   h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: $text-dark;
-    margin: 0 0 $spacing-md 0;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 }
 
@@ -32,7 +186,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-sm;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba($primary-color, 0.03);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba($primary-color, 0.06);
+  }
   
   &:last-child {
     margin-bottom: 0;
@@ -41,248 +203,359 @@
 
 .summaryLabel {
   color: $text-light;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 .summaryValue {
   color: $text-dark;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
+// Calendar Section
 .calendarSection {
   background: white;
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-xl;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: fadeInUp 0.8s ease-out;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.calendarTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .calendarHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-lg;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid $background-light;
 }
 
 .monthNavButton {
-  background: $primary-color;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   color: white;
   border: none;
-  border-radius: $border-radius;
-  padding: $spacing-sm $spacing-md;
-  font-weight: 500;
+  border-radius: 50px;
+  padding: 0.875rem 1.75rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba($primary-color, 0.3);
   
   &:hover {
-    background: $primary-dark;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba($primary-color, 0.4);
+  }
+
+  &:active {
+    transform: translateY(-1px);
   }
 }
 
 .monthTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $text-dark;
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .calendarGrid {
-  margin-bottom: $spacing-lg;
+  margin-bottom: 2rem;
 }
 
 .dayHeaders {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: $spacing-xs;
-  margin-bottom: $spacing-sm;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .dayHeader {
   text-align: center;
-  font-weight: 600;
-  color: $text-light;
-  font-size: 0.9rem;
-  padding: $spacing-sm;
+  font-weight: 700;
+  color: $text-dark;
+  font-size: 1rem;
+  padding: 0.75rem;
+  background: $background-light;
+  border-radius: 12px;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  max-width: 100%;
 }
 
 .calendarDays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: $spacing-xs;
+  gap: 0.75rem;
 }
 
 .calendarDay {
-  aspect-ratio: 1;
-  border: 2px solid #e2e8f0;
-  border-radius: $border-radius;
+  border: 2px solid $border-light;
+  border-radius: 12px;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
+  background: white;
+  min-height: 90px;
   
   &.available {
-    background: white;
-    border-color: #e2e8f0;
+    border-color: $border-light;
     
     &:hover {
       border-color: $primary-color;
-      background: rgba($primary-color, 0.05);
+      background: rgba($primary-color, 0.08);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba($primary-color, 0.2);
     }
     
     &.selected {
       border-color: $primary-color;
-      background: rgba($primary-color, 0.1);
+      background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+      box-shadow: 0 8px 25px rgba($primary-color, 0.3);
+      transform: scale(1.05);
+
+      .dayNumber,
+      .dayName,
+      .availabilityIndicator {
+        color: white;
+      }
     }
   }
   
   &.unavailable {
-    background: #f8fafc;
-    border-color: #e2e8f0;
+    background: $background-light;
+    border-color: $border-light;
     cursor: not-allowed;
     opacity: 0.5;
+
+    &:hover {
+      transform: none;
+    }
   }
 }
 
 .dayNumber {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: $text-dark;
+  transition: color 0.3s ease;
+  margin-bottom: 0.25rem;
 }
 
 .dayName {
   font-size: 0.7rem;
   color: $text-light;
-  margin-top: 2px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .availabilityIndicator {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
+  color: $text-light;
+  margin-top: 0.25rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .calendarLegend {
   display: flex;
   justify-content: center;
-  gap: $spacing-lg;
-  margin-top: $spacing-md;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid $background-light;
 }
 
 .legendItem {
   display: flex;
   align-items: center;
-  gap: $spacing-xs;
-  font-size: 0.9rem;
-  color: $text-light;
+  gap: 0.75rem;
+  font-size: 1rem;
+  color: $text-dark;
+  font-weight: 600;
 }
 
 .legendIndicator {
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
+// Time Selection Section
 .timeSelectionSection {
   background: white;
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-xl;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: fadeInUp 1s ease-out;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .timeSectionTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: $text-dark;
-  margin: 0 0 $spacing-lg 0;
+  margin: 0 0 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.noSlotsMessage {
+  text-align: center;
+  padding: 2rem;
+  color: $text-light;
+  font-size: 1.125rem;
+  background: rgba($warning-orange, 0.1);
+  border-radius: 12px;
+  margin-top: 1rem;
 }
 
 .timeSlotsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: $spacing-md;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
 }
 
 .timeSlot {
-  padding: $spacing-md;
-  border: 2px solid #e2e8f0;
-  border-radius: $border-radius;
+  padding: 1.25rem;
+  border: 3px solid $border-light;
+  border-radius: 16px;
   background: white;
   color: $text-dark;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  text-align: center;
   
   &.available {
     &:hover {
       border-color: $primary-color;
-      background: rgba($primary-color, 0.05);
+      background: rgba($primary-color, 0.08);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba($primary-color, 0.2);
     }
     
     &.selected {
       border-color: $primary-color;
-      background: $primary-color;
+      background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
       color: white;
+      box-shadow: 0 8px 25px rgba($primary-color, 0.3);
+      transform: translateY(-3px);
     }
   }
   
   &.unavailable {
-    background: #f8fafc;
+    background: $background-light;
     color: $text-light;
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 }
 
+// Session Type Section
 .sessionTypeSection {
   background: white;
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-xl;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: fadeInUp 1.2s ease-out;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .sessionTypeTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: $text-dark;
-  margin: 0 0 $spacing-lg 0;
+  margin: 0 0 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .sessionTypeOptions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: $spacing-lg;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
 }
 
 .sessionTypeCard {
-  border: 2px solid #e2e8f0;
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
+  border: 3px solid $border-light;
+  border-radius: 20px;
+  padding: 2rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   display: flex;
   align-items: flex-start;
-  gap: $spacing-md;
+  gap: 1.25rem;
   position: relative;
+  background: white;
   
   &:hover {
     border-color: $primary-color;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba($primary-color, 0.15);
   }
   
   &.selected {
     border-color: $primary-color;
-    background: rgba($primary-color, 0.02);
-    box-shadow: 0 4px 15px rgba($primary-color, 0.1);
+    background: linear-gradient(135deg, white 0%, rgba($primary-color, 0.03) 100%);
+    box-shadow: 0 10px 30px rgba($primary-color, 0.2);
   }
 }
 
 .sessionTypeIcon {
-  font-size: 2rem;
+  font-size: 2.5rem;
   flex-shrink: 0;
 }
 
@@ -290,17 +563,17 @@
   flex: 1;
   
   h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 700;
     color: $text-dark;
-    margin: 0 0 $spacing-sm 0;
+    margin: 0 0 0.75rem 0;
   }
   
   p {
     color: $text-light;
-    font-size: 0.9rem;
-    margin: 0 0 $spacing-xs 0;
-    line-height: 1.4;
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.6;
     
     &:last-child {
       margin-bottom: 0;
@@ -308,59 +581,85 @@
   }
 }
 
+.unavailableBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba($error-red, 0.1);
+  color: $error-red;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
 .sessionTypeRadio {
   flex-shrink: 0;
   
   input[type="radio"] {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
+    accent-color: $primary-color;
   }
 }
 
+// Form Actions
 .formActions {
   display: flex;
-  gap: $spacing-md;
+  gap: 1.5rem;
   justify-content: center;
-  margin-top: $spacing-xl;
+  margin-top: 3rem;
 }
 
 .cancelButton {
-  padding: $spacing-md $spacing-lg;
-  border: 2px solid #e2e8f0;
+  padding: 1.25rem 3rem;
+  border: 3px solid $border-light;
   background: white;
-  color: $text-light;
-  border-radius: $border-radius;
-  font-weight: 500;
+  color: $text-dark;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   
   &:hover {
-    border-color: #cbd5e1;
-    color: $text-dark;
+    border-color: $error-red;
+    color: $error-red;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba($error-red, 0.2);
+  }
+
+  &:active {
+    transform: translateY(-1px);
   }
 }
 
 .continueButton {
-  padding: $spacing-md $spacing-lg;
-  background: $primary-color;
+  padding: 1.25rem 3rem;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   color: white;
   border: none;
-  border-radius: $border-radius;
-  font-weight: 500;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba($primary-color, 0.3);
   
   &:hover:not(:disabled) {
-    background: $primary-dark;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba($primary-color, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(-3px);
   }
   
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
-    box-shadow: none;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.2);
   }
 }
