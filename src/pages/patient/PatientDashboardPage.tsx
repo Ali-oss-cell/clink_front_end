@@ -190,9 +190,22 @@ export const PatientDashboardPage: React.FC = () => {
               <div className={styles.cardContent}>
                 {dashboardData?.recent_progress && dashboardData.recent_progress.length > 0 ? (
                   <div className={styles.progressList}>
-                    {dashboardData.recent_progress.map((progress, index) => (
-                      <div key={index} className={styles.progressItem}>
-                        <p>{progress}</p>
+                    {dashboardData.recent_progress.map((progress: any, index: number) => (
+                      <div key={progress.id || index} className={styles.progressItem}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                          <strong>Session #{progress.session_number || index + 1}</strong>
+                          {progress.progress_rating && (
+                            <span>⭐ {progress.progress_rating}/10</span>
+                          )}
+                        </div>
+                        <p style={{ fontSize: '0.9rem', color: '#6b7280', margin: 0 }}>
+                          {progress.psychologist_name && `Dr. ${progress.psychologist_name} • `}
+                          {progress.session_date && new Date(progress.session_date).toLocaleDateString('en-AU', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </p>
                       </div>
                     ))}
                   </div>

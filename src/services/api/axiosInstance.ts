@@ -24,20 +24,51 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor - Handle common errors
+// Response interceptor - Handle common errors and token refresh
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
+    const originalRequest = error.config as any;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      // Try to refresh token
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/api/auth/refresh/', {
+            refresh: refreshToken,
+          });
+          localStorage.setItem('access_token', response.data.access);
+          
+          // Retry original request with new token
+          originalRequest.headers.Authorization = `Bearer ${response.data.access}`;
+          return axiosInstance(originalRequest);
+        } catch (refreshError) {
+          // Refresh failed, clear tokens and redirect
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+          return Promise.reject(refreshError);
+        }
+      } else {
+        // No refresh token, redirect to login
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+    }
+
     if (error.response) {
       // Server responded with error status
       switch (error.response.status) {
         case 401:
-          // Unauthorized - clear token and redirect to login
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          window.location.href = '/login';
+          console.error('Unauthorized:', error.response.data);
           break;
         case 403:
           console.error('Forbidden:', error.response.data);

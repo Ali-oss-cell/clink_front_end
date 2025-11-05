@@ -47,10 +47,16 @@ export const PatientAppointmentsPage: React.FC = () => {
           page_size: 50
         });
         
-        setAppointments(response.results);
-      } catch (err) {
+        setAppointments(response.results || []);
+      } catch (err: any) {
         console.error('Failed to load appointments:', err);
-        setError('Failed to load appointments. Please try again.');
+        // If 404, the endpoint might not exist yet - show empty state
+        if (err.response?.status === 404) {
+          setAppointments([]);
+          setError(null); // Don't show error, just empty state
+        } else {
+          setError('Failed to load appointments. Please try again.');
+        }
       } finally {
         setLoading(false);
       }

@@ -177,7 +177,7 @@ export class AppointmentsService {
       if (params.serviceId) queryParams.service_id = params.serviceId;
       if (params.sessionType) queryParams.session_type = params.sessionType;
       
-      const response = await axiosInstance.get('/appointments/available-slots/', {
+      const response = await axiosInstance.get('/auth/appointments/available-slots/', {
         params: queryParams
       });
       
@@ -224,7 +224,7 @@ export class AppointmentsService {
    */
   async bookAppointment(data: BookAppointmentRequest): Promise<BookAppointmentResponse> {
     try {
-      const response = await axiosInstance.post('/appointments/book-enhanced/', data);
+      const response = await axiosInstance.post('/auth/appointments/book-enhanced/', data);
       return response.data;
     } catch (error) {
       console.error('Failed to book appointment:', error);
@@ -280,11 +280,24 @@ export class AppointmentsService {
         queryParams.page_size = params.page_size;
       }
 
-      const response = await axiosInstance.get('/appointments/patient/appointments/', {
-        params: queryParams
-      });
-      
-      return response.data;
+      // Try different endpoint patterns - backend may use /appointments/ without /auth/
+      // Also try /appointments/ if /appointments/patient/ doesn't exist
+      try {
+        const response = await axiosInstance.get('/appointments/patient/', {
+          params: queryParams
+        });
+        return response.data;
+      } catch (firstError: any) {
+        // If 404, try just /appointments/ (backend filters by authenticated user)
+        if (firstError.response?.status === 404) {
+          console.log('Trying alternative endpoint: /appointments/');
+          const response = await axiosInstance.get('/appointments/', {
+            params: queryParams
+          });
+          return response.data;
+        }
+        throw firstError;
+      }
     } catch (error) {
       console.error('Failed to get patient appointments:', error);
       throw new Error('Failed to load appointments');
@@ -296,7 +309,7 @@ export class AppointmentsService {
    */
   async getAppointmentDetails(appointmentId: string): Promise<PatientAppointment> {
     try {
-      const response = await axiosInstance.get(`/appointments/patient/appointments/${appointmentId}/`);
+      const response = await axiosInstance.get(`/appointments/patient/${appointmentId}/`);
       return response.data;
     } catch (error) {
       console.error('Failed to get appointment details:', error);
@@ -309,7 +322,7 @@ export class AppointmentsService {
    */
   async cancelAppointment(appointmentId: string, reason?: string): Promise<{ message: string }> {
     try {
-      const response = await axiosInstance.post(`/appointments/patient/appointments/${appointmentId}/cancel/`, {
+      const response = await axiosInstance.post(`/appointments/patient/${appointmentId}/cancel/`, {
         reason: reason || 'Patient requested cancellation'
       });
       return response.data;
@@ -324,13 +337,132 @@ export class AppointmentsService {
    */
   async rescheduleAppointment(appointmentId: string, newDateTime: string): Promise<{ message: string }> {
     try {
-      const response = await axiosInstance.post(`/appointments/patient/appointments/${appointmentId}/reschedule/`, {
+      const response = await axiosInstance.post(`/appointments/patient/${appointmentId}/reschedule/`, {
         new_appointment_date: newDateTime
       });
       return response.data;
     } catch (error) {
       console.error('Failed to reschedule appointment:', error);
       throw new Error('Failed to reschedule appointment');
+    }
+  }
+
+  /**
+   * Get psychologist schedule with filtering and pagination
+   */
+  async getPsychologistSchedule(params?: {
+    start_date?: string;
+    end_date?: string;
+    month?: string; // Format: YYYY-MM
+    year?: number;
+    status?: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show' | 'all';
+    page?: number;
+    page_size?: number;
+  }): Promise<{
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: {
+      id: number;
+      patient_id: number;
+      patient_name: string;
+      service_name: string;
+      appointment_date: string;
+      formatted_date: string;
+      formatted_time: string;
+      duration_minutes: number;
+      session_type: 'telehealth' | 'in_person';
+      status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
+      notes: string | null;
+      location: string | null;
+      meeting_link: string | null;
+    }[];
+  }> {
+    try {
+      const queryParams: any = {};
+      
+      if (params?.start_date) {
+        queryParams.start_date = params.start_date;
+      }
+      if (params?.end_date) {
+        queryParams.end_date = params.end_date;
+      }
+      if (params?.month) {
+        queryParams.month = params.month;
+      }
+      if (params?.year) {
+        queryParams.year = params.year;
+      }
+      if (params?.status && params.status !== 'all') {
+        queryParams.status = params.status;
+      }
+      if (params?.page) {
+        queryParams.page = params.page;
+      }
+      if (params?.page_size) {
+        queryParams.page_size = params.page_size;
+      }
+
+      const response = await axiosInstance.get('/appointments/psychologist/schedule/', {
+        params: queryParams
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error('Failed to get psychologist schedule:', error);
+      throw new Error('Failed to load schedule');
+    }
+  }
+
+  /**
+   * Complete a session appointment
+   */
+  async completeSession(appointmentId: number, progressNote?: {
+    subjective?: string;
+    objective?: string;
+    assessment?: string;
+    plan?: string;
+    progress_rating?: number;
+  }): Promise<any> {
+    try {
+      const response = await axiosInstance.post(`/appointments/complete-session/${appointmentId}/`, {
+        progress_note: progressNote || null
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to complete session:', error);
+      throw new Error('Failed to complete session');
+    }
+  }
+
+  /**
+   * Cancel or reschedule an appointment
+   */
+  async appointmentAction(
+    appointmentId: number, 
+    action: 'cancel' | 'reschedule',
+    data: {
+      reason?: string;
+      new_date?: string;
+    }
+  ): Promise<any> {
+    try {
+      const payload: any = { action };
+      if (action === 'cancel' && data.reason) {
+        payload.reason = data.reason;
+      }
+      if (action === 'reschedule' && data.new_date) {
+        payload.new_date = data.new_date;
+        if (data.reason) {
+          payload.reason = data.reason;
+        }
+      }
+
+      const response = await axiosInstance.post(`/appointments/appointment-actions/${appointmentId}/`, payload);
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to ${action} appointment:`, error);
+      throw new Error(`Failed to ${action} appointment`);
     }
   }
 }

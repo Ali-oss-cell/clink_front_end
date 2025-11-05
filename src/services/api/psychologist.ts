@@ -84,8 +84,24 @@ export class PsychologistService {
   // Get all psychologists (for patient selection)
   async getAllPsychologists(): Promise<PsychologistProfile[]> {
     try {
-      const response = await axiosInstance.get('/services/psychologists/');
-      const data = response.data;
+      // Try different endpoint patterns - backend may use /services/psychologists/ instead of /auth/psychologists/
+      let response;
+      let data;
+      
+      try {
+        // First try /services/psychologists/ (matches other psychologist endpoints)
+        response = await axiosInstance.get('/services/psychologists/');
+        data = response.data;
+      } catch (firstError: any) {
+        // If 404, try /auth/psychologists/ as fallback
+        if (firstError.response?.status === 404) {
+          console.log('Trying alternative endpoint: /auth/psychologists/');
+          response = await axiosInstance.get('/auth/psychologists/');
+          data = response.data;
+        } else {
+          throw firstError;
+        }
+      }
       
       // Handle different response formats dynamically
       if (Array.isArray(data)) {

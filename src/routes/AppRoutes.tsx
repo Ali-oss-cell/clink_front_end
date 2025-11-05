@@ -27,6 +27,22 @@ import { PsychologistDashboardPage } from '../pages/psychologist/PsychologistDas
 import { PsychologistProfilePage } from '../pages/psychologist/PsychologistProfilePage';
 import { PsychologistSchedulePage } from '../pages/psychologist/PsychologistSchedulePage';
 import { PsychologistPatientsPage } from '../pages/psychologist/PsychologistPatientsPage';
+import { PsychologistNotesPage } from '../pages/psychologist/PsychologistNotesPage';
+
+// Practice Manager pages
+import { PracticeManagerDashboardPage } from '../pages/manager/PracticeManagerDashboardPage';
+
+// Admin pages
+import { 
+  AdminDashboardPage,
+  UserManagementPage,
+  AdminAppointmentsPage,
+  AdminPatientsPage,
+  AdminStaffPage,
+  AdminBillingPage,
+  AdminSettingsPage,
+  AdminAnalyticsPage
+} from '../pages/admin';
 
 // TODO: Import these when Redux store is set up
 interface AppRoutesProps {
@@ -244,20 +260,6 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
         </ProtectedRoute>
       } />
       
-      {/* Psychologist Schedule - TODO */}
-      <Route path="/psychologist/schedule" element={
-        <ProtectedRoute 
-          isAuthenticated={isAuthenticated} 
-          user={user} 
-          allowedRoles={['psychologist']}
-        >
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>Schedule Page Coming Soon</h1>
-            <p>Manage your appointment schedule here.</p>
-          </div>
-        </ProtectedRoute>
-      } />
-      
       {/* Psychologist Patients */}
       <Route path="/psychologist/patients" element={
         <ProtectedRoute 
@@ -268,18 +270,26 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <PsychologistPatientsPage />
         </ProtectedRoute>
       } />
+      
+      {/* Psychologist Progress Notes */}
+      <Route path="/psychologist/notes" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['psychologist']}
+        >
+          <PsychologistNotesPage />
+        </ProtectedRoute>
+      } />
 
-      {/* Practice Manager Routes - TODO */}
+      {/* Practice Manager Routes */}
       <Route path="/manager/dashboard" element={
         <ProtectedRoute 
           isAuthenticated={isAuthenticated} 
           user={user} 
-          allowedRoles={['practice_manager']}
+          allowedRoles={['practice_manager', 'admin']}
         >
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>Manager Dashboard Coming Soon</h1>
-            <p>Practice management dashboard will be here.</p>
-          </div>
+          <PracticeManagerDashboardPage />
         </ProtectedRoute>
       } />
 
@@ -290,19 +300,77 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           user={user} 
           allowedRoles={['admin']}
         >
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>Admin Dashboard</h1>
-            <p>System administration dashboard.</p>
-            <div style={{ marginTop: '2rem', padding: '1rem', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
-              <h3>Admin Features:</h3>
-              <ul style={{ textAlign: 'left', maxWidth: '400px', margin: '0 auto' }}>
-                <li>User Management</li>
-                <li>System Configuration</li>
-                <li>Reports & Analytics</li>
-                <li>Security Settings</li>
-              </ul>
-            </div>
-          </div>
+          <AdminDashboardPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/users" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <UserManagementPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/appointments" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <AdminAppointmentsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/patients" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <AdminPatientsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/staff" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <AdminStaffPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/billing" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <AdminBillingPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/settings" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <AdminSettingsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/analytics" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <AdminAnalyticsPage />
         </ProtectedRoute>
       } />
 

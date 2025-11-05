@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { psychologistService } from '../../services/api/psychologist';
+import { authService } from '../../services/api/auth';
 import type { PsychologistProfile } from '../../services/api/psychologist';
 import styles from './PsychologistPages.module.scss';
 
@@ -13,30 +14,14 @@ export const PsychologistProfilePage: React.FC = () => {
   const [editForm, setEditForm] = useState<Partial<PsychologistProfile>>({});
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  // Mock user data
-  const mockUser = {
-    id: 1,
-    first_name: 'Dr. Sarah',
-    full_name: 'Dr. Sarah Johnson',
-    role: 'psychologist' as const,
-    email: 'sarah@mindwellclinic.com.au',
-    last_name: 'Johnson',
-    username: 'dr.sarah.johnson',
-    phone_number: '+61 3 1234 5678',
-    date_of_birth: '1985-03-15',
-    age: 39,
-    is_verified: true,
-    created_at: '2024-01-01'
-  };
+  const user = authService.getStoredUser();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching psychologist profile...');
         const profileData = await psychologistService.getMyProfile();
-        console.log('Profile data received:', profileData);
         setProfile(profileData);
       } catch (err) {
         console.error('Failed to load profile:', err);
@@ -118,9 +103,7 @@ export const PsychologistProfilePage: React.FC = () => {
 
     try {
       setUploadingImage(true);
-      console.log('Uploading image:', file.name, 'Size:', file.size);
       const result = await psychologistService.uploadProfileImage(profile.id, file);
-      console.log('Upload result:', result);
       
       // Update the profile with the new image URL
       setProfile(prev => prev ? { 
@@ -141,13 +124,13 @@ export const PsychologistProfilePage: React.FC = () => {
   if (loading) {
     return (
       <Layout 
-        user={mockUser} 
+        user={user} 
         isAuthenticated={true}
         className={styles.psychologistLayout}
       >
         <div className={styles.profileContainer}>
           <div className="container">
-            <div className={styles.profileHeader}>
+            <div className={styles.pageHeader}>
               <h1 className={styles.pageTitle}>My Profile</h1>
               <p className={styles.pageSubtitle}>Loading your profile...</p>
             </div>
@@ -163,13 +146,13 @@ export const PsychologistProfilePage: React.FC = () => {
   if (error) {
     return (
       <Layout 
-        user={mockUser} 
+        user={user} 
         isAuthenticated={true}
         className={styles.psychologistLayout}
       >
         <div className={styles.profileContainer}>
           <div className="container">
-            <div className={styles.profileHeader}>
+            <div className={styles.pageHeader}>
               <h1 className={styles.pageTitle}>My Profile</h1>
               <p className={styles.pageSubtitle}>Error loading profile</p>
             </div>
@@ -192,13 +175,13 @@ export const PsychologistProfilePage: React.FC = () => {
   if (!profile) {
     return (
       <Layout 
-        user={mockUser} 
+        user={user} 
         isAuthenticated={true}
         className={styles.psychologistLayout}
       >
         <div className={styles.profileContainer}>
           <div className="container">
-            <div className={styles.profileHeader}>
+            <div className={styles.pageHeader}>
               <h1 className={styles.pageTitle}>My Profile</h1>
               <p className={styles.pageSubtitle}>No profile data available</p>
             </div>
@@ -210,13 +193,13 @@ export const PsychologistProfilePage: React.FC = () => {
 
   return (
     <Layout 
-      user={mockUser} 
+      user={user} 
       isAuthenticated={true}
       className={styles.psychologistLayout}
     >
       <div className={styles.profileContainer}>
         <div className="container">
-          <div className={styles.profileHeader}>
+          <div className={styles.pageHeader}>
             <h1 className={styles.pageTitle}>My Profile</h1>
             <p className={styles.pageSubtitle}>
               Manage your professional profile and practice information.
@@ -473,9 +456,9 @@ export const PsychologistProfilePage: React.FC = () => {
                         <div className={styles.workingDaysDisplay}>
                           {profile.working_days && profile.working_days.length > 0 ? (
                             (typeof profile.working_days === 'string' 
-                              ? profile.working_days.split(',').map(d => d.trim())
+                              ? (profile.working_days as string).split(',').map((d: string) => d.trim())
                               : profile.working_days
-                            ).map((day) => (
+                            ).map((day: string) => (
                               <span key={day} className={styles.dayTag}>
                                 {day}
                               </span>

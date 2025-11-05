@@ -232,7 +232,7 @@
 
 .profileTitle {
   font-size: 1.3rem;
-  color: $text-light;
+    color: $text-light;
   margin-bottom: 1.5rem;
   font-weight: 500;
 }
@@ -807,11 +807,20 @@
 .dashboardContainer {
   padding: 2rem 0;
   min-height: calc(100vh - 200px);
+  scroll-behavior: smooth;
 }
 
 .dashboardHeader {
   margin-bottom: 2rem;
   text-align: center;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+
+  &.isVisible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .welcomeTitle {
@@ -843,12 +852,23 @@
   border-radius: $border-radius-lg;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid $border-light;
-  
+  opacity: 0;
+  transform: translateY(50px);
+
+  &.isVisible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba($primary-color, 0.15);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 32px rgba($primary-color, 0.2);
+  }
+  
+  &.isVisible:hover {
+    transform: translateY(-6px) scale(1.02);
   }
   
   h3 {
@@ -860,20 +880,20 @@
     align-items: center;
     gap: 0.5rem;
   }
-}
+  }
 
-.placeholder {
-  text-align: center;
+  .placeholder {
+    text-align: center;
   padding: 2rem;
-  color: $text-light;
-  
-  p {
+    color: $text-light;
+
+    p {
     margin: 0 0 1rem 0;
     font-size: 1rem;
   }
-}
+    }
 
-.actionButton {
+    .actionButton {
   padding: 0.75rem 1.5rem;
   background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   color: white;
@@ -1103,7 +1123,6 @@
   gap: 1.5rem;
   margin: 2rem 0 3rem 0;
   padding: 0 2rem;
-  animation: fadeInUp 0.6s ease 0.3s both;
 }
 
 .statCard {
@@ -1114,10 +1133,17 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba($primary-color, 0.1);
   position: relative;
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  
+  &.isVisible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
   
   &::before {
     content: '';
@@ -2004,5 +2030,800 @@
 @media (max-width: 480px) {
   .searchBox {
     max-width: 100%;
+  }
+}
+
+// ===========================================
+// PROGRESS NOTES PAGE STYLES
+// ===========================================
+
+.notesContainer {
+  padding: 2rem 0;
+  min-height: calc(100vh - 200px);
+}
+
+.notesList {
+  display: grid;
+  gap: 1.5rem;
+  padding: 2rem 0;
+}
+
+.noteCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+}
+
+.noteHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.noteInfo {
+  flex: 1;
+}
+
+.noteTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 0.5rem 0;
+}
+
+.noteMeta {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.noteRating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0f9ff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+
+  .ratingLabel {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .ratingValue {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #3b82f6;
+  }
+}
+
+.noteContent {
+  margin-bottom: 1rem;
+}
+
+.soapPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.soapItem {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+
+  .soapLabel {
+    font-weight: 600;
+    color: #374151;
+    flex-shrink: 0;
+    min-width: 40px;
+  }
+
+  .soapText {
+    color: #6b7280;
+    line-height: 1.5;
+  }
+}
+
+.noteFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}
+
+.noteActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.viewButton,
+.editButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.viewButton {
+  background: white;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+
+  &:hover {
+    background: #eff6ff;
+  }
+}
+
+.editButton {
+  background: white;
+  color: #10b981;
+  border: 1px solid #10b981;
+
+  &:hover {
+    background: #ecfdf5;
+  }
+}
+
+.deleteButton {
+  background: white;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+
+  &:hover {
+    background: #fef2f2;
+  }
+}
+
+// Note Detail Modal Styles
+.noteDetailHeader {
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.noteDetailMeta {
+  display: flex;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.noteDetailRating {
+  font-size: 0.95rem;
+  color: #374151;
+
+  strong {
+    color: #3b82f6;
+    font-size: 1.1rem;
+  }
+}
+
+.soapFull {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.soapFullSection {
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+.noteDetailFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  color: #6b7280;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+// Confirmation Modal
+.confirmModal {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+
+  h3 {
+    margin: 0 0 1rem 0;
+    color: #dc2626;
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0 0 2rem 0;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+}
+
+.confirmActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+  }
+}
+
+.dangerButton {
+  background: #dc2626;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #b91c1c;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+// Filter Group
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.9rem;
+  }
+}
+
+.filterSelect {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  min-width: 150px;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+// Responsive for Notes Page
+@media (max-width: 768px) {
+  .notesContainer {
+    padding: 1rem 0;
+  }
+
+  .noteCard {
+    padding: 1rem;
+  }
+
+  .noteTitle {
+    font-size: 1.1rem;
+  }
+
+  .searchFilterSection {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filterGroup {
+    width: 100%;
+    
+    .filterSelect {
+      flex: 1;
+    }
+  }
+}
+
+// ===========================================
+// DASHBOARD NOTE ITEMS
+// ===========================================
+
+.notesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.noteItem {
+  background: #f9fafb;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-20px);
+
+  &.isVisible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.isVisible:hover {
+    transform: translateX(4px);
+  }
+}
+
+.noteItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.notePatient {
+  font-weight: 600;
+  color: #1a202c;
+  font-size: 0.95rem;
+}
+
+.noteRating {
+  font-weight: 700;
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
+
+.noteItemMeta {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.viewAllButton {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #3b82f6;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+}
+
+.statsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .statItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+
+    .statValue {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #3b82f6;
+      margin-bottom: 0.25rem;
+    }
+
+    .statLabel {
+      font-size: 0.875rem;
+      color: #6b7280;
+      text-align: center;
+    }
+  }
+}
+
+// ===========================================
+// PATIENT MODAL TABS
+// ===========================================
+
+.tabsContainer {
+  display: flex;
+  border-bottom: 2px solid #e5e7eb;
+  margin: 0 -2rem;
+  padding: 0 2rem;
+  gap: 1rem;
+}
+
+.tab {
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -2px;
+
+  &:hover {
+    color: #3b82f6;
+    background: #f9fafb;
+  }
+
+  &.tabActive {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+  }
+}
+
+.notesTabContent {
+  padding: 1rem 0;
+}
+
+.notesTabHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #1a202c;
+  }
+}
+
+.patientNotesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.patientNoteCard {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.patientNoteHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.patientNoteSession {
+  font-weight: 700;
+  color: #1a202c;
+  font-size: 1rem;
+}
+
+.patientNoteRating {
+  background: #eff6ff;
+  color: #3b82f6;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.patientNoteDate {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.patientNotePreview {
+  p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.5;
+
+    strong {
+      color: #1a202c;
+    }
+  }
+}
+
+.sessionsTabContent {
+  padding: 1rem 0;
+
+  h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: #1a202c;
+  }
+}
+
+// Calendar Styles
+.calendarContainer {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.calendarNavButton {
+  background: $primary-color;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+
+  &:hover {
+    background: $primary-dark;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.calendarTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0;
+}
+
+.calendarGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.calendarWeekHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-bottom: 1rem;
+}
+
+.calendarDayHeader {
+  padding: 1rem;
+  text-align: center;
+  font-weight: 700;
+  color: $text-light;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.calendarDay {
+  background: white;
+  min-height: 120px;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  position: relative;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f8fafc;
+  }
+}
+
+.calendarDayOtherMonth {
+  background: #f8fafc;
+  color: #94a3b8;
+
+  .calendarDayNumber {
+    color: #94a3b8;
+  }
+}
+
+.calendarDayToday {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border: 2px solid $primary-color;
+
+  .calendarDayNumber {
+    background: $primary-color;
+    color: white;
+    font-weight: 700;
+  }
+}
+
+.calendarDayNumber {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendarDayAppointments {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.calendarAppointment {
+  background: $primary-color;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid $primary-dark;
+
+  &:hover {
+    background: $primary-dark;
+    transform: translateX(2px);
+  }
+}
+
+.calendarAppointmentTime {
+  font-weight: 600;
+  margin-bottom: 1px;
+}
+
+.calendarAppointmentPatient {
+  font-size: 0.7rem;
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calendarAppointmentType {
+  font-size: 0.6rem;
+  margin-top: 1px;
+}
+
+// Status colors for calendar appointments
+.statusUpcoming {
+  background: #3b82f6 !important;
+  border-left-color: #1d4ed8 !important;
+}
+
+.statusCompleted {
+  background: #10b981 !important;
+  border-left-color: #047857 !important;
+}
+
+.statusCancelled {
+  background: #ef4444 !important;
+  border-left-color: #dc2626 !important;
+}
+
+.statusNoShow {
+  background: #f59e0b !important;
+  border-left-color: #d97706 !important;
+}
+
+// Responsive calendar
+@media (max-width: 768px) {
+  .calendarContainer {
+    padding: 1rem;
+  }
+
+  .calendarDay {
+    min-height: 80px;
+    padding: 0.5rem;
+  }
+
+  .calendarDayNumber {
+    font-size: 0.9rem;
+    width: 24px;
+    height: 24px;
+  }
+
+  .calendarAppointment {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .calendarAppointmentPatient {
+    font-size: 0.65rem;
   }
 }

@@ -28,7 +28,7 @@ class ServicesService {
         return this.servicesCache;
       }
       
-      const response = await axiosInstance.get('/services/services/');
+      const response = await axiosInstance.get('/auth/services/');
       const data = response.data;
       
       // Handle paginated or wrapped responses

@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
+import { SOAPNoteForm } from '../../components/psychologist/SOAPNoteForm';
+import { progressNotesService, type Patient as ApiPatient } from '../../services/api/progressNotes';
+import { authService } from '../../services/api/auth';
+import type { ProgressNote } from '../../types/progressNote';
 import styles from './PsychologistPages.module.scss';
 
 interface Patient {
-  id: string;
+  id: number;
   name: string;
   email: string;
   phone: string;
@@ -28,130 +32,87 @@ export const PsychologistPatientsPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'completed'>('all');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'sessions'>('overview');
+  const [patientNotes, setPatientNotes] = useState<ProgressNote[]>([]);
+  const [loadingNotes, setLoadingNotes] = useState(false);
+  const [showNoteForm, setShowNoteForm] = useState(false);
+  const [selectedNote, setSelectedNote] = useState<ProgressNote | null>(null);
+  const [showNoteDetail, setShowNoteDetail] = useState(false);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const user = {
-    id: 1,
-    first_name: 'Dr. Sarah',
-    full_name: 'Dr. Sarah Johnson',
-    role: 'psychologist' as const,
-    email: 'sarah@mindwellclinic.com.au',
-    last_name: 'Johnson',
-    username: 'dr.sarah.johnson',
-    phone_number: '+61 3 1234 5678',
-    date_of_birth: '1985-03-15',
-    age: 39,
-    is_verified: true,
-    created_at: '2024-01-01'
+  const user = authService.getStoredUser();
+
+  // Helper function to map API patient to UI patient
+  const mapApiPatientToPatient = (apiPatient: ApiPatient): Patient => {
+    const nameParts = apiPatient.name.split(' ');
+    const initials = nameParts.length >= 2 
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : apiPatient.name.substring(0, 2).toUpperCase();
+    
+    const calculateAge = (dob?: string): number => {
+      if (!dob) return 0;
+      const today = new Date();
+      const birthDate = new Date(dob);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    };
+
+    return {
+      id: apiPatient.id,
+      name: apiPatient.name,
+      email: apiPatient.email,
+      phone: apiPatient.phone_number,
+      dateOfBirth: apiPatient.date_of_birth || '',
+      age: calculateAge(apiPatient.date_of_birth),
+      gender: 'Unknown', // API doesn't provide this
+      avatarInitials: initials,
+      status: apiPatient.last_appointment ? 'active' : 'inactive' as 'active' | 'inactive' | 'completed',
+      totalSessions: apiPatient.total_sessions,
+      completedSessions: apiPatient.total_sessions,
+      upcomingSessions: 0, // API doesn't provide this
+      lastSessionDate: apiPatient.last_appointment || new Date().toISOString().split('T')[0],
+      nextSessionDate: null, // API doesn't provide this
+      therapyFocus: apiPatient.current_goals || 'General Therapy',
+      diagnosis: undefined,
+      notes: '',
+      registeredDate: '' // API doesn't provide this
+    };
   };
 
-  // Mock patients data
-  const mockPatients: Patient[] = [
-    {
-      id: 'pat-001',
-      name: 'Alice Smith',
-      email: 'alice.smith@example.com',
-      phone: '+61 400 123 456',
-      dateOfBirth: '1990-05-15',
-      age: 34,
-      gender: 'Female',
-      avatarInitials: 'AS',
-      status: 'active',
-      totalSessions: 12,
-      completedSessions: 8,
-      upcomingSessions: 2,
-      lastSessionDate: '2024-07-20',
-      nextSessionDate: '2024-07-27',
-      therapyFocus: 'Anxiety Management',
-      diagnosis: 'Generalized Anxiety Disorder',
-      notes: 'Making good progress with CBT techniques. Patient is receptive and engaged.',
-      registeredDate: '2024-04-15'
-    },
-    {
-      id: 'pat-002',
-      name: 'Bob Johnson',
-      email: 'bob.j@example.com',
-      phone: '+61 400 234 567',
-      dateOfBirth: '1985-08-22',
-      age: 39,
-      gender: 'Male',
-      avatarInitials: 'BJ',
-      status: 'active',
-      totalSessions: 20,
-      completedSessions: 18,
-      upcomingSessions: 1,
-      lastSessionDate: '2024-07-22',
-      nextSessionDate: '2024-07-29',
-      therapyFocus: 'Couples Therapy',
-      notes: 'Working through communication issues. Both partners showing improvement.',
-      registeredDate: '2024-02-10'
-    },
-    {
-      id: 'pat-003',
-      name: 'Charlie Brown',
-      email: 'charlie.brown@example.com',
-      phone: '+61 400 345 678',
-      dateOfBirth: '1995-12-03',
-      age: 28,
-      gender: 'Male',
-      avatarInitials: 'CB',
-      status: 'active',
-      totalSessions: 6,
-      completedSessions: 5,
-      upcomingSessions: 1,
-      lastSessionDate: '2024-07-18',
-      nextSessionDate: '2024-07-28',
-      therapyFocus: 'Depression & Stress Management',
-      diagnosis: 'Major Depressive Disorder',
-      notes: 'Responded well to initial sessions. Implementing coping strategies.',
-      registeredDate: '2024-06-01'
-    },
-    {
-      id: 'pat-004',
-      name: 'Diana Prince',
-      email: 'diana.p@example.com',
-      phone: '+61 400 456 789',
-      dateOfBirth: '1988-03-10',
-      age: 36,
-      gender: 'Female',
-      avatarInitials: 'DP',
-      status: 'completed',
-      totalSessions: 16,
-      completedSessions: 16,
-      upcomingSessions: 0,
-      lastSessionDate: '2024-06-15',
-      nextSessionDate: null,
-      therapyFocus: 'Trauma Recovery',
-      diagnosis: 'PTSD',
-      notes: 'Successfully completed treatment plan. Patient achieved therapy goals.',
-      registeredDate: '2024-01-20'
-    },
-    {
-      id: 'pat-005',
-      name: 'Emma Watson',
-      email: 'emma.w@example.com',
-      phone: '+61 400 567 890',
-      dateOfBirth: '1992-04-18',
-      age: 32,
-      gender: 'Female',
-      avatarInitials: 'EW',
-      status: 'inactive',
-      totalSessions: 4,
-      completedSessions: 4,
-      upcomingSessions: 0,
-      lastSessionDate: '2024-05-10',
-      nextSessionDate: null,
-      therapyFocus: 'Work-Life Balance',
-      notes: 'Patient cancelled upcoming sessions. Follow-up required.',
-      registeredDate: '2024-04-01'
+  // Fetch patients from API
+  useEffect(() => {
+    fetchPatients();
+  }, []);
+
+  const fetchPatients = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await progressNotesService.getPatients();
+      // Map API patients to UI format
+      const mappedPatients = response.results.map(mapApiPatientToPatient);
+      setPatients(mappedPatients);
+    } catch (err: any) {
+      console.error('Failed to load patients:', err);
+      setError(err.message || 'Failed to load patients');
+      setPatients([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   // Filter patients
-  const filteredPatients = mockPatients.filter(patient => {
+  const filteredPatients = patients.filter(patient => {
     const matchesSearch = 
       patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       patient.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      patient.id.toLowerCase().includes(searchQuery.toLowerCase());
+      patient.id.toString().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || patient.status === statusFilter;
     
@@ -159,10 +120,10 @@ export const PsychologistPatientsPage: React.FC = () => {
   });
 
   // Statistics
-  const activePatients = mockPatients.filter(p => p.status === 'active').length;
-  const totalPatients = mockPatients.length;
-  const completedTherapies = mockPatients.filter(p => p.status === 'completed').length;
-  const totalSessionsThisMonth = mockPatients.reduce((sum, p) => sum + p.completedSessions, 0);
+  const activePatients = patients.filter(p => p.status === 'active').length;
+  const totalPatients = patients.length;
+  const completedTherapies = patients.filter(p => p.status === 'completed').length;
+  const totalSessionsThisMonth = patients.reduce((sum, p) => sum + p.completedSessions, 0);
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
@@ -177,9 +138,54 @@ export const PsychologistPatientsPage: React.FC = () => {
     }
   };
 
+  // Fetch notes when patient is selected and notes tab is active
+  useEffect(() => {
+    if (selectedPatient && activeTab === 'notes') {
+      fetchPatientNotes(selectedPatient.id); // Now numeric ID
+    }
+  }, [selectedPatient, activeTab]);
+
+  const fetchPatientNotes = async (patientId: number) => {
+    try {
+      setLoadingNotes(true);
+      // API expects numeric ID (now we have it directly)
+      const notes = await progressNotesService.getNotesByPatient(patientId);
+      setPatientNotes(notes);
+    } catch (err) {
+      console.error('Failed to load patient notes:', err);
+      setPatientNotes([]);
+    } finally {
+      setLoadingNotes(false);
+    }
+  };
+
   const handleViewDetails = (patient: Patient) => {
     setSelectedPatient(patient);
     setShowDetailsModal(true);
+    setActiveTab('overview');
+  };
+
+  const handleWriteNoteForPatient = () => {
+    setShowNoteForm(true);
+  };
+
+  const handleNoteFormClose = () => {
+    setShowNoteForm(false);
+    setSelectedNote(null); // Clear selected note after form closes
+    if (selectedPatient) {
+      fetchPatientNotes(selectedPatient.id);
+    }
+  };
+
+  const formatNoteDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-AU', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -283,6 +289,19 @@ export const PsychologistPatientsPage: React.FC = () => {
           </div>
 
           {/* Patients List */}
+          {loading ? (
+            <div className={styles.loadingState}>
+              <p>Loading patients...</p>
+            </div>
+          ) : error ? (
+            <div className={styles.errorState}>
+              <h3>⚠️ Error Loading Patients</h3>
+              <p>{error}</p>
+              <button className={styles.retryButton} onClick={fetchPatients}>
+                Retry
+              </button>
+            </div>
+          ) : (
           <div className={styles.patientsList}>
             {filteredPatients.length === 0 ? (
               <div className={styles.emptyState}>
@@ -377,6 +396,7 @@ export const PsychologistPatientsPage: React.FC = () => {
               ))
             )}
           </div>
+          )}
         </div>
       </div>
 
@@ -385,7 +405,7 @@ export const PsychologistPatientsPage: React.FC = () => {
         <div className={styles.modalOverlay} onClick={() => setShowDetailsModal(false)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3>Patient Details</h3>
+              <h3>Patient Details - {selectedPatient.name}</h3>
               <button 
                 className={styles.closeButton}
                 onClick={() => setShowDetailsModal(false)}
@@ -393,63 +413,163 @@ export const PsychologistPatientsPage: React.FC = () => {
                 ✕
               </button>
             </div>
+
+            {/* Tabs */}
+            <div className={styles.tabsContainer}>
+              <button
+                className={`${styles.tab} ${activeTab === 'overview' ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab('overview')}
+              >
+                Overview
+              </button>
+              <button
+                className={`${styles.tab} ${activeTab === 'notes' ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab('notes')}
+              >
+                Progress Notes
+              </button>
+              <button
+                className={`${styles.tab} ${activeTab === 'sessions' ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab('sessions')}
+              >
+                Sessions
+              </button>
+            </div>
             
             <div className={styles.modalBody}>
-              <div className={styles.patientDetailSection}>
-                <div className={styles.patientAvatar} style={{ width: '80px', height: '80px', fontSize: '2rem', margin: '0 auto 1rem' }}>
-                  {selectedPatient.avatarInitials}
-                </div>
-                <h2 style={{ textAlign: 'center', margin: '0 0 0.5rem 0' }}>{selectedPatient.name}</h2>
-                <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '2rem' }}>
-                  {selectedPatient.age} years • {selectedPatient.gender}
-                </p>
-              </div>
+              {/* Overview Tab */}
+              {activeTab === 'overview' && (
+                <>
+                  <div className={styles.patientDetailSection}>
+                    <div className={styles.patientAvatar} style={{ width: '80px', height: '80px', fontSize: '2rem', margin: '0 auto 1rem' }}>
+                      {selectedPatient.avatarInitials}
+                    </div>
+                    <h2 style={{ textAlign: 'center', margin: '0 0 0.5rem 0' }}>{selectedPatient.name}</h2>
+                    <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '2rem' }}>
+                      {selectedPatient.age} years • {selectedPatient.gender}
+                    </p>
+                  </div>
 
-              <div className={styles.detailsGrid}>
-                <div className={styles.detailItem}>
-                  <strong>Email:</strong>
-                  <span>{selectedPatient.email}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Phone:</strong>
-                  <span>{selectedPatient.phone}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Date of Birth:</strong>
-                  <span>{formatDate(selectedPatient.dateOfBirth)}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Patient ID:</strong>
-                  <span>{selectedPatient.id}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Registered:</strong>
-                  <span>{formatDate(selectedPatient.registeredDate)}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Status:</strong>
-                  <span className={`${styles.statusBadge} ${getStatusBadgeClass(selectedPatient.status)}`}>
-                    {selectedPatient.status.charAt(0).toUpperCase() + selectedPatient.status.slice(1)}
-                  </span>
-                </div>
-              </div>
+                  <div className={styles.detailsGrid}>
+                    <div className={styles.detailItem}>
+                      <strong>Email:</strong>
+                      <span>{selectedPatient.email}</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <strong>Phone:</strong>
+                      <span>{selectedPatient.phone}</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <strong>Date of Birth:</strong>
+                      <span>{formatDate(selectedPatient.dateOfBirth)}</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <strong>Patient ID:</strong>
+                      <span>{selectedPatient.id}</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <strong>Registered:</strong>
+                      <span>{formatDate(selectedPatient.registeredDate)}</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <strong>Status:</strong>
+                      <span className={`${styles.statusBadge} ${getStatusBadgeClass(selectedPatient.status)}`}>
+                        {selectedPatient.status.charAt(0).toUpperCase() + selectedPatient.status.slice(1)}
+                      </span>
+                    </div>
+                  </div>
 
-              {selectedPatient.diagnosis && (
-                <div className={styles.notesSection}>
-                  <strong className={styles.notesLabel}>Diagnosis:</strong>
-                  <p className={styles.notesText}>{selectedPatient.diagnosis}</p>
+                  {selectedPatient.diagnosis && (
+                    <div className={styles.notesSection}>
+                      <strong className={styles.notesLabel}>Diagnosis:</strong>
+                      <p className={styles.notesText}>{selectedPatient.diagnosis}</p>
+                    </div>
+                  )}
+
+                  <div className={styles.notesSection}>
+                    <strong className={styles.notesLabel}>Therapy Focus:</strong>
+                    <p className={styles.notesText}>{selectedPatient.therapyFocus}</p>
+                  </div>
+
+                  <div className={styles.notesSection}>
+                    <strong className={styles.notesLabel}>Clinical Notes:</strong>
+                    <p className={styles.notesText}>{selectedPatient.notes}</p>
+                  </div>
+                </>
+              )}
+
+              {/* Notes Tab */}
+              {activeTab === 'notes' && (
+                <div className={styles.notesTabContent}>
+                  <div className={styles.notesTabHeader}>
+                    <h4>Progress Notes History</h4>
+                    <button 
+                      className={styles.primaryButton}
+                      onClick={handleWriteNoteForPatient}
+                    >
+                      + Write Note
+                    </button>
+                  </div>
+
+                  {loadingNotes ? (
+                    <div className={styles.loadingState}>
+                      <p>Loading notes...</p>
+                    </div>
+                  ) : patientNotes.length === 0 ? (
+                    <div className={styles.emptyState}>
+                      <p>No progress notes for this patient yet.</p>
+                      <button 
+                        className={styles.primaryButton}
+                        onClick={handleWriteNoteForPatient}
+                      >
+                        Write First Note
+                      </button>
+                    </div>
+                  ) : (
+                    <div className={styles.patientNotesList}>
+                      {patientNotes.map((note) => (
+                        <div 
+                          key={note.id} 
+                          className={styles.patientNoteCard}
+                          onClick={() => {
+                            setSelectedNote(note);
+                            setShowNoteDetail(true);
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <div className={styles.patientNoteHeader}>
+                            <span className={styles.patientNoteSession}>
+                              Session #{note.session_number}
+                            </span>
+                            <span className={styles.patientNoteRating}>
+                              {note.progress_rating}/10
+                            </span>
+                          </div>
+                          <div className={styles.patientNoteDate}>
+                            {formatNoteDate(note.session_date)}
+                          </div>
+                          <div className={styles.patientNotePreview}>
+                            <p><strong>S:</strong> {note.subjective.substring(0, 100)}...</p>
+                            <p><strong>A:</strong> {note.assessment.substring(0, 100)}...</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
-              <div className={styles.notesSection}>
-                <strong className={styles.notesLabel}>Therapy Focus:</strong>
-                <p className={styles.notesText}>{selectedPatient.therapyFocus}</p>
-              </div>
-
-              <div className={styles.notesSection}>
-                <strong className={styles.notesLabel}>Clinical Notes:</strong>
-                <p className={styles.notesText}>{selectedPatient.notes}</p>
-              </div>
+              {/* Sessions Tab */}
+              {activeTab === 'sessions' && (
+                <div className={styles.sessionsTabContent}>
+                  <h4>Session History</h4>
+                  <div className={styles.placeholder}>
+                    <p>Completed: {selectedPatient.completedSessions}</p>
+                    <p>Upcoming: {selectedPatient.upcomingSessions}</p>
+                    <p>Total: {selectedPatient.totalSessions}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className={styles.modalActions}>
@@ -459,8 +579,85 @@ export const PsychologistPatientsPage: React.FC = () => {
               >
                 Close
               </button>
-              <button className={styles.primaryButton}>
-                View Full History
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Note Form Modal */}
+      {showNoteForm && selectedPatient && (
+        <div className={styles.modalOverlay} onClick={handleNoteFormClose}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.modalClose} onClick={handleNoteFormClose}>
+              ✕
+            </button>
+            <SOAPNoteForm
+              patientId={selectedPatient.id}
+              noteId={selectedNote?.id}
+              onSave={handleNoteFormClose}
+              onCancel={handleNoteFormClose}
+              isModal={true}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Note Detail Modal */}
+      {showNoteDetail && selectedNote && (
+        <div className={styles.modalOverlay} onClick={() => setShowNoteDetail(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '800px' }}>
+            <div className={styles.modalHeader}>
+              <h3>Progress Note - Session #{selectedNote.session_number}</h3>
+              <button 
+                className={styles.closeButton}
+                onClick={() => setShowNoteDetail(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.noteDetailMeta}>
+                <p><strong>Patient:</strong> {selectedNote.patient_name}</p>
+                <p><strong>Date:</strong> {formatNoteDate(selectedNote.session_date)}</p>
+                <p><strong>Session Number:</strong> {selectedNote.session_number}</p>
+                <p><strong>Duration:</strong> {selectedNote.session_duration} minutes</p>
+                <p><strong>Progress Rating:</strong> {selectedNote.progress_rating}/10</p>
+              </div>
+              <div className={styles.soapFull}>
+                <div className={styles.soapFullSection}>
+                  <h4>Subjective (S)</h4>
+                  <p>{selectedNote.subjective}</p>
+                </div>
+                <div className={styles.soapFullSection}>
+                  <h4>Objective (O)</h4>
+                  <p>{selectedNote.objective}</p>
+                </div>
+                <div className={styles.soapFullSection}>
+                  <h4>Assessment (A)</h4>
+                  <p>{selectedNote.assessment}</p>
+                </div>
+                <div className={styles.soapFullSection}>
+                  <h4>Plan (P)</h4>
+                  <p>{selectedNote.plan}</p>
+                </div>
+              </div>
+            </div>
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.secondaryButton}
+                onClick={() => {
+                  setShowNoteDetail(false);
+                  // Keep selectedNote for editing, form will use noteId
+                  setShowNoteForm(true);
+                }}
+              >
+                Edit Note
+              </button>
+              <button 
+                className={styles.secondaryButton}
+                onClick={() => setShowNoteDetail(false)}
+              >
+                Close
               </button>
             </div>
           </div>

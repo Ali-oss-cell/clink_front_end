@@ -96,6 +96,31 @@ export const Header: React.FC<HeaderProps> = ({
                     </Link>
                   </>
                 )}
+                {userRole === 'admin' && (
+                  <>
+                    <Link to="/admin/users" className={styles.navLink}>
+                      Users
+                    </Link>
+                    <Link to="/admin/appointments" className={styles.navLink}>
+                      Appointments
+                    </Link>
+                    <Link to="/admin/patients" className={styles.navLink}>
+                      Patients
+                    </Link>
+                    <Link to="/admin/staff" className={styles.navLink}>
+                      Staff
+                    </Link>
+                    <Link to="/admin/billing" className={styles.navLink}>
+                      Billing
+                    </Link>
+                    <Link to="/admin/settings" className={styles.navLink}>
+                      Settings
+                    </Link>
+                    <Link to="/admin/analytics" className={styles.navLink}>
+                      Analytics
+                    </Link>
+                  </>
+                )}
                 <button 
                   onClick={handleLogout}
                   className={styles.logoutButton}

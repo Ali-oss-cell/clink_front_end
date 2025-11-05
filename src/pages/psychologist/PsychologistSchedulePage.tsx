@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
+import { appointmentsService } from '../../services/api/appointments';
 import styles from './PsychologistPages.module.scss';
 
 interface Appointment {
@@ -33,87 +34,74 @@ export const PsychologistSchedulePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('list');
   const [filterStatus, setFilterStatus] = useState<'all' | 'upcoming' | 'today'>('upcoming');
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-  const [showNotesModal, setShowNotesModal] = useState(false);
-  const [notes, setNotes] = useState('');
+  const [showDayModal, setShowDayModal] = useState(false);
+  const [dayModalDate, setDayModalDate] = useState<string | null>(null);
+  const [dayModalAppointments, setDayModalAppointments] = useState<Appointment[]>([]);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [newAppointmentDate, setNewAppointmentDate] = useState('');
 
-  const user = authService.getStoredUser() || {
-    id: 1,
-    first_name: 'Dr. Sarah',
-    full_name: 'Dr. Sarah Johnson',
-    role: 'psychologist' as const,
-    email: 'sarah@mindwellclinic.com.au',
-    last_name: 'Johnson',
-    username: 'dr.sarah.johnson',
-    phone_number: '+61 3 1234 5678',
-    date_of_birth: '1985-03-15',
-    age: 39,
-    is_verified: true,
-    created_at: '2024-01-01'
-  };
+  const user = authService.getStoredUser();
 
   useEffect(() => {
     fetchAppointments();
-  }, [filterStatus]);
+  }, [filterStatus, selectedDate, viewMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchAppointments = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      // Mock data for now - replace with real API call
-      const mockAppointments: Appointment[] = [
-        {
-          id: 1,
-          patient_name: 'John Smith',
-          patient_id: 101,
-          service_name: 'Individual Therapy Session',
-          appointment_date: new Date().toISOString(),
-          formatted_date: new Date().toLocaleDateString('en-AU'),
-          formatted_time: '10:00 AM',
-          duration_minutes: 50,
-          session_type: 'telehealth',
-          status: 'confirmed',
-          notes: null,
-          location: null,
-          meeting_link: 'https://zoom.us/j/123456789'
-        },
-        {
-          id: 2,
-          patient_name: 'Emma Wilson',
-          patient_id: 102,
-          service_name: 'Couples Therapy Session',
-          appointment_date: new Date(Date.now() + 86400000).toISOString(),
-          formatted_date: new Date(Date.now() + 86400000).toLocaleDateString('en-AU'),
-          formatted_time: '2:00 PM',
-          duration_minutes: 60,
-          session_type: 'in_person',
-          status: 'scheduled',
-          notes: null,
-          location: 'MindWell Clinic - Room 3',
-          meeting_link: null
-        },
-        {
-          id: 3,
-          patient_name: 'Michael Chen',
-          patient_id: 103,
-          service_name: 'Individual Therapy Session',
-          appointment_date: new Date(Date.now() - 86400000).toISOString(),
-          formatted_date: new Date(Date.now() - 86400000).toLocaleDateString('en-AU'),
-          formatted_time: '3:30 PM',
-          duration_minutes: 50,
-          session_type: 'telehealth',
-          status: 'completed',
-          notes: 'Patient showed improvement in anxiety management',
-          location: null,
-          meeting_link: 'https://zoom.us/j/987654321'
+      // Build query params based on view mode and filter status
+      const params: any = {};
+      
+      // If in calendar view, fetch for the selected month
+      if (viewMode === 'calendar') {
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        params.month = `${year}-${month}`;
+      } else {
+        // List view - use filter status
+        if (filterStatus === 'today') {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          params.start_date = today.toISOString().split('T')[0];
+          params.end_date = tomorrow.toISOString().split('T')[0];
+        } else if (filterStatus === 'upcoming') {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          params.start_date = today.toISOString().split('T')[0];
         }
-      ];
+      }
 
-      setAppointments(mockAppointments);
-    } catch (err) {
+      // Fetch appointments from API
+      const response = await appointmentsService.getPsychologistSchedule(params);
+      
+      // Map API response to local Appointment interface
+      const mappedAppointments: Appointment[] = response.results.map((apt) => ({
+        id: apt.id,
+        patient_name: apt.patient_name,
+        patient_id: apt.patient_id,
+        service_name: apt.service_name,
+        appointment_date: apt.appointment_date,
+        formatted_date: apt.formatted_date,
+        formatted_time: apt.formatted_time,
+        duration_minutes: apt.duration_minutes,
+        session_type: apt.session_type,
+        status: apt.status,
+        notes: apt.notes,
+        location: apt.location,
+        meeting_link: apt.meeting_link
+      }));
+
+      setAppointments(mappedAppointments);
+    } catch (err: any) {
       console.error('Failed to load appointments:', err);
-      setError('Failed to load appointments. Please try again.');
+      setError(err.message || 'Failed to load appointments. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -141,32 +129,18 @@ export const PsychologistSchedulePage: React.FC = () => {
   });
 
   const handleCompleteSession = async (appointmentId: number) => {
-    // TODO: Implement complete session API call
-    const updatedAppointments = appointments.map(apt =>
-      apt.id === appointmentId ? { ...apt, status: 'completed' as const } : apt
-    );
-    setAppointments(updatedAppointments);
-    alert('Session marked as completed!');
-  };
-
-  const handleAddNotes = (appointment: Appointment) => {
-    setSelectedAppointment(appointment);
-    setNotes(appointment.notes || '');
-    setShowNotesModal(true);
-  };
-
-  const handleSaveNotes = async () => {
-    if (!selectedAppointment) return;
-
-    // TODO: Implement save notes API call
-    const updatedAppointments = appointments.map(apt =>
-      apt.id === selectedAppointment.id ? { ...apt, notes } : apt
-    );
-    setAppointments(updatedAppointments);
-    setShowNotesModal(false);
-    setSelectedAppointment(null);
-    setNotes('');
-    alert('Notes saved successfully!');
+    try {
+      // Call API to complete session
+      await appointmentsService.completeSession(appointmentId);
+      
+      // Refresh appointments list
+      await fetchAppointments();
+      
+      alert('Session marked as completed!');
+    } catch (error: any) {
+      console.error('Failed to complete session:', error);
+      alert(error.message || 'Failed to complete session. Please try again.');
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -198,6 +172,97 @@ export const PsychologistSchedulePage: React.FC = () => {
         return '⚠️';
       default:
         return '📅';
+    }
+  };
+
+  // Generate calendar days for the current month
+  const generateCalendarDays = (currentDate: Date, appointments: Appointment[]): CalendarDay[] => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    // Get first day of month and calculate starting position
+    const firstDay = new Date(year, month, 1);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay()); // Start from Sunday
+    
+    const days: CalendarDay[] = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Generate 42 days (6 weeks)
+    for (let i = 0; i < 42; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      
+      const isCurrentMonth = date.getMonth() === month;
+      const isToday = date.getTime() === today.getTime();
+      
+      // Filter appointments for this day
+      const dayAppointments = appointments.filter(apt => {
+        const aptDate = new Date(apt.appointment_date);
+        aptDate.setHours(0, 0, 0, 0);
+        return aptDate.getTime() === date.getTime();
+      });
+      
+      days.push({
+        date: date.toISOString(),
+        appointments: dayAppointments,
+        isToday,
+        isCurrentMonth
+      });
+    }
+    
+    return days;
+  };
+
+  const openDayModal = (day: CalendarDay) => {
+    setDayModalDate(day.date);
+    setDayModalAppointments(day.appointments);
+    setShowDayModal(true);
+  };
+
+  const closeDayModal = () => {
+    setShowDayModal(false);
+    setDayModalDate(null);
+    setDayModalAppointments([]);
+  };
+
+  const handleCancelAppointment = async () => {
+    if (!selectedAppointmentId) return;
+    
+    try {
+      await appointmentsService.appointmentAction(selectedAppointmentId, 'cancel', {
+        reason: cancelReason || 'Cancelled by psychologist'
+      });
+      
+      setShowCancelModal(false);
+      setCancelReason('');
+      setSelectedAppointmentId(null);
+      await fetchAppointments();
+      closeDayModal();
+      alert('Appointment cancelled successfully!');
+    } catch (error: any) {
+      alert(error.message || 'Failed to cancel appointment');
+    }
+  };
+
+  const handleRescheduleAppointment = async () => {
+    if (!selectedAppointmentId || !newAppointmentDate) return;
+    
+    try {
+      await appointmentsService.appointmentAction(selectedAppointmentId, 'reschedule', {
+        new_date: newAppointmentDate,
+        reason: 'Rescheduled by psychologist'
+      });
+      
+      setShowRescheduleModal(false);
+      setNewAppointmentDate('');
+      setSelectedAppointmentId(null);
+      await fetchAppointments();
+      closeDayModal();
+      alert('Appointment rescheduled successfully!');
+    } catch (error: any) {
+      alert(error.message || 'Failed to reschedule appointment');
     }
   };
 
@@ -396,21 +461,9 @@ export const PsychologistSchedulePage: React.FC = () => {
                         <span className={styles.detailLabel}>Duration:</span>
                         <span className={styles.detailValue}>{appointment.duration_minutes} minutes</span>
                       </div>
-                      {appointment.notes && (
-                        <div className={styles.notesSection}>
-                          <span className={styles.notesLabel}>📝 Session Notes:</span>
-                          <p className={styles.notesText}>{appointment.notes}</p>
-                        </div>
-                      )}
                     </div>
 
                     <div className={styles.appointmentActions}>
-                      <button
-                        className={styles.secondaryButton}
-                        onClick={() => handleAddNotes(appointment)}
-                      >
-                        {appointment.notes ? '📝 Edit Notes' : '📝 Add Notes'}
-                      </button>
                       {appointment.status !== 'completed' && appointment.status !== 'cancelled' && (
                         <button
                           className={styles.successButton}
@@ -426,50 +479,207 @@ export const PsychologistSchedulePage: React.FC = () => {
             </div>
           )}
 
-          {/* Calendar View - Coming soon */}
+          {/* Calendar View */}
           {viewMode === 'calendar' && (
-            <div className={styles.calendarPlaceholder}>
-              <div className={styles.placeholderContent}>
-                <h3>📅 Calendar View</h3>
-                <p>Calendar view is coming soon!</p>
-                <p>For now, please use the list view to manage your appointments.</p>
+            <div className={styles.calendarContainer}>
+              <div className={styles.calendarHeader}>
+                <button 
+                  className={styles.calendarNavButton}
+                  onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
+                >
+                  ← Previous
+                </button>
+                <h3 className={styles.calendarTitle}>
+                  {selectedDate.toLocaleDateString('en-AU', { month: 'long', year: 'numeric' })}
+                </h3>
+                <button 
+                  className={styles.calendarNavButton}
+                  onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
+                >
+                  Next →
+                </button>
+              </div>
+              
+              <div className={styles.calendarGrid}>
+                {/* Calendar Header */}
+                <div className={styles.calendarWeekHeader}>
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className={styles.calendarDayHeader}>{day}</div>
+                  ))}
+                </div>
+                
+                {/* Calendar Days */}
+                <div className={styles.calendarDays}>
+                  {generateCalendarDays(selectedDate, appointments).map((day, index) => (
+                    <div 
+                      key={index} 
+                      className={`${styles.calendarDay} ${
+                        !day.isCurrentMonth ? styles.calendarDayOtherMonth : ''
+                      } ${day.isToday ? styles.calendarDayToday : ''}`}
+                      onClick={() => openDayModal(day)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <div className={styles.calendarDayNumber}>{new Date(day.date).getDate()}</div>
+                      <div className={styles.calendarDayAppointments}>
+                        {day.appointments.map(appointment => (
+                          <div 
+                            key={appointment.id} 
+                            className={`${styles.calendarAppointment} ${getStatusColor(appointment.status)}`}
+                            title={`${appointment.patient_name} - ${appointment.formatted_time}`}
+                          >
+                            <div className={styles.calendarAppointmentTime}>
+                              {appointment.formatted_time}
+                            </div>
+                            <div className={styles.calendarAppointmentPatient}>
+                              {appointment.patient_name}
+                            </div>
+                            <div className={styles.calendarAppointmentType}>
+                              {appointment.session_type === 'telehealth' ? '💻' : '🏢'}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
-
-      {/* Notes Modal */}
-      {showNotesModal && selectedAppointment && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h3>Session Notes - {selectedAppointment.patient_name}</h3>
-            <p className={styles.modalSubtext}>
-              {selectedAppointment.formatted_date} at {selectedAppointment.formatted_time}
-            </p>
-            <textarea
-              className={styles.notesTextarea}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Enter session notes here..."
-              rows={8}
-            />
+      {/* Day Modal */}
+      {showDayModal && (
+        <div className={styles.modalOverlay} onClick={closeDayModal}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '720px' }}>
+            <div className={styles.modalHeader}>
+              <h3>
+                Appointments on {dayModalDate ? new Date(dayModalDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
+              </h3>
+              <button className={styles.closeButton} onClick={closeDayModal}>✕</button>
+            </div>
+            <div className={styles.modalBody}>
+              {dayModalAppointments.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyIcon}>📅</div>
+                  <h3>No appointments for this day</h3>
+                </div>
+              ) : (
+                <div className={styles.patientNotesList}>
+                  {dayModalAppointments.map((apt) => (
+                    <div key={apt.id} className={styles.patientNoteCard} style={{ cursor: 'default' }}>
+                      <div className={styles.patientNoteHeader}>
+                        <span className={styles.patientNoteSession}>{apt.formatted_time}</span>
+                        <span className={`${styles.statusBadge} ${getStatusColor(apt.status)}`}>
+                          {getStatusIcon(apt.status)} {apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
+                        </span>
+                      </div>
+                      <div className={styles.patientNoteDate}>
+                        {apt.service_name}
+                      </div>
+                      <div className={styles.patientNotePreview}>
+                        <p><strong>Patient:</strong> {apt.patient_name}</p>
+                        {apt.location && <p><strong>Location:</strong> {apt.location}</p>}
+                        {apt.meeting_link && (
+                          <p>
+                            <strong>Meeting:</strong> <a href={apt.meeting_link} target="_blank" rel="noopener noreferrer">Join</a>
+                          </p>
+                        )}
+                      </div>
+                      {apt.status !== 'completed' && apt.status !== 'cancelled' && (
+                        <div className={styles.appointmentActions}>
+                          <button
+                            className={styles.secondaryButton}
+                            onClick={() => {
+                              setSelectedAppointmentId(apt.id);
+                              setShowCancelModal(true);
+                            }}
+                            style={{ marginRight: '0.5rem', padding: '0.5rem 1rem' }}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className={styles.secondaryButton}
+                            onClick={() => {
+                              setSelectedAppointmentId(apt.id);
+                              setNewAppointmentDate(new Date(apt.appointment_date).toISOString().slice(0, 16));
+                              setShowRescheduleModal(true);
+                            }}
+                            style={{ padding: '0.5rem 1rem' }}
+                          >
+                            Reschedule
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className={styles.modalActions}>
-              <button
-                className={styles.secondaryButton}
-                onClick={() => {
-                  setShowNotesModal(false);
-                  setSelectedAppointment(null);
-                  setNotes('');
-                }}
-              >
+              <button className={styles.secondaryButton} onClick={closeDayModal}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Appointment Modal */}
+      {showCancelModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowCancelModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div className={styles.modalHeader}>
+              <h3>Cancel Appointment</h3>
+              <button className={styles.closeButton} onClick={() => setShowCancelModal(false)}>✕</button>
+            </div>
+            <div className={styles.modalBody}>
+              <p>Are you sure you want to cancel this appointment?</p>
+              <div className={styles.formGroup}>
+                <label>Reason (optional):</label>
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  placeholder="Enter cancellation reason..."
+                  rows={3}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                />
+              </div>
+            </div>
+            <div className={styles.modalActions}>
+              <button className={styles.secondaryButton} onClick={() => setShowCancelModal(false)}>
+                Keep Appointment
+              </button>
+              <button className={styles.deleteButton} onClick={handleCancelAppointment}>
+                Confirm Cancellation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reschedule Appointment Modal */}
+      {showRescheduleModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowRescheduleModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div className={styles.modalHeader}>
+              <h3>Reschedule Appointment</h3>
+              <button className={styles.closeButton} onClick={() => setShowRescheduleModal(false)}>✕</button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.formGroup}>
+                <label>New Date & Time:</label>
+                <input
+                  type="datetime-local"
+                  value={newAppointmentDate}
+                  onChange={(e) => setNewAppointmentDate(e.target.value)}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                />
+              </div>
+            </div>
+            <div className={styles.modalActions}>
+              <button className={styles.secondaryButton} onClick={() => setShowRescheduleModal(false)}>
                 Cancel
               </button>
-              <button
-                className={styles.primaryButton}
-                onClick={handleSaveNotes}
-              >
-                💾 Save Notes
+              <button className={styles.primaryButton} onClick={handleRescheduleAppointment}>
+                Confirm Reschedule
               </button>
             </div>
           </div>
