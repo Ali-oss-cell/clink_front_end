@@ -107,6 +107,12 @@
       @include button-ghost;
       padding: $spacing-sm $spacing-lg;
       margin-left: $spacing-md;
+      display: inline-flex;
+      text-decoration: none;
+      cursor: pointer;
+      pointer-events: auto;
+      position: relative;
+      z-index: 1;
     }
 
     .registerButton {

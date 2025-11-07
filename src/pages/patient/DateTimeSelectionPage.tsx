@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
+import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import { servicesService } from '../../services/api/services';
 import type { AvailableSlotsResponse, TimeSlot } from '../../services/api/appointments';
@@ -21,21 +22,8 @@ export const DateTimeSelectionPage: React.FC = () => {
   const [booking, setBooking] = useState(false);
   const [serviceId, setServiceId] = useState<number | null>(null);
   
-  // Mock user data
-  const mockUser = {
-    id: 1,
-    first_name: 'John',
-    full_name: 'John Smith',
-    role: 'patient' as const,
-    email: 'john@example.com',
-    last_name: 'Smith',
-    username: 'johnsmith',
-    phone_number: '+61412345678',
-    date_of_birth: '1990-01-01',
-    age: 34,
-    is_verified: true,
-    created_at: '2024-01-01'
-  };
+  // Get user from auth service
+  const user = authService.getStoredUser();
 
   // Convert service slug to ID on page load
   useEffect(() => {
@@ -193,7 +181,7 @@ export const DateTimeSelectionPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={mockUser} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
@@ -211,7 +199,7 @@ export const DateTimeSelectionPage: React.FC = () => {
 
   if (error || !availabilityData) {
     return (
-      <Layout user={mockUser} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
@@ -234,7 +222,7 @@ export const DateTimeSelectionPage: React.FC = () => {
   }
 
   return (
-    <Layout user={mockUser} isAuthenticated={true} className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
       <div className={styles.dateTimeSelectionContainer}>
         <div className="container">
           {/* Page Header */}

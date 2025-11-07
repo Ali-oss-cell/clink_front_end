@@ -28,8 +28,10 @@ class ServicesService {
         return this.servicesCache;
       }
       
-      const response = await axiosInstance.get('/auth/services/');
+      const response = await axiosInstance.get('/services/');
       const data = response.data;
+      
+      console.log('Services API response:', data);
       
       // Handle paginated or wrapped responses
       let services: Service[];
@@ -39,7 +41,17 @@ class ServicesService {
         services = data.results;
       } else if (data.data) {
         services = data.data;
+      } else if (typeof data === 'object' && data !== null) {
+        // Try to extract services from any property that looks like a list
+        const possibleArrays = Object.values(data).filter(val => Array.isArray(val));
+        if (possibleArrays.length > 0) {
+          services = possibleArrays[0] as Service[];
+        } else {
+          console.error('API response format:', JSON.stringify(data, null, 2));
+          throw new Error('Unexpected API response format - no array found in response');
+        }
       } else {
+        console.error('API response format:', JSON.stringify(data, null, 2));
         throw new Error('Unexpected API response format');
       }
       

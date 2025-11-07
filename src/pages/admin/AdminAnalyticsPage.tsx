@@ -160,7 +160,11 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <div className={styles.analyticsLabel}>Verified Users</div>
               </div>
               <div className={styles.analyticsCard}>
-                <div className={styles.analyticsValue}>{analytics.users.verification_rate.toFixed(1)}%</div>
+                <div className={styles.analyticsValue}>
+                  {analytics.users.verification_rate != null 
+                    ? `${analytics.users.verification_rate.toFixed(1)}%` 
+                    : 'N/A'}
+                </div>
                 <div className={styles.analyticsLabel}>Verification Rate</div>
               </div>
             </div>
@@ -180,12 +184,55 @@ export const AdminAnalyticsPage: React.FC = () => {
                     <tr key={item.role}>
                       <td>{item.role.replace('_', ' ').toUpperCase()}</td>
                       <td>{item.count}</td>
-                      <td>{((item.count / analytics.users.total) * 100).toFixed(1)}%</td>
+                      <td>
+                        {analytics.users.total > 0 
+                          ? `${((item.count / analytics.users.total) * 100).toFixed(1)}%` 
+                          : '0%'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
+            {/* User Growth Trend */}
+            {analytics.users.growth && analytics.users.growth.length > 0 && (
+              <div className={styles.analyticsTable}>
+                <h3>User Growth Over Time</h3>
+                <div style={{ 
+                  padding: '16px', 
+                  backgroundColor: '#f9fafb', 
+                  borderRadius: '8px',
+                  maxHeight: '300px',
+                  overflowY: 'auto'
+                }}>
+                  <table style={{ width: '100%' }}>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>New Users</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analytics.users.growth.map((item, index) => (
+                        <tr key={index}>
+                          <td>{formatDate(item.date)}</td>
+                          <td>{item.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p style={{ 
+                  marginTop: '8px', 
+                  fontSize: '0.875rem', 
+                  color: '#6b7280',
+                  fontStyle: 'italic'
+                }}>
+                  Total growth: {analytics.users.growth.reduce((sum, item) => sum + item.count, 0)} users
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Appointment Analytics */}
@@ -213,7 +260,11 @@ export const AdminAnalyticsPage: React.FC = () => {
                     <tr key={item.status}>
                       <td>{item.status.toUpperCase()}</td>
                       <td>{item.count}</td>
-                      <td>{((item.count / analytics.appointments.total) * 100).toFixed(1)}%</td>
+                      <td>
+                        {analytics.appointments.total > 0 
+                          ? `${((item.count / analytics.appointments.total) * 100).toFixed(1)}%` 
+                          : '0%'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -235,12 +286,57 @@ export const AdminAnalyticsPage: React.FC = () => {
                     <tr key={item.session_type}>
                       <td>{item.session_type.replace('_', ' ').toUpperCase()}</td>
                       <td>{item.count}</td>
-                      <td>{((item.count / analytics.appointments.total) * 100).toFixed(1)}%</td>
+                      <td>
+                        {analytics.appointments.total > 0 
+                          ? `${((item.count / analytics.appointments.total) * 100).toFixed(1)}%` 
+                          : '0%'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
+            {/* Appointment Trends */}
+            {analytics.appointments.trends && analytics.appointments.trends.length > 0 && (
+              <div className={styles.analyticsTable}>
+                <h3>Appointment Trends Over Time</h3>
+                <div style={{ 
+                  padding: '16px', 
+                  backgroundColor: '#f9fafb', 
+                  borderRadius: '8px',
+                  maxHeight: '300px',
+                  overflowY: 'auto'
+                }}>
+                  <table style={{ width: '100%' }}>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Appointments</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analytics.appointments.trends.map((item, index) => (
+                        <tr key={index}>
+                          <td>{formatDate(item.date)}</td>
+                          <td>{item.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p style={{ 
+                  marginTop: '8px', 
+                  fontSize: '0.875rem', 
+                  color: '#6b7280',
+                  fontStyle: 'italic'
+                }}>
+                  Average per day: {analytics.appointments.trends.length > 0
+                    ? (analytics.appointments.trends.reduce((sum, item) => sum + item.count, 0) / analytics.appointments.trends.length).toFixed(1)
+                    : '0'} appointments
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Financial Analytics */}
@@ -279,7 +375,11 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <div className={styles.analyticsLabel}>Total Notes</div>
               </div>
               <div className={styles.analyticsCard}>
-                <div className={styles.analyticsValue}>{analytics.progress_notes.average_rating.toFixed(1)}</div>
+                <div className={styles.analyticsValue}>
+                  {analytics.progress_notes.average_rating != null 
+                    ? analytics.progress_notes.average_rating.toFixed(1) 
+                    : 'N/A'}
+                </div>
                 <div className={styles.analyticsLabel}>Average Rating</div>
               </div>
             </div>
@@ -298,7 +398,11 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <div className={styles.analyticsLabel}>Total Users</div>
               </div>
               <div className={styles.analyticsCard}>
-                <div className={styles.analyticsValue}>{analytics.performance.verification_rate.toFixed(1)}%</div>
+                <div className={styles.analyticsValue}>
+                  {analytics.performance.verification_rate != null 
+                    ? `${analytics.performance.verification_rate.toFixed(1)}%` 
+                    : 'N/A'}
+                </div>
                 <div className={styles.analyticsLabel}>Verification Rate</div>
               </div>
             </div>

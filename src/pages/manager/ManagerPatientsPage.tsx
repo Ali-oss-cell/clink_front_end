@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Patient } from '../../services/api/admin';
-import styles from './AdminPages.module.scss';
+import styles from './ManagerPages.module.scss';
 
-export const AdminPatientsPage: React.FC = () => {
+export const ManagerPatientsPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,25 +20,8 @@ export const AdminPatientsPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const params: any = {
-        page: 1,
-        page_size: 100
-      };
-
-      if (searchTerm) {
-        params.search = searchTerm;
-      }
-
-      const response = await adminService.getAllPatients(params);
-      const patientsData = response.results || [];
-      
-      // Debug: Log the first patient to see the actual structure
-      if (patientsData.length > 0) {
-        console.log('Sample patient data:', patientsData[0]);
-      }
-      
-      setPatients(patientsData);
+      const response = await adminService.getAllPatients({ page_size: 100 });
+      setPatients(response.results);
     } catch (err: any) {
       console.error('Failed to load patients:', err);
       setError(err.message || 'Failed to load patients');
@@ -47,12 +30,16 @@ export const AdminPatientsPage: React.FC = () => {
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchPatients();
-  };
+  const filteredPatients = (patients || []).filter(patient => {
+    const name = patient.name || patient.fullName || patient.user_name || '';
+    const email = patient.email || patient.emailAddress || patient.user_email || '';
+    return (
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-AU', {
       day: 'numeric',
@@ -63,7 +50,7 @@ export const AdminPatientsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
+      <Layout user={user} isAuthenticated={true} className={styles.managerLayout}>
         <div className={styles.pageContainer}>
           <div className="container">
             <div className={styles.loadingState}>
@@ -76,40 +63,49 @@ export const AdminPatientsPage: React.FC = () => {
   }
 
   return (
-    <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
+    <Layout user={user} isAuthenticated={true} className={styles.managerLayout}>
       <div className={styles.pageContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <h1>All Patients</h1>
-            <div className={styles.statsSummary}>
-              <span>Total: {patients.length}</span>
-            </div>
+            <h1>Patient Management</h1>
+            <p>View and manage patient information</p>
           </div>
 
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
             </div>
           )}
 
-          {/* Search */}
-          <div className={styles.filtersBar}>
-            <form onSubmit={handleSearch} className={styles.searchForm}>
-              <input
-                type="text"
-                placeholder="Search patients by name or email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={styles.searchInput}
-              />
-              <button type="submit" className={styles.searchButton}>
-                Search
-              </button>
-            </form>
+          <div className={styles.searchBar}>
+            <input
+              type="text"
+              placeholder="Search patients by name or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles.searchInput}
+            />
           </div>
 
-          {/* Patients Table */}
+          <div className={styles.statsRow}>
+            <div className={styles.statBox}>
+              <div className={styles.statValue}>{(patients || []).length}</div>
+              <div className={styles.statLabel}>Total Patients</div>
+            </div>
+            <div className={styles.statBox}>
+              <div className={styles.statValue}>
+                {(patients || []).filter(p => {
+                  const created = p.created_at || p.registered_date || p.registeredDate;
+                  if (!created) return false;
+                  const monthAgo = new Date();
+                  monthAgo.setMonth(monthAgo.getMonth() - 1);
+                  return new Date(created) > monthAgo;
+                }).length}
+              </div>
+              <div className={styles.statLabel}>New This Month</div>
+            </div>
+          </div>
+
           <div className={styles.tableContainer}>
             <table className={styles.dataTable}>
               <thead>
@@ -120,60 +116,53 @@ export const AdminPatientsPage: React.FC = () => {
                   <th>Date of Birth</th>
                   <th>Gender</th>
                   <th>Emergency Contact</th>
-                  <th>Joined</th>
+                  <th>Registered</th>
                 </tr>
               </thead>
               <tbody>
-                {patients.length === 0 ? (
+                {filteredPatients.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className={styles.emptyCell}>
+                    <td colSpan={7} className={styles.emptyState}>
                       No patients found
                     </td>
                   </tr>
                 ) : (
-                  patients.map((patient: Patient) => {
-                    // Extract name - API returns multiple formats (name, fullName, firstName+lastName)
-                    let name = patient.name || 
-                               patient.fullName || 
+                  filteredPatients.map((patient: Patient) => {
+                    let name = patient.name ||
+                               patient.fullName ||
                                patient.user_name;
-                    
-                    // If no direct name field, try to construct from first/last name
+
                     if (!name && (patient.firstName || patient.first_name) && (patient.lastName || patient.last_name)) {
                       const firstName = patient.firstName || patient.first_name || '';
                       const lastName = patient.lastName || patient.last_name || '';
                       name = `${firstName} ${lastName}`.trim();
                     }
-                    
+
                     name = name || 'N/A';
-                    
-                    // Extract email - API returns email or emailAddress
-                    const email = patient.email || 
-                                  patient.emailAddress || 
-                                  patient.user_email || 
+
+                    const email = patient.email ||
+                                 patient.emailAddress ||
+                                 patient.user_email ||
+                                 'N/A';
+
+                    const phone = patient.phone ||
+                                 patient.phone_number ||
+                                 patient.user_phone ||
+                                 'N/A';
+
+                    const dateOfBirth = patient.date_of_birth ||
+                                       patient.dateOfBirth ||
+                                       '';
+
+                    const gender = patient.gender ||
+                                  patient.gender_identity ||
                                   'N/A';
-                    
-                    // Extract phone - API returns phone or phone_number
-                    const phone = patient.phone || 
-                                  patient.phone_number || 
-                                  patient.user_phone || 
-                                  'N/A';
-                    
-                    // Extract date of birth - API returns date_of_birth or dateOfBirth
-                    const dateOfBirth = patient.date_of_birth || 
-                                        patient.dateOfBirth || 
-                                        '';
-                    
-                    // Extract gender - API returns gender or gender_identity
-                    const gender = patient.gender || 
-                                   patient.gender_identity || 
-                                   'N/A';
-                    
-                    // Extract created/registered date
-                    const createdDate = patient.created_at || 
-                                        patient.registered_date || 
-                                        patient.registeredDate || 
-                                        '';
-                    
+
+                    const createdDate = patient.created_at ||
+                                       patient.registered_date ||
+                                       patient.registeredDate ||
+                                       '';
+
                     return (
                       <tr key={patient.id}>
                         <td>{name}</td>

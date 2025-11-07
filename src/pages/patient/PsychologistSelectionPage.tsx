@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { psychologistService } from '../../services/api/psychologist';
 import type { PsychologistProfile } from '../../services/api/psychologist';
+import { authService } from '../../services/api/auth';
 import styles from './PsychologistSelection.module.scss';
 
 interface Psychologist {
@@ -45,17 +46,8 @@ export const PsychologistSelectionPage: React.FC = () => {
     sessionType: 'both'
   });
   
-  // TODO: Get user data from Redux store
-  const mockUser = {
-    id: 1,
-    first_name: 'John',
-    full_name: 'John Smith',
-    role: 'patient' as const,
-    email: 'john@example.com',
-    last_name: 'Smith',
-    is_verified: true,
-    created_at: '2024-01-01'
-  };
+  // Get user data from auth service
+  const user = authService.getStoredUser();
 
   // Fetch psychologists from backend
   useEffect(() => {
@@ -184,14 +176,8 @@ export const PsychologistSelectionPage: React.FC = () => {
   };
 
   return (
-    <Layout
-      user={{
-        ...mockUser,
-        username: '', // Provide default or actual values as needed
-        phone_number: '',
-        date_of_birth: '',
-        age: 0
-      }}
+    <Layout 
+      user={user}
       isAuthenticated={true}
       className={styles.patientLayout}
     >

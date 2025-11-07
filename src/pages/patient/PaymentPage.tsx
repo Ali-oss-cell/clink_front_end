@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
+import { authService } from '../../services/api/auth';
 import styles from './Payment.module.scss';
 
 export const PaymentPage: React.FC = () => {
@@ -16,17 +17,8 @@ export const PaymentPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'phone' | 'in-person'>('card');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   
-  // TODO: Get user data from Redux store
-  const mockUser = {
-    id: 1,
-    first_name: 'John',
-    full_name: 'John Smith',
-    role: 'patient' as const,
-    email: 'john@example.com',
-    last_name: 'Smith',
-    is_verified: true,
-    created_at: '2024-01-01'
-  };
+  // Get user from auth service
+  const user = authService.getStoredUser();
 
   // TODO: Fetch payment methods from Django backend
   // TODO: Implement Stripe payment processing
@@ -146,7 +138,7 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <Layout 
-      user={mockUser} 
+      user={user} 
       isAuthenticated={true}
       className={styles.patientLayout}
     >

@@ -280,24 +280,11 @@ export class AppointmentsService {
         queryParams.page_size = params.page_size;
       }
 
-      // Try different endpoint patterns - backend may use /appointments/ without /auth/
-      // Also try /appointments/ if /appointments/patient/ doesn't exist
-      try {
-        const response = await axiosInstance.get('/appointments/patient/', {
-          params: queryParams
-        });
-        return response.data;
-      } catch (firstError: any) {
-        // If 404, try just /appointments/ (backend filters by authenticated user)
-        if (firstError.response?.status === 404) {
-          console.log('Trying alternative endpoint: /appointments/');
-          const response = await axiosInstance.get('/appointments/', {
-            params: queryParams
-          });
-          return response.data;
-        }
-        throw firstError;
-      }
+      // Backend uses /appointments/appointments/ (router at /appointments/, viewset at appointments/)
+      const response = await axiosInstance.get('/appointments/appointments/', {
+        params: queryParams
+      });
+      return response.data;
     } catch (error) {
       console.error('Failed to get patient appointments:', error);
       throw new Error('Failed to load appointments');
@@ -309,7 +296,7 @@ export class AppointmentsService {
    */
   async getAppointmentDetails(appointmentId: string): Promise<PatientAppointment> {
     try {
-      const response = await axiosInstance.get(`/appointments/patient/${appointmentId}/`);
+      const response = await axiosInstance.get(`/appointments/appointments/${appointmentId}/`);
       return response.data;
     } catch (error) {
       console.error('Failed to get appointment details:', error);
@@ -322,7 +309,7 @@ export class AppointmentsService {
    */
   async cancelAppointment(appointmentId: string, reason?: string): Promise<{ message: string }> {
     try {
-      const response = await axiosInstance.post(`/appointments/patient/${appointmentId}/cancel/`, {
+      const response = await axiosInstance.post(`/appointments/appointments/${appointmentId}/cancel/`, {
         reason: reason || 'Patient requested cancellation'
       });
       return response.data;
@@ -337,7 +324,7 @@ export class AppointmentsService {
    */
   async rescheduleAppointment(appointmentId: string, newDateTime: string): Promise<{ message: string }> {
     try {
-      const response = await axiosInstance.post(`/appointments/patient/${appointmentId}/reschedule/`, {
+      const response = await axiosInstance.post(`/appointments/appointments/${appointmentId}/reschedule/`, {
         new_appointment_date: newDateTime
       });
       return response.data;

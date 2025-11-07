@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
+import { authService } from '../../services/api/auth';
 import styles from './PatientPages.module.scss';
 
 interface Service {
@@ -19,17 +20,8 @@ export const ServiceSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedService, setSelectedService] = useState<string | null>(null);
   
-  // TODO: Get user data from Redux store
-  const mockUser = {
-    id: 1,
-    first_name: 'John',
-    full_name: 'John Smith',
-    role: 'patient' as const,
-    email: 'john@example.com',
-    last_name: 'Smith',
-    is_verified: true,
-    created_at: '2024-01-01'
-  };
+  // Get user data from auth service
+  const user = authService.getStoredUser();
 
   // TODO: Fetch services from Django backend API
   // TODO: Implement service filtering by user preferences
@@ -96,7 +88,7 @@ export const ServiceSelectionPage: React.FC = () => {
 
   return (
     <Layout 
-      user={mockUser} 
+      user={user} 
       isAuthenticated={true}
       className={styles.patientLayout}
     >

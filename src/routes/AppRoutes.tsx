@@ -12,6 +12,8 @@ import { RegisterPage } from '../pages/auth/RegisterPage';
 // Patient pages
 import { PatientDashboardPage } from '../pages/patient/PatientDashboardPage';
 import { PatientAccountPage } from '../pages/patient/PatientAccountPage';
+import { PatientResourcesPage } from '../pages/patient/PatientResourcesPage';
+import { ResourceDetailPage } from '../pages/patient/ResourceDetailPage';
 import { PatientIntakeFormPage } from '../pages/patient/PatientIntakeFormPage';
 import { PatientAppointmentPage } from '../pages/patient/PatientAppointmentPage';
 import { PatientAppointmentsPage } from '../pages/patient/PatientAppointmentsPage';
@@ -30,7 +32,13 @@ import { PsychologistPatientsPage } from '../pages/psychologist/PsychologistPati
 import { PsychologistNotesPage } from '../pages/psychologist/PsychologistNotesPage';
 
 // Practice Manager pages
-import { PracticeManagerDashboardPage } from '../pages/manager/PracticeManagerDashboardPage';
+import { 
+  PracticeManagerDashboardPage,
+  ManagerStaffPage,
+  ManagerPatientsPage,
+  ManagerAppointmentsPage,
+  ManagerBillingPage
+} from '../pages/manager';
 
 // Admin pages
 import { 
@@ -228,6 +236,28 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <PatientAccountPage />
         </ProtectedRoute>
       } />
+      
+      {/* Patient Resources */}
+      <Route path="/patient/resources" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['patient']}
+        >
+          <PatientResourcesPage />
+        </ProtectedRoute>
+      } />
+      
+      {/* Resource Detail */}
+      <Route path="/patient/resources/:id" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['patient']}
+        >
+          <ResourceDetailPage />
+        </ProtectedRoute>
+      } />
 
       {/* Psychologist Routes */}
       <Route path="/psychologist/dashboard" element={
@@ -290,6 +320,42 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['practice_manager', 'admin']}
         >
           <PracticeManagerDashboardPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/manager/staff" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['practice_manager', 'admin']}
+        >
+          <ManagerStaffPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/manager/patients" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['practice_manager', 'admin']}
+        >
+          <ManagerPatientsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/manager/appointments" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['practice_manager', 'admin']}
+        >
+          <ManagerAppointmentsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/manager/billing" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['practice_manager', 'admin']}
+        >
+          <ManagerBillingPage />
         </ProtectedRoute>
       } />
 

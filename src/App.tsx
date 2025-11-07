@@ -19,9 +19,17 @@ function App() {
         setUser(currentUser);
         setIsAuthenticated(true);
         return true;
+      } else {
+        // User data is missing, clear auth state
+        authService.logout();
+        clearAuthState();
+        return false;
       }
+    } else {
+      // Not authenticated, ensure state is cleared
+      clearAuthState();
+      return false;
     }
-    return false;
   };
 
   // Function to clear auth state (for logout)

@@ -30,6 +30,28 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  const handleLoginClick = () => {
+    // Clear any stale/invalid auth data when clicking login
+    // This ensures the login page is accessible even if localStorage has old tokens
+    const token = localStorage.getItem('access_token');
+    const user = localStorage.getItem('user');
+    
+    if (token && user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        // If user data is invalid, clear it
+        if (!parsedUser || !parsedUser.role || !parsedUser.email) {
+          console.log('Clearing invalid auth data on login click');
+          authService.logout();
+        }
+      } catch (error) {
+        // If user data can't be parsed, clear it
+        console.log('Clearing corrupted auth data on login click');
+        authService.logout();
+      }
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -43,11 +65,17 @@ export const Header: React.FC<HeaderProps> = ({
           {!isAuthenticated ? (
             // Public navigation
             <div className={styles.publicNav}>
-              <Link to="/about" className={styles.navLink}>About</Link>
-              <Link to="/services" className={styles.navLink}>Services</Link>
-              <Link to="/resources" className={styles.navLink}>Resources</Link>
-              <Link to="/contact" className={styles.navLink}>Contact</Link>
-              <Link to="/login" className={styles.loginButton}>Login</Link>
+              <Link to="/about">About</Link>
+              <Link to="/services">Services</Link>
+              <Link to="/resources">Resources</Link>
+              <Link to="/contact">Contact</Link>
+              <Link 
+                to="/login" 
+                className={styles.loginButton}
+                onClick={handleLoginClick}
+              >
+                Login
+              </Link>
               <Link to="/register" className={styles.registerButton}>Book Appointment</Link>
             </div>
           ) : (
@@ -57,66 +85,75 @@ export const Header: React.FC<HeaderProps> = ({
                 Welcome, {userName}
               </span>
               <div className={styles.userMenu}>
-                <Link 
-                  to={`/${userRole}/dashboard`} 
-                  className={styles.navLink}
-                >
+                <Link to={`/${userRole}/dashboard`}>
                   Dashboard
                 </Link>
                 {userRole === 'patient' && (
                   <>
-                    <Link to="/patient/appointments" className={styles.navLink}>
+                    <Link to="/patient/appointments">
                       My Appointments
                     </Link>
-                    <Link to="/patient/account" className={styles.navLink}>
+                    <Link to="/patient/resources">
+                      Resources
+                    </Link>
+                    <Link to="/patient/account">
                       My Account
                     </Link>
                   </>
                 )}
                 {userRole === 'psychologist' && (
                   <>
-                    <Link to="/psychologist/schedule" className={styles.navLink}>
+                    <Link to="/psychologist/schedule">
                       Schedule
                     </Link>
-                    <Link to="/psychologist/profile" className={styles.navLink}>
+                    <Link to="/psychologist/profile">
                       Profile
                     </Link>
-                    <Link to="/psychologist/patients" className={styles.navLink}>
+                    <Link to="/psychologist/patients">
                       Patients
                     </Link>
                   </>
                 )}
                 {userRole === 'practice_manager' && (
                   <>
-                    <Link to="/manager/users" className={styles.navLink}>
-                      User Management
+                    <Link to="/manager/dashboard">
+                      Dashboard
                     </Link>
-                    <Link to="/manager/billing" className={styles.navLink}>
+                    <Link to="/manager/staff">
+                      Staff
+                    </Link>
+                    <Link to="/manager/patients">
+                      Patients
+                    </Link>
+                    <Link to="/manager/appointments">
+                      Appointments
+                    </Link>
+                    <Link to="/manager/billing">
                       Billing
                     </Link>
                   </>
                 )}
                 {userRole === 'admin' && (
                   <>
-                    <Link to="/admin/users" className={styles.navLink}>
+                    <Link to="/admin/users">
                       Users
                     </Link>
-                    <Link to="/admin/appointments" className={styles.navLink}>
+                    <Link to="/admin/appointments">
                       Appointments
                     </Link>
-                    <Link to="/admin/patients" className={styles.navLink}>
+                    <Link to="/admin/patients">
                       Patients
                     </Link>
-                    <Link to="/admin/staff" className={styles.navLink}>
+                    <Link to="/admin/staff">
                       Staff
                     </Link>
-                    <Link to="/admin/billing" className={styles.navLink}>
+                    <Link to="/admin/billing">
                       Billing
                     </Link>
-                    <Link to="/admin/settings" className={styles.navLink}>
+                    <Link to="/admin/settings">
                       Settings
                     </Link>
-                    <Link to="/admin/analytics" className={styles.navLink}>
+                    <Link to="/admin/analytics">
                       Analytics
                     </Link>
                   </>

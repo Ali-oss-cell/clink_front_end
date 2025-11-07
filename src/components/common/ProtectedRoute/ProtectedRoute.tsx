@@ -41,7 +41,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // If user is authenticated but trying to access auth pages, redirect to dashboard
-  if (isAuthenticated && user && (location.pathname === '/login' || location.pathname === '/register')) {
+  // Only redirect if we have both authentication flag AND valid user data
+  if (isAuthenticated && user && user.role && (location.pathname === '/login' || location.pathname === '/register')) {
     switch (user.role) {
       case 'patient':
         return <Navigate to="/patient/dashboard" replace />;
@@ -49,6 +50,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         return <Navigate to="/psychologist/dashboard" replace />;
       case 'practice_manager':
         return <Navigate to="/manager/dashboard" replace />;
+      case 'admin':
+        return <Navigate to="/admin/dashboard" replace />;
       default:
         return <Navigate to="/" replace />;
     }

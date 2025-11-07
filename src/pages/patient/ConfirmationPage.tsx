@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
+import { authService } from '../../services/api/auth';
 import styles from './Confirmation.module.scss';
 
 export const ConfirmationPage: React.FC = () => {
@@ -16,17 +17,8 @@ export const ConfirmationPage: React.FC = () => {
   
   const [isLoading, setIsLoading] = useState(false);
   
-  // TODO: Get user data from Redux store
-  const mockUser = {
-    id: 1,
-    first_name: 'John',
-    full_name: 'John Smith',
-    role: 'patient' as const,
-    email: 'john@example.com',
-    last_name: 'Smith',
-    is_verified: true,
-    created_at: '2024-01-01'
-  };
+  // Get user from auth service
+  const user = authService.getStoredUser();
 
   // TODO: Fetch appointment details from Django backend
   // TODO: Generate unique booking reference from backend
@@ -110,7 +102,7 @@ export const ConfirmationPage: React.FC = () => {
 
   return (
     <Layout 
-      user={mockUser} 
+      user={user} 
       isAuthenticated={true}
       className={styles.patientLayout}
     >
@@ -183,7 +175,7 @@ export const ConfirmationPage: React.FC = () => {
                 <div className={styles.stepIcon}>📧</div>
                 <div className={styles.stepContent}>
                   <h4>Email Confirmation</h4>
-                  <p>✓ Sent to: {mockUser.email}</p>
+                  <p>✓ Sent to: {user?.email || 'your email'}</p>
                   <p>✓ Includes calendar invite and session preparation tips</p>
                 </div>
               </div>
