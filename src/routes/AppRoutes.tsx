@@ -37,7 +37,8 @@ import {
   ManagerStaffPage,
   ManagerPatientsPage,
   ManagerAppointmentsPage,
-  ManagerBillingPage
+  ManagerBillingPage,
+  ManagerResourcesPage
 } from '../pages/manager';
 
 // Admin pages
@@ -49,7 +50,8 @@ import {
   AdminStaffPage,
   AdminBillingPage,
   AdminSettingsPage,
-  AdminAnalyticsPage
+  AdminAnalyticsPage,
+  AdminResourcesPage
 } from '../pages/admin';
 
 // TODO: Import these when Redux store is set up
@@ -358,6 +360,15 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <ManagerBillingPage />
         </ProtectedRoute>
       } />
+      <Route path="/manager/resources" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['practice_manager', 'admin', 'psychologist']}
+        >
+          <ManagerResourcesPage />
+        </ProtectedRoute>
+      } />
 
       {/* Admin Routes */}
       <Route path="/admin/dashboard" element={
@@ -437,6 +448,16 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['admin']}
         >
           <AdminAnalyticsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/resources" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin', 'practice_manager', 'psychologist']}
+        >
+          <AdminResourcesPage />
         </ProtectedRoute>
       } />
 

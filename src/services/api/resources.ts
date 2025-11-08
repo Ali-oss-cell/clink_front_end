@@ -224,6 +224,87 @@ class ResourceService {
       throw new Error(error.response?.data?.detail || 'Failed to search resources');
     }
   }
+
+  // 11. Create resource (staff only: admin/practice manager/psychologist)
+  async createResource(data: CreateResourceRequest): Promise<Resource> {
+    try {
+      const response = await axiosInstance.post('/resources/', data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to create resource:', error);
+      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to create resource');
+    }
+  }
+
+  // 12. Update resource (staff only)
+  async updateResource(id: number, data: UpdateResourceRequest): Promise<Resource> {
+    try {
+      const response = await axiosInstance.put(`/resources/${id}/`, data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to update resource:', error);
+      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to update resource');
+    }
+  }
+
+  // 13. Partial update resource (staff only)
+  async patchResource(id: number, data: Partial<UpdateResourceRequest>): Promise<Resource> {
+    try {
+      const response = await axiosInstance.patch(`/resources/${id}/`, data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to update resource:', error);
+      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to update resource');
+    }
+  }
+
+  // 14. Delete resource (staff only)
+  async deleteResource(id: number): Promise<{ message: string }> {
+    try {
+      const response = await axiosInstance.delete(`/resources/${id}/`);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to delete resource:', error);
+      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to delete resource');
+    }
+  }
+}
+
+// Request/Response types for CRUD operations
+export interface CreateResourceRequest {
+  title: string;
+  description: string;
+  category: string;
+  type: string;
+  icon: string;
+  content?: string;
+  content_type?: string;
+  duration_minutes?: number;
+  difficulty_level?: string;
+  tags?: string[];
+  is_published?: boolean;
+  is_featured?: boolean;
+  thumbnail_url?: string;
+  media_url?: string;
+  download_url?: string;
+}
+
+export interface UpdateResourceRequest extends Partial<CreateResourceRequest> {
+  title?: string;
+  description?: string;
+  category?: string;
+  type?: string;
+  icon?: string;
+  content?: string;
+  content_type?: string;
+  duration_minutes?: number;
+  difficulty_level?: string;
+  tags?: string[];
+  is_published?: boolean;
+  is_featured?: boolean;
+  thumbnail_url?: string;
+  media_url?: string;
+  download_url?: string;
 }
 
 // Export singleton instance

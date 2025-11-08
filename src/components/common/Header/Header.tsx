@@ -112,6 +112,9 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link to="/psychologist/patients">
                       Patients
                     </Link>
+                    <Link to="/manager/resources">
+                      Resources
+                    </Link>
                   </>
                 )}
                 {userRole === 'practice_manager' && (
@@ -130,6 +133,9 @@ export const Header: React.FC<HeaderProps> = ({
                     </Link>
                     <Link to="/manager/billing">
                       Billing
+                    </Link>
+                    <Link to="/manager/resources">
+                      Resources
                     </Link>
                   </>
                 )}
@@ -155,6 +161,9 @@ export const Header: React.FC<HeaderProps> = ({
                     </Link>
                     <Link to="/admin/analytics">
                       Analytics
+                    </Link>
+                    <Link to="/admin/resources">
+                      Resources
                     </Link>
                   </>
                 )}

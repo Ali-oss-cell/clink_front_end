@@ -464,6 +464,18 @@ export const AdminDashboardPage: React.FC = () => {
                 </div>
                 <div className={styles.quickActionArrow}>→</div>
               </div>
+              
+              <div 
+                className={styles.quickActionCard}
+                onClick={() => navigate('/admin/resources')}
+              >
+                <div className={styles.quickActionIcon}>📚</div>
+                <div className={styles.quickActionContent}>
+                  <h3>Resource Management</h3>
+                  <p>Create and manage mental health resources</p>
+                </div>
+                <div className={styles.quickActionArrow}>→</div>
+              </div>
             </div>
           </div>
         </div>
