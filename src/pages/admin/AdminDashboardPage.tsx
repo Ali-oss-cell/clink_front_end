@@ -476,6 +476,18 @@ export const AdminDashboardPage: React.FC = () => {
                 </div>
                 <div className={styles.quickActionArrow}>→</div>
               </div>
+              
+              <div 
+                className={styles.quickActionCard}
+                onClick={() => navigate('/admin/audit-logs')}
+              >
+                <div className={styles.quickActionIcon}>📋</div>
+                <div className={styles.quickActionContent}>
+                  <h3>Audit Logs</h3>
+                  <p>View system activity and change history</p>
+                </div>
+                <div className={styles.quickActionArrow}>→</div>
+              </div>
             </div>
           </div>
         </div>

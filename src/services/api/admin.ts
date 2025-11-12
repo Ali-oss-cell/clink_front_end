@@ -462,9 +462,13 @@ export class AdminService {
 
       const response = await axiosInstance.get('/appointments/', { params: queryParams });
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to get appointments:', error);
-      throw new Error('Failed to load appointments');
+      const errorMessage = error.response?.data?.detail || 
+                          error.response?.data?.message || 
+                          error.message ||
+                          'Failed to load appointments';
+      throw new Error(errorMessage);
     }
   }
 
@@ -560,6 +564,44 @@ export class AdminService {
     } catch (error) {
       console.error('Failed to get Medicare claims:', error);
       throw new Error('Failed to load Medicare claims');
+    }
+  }
+
+  /**
+   * Download invoice PDF
+   * @param invoiceId - ID of the invoice to download
+   * @returns Blob of the PDF file
+   */
+  async downloadInvoicePDF(invoiceId: number): Promise<Blob> {
+    try {
+      const response = await axiosInstance.get(`/billing/invoices/${invoiceId}/download/`, {
+        responseType: 'blob', // Important: Set response type to blob for PDF
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to download invoice PDF:', error);
+      const errorMessage = error.response?.data?.detail || 
+                          error.response?.data?.message || 
+                          'Failed to download invoice PDF';
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Get invoice by ID (for viewing details)
+   * @param invoiceId - ID of the invoice
+   * @returns Invoice details
+   */
+  async getInvoiceById(invoiceId: number): Promise<Invoice> {
+    try {
+      const response = await axiosInstance.get(`/billing/invoices/${invoiceId}/`);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to get invoice:', error);
+      const errorMessage = error.response?.data?.detail || 
+                          error.response?.data?.message || 
+                          'Failed to load invoice';
+      throw new Error(errorMessage);
     }
   }
 

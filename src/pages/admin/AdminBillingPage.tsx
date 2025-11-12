@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Invoice, type Payment, type MedicareClaim } from '../../services/api/admin';
+import { downloadInvoicePDF } from '../../utils/invoicePDF';
 import styles from './AdminPages.module.scss';
 
 export const AdminBillingPage: React.FC = () => {
@@ -12,6 +13,7 @@ export const AdminBillingPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'invoices' | 'payments' | 'claims'>('invoices');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [downloadingId, setDownloadingId] = useState<number | null>(null);
 
   const user = authService.getStoredUser();
 
@@ -78,6 +80,18 @@ export const AdminBillingPage: React.FC = () => {
         return '#ef4444';
       default:
         return '#6b7280';
+    }
+  };
+
+  const handleDownloadPDF = async (invoiceId: number) => {
+    try {
+      setDownloadingId(invoiceId);
+      await downloadInvoicePDF(invoiceId);
+    } catch (error: any) {
+      console.error('Failed to download invoice PDF:', error);
+      alert(error.message || 'Failed to download invoice PDF');
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -167,12 +181,13 @@ export const AdminBillingPage: React.FC = () => {
                     <th>Status</th>
                     <th>Due Date</th>
                     <th>Created</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoices.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className={styles.emptyCell}>
+                      <td colSpan={8} className={styles.emptyCell}>
                         No invoices found
                       </td>
                     </tr>
@@ -193,6 +208,16 @@ export const AdminBillingPage: React.FC = () => {
                         </td>
                         <td>{invoice.due_date ? formatDate(invoice.due_date) : 'N/A'}</td>
                         <td>{formatDate(invoice.created_at)}</td>
+                        <td>
+                          <button
+                            onClick={() => handleDownloadPDF(invoice.id)}
+                            disabled={downloadingId === invoice.id}
+                            className={styles.actionButton}
+                            title="Download Invoice PDF"
+                          >
+                            {downloadingId === invoice.id ? '⏳ Downloading...' : '📄 Download PDF'}
+                          </button>
+                        </td>
                       </tr>
                     ))
                   )}

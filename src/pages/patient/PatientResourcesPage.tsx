@@ -153,7 +153,7 @@ export const PatientResourcesPage: React.FC = () => {
                     <div className={styles.resourceContent}>
                       <div className={styles.resourceHeader}>
                         <h3>{resource.title}</h3>
-                        <span className={styles.resourceType}>{resource.type.toUpperCase()}</span>
+                        <span className={styles.resourceType}>{resource.type_display}</span>
                       </div>
                       <p className={styles.resourceDescription}>{resource.description}</p>
                       <button 

@@ -165,6 +165,9 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link to="/admin/resources">
                       Resources
                     </Link>
+                    <Link to="/admin/audit-logs">
+                      Audit Logs
+                    </Link>
                   </>
                 )}
                 <button 

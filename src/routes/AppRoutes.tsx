@@ -17,6 +17,7 @@ import { ResourceDetailPage } from '../pages/patient/ResourceDetailPage';
 import { PatientIntakeFormPage } from '../pages/patient/PatientIntakeFormPage';
 import { PatientAppointmentPage } from '../pages/patient/PatientAppointmentPage';
 import { PatientAppointmentsPage } from '../pages/patient/PatientAppointmentsPage';
+import { PatientInvoicesPage } from '../pages/patient/PatientInvoicesPage';
 import { ServiceSelectionPage } from '../pages/patient/ServiceSelectionPage';
 import { PsychologistSelectionPage } from '../pages/patient/PsychologistSelectionPage';
 import { DateTimeSelectionPage } from '../pages/patient/DateTimeSelectionPage';
@@ -51,7 +52,8 @@ import {
   AdminBillingPage,
   AdminSettingsPage,
   AdminAnalyticsPage,
-  AdminResourcesPage
+  AdminResourcesPage,
+  AdminAuditLogsPage
 } from '../pages/admin';
 
 // TODO: Import these when Redux store is set up
@@ -236,6 +238,17 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['patient']}
         >
           <PatientAccountPage />
+        </ProtectedRoute>
+      } />
+      
+      {/* Patient Invoices */}
+      <Route path="/patient/invoices" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['patient']}
+        >
+          <PatientInvoicesPage />
         </ProtectedRoute>
       } />
       
@@ -448,6 +461,16 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['admin']}
         >
           <AdminAnalyticsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/audit-logs" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin']}
+        >
+          <AdminAuditLogsPage />
         </ProtectedRoute>
       } />
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Invoice } from '../../services/api/admin';
+import { downloadInvoicePDF } from '../../utils/invoicePDF';
 import styles from './ManagerPages.module.scss';
 
 export const ManagerBillingPage: React.FC = () => {
@@ -10,6 +11,7 @@ export const ManagerBillingPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [downloadingId, setDownloadingId] = useState<number | null>(null);
 
   const user = authService.getStoredUser();
 
@@ -83,6 +85,18 @@ export const ManagerBillingPage: React.FC = () => {
         return styles.statusCancelled;
       default:
         return '';
+    }
+  };
+
+  const handleDownloadPDF = async (invoiceId: number) => {
+    try {
+      setDownloadingId(invoiceId);
+      await downloadInvoicePDF(invoiceId);
+    } catch (error: any) {
+      console.error('Failed to download invoice PDF:', error);
+      alert(error.message || 'Failed to download invoice PDF');
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -168,12 +182,13 @@ export const ManagerBillingPage: React.FC = () => {
                   <th>Amount</th>
                   <th>Status</th>
                   <th>Due Date</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredInvoices.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className={styles.emptyState}>
+                    <td colSpan={8} className={styles.emptyState}>
                       No invoices found
                     </td>
                   </tr>
@@ -191,6 +206,16 @@ export const ManagerBillingPage: React.FC = () => {
                         </span>
                       </td>
                       <td>{formatDate(invoice.due_date)}</td>
+                      <td>
+                        <button
+                          onClick={() => handleDownloadPDF(invoice.id)}
+                          disabled={downloadingId === invoice.id}
+                          className={styles.actionButton}
+                          title="Download Invoice PDF"
+                        >
+                          {downloadingId === invoice.id ? '⏳ Downloading...' : '📄 Download PDF'}
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}

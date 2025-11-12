@@ -7,4 +7,5 @@ export { AdminBillingPage } from './AdminBillingPage';
 export { AdminSettingsPage } from './AdminSettingsPage';
 export { AdminAnalyticsPage } from './AdminAnalyticsPage';
 export { AdminResourcesPage } from './AdminResourcesPage';
+export { AdminAuditLogsPage } from './AdminAuditLogsPage';
 

@@ -258,9 +258,9 @@ export const ResourceDetailPage: React.FC = () => {
           <div className={styles.resourceDetailHeader}>
             <div className={styles.resourceMeta}>
               <span className={styles.resourceIcon}>{resource.icon}</span>
-              <span className={styles.resourceCategory}>{resource.category.toUpperCase()}</span>
-              <span className={styles.resourceType}>{resource.type.toUpperCase()}</span>
-              <span className={styles.resourceDifficulty}>{resource.difficulty_level}</span>
+              <span className={styles.resourceCategory}>{resource.category_display}</span>
+              <span className={styles.resourceType}>{resource.type_display}</span>
+              <span className={styles.resourceDifficulty}>{resource.difficulty_display}</span>
             </div>
             
             <h1>{resource.title}</h1>
@@ -268,7 +268,7 @@ export const ResourceDetailPage: React.FC = () => {
             
             <div className={styles.resourceInfo}>
               <div className={styles.infoItem}>
-                <span>📖 {resource.estimated_reading_time}</span>
+                <span>📖 {resource.estimated_time || resource.estimated_reading_time || `${resource.duration_minutes || 0} min`}</span>
               </div>
               <div className={styles.infoItem}>
                 <span>👁️ {resource.view_count.toLocaleString()} views</span>
@@ -288,13 +288,27 @@ export const ResourceDetailPage: React.FC = () => {
               <button onClick={handleShare} className={styles.actionButton}>
                 📤 Share
               </button>
-              {resource.download_url && (
-                <a href={resource.download_url} download className={styles.actionButton}>
+              {(resource.has_download && (resource.download_file_url || resource.download_url)) && (
+                <a 
+                  href={resource.download_file_url || resource.download_url || ''} 
+                  download 
+                  className={styles.actionButton}
+                >
                   📥 Download
                 </a>
               )}
             </div>
           </div>
+
+          {/* Resource Header Image */}
+          {resource.has_image && resource.thumbnail_image_url && (
+            <div className={styles.resourceHeaderImage}>
+              <img 
+                src={resource.thumbnail_image_url} 
+                alt={resource.title}
+              />
+            </div>
+          )}
 
           {/* Resource Content */}
           <div className={styles.resourceContent}>
@@ -306,23 +320,27 @@ export const ResourceDetailPage: React.FC = () => {
                 />
               )}
               
-              {resource.content_type === 'video_url' && resource.media_url && (
-                <div className={styles.videoContainer}>
-                  <iframe
-                    src={resource.media_url}
-                    title={resource.title}
-                    frameBorder="0"
-                    allowFullScreen
-                  />
-                </div>
-              )}
-              
-              {resource.content_type === 'audio_url' && resource.media_url && (
-                <div className={styles.audioContainer}>
-                  <audio controls src={resource.media_url}>
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
+              {resource.has_media && resource.media_url && (
+                <>
+                  {resource.content_type === 'video_url' && (
+                    <div className={styles.videoContainer}>
+                      <iframe
+                        src={resource.media_url}
+                        title={resource.title}
+                        frameBorder="0"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
+                  
+                  {resource.content_type === 'audio_url' && (
+                    <div className={styles.audioContainer}>
+                      <audio controls src={resource.media_url}>
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
@@ -360,7 +378,20 @@ export const ResourceDetailPage: React.FC = () => {
               {/* Rating */}
               <div className={styles.sidebarCard}>
                 <h3>Rate this Resource</h3>
-                {!showRatingForm ? (
+                {resource.user_rating ? (
+                  <div className={styles.userRating}>
+                    <p>Your rating: {'⭐'.repeat(resource.user_rating.rating)}</p>
+                    {resource.user_rating.review && (
+                      <p className={styles.userReview}>{resource.user_rating.review}</p>
+                    )}
+                    <button 
+                      onClick={() => setShowRatingForm(true)}
+                      className={styles.rateButton}
+                    >
+                      Update Rating
+                    </button>
+                  </div>
+                ) : !showRatingForm ? (
                   <button 
                     onClick={() => setShowRatingForm(true)}
                     className={styles.rateButton}
@@ -419,8 +450,15 @@ export const ResourceDetailPage: React.FC = () => {
                     className={styles.relatedCard}
                     onClick={() => navigate(`/patient/resources/${related.id}`)}
                   >
+                    {related.thumbnail_image_url && (
+                      <img 
+                        src={related.thumbnail_image_url} 
+                        alt={related.title}
+                        className={styles.relatedThumbnail}
+                      />
+                    )}
                     <h3>{related.title}</h3>
-                    <span className={styles.relatedType}>{related.type}</span>
+                    <span className={styles.relatedType}>{related.type_display || related.type}</span>
                   </div>
                 ))}
               </div>

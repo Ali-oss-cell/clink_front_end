@@ -176,11 +176,12 @@ export const PatientDashboardPage: React.FC = () => {
                   {dashboardData?.outstanding_invoices || 0}
                 </div>
                 <p>Pending payments</p>
-                {(dashboardData?.outstanding_invoices || 0) > 0 && (
-                  <button className={styles.actionButton}>
-                    View Invoices
-                  </button>
-                )}
+                <button 
+                  className={styles.actionButton}
+                  onClick={() => navigate('/patient/invoices')}
+                >
+                  View Invoices
+                </button>
               </div>
             </div>
 

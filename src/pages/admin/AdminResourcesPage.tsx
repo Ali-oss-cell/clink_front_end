@@ -49,6 +49,16 @@ export const AdminResourcesPage: React.FC = () => {
 
   const [tagsInput, setTagsInput] = useState('');
   const [editTagsInput, setEditTagsInput] = useState('');
+  
+  // File upload states
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [editImageFile, setEditImageFile] = useState<File | null | undefined>(undefined);
+  const [editPdfFile, setEditPdfFile] = useState<File | null | undefined>(undefined);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+  const [existingPdfUrl, setExistingPdfUrl] = useState<string | null>(null);
 
   const user = authService.getStoredUser();
 
@@ -126,7 +136,9 @@ export const AdminResourcesPage: React.FC = () => {
       
       await resourceService.createResource({
         ...createForm,
-        tags: tagsArray.length > 0 ? tagsArray : undefined
+        tags: tagsArray.length > 0 ? tagsArray : undefined,
+        image_file: imageFile || undefined,
+        pdf_file: pdfFile || undefined
       });
       
       setShowCreateModal(false);
@@ -145,6 +157,9 @@ export const AdminResourcesPage: React.FC = () => {
         is_featured: false
       });
       setTagsInput('');
+      setImageFile(null);
+      setPdfFile(null);
+      setImagePreview(null);
       fetchResources();
       alert('✅ Resource created successfully!');
     } catch (err: any) {
@@ -162,13 +177,28 @@ export const AdminResourcesPage: React.FC = () => {
       
       const tagsArray = editTagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
       
-      await resourceService.updateResource(selectedResource.id, {
+      const updateData: UpdateResourceRequest = {
         ...editForm,
         tags: tagsArray.length > 0 ? tagsArray : undefined
-      });
+      };
+      
+      // Only include file fields if they were explicitly changed
+      if (editImageFile !== undefined) {
+        updateData.image_file = editImageFile;
+      }
+      if (editPdfFile !== undefined) {
+        updateData.pdf_file = editPdfFile;
+      }
+      
+      await resourceService.updateResource(selectedResource.id, updateData);
       
       setShowEditModal(false);
       setSelectedResource(null);
+      setEditImageFile(undefined);
+      setEditPdfFile(undefined);
+      setEditImagePreview(null);
+      setExistingImageUrl(null);
+      setExistingPdfUrl(null);
       fetchResources();
       alert('✅ Resource updated successfully!');
     } catch (err: any) {
@@ -192,8 +222,17 @@ export const AdminResourcesPage: React.FC = () => {
     }
   };
 
-  const openEditModal = (resource: Resource) => {
+  const openEditModal = async (resource: Resource) => {
     setSelectedResource(resource);
+    
+    // Load full resource details to get media_url and download_url
+    let resourceDetail: any = null;
+    try {
+      resourceDetail = await resourceService.getResource(resource.id);
+    } catch (err) {
+      console.error('Failed to load resource details:', err);
+    }
+    
     setEditForm({
       title: resource.title,
       description: resource.description,
@@ -203,10 +242,80 @@ export const AdminResourcesPage: React.FC = () => {
       difficulty_level: resource.difficulty_level || 'beginner',
       duration_minutes: resource.duration_minutes,
       is_published: (resource as any).is_published ?? false,
-      is_featured: (resource as any).is_featured ?? false
+      is_featured: (resource as any).is_featured ?? false,
+      thumbnail_url: resource.thumbnail_url || resourceDetail?.thumbnail_url || undefined,
+      media_url: resourceDetail?.media_url || undefined,
+      download_url: resourceDetail?.download_url || undefined
     });
     setEditTagsInput((resource as any).tags?.join(', ') || '');
+    
+    // Reset file states
+    setEditImageFile(undefined);
+    setEditPdfFile(undefined);
+    setEditImagePreview(null);
+    
+    // Load existing file URLs if available
+    if (resourceDetail) {
+      setExistingImageUrl(resourceDetail.image_file_url || resourceDetail.thumbnail_image_url || null);
+      setExistingPdfUrl(resourceDetail.pdf_file_url || null);
+    } else {
+      setExistingImageUrl(resource.thumbnail_image_url || resource.thumbnail_url || null);
+      setExistingPdfUrl(null);
+    }
+    
     setShowEditModal(true);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean = false) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (isEdit) {
+        setEditImageFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setEditImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setImageFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean = false) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (isEdit) {
+        setEditPdfFile(file);
+      } else {
+        setPdfFile(file);
+      }
+    }
+  };
+
+  const removeImage = (isEdit: boolean = false) => {
+    if (isEdit) {
+      setEditImageFile(null);
+      setEditImagePreview(null);
+      setExistingImageUrl(null);
+    } else {
+      setImageFile(null);
+      setImagePreview(null);
+    }
+  };
+
+  const removePdf = (isEdit: boolean = false) => {
+    if (isEdit) {
+      setEditPdfFile(null);
+      setExistingPdfUrl(null);
+    } else {
+      setPdfFile(null);
+    }
   };
 
   const filteredResources = resources.filter(resource =>
@@ -322,11 +431,11 @@ export const AdminResourcesPage: React.FC = () => {
                           </span>
                         </div>
                       </td>
-                      <td>{resource.category}</td>
+                      <td>{resource.category_display || resource.category}</td>
                       <td>
-                        <span className={styles.badge}>{resource.type}</span>
+                        <span className={styles.badge}>{resource.type_display || resource.type}</span>
                       </td>
-                      <td>{resource.difficulty_level}</td>
+                      <td>{resource.difficulty_display || resource.difficulty_level}</td>
                       <td>{resource.view_count || 0}</td>
                       <td>
                         {(resource as any).is_published ? (
@@ -490,6 +599,131 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setTagsInput(e.target.value)}
                       placeholder="anxiety, mental-health, self-help"
                     />
+                  </div>
+
+                  {/* File Upload Section */}
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Image File (Optional)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageChange(e, false)}
+                        style={{ marginBottom: '0.5rem' }}
+                      />
+                      {imagePreview && (
+                        <div style={{ marginTop: '0.5rem', position: 'relative', display: 'inline-block' }}>
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            style={{
+                              maxWidth: '200px',
+                              maxHeight: '200px',
+                              borderRadius: '8px',
+                              border: '1px solid #d1d5db'
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(false)}
+                            style={{
+                              position: 'absolute',
+                              top: '-8px',
+                              right: '-8px',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '24px',
+                              height: '24px',
+                              cursor: 'pointer',
+                              fontSize: '14px'
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                        Upload an image file (JPEG, PNG, GIF, WebP)
+                      </small>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>PDF File (Optional)</label>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => handlePdfChange(e, false)}
+                        style={{ marginBottom: '0.5rem' }}
+                      />
+                      {pdfFile && (
+                        <div style={{ marginTop: '0.5rem' }}>
+                          <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
+                            📄 {pdfFile.name}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removePdf(false)}
+                            style={{
+                              marginLeft: '0.5rem',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '0.25rem 0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.75rem'
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                        Upload a PDF file
+                      </small>
+                    </div>
+                  </div>
+
+                  {/* External URL Fields */}
+                  <div className={styles.formGroup}>
+                    <label>External Image URL (Optional - Alternative to file upload)</label>
+                    <input
+                      type="url"
+                      value={createForm.thumbnail_url || ''}
+                      onChange={(e) => setCreateForm({ ...createForm, thumbnail_url: e.target.value || undefined })}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      Use this if you want to use an external image URL instead of uploading a file
+                    </small>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>Media URL (Optional - For Videos/Audio)</label>
+                    <input
+                      type="url"
+                      value={createForm.media_url || ''}
+                      onChange={(e) => setCreateForm({ ...createForm, media_url: e.target.value || undefined })}
+                      placeholder="https://www.youtube.com/watch?v=... or https://soundcloud.com/..."
+                    />
+                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      For video/audio resources: YouTube, Vimeo, SoundCloud, or direct media links
+                    </small>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>External Download URL (Optional - Alternative to PDF upload)</label>
+                    <input
+                      type="url"
+                      value={createForm.download_url || ''}
+                      onChange={(e) => setCreateForm({ ...createForm, download_url: e.target.value || undefined })}
+                      placeholder="https://example.com/document.pdf"
+                    />
+                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      Use this if you want to use an external download URL instead of uploading a PDF file
+                    </small>
                   </div>
 
                   <div className={styles.formRow}>
@@ -658,6 +892,195 @@ export const AdminResourcesPage: React.FC = () => {
                       value={editTagsInput}
                       onChange={(e) => setEditTagsInput(e.target.value)}
                     />
+                  </div>
+
+                  {/* File Upload Section */}
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Image File (Optional)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageChange(e, true)}
+                        style={{ marginBottom: '0.5rem' }}
+                      />
+                      {editImagePreview && (
+                        <div style={{ marginTop: '0.5rem', position: 'relative', display: 'inline-block' }}>
+                          <img
+                            src={editImagePreview}
+                            alt="Preview"
+                            style={{
+                              maxWidth: '200px',
+                              maxHeight: '200px',
+                              borderRadius: '8px',
+                              border: '1px solid #d1d5db'
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(true)}
+                            style={{
+                              position: 'absolute',
+                              top: '-8px',
+                              right: '-8px',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '24px',
+                              height: '24px',
+                              cursor: 'pointer',
+                              fontSize: '14px'
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+                      {existingImageUrl && !editImagePreview && (
+                        <div style={{ marginTop: '0.5rem', position: 'relative', display: 'inline-block' }}>
+                          <img
+                            src={existingImageUrl}
+                            alt="Current"
+                            style={{
+                              maxWidth: '200px',
+                              maxHeight: '200px',
+                              borderRadius: '8px',
+                              border: '1px solid #d1d5db'
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(true)}
+                            style={{
+                              position: 'absolute',
+                              top: '-8px',
+                              right: '-8px',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '24px',
+                              height: '24px',
+                              cursor: 'pointer',
+                              fontSize: '14px'
+                            }}
+                          >
+                            ×
+                          </button>
+                          <small style={{ display: 'block', marginTop: '0.25rem', color: '#6b7280' }}>
+                            Current image
+                          </small>
+                        </div>
+                      )}
+                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                        Upload a new image or remove existing one
+                      </small>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>PDF File (Optional)</label>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => handlePdfChange(e, true)}
+                        style={{ marginBottom: '0.5rem' }}
+                      />
+                      {editPdfFile && (
+                        <div style={{ marginTop: '0.5rem' }}>
+                          <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
+                            📄 {editPdfFile.name}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removePdf(true)}
+                            style={{
+                              marginLeft: '0.5rem',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '0.25rem 0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.75rem'
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                      {existingPdfUrl && !editPdfFile && (
+                        <div style={{ marginTop: '0.5rem' }}>
+                          <a
+                            href={existingPdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: '#3b82f6', fontSize: '0.875rem', textDecoration: 'none' }}
+                          >
+                            📄 View current PDF
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => removePdf(true)}
+                            style={{
+                              marginLeft: '0.5rem',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '0.25rem 0.5rem',
+                              cursor: 'pointer',
+                              fontSize: '0.75rem'
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                        Upload a new PDF or remove existing one
+                      </small>
+                    </div>
+                  </div>
+
+                  {/* External URL Fields */}
+                  <div className={styles.formGroup}>
+                    <label>External Image URL (Optional - Alternative to file upload)</label>
+                    <input
+                      type="url"
+                      value={editForm.thumbnail_url || ''}
+                      onChange={(e) => setEditForm({ ...editForm, thumbnail_url: e.target.value || undefined })}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      Use this if you want to use an external image URL instead of uploading a file
+                    </small>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>Media URL (Optional - For Videos/Audio)</label>
+                    <input
+                      type="url"
+                      value={editForm.media_url || ''}
+                      onChange={(e) => setEditForm({ ...editForm, media_url: e.target.value || undefined })}
+                      placeholder="https://www.youtube.com/watch?v=... or https://soundcloud.com/..."
+                    />
+                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      For video/audio resources: YouTube, Vimeo, SoundCloud, or direct media links
+                    </small>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>External Download URL (Optional - Alternative to PDF upload)</label>
+                    <input
+                      type="url"
+                      value={editForm.download_url || ''}
+                      onChange={(e) => setEditForm({ ...editForm, download_url: e.target.value || undefined })}
+                      placeholder="https://example.com/document.pdf"
+                    />
+                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      Use this if you want to use an external download URL instead of uploading a PDF file
+                    </small>
                   </div>
 
                   <div className={styles.formRow}>

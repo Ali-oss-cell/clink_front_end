@@ -53,6 +53,7 @@ export const AdminAppointmentsPage: React.FC = () => {
     } catch (err: any) {
       console.error('Failed to load appointments:', err);
       setError(err.message || 'Failed to load appointments');
+      setAppointments([]);
     } finally {
       setLoading(false);
     }
@@ -164,16 +165,16 @@ export const AdminAppointmentsPage: React.FC = () => {
                 {appointments.length === 0 ? (
                   <tr>
                     <td colSpan={7} className={styles.emptyCell}>
-                      No appointments found
+                      {loading ? 'Loading appointments...' : 'No appointments found'}
                     </td>
                   </tr>
                 ) : (
                   appointments.map((appointment) => (
                     <tr key={appointment.id}>
                       <td>{formatDateTime(appointment.appointment_date, appointment.appointment_time)}</td>
-                      <td>{appointment.patient_name}</td>
-                      <td>{appointment.psychologist_name}</td>
-                      <td>{appointment.service_name}</td>
+                      <td>{appointment.patient_name || 'N/A'}</td>
+                      <td>{appointment.psychologist_name || 'N/A'}</td>
+                      <td>{appointment.service_name || 'N/A'}</td>
                       <td>
                         <span className={styles.sessionTypeBadge}>
                           {appointment.session_type === 'telehealth' ? '📹 Telehealth' : '🏥 In-Person'}
@@ -184,10 +185,10 @@ export const AdminAppointmentsPage: React.FC = () => {
                           className={styles.statusBadge}
                           style={{ backgroundColor: getStatusColor(appointment.status) }}
                         >
-                          {appointment.status_display}
+                          {appointment.status_display || appointment.status}
                         </span>
                       </td>
-                      <td>{appointment.duration_minutes} min</td>
+                      <td>{appointment.duration_minutes || 0} min</td>
                     </tr>
                   ))
                 )}
