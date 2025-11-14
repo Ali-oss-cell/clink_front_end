@@ -1,0 +1,285 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+.videoCallContainer {
+  width: 100vw;
+  height: 100vh;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.videoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-lg $spacing-xl;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.statusBadge {
+  padding: $spacing-xs $spacing-md;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  
+  &.connecting {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+  }
+  
+  &.connected {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+  }
+  
+  &.disconnected {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+}
+
+.participantCount {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.videoGrid {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.remoteParticipants {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  position: relative;
+}
+
+.remoteVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.waitingMessage {
+  text-align: center;
+  color: white;
+  
+  h3 {
+    font-size: 1.5rem;
+    margin: 0 0 $spacing-md 0;
+  }
+  
+  p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+  }
+}
+
+.localVideoContainer {
+  position: absolute;
+  bottom: $spacing-xl;
+  right: $spacing-xl;
+  z-index: 10;
+}
+
+.localVideoWrapper {
+  position: relative;
+  width: 280px;
+  height: 210px;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.localVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); // Mirror effect for local video
+}
+
+.localLabel {
+  position: absolute;
+  bottom: $spacing-sm;
+  left: $spacing-sm;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.videoControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  background: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controlButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-lg;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: $border-radius-lg;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all $transition-normal ease;
+  min-width: 100px;
+
+  span {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
+  }
+
+  &.leaveButton {
+    background: #ef4444;
+    border-color: #dc2626;
+
+    &:hover {
+      background: #dc2626;
+    }
+  }
+}
+
+// Loading and error states
+.loadingState,
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: white;
+  text-align: center;
+  padding: $spacing-xl;
+
+  h2 {
+    font-size: 2rem;
+    margin: 0 0 $spacing-md 0;
+  }
+
+  p {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+  }
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: $spacing-lg;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.backButton {
+  margin-top: $spacing-lg;
+  padding: $spacing-md $spacing-xl;
+  background: white;
+  color: $text-dark;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-normal ease;
+
+  &:hover {
+    background: $background-gray;
+    transform: translateY(-2px);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .videoHeader {
+    padding: $spacing-md;
+    
+    h2 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .localVideoWrapper {
+    width: 160px;
+    height: 120px;
+  }
+
+  .localVideoContainer {
+    bottom: $spacing-md;
+    right: $spacing-md;
+  }
+
+  .videoControls {
+    padding: $spacing-md;
+    gap: $spacing-sm;
+  }
+
+  .controlButton {
+    min-width: 70px;
+    padding: $spacing-sm $spacing-md;
+    font-size: 1.25rem;
+
+    span {
+      font-size: 0.75rem;
+    }
+  }
+}
+

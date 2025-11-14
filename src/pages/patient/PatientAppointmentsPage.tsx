@@ -4,6 +4,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import type { PatientAppointment } from '../../services/api/appointments';
+import { videoCallService } from '../../services/api/videoCall';
 import styles from './PatientAppointments.module.scss';
 
 // Using PatientAppointment interface from appointments service
@@ -86,6 +87,10 @@ export const PatientAppointmentsPage: React.FC = () => {
   const handleRescheduleAppointment = (appointment: PatientAppointment) => {
     setSelectedAppointment(appointment);
     setShowRescheduleModal(true);
+  };
+
+  const handleJoinVideoCall = (appointmentId: number | string) => {
+    navigate(`/video-session/${appointmentId}`);
   };
 
   const confirmCancel = async () => {
@@ -296,6 +301,16 @@ export const PatientAppointmentsPage: React.FC = () => {
                   </div>
 
                   <div className={styles.appointmentActions}>
+                    {/* Video Call Button - Priority button for telehealth appointments */}
+                    {videoCallService.canJoinNow(appointment) && (
+                      <button 
+                        className={styles.videoCallButton}
+                        onClick={() => handleJoinVideoCall(appointment.id)}
+                      >
+                        🎥 Join Video Session
+                      </button>
+                    )}
+                    
                     <button 
                       className={styles.secondaryButton}
                       onClick={() => handleViewDetails(appointment)}

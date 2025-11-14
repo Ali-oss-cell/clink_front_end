@@ -56,6 +56,9 @@ import {
   AdminAuditLogsPage
 } from '../pages/admin';
 
+// Video call page
+import { VideoCallPage } from '../pages/video';
+
 // TODO: Import these when Redux store is set up
 interface AppRoutesProps {
   isAuthenticated?: boolean;
@@ -249,6 +252,17 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['patient']}
         >
           <PatientInvoicesPage />
+        </ProtectedRoute>
+      } />
+      
+      {/* Video Call Session */}
+      <Route path="/video-session/:appointmentId" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['patient', 'psychologist', 'admin', 'practice_manager']}
+        >
+          <VideoCallPage />
         </ProtectedRoute>
       } />
       

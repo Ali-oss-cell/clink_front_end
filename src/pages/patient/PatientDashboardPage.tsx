@@ -5,6 +5,7 @@ import { OnboardingProgress } from '../../components/patient/OnboardingProgress/
 import { dashboardService } from '../../services/api/dashboard';
 import type { PatientDashboard } from '../../services/api/dashboard';
 import { authService } from '../../services/api/auth';
+import { videoCallService } from '../../services/api/videoCall';
 import styles from './PatientPages.module.scss';
 
 export const PatientDashboardPage: React.FC = () => {
@@ -53,6 +54,10 @@ export const PatientDashboardPage: React.FC = () => {
 
   const handleBookAppointment = () => {
     navigate('/appointments/book-appointment');
+  };
+
+  const handleJoinVideoCall = (appointmentId: number | string) => {
+    navigate(`/video-session/${appointmentId}`);
   };
 
   if (loading) {
@@ -117,6 +122,25 @@ export const PatientDashboardPage: React.FC = () => {
                   <div className={styles.appointmentInfo}>
                     <p><strong>Appointment scheduled</strong></p>
                     <p>Check your appointments for details</p>
+                    
+                    {/* Video Call Button - Show if it's a telehealth appointment */}
+                    {dashboardData.next_appointment.id && 
+                     videoCallService.canJoinNow(dashboardData.next_appointment) && (
+                      <div className={styles.videoCallSection}>
+                        <div className={styles.videoCallInfo}>
+                          <span className={styles.videoBadge}>🎥 Telehealth</span>
+                          <span className={styles.timeUntil}>
+                            {videoCallService.getTimeUntilAppointment(dashboardData.next_appointment)}
+                          </span>
+                        </div>
+                        <button
+                          className={`${styles.actionButton} ${styles.videoButton}`}
+                          onClick={() => handleJoinVideoCall(dashboardData.next_appointment!.id)}
+                        >
+                          🎥 Join Video Session
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className={styles.placeholder}>

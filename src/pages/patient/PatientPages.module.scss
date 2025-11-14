@@ -972,6 +972,47 @@
   padding: $spacing-md 0;
 }
 
+.videoCallSection {
+  margin-top: $spacing-md;
+  padding: $spacing-md;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-radius: $border-radius;
+  border: 2px solid #3b82f6;
+}
+
+.videoCallInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.videoBadge {
+  background: #3b82f6;
+  color: white;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.timeUntil {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.videoButton {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  
+  &:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+  }
+}
+
 .statNumber {
   font-size: 3rem;
   font-weight: 800;
