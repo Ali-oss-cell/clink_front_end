@@ -6,6 +6,8 @@ import { dashboardService } from '../../services/api/dashboard';
 import type { PatientDashboard } from '../../services/api/dashboard';
 import { authService } from '../../services/api/auth';
 import { videoCallService } from '../../services/api/videoCall';
+import { appointmentsService } from '../../services/api/appointments';
+import type { PatientAppointment } from '../../services/api/appointments';
 import styles from './PatientPages.module.scss';
 
 export const PatientDashboardPage: React.FC = () => {
@@ -13,6 +15,7 @@ export const PatientDashboardPage: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<PatientDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [videoCallAppointments, setVideoCallAppointments] = useState<PatientAppointment[]>([]);
   
   // Get user data from auth service
   const user = authService.getStoredUser() || {
@@ -46,6 +49,32 @@ export const PatientDashboardPage: React.FC = () => {
     };
 
     loadDashboardData();
+  }, []);
+
+  // Load appointments for video call card
+  useEffect(() => {
+    const loadVideoCallAppointments = async () => {
+      try {
+        const response = await appointmentsService.getPatientAppointments({
+          status: 'upcoming',
+          page: 1,
+          page_size: 10
+        });
+        
+        // Filter for telehealth appointments that can be joined
+        const eligibleAppointments = response.results.filter((apt: PatientAppointment) => {
+          return videoCallService.isVideoCallAvailable(apt) && videoCallService.canJoinNow(apt);
+        });
+        
+        setVideoCallAppointments(eligibleAppointments);
+      } catch (err: any) {
+        console.error('Failed to load video call appointments:', err);
+        // Don't show error, just leave empty
+        setVideoCallAppointments([]);
+      }
+    };
+
+    loadVideoCallAppointments();
   }, []);
 
   const handleContinueIntake = () => {
@@ -114,6 +143,57 @@ export const PatientDashboardPage: React.FC = () => {
           <OnboardingProgress user={user} />
 
           <div className={styles.dashboardGrid}>
+            {/* Video Sessions Card - Prominent */}
+            <div className={`${styles.dashboardCard} ${styles.videoSessionsCard}`}>
+              <h3>🎥 Video Sessions</h3>
+              <div className={styles.cardContent}>
+                {videoCallAppointments.length > 0 ? (
+                  <div className={styles.videoSessionsList}>
+                    {videoCallAppointments.map((appointment) => (
+                      <div key={appointment.id} className={styles.videoSessionItem}>
+                        <div className={styles.videoSessionInfo}>
+                          <div className={styles.videoSessionHeader}>
+                            <span className={styles.videoSessionPsychologist}>
+                              {appointment.psychologist.name}
+                            </span>
+                            <span className={styles.videoSessionTime}>
+                              {videoCallService.getTimeUntilAppointment(appointment)}
+                            </span>
+                          </div>
+                          <div className={styles.videoSessionDetails}>
+                            <span>{appointment.formatted_date}</span>
+                            <span>•</span>
+                            <span>{appointment.formatted_time}</span>
+                            <span>•</span>
+                            <span>{appointment.duration_minutes} min</span>
+                          </div>
+                        </div>
+                        <button
+                          className={`${styles.actionButton} ${styles.videoJoinButton}`}
+                          onClick={() => handleJoinVideoCall(appointment.id)}
+                        >
+                          🎥 Join Now
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.placeholder}>
+                    <p>No active video sessions available</p>
+                    <p className={styles.placeholderSubtext}>
+                      Video sessions will appear here when you have upcoming telehealth appointments
+                    </p>
+                    <button 
+                      className={styles.actionButton}
+                      onClick={() => navigate('/patient/appointments')}
+                    >
+                      View All Appointments
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Next Appointment Card */}
             <div className={styles.dashboardCard}>
               <h3>📅 Next Appointment</h3>

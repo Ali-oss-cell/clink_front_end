@@ -56,22 +56,40 @@ class VideoCallService {
    * Check if an appointment has video call capability
    */
   isVideoCallAvailable(appointment: any): boolean {
-    // Check if appointment is telehealth
-    if (appointment?.appointment_type !== 'telehealth' && appointment?.type !== 'telehealth') {
+    // Check if appointment is telehealth (support multiple field names)
+    const isTelehealth = 
+      appointment?.session_type === 'telehealth' ||
+      appointment?.appointment_type === 'telehealth' ||
+      appointment?.type === 'telehealth';
+    
+    if (!isTelehealth) {
       return false;
     }
 
     // Check if appointment is in the future or within the allowed time window
-    const appointmentDateTime = new Date(appointment.appointment_date + 'T' + appointment.appointment_time);
-    const now = new Date();
+    // Support different date/time field formats
+    const appointmentDate = appointment.appointment_date || appointment.date;
+    const appointmentTime = appointment.appointment_time || appointment.time || '00:00';
     
-    // Allow joining 15 minutes before the appointment
-    const fifteenMinutesBefore = new Date(appointmentDateTime.getTime() - 15 * 60 * 1000);
-    
-    // Allow joining up to 2 hours after the appointment (in case it runs late)
-    const twoHoursAfter = new Date(appointmentDateTime.getTime() + 2 * 60 * 60 * 1000);
-    
-    return now >= fifteenMinutesBefore && now <= twoHoursAfter;
+    if (!appointmentDate) {
+      return false;
+    }
+
+    try {
+      const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}`);
+      const now = new Date();
+      
+      // Allow joining 15 minutes before the appointment
+      const fifteenMinutesBefore = new Date(appointmentDateTime.getTime() - 15 * 60 * 1000);
+      
+      // Allow joining up to 2 hours after the appointment (in case it runs late)
+      const twoHoursAfter = new Date(appointmentDateTime.getTime() + 2 * 60 * 60 * 1000);
+      
+      return now >= fifteenMinutesBefore && now <= twoHoursAfter;
+    } catch (error) {
+      console.error('Error parsing appointment date/time:', error);
+      return false;
+    }
   }
 
   /**
@@ -82,32 +100,47 @@ class VideoCallService {
       return false;
     }
 
-    // Must be in 'scheduled' or 'in_progress' status
-    return appointment.status === 'scheduled' || appointment.status === 'in_progress';
+    // Must be in valid status (support multiple status formats)
+    const status = appointment.status;
+    const validStatuses = ['scheduled', 'in_progress', 'upcoming', 'confirmed'];
+    
+    return validStatuses.includes(status);
   }
 
   /**
    * Get time until appointment
    */
   getTimeUntilAppointment(appointment: any): string {
-    const appointmentDateTime = new Date(appointment.appointment_date + 'T' + appointment.appointment_time);
-    const now = new Date();
-    const diffMs = appointmentDateTime.getTime() - now.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-
-    if (diffMins < 0) {
-      return 'Started';
-    } else if (diffMins === 0) {
-      return 'Starting now';
-    } else if (diffMins < 60) {
-      return `Starts in ${diffMins} minute${diffMins !== 1 ? 's' : ''}`;
-    } else {
-      const hours = Math.floor(diffMins / 60);
-      const mins = diffMins % 60;
-      if (mins === 0) {
-        return `Starts in ${hours} hour${hours !== 1 ? 's' : ''}`;
+    try {
+      const appointmentDate = appointment.appointment_date || appointment.date;
+      const appointmentTime = appointment.appointment_time || appointment.time || '00:00';
+      
+      if (!appointmentDate) {
+        return 'Time TBD';
       }
-      return `Starts in ${hours}h ${mins}m`;
+
+      const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}`);
+      const now = new Date();
+      const diffMs = appointmentDateTime.getTime() - now.getTime();
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+
+      if (diffMins < 0) {
+        return 'Started';
+      } else if (diffMins === 0) {
+        return 'Starting now';
+      } else if (diffMins < 60) {
+        return `Starts in ${diffMins} minute${diffMins !== 1 ? 's' : ''}`;
+      } else {
+        const hours = Math.floor(diffMins / 60);
+        const mins = diffMins % 60;
+        if (mins === 0) {
+          return `Starts in ${hours} hour${hours !== 1 ? 's' : ''}`;
+        }
+        return `Starts in ${hours}h ${mins}m`;
+      }
+    } catch (error) {
+      console.error('Error calculating time until appointment:', error);
+      return 'Time TBD';
     }
   }
 }
