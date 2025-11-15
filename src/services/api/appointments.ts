@@ -287,8 +287,8 @@ export class AppointmentsService {
         queryParams.page_size = params.page_size;
       }
 
-      // Backend uses /appointments/appointments/ (router at /appointments/, viewset at appointments/)
-      const response = await axiosInstance.get('/appointments/appointments/', {
+      // Backend endpoint: /appointments/patient/appointments/
+      const response = await axiosInstance.get('/appointments/patient/appointments/', {
         params: queryParams
       });
       return response.data;
