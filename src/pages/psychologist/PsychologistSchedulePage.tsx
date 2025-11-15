@@ -439,72 +439,116 @@ export const PsychologistSchedulePage: React.FC = () => {
               ) : (
                 filteredAppointments.map(appointment => (
                   <div key={appointment.id} className={styles.appointmentCard}>
-                    <div className={styles.appointmentHeader}>
-                      <div className={styles.appointmentInfo}>
-                        <div className={styles.patientInfo}>
-                          <div className={styles.patientAvatar}>
-                            {appointment.patient_name.split(' ').map(n => n[0]).join('')}
-                          </div>
-                          <div>
-                            <h3 className={styles.patientName}>{appointment.patient_name}</h3>
-                            <p className={styles.serviceName}>{appointment.service_name}</p>
-                          </div>
-                        </div>
-                        <div className={styles.appointmentDateTime}>
-                          <div className={styles.appointmentDate}>
-                            <span className={styles.dateLabel}>📅</span>
-                            <span className={styles.dateValue}>{appointment.formatted_date}</span>
-                          </div>
-                          <div className={styles.appointmentTime}>
-                            <span className={styles.timeLabel}>🕐</span>
-                            <span className={styles.timeValue}>{appointment.formatted_time}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={styles.appointmentStatus}>
-                        <span className={`${styles.statusBadge} ${getStatusColor(appointment.status)}`}>
-                          {getStatusIcon(appointment.status)} {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-                        </span>
-                      </div>
+                    {/* Status Badge - Top Right */}
+                    <div className={styles.cardStatusBadge}>
+                      <span className={`${styles.statusBadge} ${getStatusColor(appointment.status)}`}>
+                        {getStatusIcon(appointment.status)} {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                      </span>
                     </div>
 
-                    <div className={styles.appointmentDetails}>
-                      <div className={styles.detailRow}>
-                        <span className={styles.detailLabel}>Type:</span>
-                        <span className={styles.detailValue}>
-                          {appointment.session_type === 'in_person' ? '🏢 In-Person' : '💻 Telehealth'}
-                        </span>
+                    {/* Main Content */}
+                    <div className={styles.cardContent}>
+                      {/* Patient Info Section */}
+                      <div className={styles.patientSection}>
+                        <div className={styles.patientAvatar}>
+                          {appointment.patient_name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div className={styles.patientDetails}>
+                          <h3 className={styles.patientName}>{appointment.patient_name}</h3>
+                          <p className={styles.serviceName}>{appointment.service_name}</p>
+                        </div>
                       </div>
-                      {appointment.location && (
-                        <div className={styles.detailRow}>
-                          <span className={styles.detailLabel}>Location:</span>
-                          <span className={styles.detailValue}>{appointment.location}</span>
+
+                      {/* Date & Time Section */}
+                      <div className={styles.dateTimeSection}>
+                        <div className={styles.dateTimeItem}>
+                          <span className={styles.dateTimeIcon}>📅</span>
+                          <div className={styles.dateTimeContent}>
+                            <span className={styles.dateTimeLabel}>Date</span>
+                            <span className={styles.dateTimeValue}>{appointment.formatted_date}</span>
+                          </div>
+                        </div>
+                        <div className={styles.dateTimeItem}>
+                          <span className={styles.dateTimeIcon}>🕐</span>
+                          <div className={styles.dateTimeContent}>
+                            <span className={styles.dateTimeLabel}>Time</span>
+                            <span className={styles.dateTimeValue}>{appointment.formatted_time}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Details Grid */}
+                      <div className={styles.detailsGrid}>
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailIcon}>
+                            {appointment.session_type === 'in_person' ? '🏢' : '💻'}
+                          </span>
+                          <div className={styles.detailContent}>
+                            <span className={styles.detailLabel}>Type</span>
+                            <span className={styles.detailValue}>
+                              {appointment.session_type === 'in_person' ? 'In-Person' : 'Telehealth'}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailIcon}>⏱️</span>
+                          <div className={styles.detailContent}>
+                            <span className={styles.detailLabel}>Duration</span>
+                            <span className={styles.detailValue}>{appointment.duration_minutes} min</span>
+                          </div>
+                        </div>
+                        
+                        {appointment.location && (
+                          <div className={styles.detailItem}>
+                            <span className={styles.detailIcon}>📍</span>
+                            <div className={styles.detailContent}>
+                              <span className={styles.detailLabel}>Location</span>
+                              <span className={styles.detailValue}>{appointment.location}</span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {appointment.meeting_link && (
+                          <div className={styles.detailItem}>
+                            <span className={styles.detailIcon}>🔗</span>
+                            <div className={styles.detailContent}>
+                              <span className={styles.detailLabel}>Meeting Link</span>
+                              <a 
+                                href={appointment.meeting_link} 
+                                className={styles.meetingLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                Join Meeting →
+                              </a>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Notes Section */}
+                      {appointment.notes && (
+                        <div className={styles.notesSection}>
+                          <span className={styles.notesLabel}>📝 Notes</span>
+                          <p className={styles.notesText}>{appointment.notes}</p>
                         </div>
                       )}
-                      {appointment.meeting_link && (
-                        <div className={styles.detailRow}>
-                          <span className={styles.detailLabel}>Meeting Link:</span>
-                          <a href={appointment.meeting_link} className={styles.meetingLink} target="_blank" rel="noopener noreferrer">
-                            Join Meeting
-                          </a>
-                        </div>
-                      )}
-                      <div className={styles.detailRow}>
-                        <span className={styles.detailLabel}>Duration:</span>
-                        <span className={styles.detailValue}>{appointment.duration_minutes} minutes</span>
-                      </div>
                     </div>
 
                     {/* Session Timer */}
                     {(appointment.session_status || appointment.time_until_start_seconds !== null || appointment.time_remaining_seconds !== null) && (
-                      <SessionTimer 
-                        appointment={appointment as any}
-                        onJoinSession={() => handleJoinVideoCall(appointment.id)}
-                      />
+                      <div className={styles.timerSection}>
+                        <SessionTimer 
+                          appointment={appointment as any}
+                          onJoinSession={() => handleJoinVideoCall(appointment.id)}
+                        />
+                      </div>
                     )}
 
+                    {/* Actions Section */}
                     <div className={styles.appointmentActions}>
-                      {/* Video Call Button - Use can_join_session if available, otherwise fallback to old logic */}
+                      {/* Video Call Button */}
                       {videoCallService.isVideoCallAvailable(appointment) && (
                         <button 
                           className={`${styles.videoCallButton} ${
