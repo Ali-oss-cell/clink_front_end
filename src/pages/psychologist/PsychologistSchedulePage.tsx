@@ -640,25 +640,22 @@ export const PsychologistSchedulePage: React.FC = () => {
                       style={{ cursor: 'pointer' }}
                     >
                       <div className={styles.calendarDayNumber}>{new Date(day.date).getDate()}</div>
-                      <div className={styles.calendarDayAppointments}>
-                        {day.appointments.map(appointment => (
-                          <div 
-                            key={appointment.id} 
-                            className={`${styles.calendarAppointment} ${getStatusColor(appointment.status)}`}
-                            title={`${appointment.patient_name} - ${appointment.formatted_time}`}
-                          >
-                            <div className={styles.calendarAppointmentTime}>
-                              {appointment.formatted_time}
+                      {day.appointments.length > 0 && (
+                        <div className={styles.calendarDayIndicators}>
+                          {day.appointments.slice(0, 3).map(appointment => (
+                            <div 
+                              key={appointment.id} 
+                              className={`${styles.appointmentDot} ${getStatusColor(appointment.status)}`}
+                              title={`${appointment.formatted_time} - ${appointment.patient_name}`}
+                            />
+                          ))}
+                          {day.appointments.length > 3 && (
+                            <div className={styles.moreIndicator}>
+                              +{day.appointments.length - 3}
                             </div>
-                            <div className={styles.calendarAppointmentPatient}>
-                              {appointment.patient_name}
-                            </div>
-                            <div className={styles.calendarAppointmentType}>
-                              {appointment.session_type === 'telehealth' ? '💻' : '🏢'}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
