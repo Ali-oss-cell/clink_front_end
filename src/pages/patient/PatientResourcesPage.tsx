@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { resourceService, type Resource, type ResourceCategory } from '../../services/api/resources';
+import { markResourcesViewed } from '../../utils/onboardingTracking';
 import styles from './PatientPages.module.scss';
 
 export const PatientResourcesPage: React.FC = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [resources, setResources] = useState<Resource[]>([]);
   const [categories, setCategories] = useState<ResourceCategory[]>([]);
@@ -158,7 +161,11 @@ export const PatientResourcesPage: React.FC = () => {
                       <p className={styles.resourceDescription}>{resource.description}</p>
                       <button 
                         className={styles.resourceButton}
-                        onClick={() => window.location.href = `/patient/resources/${resource.id}`}
+                        onClick={() => {
+                          // Mark resources as viewed for onboarding progress
+                          markResourcesViewed();
+                          navigate(`/patient/resources/${resource.id}`);
+                        }}
                       >
                         View Resource →
                       </button>

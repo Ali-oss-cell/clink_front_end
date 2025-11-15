@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
+import { videoCallService } from '../../services/api/videoCall';
+import { SessionTimer } from '../../components/patient/SessionTimer';
 import styles from './PsychologistPages.module.scss';
 
 interface Appointment {
@@ -18,6 +21,13 @@ interface Appointment {
   notes: string | null;
   location: string | null;
   meeting_link: string | null;
+  // Timer fields
+  session_start_time?: string;
+  session_end_time?: string;
+  time_until_start_seconds?: number | null;
+  time_remaining_seconds?: number | null;
+  session_status?: 'upcoming' | 'starting_soon' | 'in_progress' | 'ended' | 'unknown';
+  can_join_session?: boolean;
 }
 
 interface CalendarDay {
@@ -28,6 +38,7 @@ interface CalendarDay {
 }
 
 export const PsychologistSchedulePage: React.FC = () => {
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,9 +56,9 @@ export const PsychologistSchedulePage: React.FC = () => {
 
   const user = authService.getStoredUser();
 
-  useEffect(() => {
-    fetchAppointments();
-  }, [filterStatus, selectedDate, viewMode]); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleJoinVideoCall = (appointmentId: number | string) => {
+    navigate(`/video-session/${appointmentId}`);
+  };
 
   const fetchAppointments = async () => {
     try {
@@ -95,7 +106,14 @@ export const PsychologistSchedulePage: React.FC = () => {
         status: apt.status,
         notes: apt.notes,
         location: apt.location,
-        meeting_link: apt.meeting_link
+        meeting_link: apt.meeting_link,
+        // Timer fields
+        session_start_time: apt.session_start_time,
+        session_end_time: apt.session_end_time,
+        time_until_start_seconds: apt.time_until_start_seconds,
+        time_remaining_seconds: apt.time_remaining_seconds,
+        session_status: apt.session_status,
+        can_join_session: apt.can_join_session
       }));
 
       setAppointments(mappedAppointments);
@@ -106,6 +124,20 @@ export const PsychologistSchedulePage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [filterStatus, selectedDate, viewMode]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-refresh appointments every 30 seconds to update timer values
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterStatus, selectedDate, viewMode]);
 
   const filteredAppointments = appointments.filter(apt => {
     const aptDate = new Date(apt.appointment_date);
@@ -463,7 +495,51 @@ export const PsychologistSchedulePage: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Session Timer */}
+                    {(appointment.session_status || appointment.time_until_start_seconds !== null || appointment.time_remaining_seconds !== null) && (
+                      <SessionTimer 
+                        appointment={appointment as any}
+                        onJoinSession={() => handleJoinVideoCall(appointment.id)}
+                      />
+                    )}
+
                     <div className={styles.appointmentActions}>
+                      {/* Video Call Button - Use can_join_session if available, otherwise fallback to old logic */}
+                      {videoCallService.isVideoCallAvailable(appointment) && (
+                        <button 
+                          className={`${styles.videoCallButton} ${
+                            (appointment.can_join_session === false || 
+                             (appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment))) 
+                            ? styles.disabledButton : ''
+                          }`}
+                          onClick={() => {
+                            const canJoin = appointment.can_join_session !== undefined 
+                              ? appointment.can_join_session 
+                              : videoCallService.canJoinNow(appointment);
+                            if (canJoin) {
+                              handleJoinVideoCall(appointment.id);
+                            }
+                          }}
+                          disabled={
+                            appointment.can_join_session === false || 
+                            (appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment))
+                          }
+                          title={
+                            appointment.can_join_session === false 
+                              ? 'Video call is not available at this time' 
+                              : appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment)
+                              ? 'Video call will be available 15 minutes before the appointment'
+                              : 'Join video session'
+                          }
+                        >
+                          🎥 {
+                            appointment.can_join_session === true || 
+                            (appointment.can_join_session === undefined && videoCallService.canJoinNow(appointment))
+                            ? 'Join Video Session' 
+                            : 'Video Call (Not Available Yet)'
+                          }
+                        </button>
+                      )}
                       {appointment.status !== 'completed' && appointment.status !== 'cancelled' && (
                         <button
                           className={styles.successButton}
@@ -585,8 +661,52 @@ export const PsychologistSchedulePage: React.FC = () => {
                           </p>
                         )}
                       </div>
+                      {/* Session Timer */}
+                      {(apt.session_status || apt.time_until_start_seconds !== null || apt.time_remaining_seconds !== null) && (
+                        <SessionTimer 
+                          appointment={apt as any}
+                          onJoinSession={() => handleJoinVideoCall(apt.id)}
+                        />
+                      )}
                       {apt.status !== 'completed' && apt.status !== 'cancelled' && (
                         <div className={styles.appointmentActions}>
+                          {/* Video Call Button - Use can_join_session if available, otherwise fallback to old logic */}
+                          {videoCallService.isVideoCallAvailable(apt) && (
+                            <button 
+                              className={`${styles.videoCallButton} ${
+                                (apt.can_join_session === false || 
+                                 (apt.can_join_session === undefined && !videoCallService.canJoinNow(apt))) 
+                                ? styles.disabledButton : ''
+                              }`}
+                              onClick={() => {
+                                const canJoin = apt.can_join_session !== undefined 
+                                  ? apt.can_join_session 
+                                  : videoCallService.canJoinNow(apt);
+                                if (canJoin) {
+                                  handleJoinVideoCall(apt.id);
+                                }
+                              }}
+                              disabled={
+                                apt.can_join_session === false || 
+                                (apt.can_join_session === undefined && !videoCallService.canJoinNow(apt))
+                              }
+                              title={
+                                apt.can_join_session === false 
+                                  ? 'Video call is not available at this time' 
+                                  : apt.can_join_session === undefined && !videoCallService.canJoinNow(apt)
+                                  ? 'Video call will be available 15 minutes before the appointment'
+                                  : 'Join video session'
+                              }
+                              style={{ marginRight: '0.5rem', padding: '0.5rem 1rem' }}
+                            >
+                              🎥 {
+                                apt.can_join_session === true || 
+                                (apt.can_join_session === undefined && videoCallService.canJoinNow(apt))
+                                ? 'Join Video' 
+                                : 'Video (Not Available)'
+                              }
+                            </button>
+                          )}
                           <button
                             className={styles.secondaryButton}
                             onClick={() => {

@@ -41,7 +41,8 @@ export const VideoCallPage: React.FC = () => {
         const tokenData = await videoCallService.getVideoToken(appointmentId);
 
         // Connect to Twilio Video room
-        const twilioRoom = await Video.connect(tokenData.token, {
+        // Backend returns 'access_token' not 'token'
+        const twilioRoom = await Video.connect(tokenData.access_token, {
           name: tokenData.room_name,
           audio: true,
           video: { width: 640, height: 480 }

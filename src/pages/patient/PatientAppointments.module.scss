@@ -44,101 +44,173 @@
 
 .appointmentsList {
   display: grid;
-  gap: $spacing-lg;
+  gap: $spacing-xl;
+  padding: $spacing-md 0;
 }
 
 .appointmentCard {
   @include card;
-  padding: $spacing-xl;
-  transition: all $transition-normal ease;
+  padding: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  // Top accent bar
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $primary-color 0%, $secondary-color 100%);
+    opacity: 1;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: $shadow-lg;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-color: rgba($primary-color, 0.3);
+  }
+
+  // Add subtle animation on mount with stagger
+  animation: fadeInUp 0.5s ease-out;
+  
+  // Stagger animation for multiple cards
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
   }
 }
 
-.appointmentHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: $spacing-lg;
-  gap: $spacing-md;
+.cardStatusBadge {
+  position: absolute;
+  top: $spacing-md;
+  right: $spacing-md;
+  z-index: 2;
 }
 
-.appointmentInfo {
+.cardContent {
+  padding: $spacing-xl;
   display: flex;
-  gap: $spacing-lg;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.psychologistSection {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding-bottom: $spacing-lg;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.psychologistDetails {
   flex: 1;
 }
 
-.psychologistInfo {
+.psychologistAvatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+
+  .appointmentCard:hover & {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.psychologistName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 $spacing-xs 0;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.psychologistTitle {
+  font-size: 0.875rem;
+  color: $text-light;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.dateTimeSection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: linear-gradient(135deg, rgba($primary-color, 0.06) 0%, rgba($primary-color, 0.02) 100%);
+  border-radius: $border-radius-lg;
+  border: 1px solid rgba($primary-color, 0.1);
+}
+
+.dateTimeItem {
   display: flex;
   align-items: center;
   gap: $spacing-md;
 }
 
-.psychologistAvatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid $border-light;
+.dateTimeIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
-.psychologistName {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: $text-dark;
-  margin: 0 0 $spacing-xs 0;
-}
-
-.psychologistTitle {
-  font-size: 0.9rem;
-  color: $text-light;
-  margin: 0;
-}
-
-.appointmentDateTime {
+.dateTimeContent {
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
+  gap: 0.25rem;
+  flex: 1;
 }
 
-.appointmentDate,
-.appointmentTime {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-}
-
-.dateLabel,
-.timeLabel {
-  font-size: 0.85rem;
+.dateTimeLabel {
+  font-size: 0.75rem;
   color: $text-light;
-  font-weight: 500;
-}
-
-.dateValue,
-.timeValue {
-  font-size: 0.9rem;
-  color: $text-dark;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.appointmentStatus {
-  flex-shrink: 0;
+.dateTimeValue {
+  font-size: 1rem;
+  color: $text-dark;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .statusBadge {
   display: inline-flex;
   align-items: center;
-  gap: $spacing-xs;
-  padding: $spacing-xs $spacing-sm;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
   border-radius: $border-radius-full;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   text-transform: capitalize;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 
   &.statusUpcoming {
     background: rgba($info-blue, 0.1);
@@ -161,44 +233,111 @@
   }
 }
 
-.appointmentDetails {
+.detailsGrid {
   display: grid;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-lg;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-md;
 }
 
-.detailRow {
+.detailItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: $spacing-sm;
+  padding: $spacing-md;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: $border-radius;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+  }
+}
+
+.detailIcon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.detailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
 }
 
 .detailLabel {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: $text-light;
-  font-weight: 500;
-  min-width: 80px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .detailValue {
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   color: $text-dark;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.notesSection {
+  padding: $spacing-md;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: $border-radius;
+  border-left: 3px solid $primary-color;
+}
+
+.notesLabel {
+  font-size: 0.75rem;
+  color: $text-light;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: $spacing-xs;
+}
+
+.notesText {
+  font-size: 0.875rem;
+  color: $text-dark;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.timerSection {
+  margin: $spacing-lg 0;
+  padding: $spacing-md;
+  background: rgba($primary-color, 0.02);
+  border-radius: $border-radius-lg;
+  border: 1px solid rgba($primary-color, 0.1);
 }
 
 .meetingLink {
   color: $primary-color;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.2s ease;
 
   &:hover {
-    text-decoration: underline;
+    color: darken($primary-color, 10%);
+    gap: 0.5rem;
   }
 }
 
 .appointmentActions {
   display: flex;
-  gap: $spacing-sm;
+  gap: $spacing-md;
   flex-wrap: wrap;
+  padding: $spacing-lg $spacing-xl;
+  border-top: 2px solid rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.01);
+  margin-top: $spacing-lg;
 }
 
 .secondaryButton {
@@ -216,15 +355,32 @@
   border: none;
   color: white;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  cursor: pointer;
   
-  &:hover {
+  &:hover:not(:disabled) {
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
   }
   
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
+  }
+  
+  &.disabledButton {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    
+    &:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
@@ -317,18 +473,52 @@
     justify-content: center;
   }
 
-  .appointmentHeader {
-    flex-direction: column;
-    gap: $spacing-md;
+  .appointmentCard {
+    border-radius: 12px;
   }
 
-  .appointmentInfo {
+  .cardContent {
+    padding: $spacing-lg;
+    gap: $spacing-lg;
+  }
+
+  .psychologistSection {
     flex-direction: column;
-    gap: $spacing-md;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .psychologistAvatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .dateTimeSection {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+
+  .detailsGrid {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
   }
 
   .appointmentActions {
-    justify-content: center;
+    flex-direction: column;
+    padding: $spacing-md;
+    
+    button {
+      width: 100%;
+    }
+  }
+
+  .cardStatusBadge {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-bottom: $spacing-md;
+    display: flex;
+    justify-content: flex-start;
   }
 
   .modal {

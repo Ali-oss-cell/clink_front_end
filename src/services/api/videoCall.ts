@@ -5,9 +5,11 @@ export interface VideoTokenRequest {
 }
 
 export interface VideoTokenResponse {
-  token: string;
+  access_token: string; // Backend returns 'access_token'
   room_name: string;
-  identity: string;
+  user_identity: string; // Backend returns 'user_identity'
+  expires_in: number;
+  appointment_id: number;
 }
 
 export interface VideoRoomInfo {

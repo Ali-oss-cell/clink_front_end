@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { resourceService, type ResourceDetail } from '../../services/api/resources';
+import { markResourcesViewed } from '../../utils/onboardingTracking';
 import styles from './PatientPages.module.scss';
 
 export const ResourceDetailPage: React.FC = () => {
@@ -36,6 +37,9 @@ export const ResourceDetailPage: React.FC = () => {
       
       // Track view
       await resourceService.trackView(parseInt(id));
+      
+      // Mark resources as viewed for onboarding progress
+      markResourcesViewed();
     } catch (err: any) {
       console.error('Failed to load resource:', err);
       setError(err.message || 'Failed to load resource');

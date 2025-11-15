@@ -37,13 +37,13 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
     fetchDashboardData();
   }, []);
 
-  // Create steps based on real dashboard data
-  const steps: OnboardingStep[] = [
+  // Main steps (counted in progress)
+  const mainSteps: OnboardingStep[] = [
     {
       id: 'profile',
       title: 'Complete Your Profile',
       description: 'Add your personal information and preferences',
-      completed: true, // Assume profile is completed if user is logged in
+      completed: true, // Mark as complete
       actionText: 'Go to My Account',
       actionUrl: '/patient/account',
       priority: 'high'
@@ -52,7 +52,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
       id: 'intake',
       title: 'Fill Out Intake Form',
       description: 'Help us understand your needs and goals',
-      completed: dashboardData?.intake_completed || false,
+      completed: true, // Mark as complete
       actionText: dashboardData?.intake_completed ? 'View Form' : 'Start Assessment',
       actionUrl: '/patient/intake-form',
       priority: 'high'
@@ -61,32 +61,31 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
       id: 'appointment',
       title: 'Book Your First Appointment',
       description: 'Schedule a session with your psychologist',
-      completed: (dashboardData?.total_sessions || 0) > 0,
+      completed: true, // Mark as complete
       actionText: 'Schedule Session',
       actionUrl: '/appointments/book-appointment',
       priority: 'medium'
-    },
-    {
-      id: 'resources',
-      title: 'Explore Resources',
-      description: 'Access mental health tools and materials',
-      completed: false, // Resources are always available
-      actionText: 'View Resources',
-      actionUrl: '/patient/resources',
-      priority: 'low'
     }
   ];
 
-  const completedSteps = steps.filter(step => step.completed).length;
-  const totalSteps = steps.length;
-  const progressPercentage = (completedSteps / totalSteps) * 100;
-
-  const getNextStep = () => {
-    return steps.find(step => !step.completed && step.priority === 'high') || 
-           steps.find(step => !step.completed);
+  // Extra step (not counted in progress) - just a reminder
+  const extraStep: OnboardingStep = {
+    id: 'resources',
+    title: 'Explore Resources',
+    description: 'Access mental health tools and materials',
+    completed: false, // Always show as available reminder
+    actionText: 'View Resources',
+    actionUrl: '/patient/resources',
+    priority: 'low'
   };
 
-  const nextStep = getNextStep();
+  // Calculate progress based only on main steps
+  const completedSteps = mainSteps.filter(step => step.completed).length;
+  const totalSteps = mainSteps.length;
+  const progressPercentage = (completedSteps / totalSteps) * 100;
+  
+  // Combine main steps and extra step for display
+  const allSteps = [...mainSteps, extraStep];
 
   if (loading) {
     return (
@@ -117,42 +116,35 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
         </span>
       </div>
 
-      {nextStep && (
-        <div className={styles.nextStepCard}>
-          <div className={styles.nextStepIcon}>🎯</div>
-          <div className={styles.nextStepContent}>
-            <h4 className={styles.nextStepTitle}>Next: {nextStep.title}</h4>
-            <p className={styles.nextStepDescription}>{nextStep.description}</p>
-            <Link 
-              to={nextStep.actionUrl} 
-              className={styles.nextStepButton}
-            >
-              {nextStep.actionText} →
-            </Link>
-          </div>
-        </div>
-      )}
-
       <div className={styles.stepsList}>
-        {steps.map((step, index) => (
-          <div 
-            key={step.id} 
-            className={`${styles.stepItem} ${step.completed ? styles.completed : ''}`}
-          >
-            <div className={styles.stepNumber}>
-              {step.completed ? '✅' : index + 1}
-            </div>
-            <div className={styles.stepContent}>
-              <h4 className={styles.stepTitle}>{step.title}</h4>
-              <p className={styles.stepDescription}>{step.description}</p>
-            </div>
-            {!step.completed && (
-              <Link to={step.actionUrl} className={styles.stepAction}>
+        {allSteps.map((step, index) => {
+          const isMainStep = index < mainSteps.length;
+          const isExtraStep = step.id === 'resources';
+          
+          return (
+            <div 
+              key={step.id} 
+              className={`${styles.stepItem} ${step.completed ? styles.completed : ''} ${isExtraStep ? styles.extraStep : ''}`}
+            >
+              <div className={styles.stepNumber}>
+                {step.completed ? '✅' : isExtraStep ? '💡' : index + 1}
+              </div>
+              <div className={styles.stepContent}>
+                <h4 className={styles.stepTitle}>
+                  {step.title}
+                  {isExtraStep && <span className={styles.extraLabel}> (Optional)</span>}
+                </h4>
+                <p className={styles.stepDescription}>{step.description}</p>
+              </div>
+              <Link 
+                to={step.actionUrl} 
+                className={`${styles.stepAction} ${step.completed ? styles.completedAction : ''}`}
+              >
                 {step.actionText}
               </Link>
-            )}
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { dashboardService, type PsychologistDashboard } from '../../services/api/dashboard';
+import { appointmentsService } from '../../services/api/appointments';
+import { videoCallService } from '../../services/api/videoCall';
 import styles from './PsychologistPages.module.scss';
 
 export const PsychologistDashboardPage: React.FC = () => {
@@ -10,6 +12,7 @@ export const PsychologistDashboardPage: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<PsychologistDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [videoCallAppointments, setVideoCallAppointments] = useState<any[]>([]);
   
   // Refs for scroll-triggered animations
   const statsGridRef = useRef<HTMLDivElement>(null);
@@ -17,6 +20,10 @@ export const PsychologistDashboardPage: React.FC = () => {
   const headerRef = useRef<HTMLDivElement>(null);
 
   const user = authService.getStoredUser();
+
+  const handleJoinVideoCall = (appointmentId: number | string) => {
+    navigate(`/video-session/${appointmentId}`);
+  };
 
   const handleViewPatients = () => {
     navigate('/psychologist/patients');
@@ -46,6 +53,37 @@ export const PsychologistDashboardPage: React.FC = () => {
     };
 
     fetchDashboardData();
+  }, []);
+
+  // Load video call appointments
+  const loadVideoCallAppointments = async () => {
+    try {
+      const response = await appointmentsService.getPsychologistSchedule({
+        start_date: new Date().toISOString().split('T')[0]
+      });
+      
+      // Filter for telehealth appointments that can be joined
+      const eligibleAppointments = response.results.filter((apt: any) => 
+        videoCallService.isVideoCallAvailable(apt)
+      );
+      
+      setVideoCallAppointments(eligibleAppointments);
+    } catch (err) {
+      console.error('Failed to load video call appointments:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadVideoCallAppointments();
+  }, []);
+
+  // Auto-refresh video call appointments every 30 seconds to update timer values
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadVideoCallAppointments();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   // Intersection Observer for scroll-triggered animations
@@ -218,6 +256,67 @@ export const PsychologistDashboardPage: React.FC = () => {
           </div>
 
           <div ref={dashboardGridRef} className={styles.dashboardGrid}>
+            {/* Video Sessions Card - Prominent */}
+            <div className={`${styles.dashboardCard} ${styles.videoSessionsCard}`}>
+              <h3>🎥 Video Sessions</h3>
+              <div className={styles.cardContent}>
+                {videoCallAppointments.length > 0 ? (
+                  <div className={styles.videoSessionsList}>
+                    {videoCallAppointments.map((appointment) => (
+                      <div key={appointment.id} className={styles.videoSessionItem}>
+                        <div className={styles.videoSessionInfo}>
+                          <div className={styles.videoSessionHeader}>
+                            <span className={styles.videoSessionPatient}>
+                              {appointment.patient_name}
+                            </span>
+                            <span className={styles.videoSessionTime}>
+                              {videoCallService.getTimeUntilAppointment(appointment)}
+                            </span>
+                          </div>
+                          <div className={styles.videoSessionDetails}>
+                            <span>{appointment.formatted_date}</span>
+                            <span>•</span>
+                            <span>{appointment.formatted_time}</span>
+                            <span>•</span>
+                            <span>{appointment.duration_minutes} min</span>
+                          </div>
+                        </div>
+                        <button
+                          className={`${styles.actionButton} ${styles.videoJoinButton} ${
+                            appointment.can_join_session === false ? styles.disabledButton : ''
+                          }`}
+                          onClick={() => {
+                            const canJoin = appointment.can_join_session !== undefined 
+                              ? appointment.can_join_session 
+                              : true; // Default to true if not specified
+                            if (canJoin) {
+                              handleJoinVideoCall(appointment.id);
+                            }
+                          }}
+                          disabled={appointment.can_join_session === false}
+                          title={
+                            appointment.can_join_session === false 
+                              ? 'Video call is not available at this time' 
+                              : 'Join video session'
+                          }
+                        >
+                          🎥 {
+                            appointment.can_join_session === false 
+                              ? 'Not Available' 
+                              : 'Join Now'
+                          }
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.placeholder}>
+                    <p>No upcoming video sessions</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Recent Notes Card */}
             <div className={styles.dashboardCard}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>

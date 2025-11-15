@@ -5,6 +5,7 @@ import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import type { PatientAppointment } from '../../services/api/appointments';
 import { videoCallService } from '../../services/api/videoCall';
+import { SessionTimer } from '../../components/patient/SessionTimer';
 import styles from './PatientAppointments.module.scss';
 
 // Using PatientAppointment interface from appointments service
@@ -36,40 +37,95 @@ export const PatientAppointmentsPage: React.FC = () => {
   };
 
   // Fetch appointments from API
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const response = await appointmentsService.getPatientAppointments({
-          status: filter === 'all' ? undefined : filter,
-          page: 1,
-          page_size: 50
-        });
-        
-        setAppointments(response.results || []);
-      } catch (err: any) {
-        console.error('Failed to load appointments:', err);
-        // If 404, the endpoint might not exist yet - show empty state
-        if (err.response?.status === 404) {
-          setAppointments([]);
-          setError(null); // Don't show error, just empty state
-        } else {
-          setError('Failed to load appointments. Please try again.');
-        }
-      } finally {
-        setLoading(false);
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await appointmentsService.getPatientAppointments({
+        status: filter === 'all' ? undefined : filter,
+        page: 1,
+        page_size: 50
+      });
+      
+      setAppointments(response.results || []);
+    } catch (err: any) {
+      console.error('Failed to load appointments:', err);
+      // If 404, the endpoint might not exist yet - show empty state
+      if (err.response?.status === 404) {
+        setAppointments([]);
+        setError(null); // Don't show error, just empty state
+      } else {
+        setError('Failed to load appointments. Please try again.');
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchAppointments();
+  }, [filter]);
+
+  // Auto-refresh appointments every 30 seconds to update timer values
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const filteredAppointments = appointments.filter(appointment => {
     if (filter === 'all') return true;
     return appointment.status === filter;
   });
+
+  // Helper function to format date
+  const formatAppointmentDate = (appointment: PatientAppointment): string => {
+    if (appointment.formatted_date) {
+      return appointment.formatted_date;
+    }
+    if (appointment.appointment_date) {
+      try {
+        const date = new Date(appointment.appointment_date);
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleDateString('en-AU', {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+        }
+      } catch (e) {
+        console.error('Error formatting date:', e);
+      }
+    }
+    return 'Date not available';
+  };
+
+  // Helper function to format time
+  const formatAppointmentTime = (appointment: PatientAppointment): string => {
+    if (appointment.formatted_time) {
+      return appointment.formatted_time;
+    }
+    if (appointment.appointment_date) {
+      try {
+        const date = new Date(appointment.appointment_date);
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleTimeString('en-AU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          });
+        }
+      } catch (e) {
+        console.error('Error formatting time:', e);
+      }
+    }
+    return 'Time not available';
+  };
 
   const handleBookNew = () => {
     navigate('/appointments/book-appointment');
@@ -236,78 +292,151 @@ export const PatientAppointmentsPage: React.FC = () => {
             ) : (
               filteredAppointments.map((appointment) => (
                 <div key={appointment.id} className={styles.appointmentCard}>
-                  <div className={styles.appointmentHeader}>
-                    <div className={styles.appointmentInfo}>
-                      <div className={styles.psychologistInfo}>
-                        <img 
-                          src={appointment.psychologist.profile_image_url || '/default-psychologist.jpg'} 
-                          alt={appointment.psychologist.name}
-                          className={styles.psychologistAvatar}
-                        />
-                        <div>
-                          <h3 className={styles.psychologistName}>{appointment.psychologist.name}</h3>
-                          <p className={styles.psychologistTitle}>{appointment.psychologist.title}</p>
-                        </div>
-                      </div>
-                      <div className={styles.appointmentDateTime}>
-                        <div className={styles.appointmentDate}>
-                          <span className={styles.dateLabel}>Date:</span>
-                          <span className={styles.dateValue}>{appointment.formatted_date}</span>
-                        </div>
-                        <div className={styles.appointmentTime}>
-                          <span className={styles.timeLabel}>Time:</span>
-                          <span className={styles.timeValue}>{appointment.formatted_time}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.appointmentStatus}>
-                      <span className={`${styles.statusBadge} ${getStatusColor(appointment.status)}`}>
-                        {getStatusIcon(appointment.status)} {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-                      </span>
-                    </div>
+                  {/* Status Badge - Top Right */}
+                  <div className={styles.cardStatusBadge}>
+                    <span className={`${styles.statusBadge} ${getStatusColor(appointment.status)}`}>
+                      {getStatusIcon(appointment.status)} {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                    </span>
                   </div>
 
-                  <div className={styles.appointmentDetails}>
-                    <div className={styles.detailRow}>
-                      <span className={styles.detailLabel}>Type:</span>
-                      <span className={styles.detailValue}>
-                        {appointment.session_type === 'in_person' ? '🏢 In-Person' : '💻 Telehealth'}
-                      </span>
-                    </div>
-                    {appointment.location && (
-                      <div className={styles.detailRow}>
-                        <span className={styles.detailLabel}>Location:</span>
-                        <span className={styles.detailValue}>{appointment.location}</span>
+                  {/* Main Content */}
+                  <div className={styles.cardContent}>
+                    {/* Psychologist Info Section */}
+                    <div className={styles.psychologistSection}>
+                      <img 
+                        src={appointment.psychologist.profile_image_url || '/default-psychologist.jpg'} 
+                        alt={appointment.psychologist.name}
+                        className={styles.psychologistAvatar}
+                      />
+                      <div className={styles.psychologistDetails}>
+                        <h3 className={styles.psychologistName}>{appointment.psychologist.name}</h3>
+                        <p className={styles.psychologistTitle}>{appointment.psychologist.title}</p>
                       </div>
-                    )}
-                    {appointment.meeting_link && (
-                      <div className={styles.detailRow}>
-                        <span className={styles.detailLabel}>Meeting Link:</span>
-                        <a href={appointment.meeting_link} className={styles.meetingLink} target="_blank" rel="noopener noreferrer">
-                          Join Meeting
-                        </a>
-                      </div>
-                    )}
-                    <div className={styles.detailRow}>
-                      <span className={styles.detailLabel}>Duration:</span>
-                      <span className={styles.detailValue}>{appointment.duration_minutes} minutes</span>
                     </div>
+
+                    {/* Date & Time Section */}
+                    <div className={styles.dateTimeSection}>
+                      <div className={styles.dateTimeItem}>
+                        <span className={styles.dateTimeIcon}>📅</span>
+                        <div className={styles.dateTimeContent}>
+                          <span className={styles.dateTimeLabel}>Date</span>
+                          <span className={styles.dateTimeValue}>{formatAppointmentDate(appointment)}</span>
+                        </div>
+                      </div>
+                      <div className={styles.dateTimeItem}>
+                        <span className={styles.dateTimeIcon}>🕐</span>
+                        <div className={styles.dateTimeContent}>
+                          <span className={styles.dateTimeLabel}>Time</span>
+                          <span className={styles.dateTimeValue}>{formatAppointmentTime(appointment)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Details Grid */}
+                    <div className={styles.detailsGrid}>
+                      <div className={styles.detailItem}>
+                        <span className={styles.detailIcon}>
+                          {appointment.session_type === 'in_person' ? '🏢' : '💻'}
+                        </span>
+                        <div className={styles.detailContent}>
+                          <span className={styles.detailLabel}>Type</span>
+                          <span className={styles.detailValue}>
+                            {appointment.session_type === 'in_person' ? 'In-Person' : 'Telehealth'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className={styles.detailItem}>
+                        <span className={styles.detailIcon}>⏱️</span>
+                        <div className={styles.detailContent}>
+                          <span className={styles.detailLabel}>Duration</span>
+                          <span className={styles.detailValue}>{appointment.duration_minutes} min</span>
+                        </div>
+                      </div>
+                      
+                      {appointment.location && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailIcon}>📍</span>
+                          <div className={styles.detailContent}>
+                            <span className={styles.detailLabel}>Location</span>
+                            <span className={styles.detailValue}>{appointment.location}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {appointment.meeting_link && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailIcon}>🔗</span>
+                          <div className={styles.detailContent}>
+                            <span className={styles.detailLabel}>Meeting Link</span>
+                            <a 
+                              href={appointment.meeting_link} 
+                              className={styles.meetingLink} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              Join Meeting →
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Notes Section */}
                     {appointment.notes && (
-                      <div className={styles.detailRow}>
-                        <span className={styles.detailLabel}>Notes:</span>
-                        <span className={styles.detailValue}>{appointment.notes}</span>
+                      <div className={styles.notesSection}>
+                        <span className={styles.notesLabel}>📝 Notes</span>
+                        <p className={styles.notesText}>{appointment.notes}</p>
                       </div>
                     )}
                   </div>
 
+                  {/* Session Timer */}
+                  {(appointment.session_status || appointment.time_until_start_seconds !== null || appointment.time_remaining_seconds !== null) && (
+                    <div className={styles.timerSection}>
+                      <SessionTimer 
+                        appointment={appointment}
+                        onJoinSession={() => handleJoinVideoCall(appointment.id)}
+                      />
+                    </div>
+                  )}
+
+                  {/* Actions Section */}
                   <div className={styles.appointmentActions}>
-                    {/* Video Call Button - Priority button for telehealth appointments */}
-                    {videoCallService.canJoinNow(appointment) && (
+                    {/* Video Call Button */}
+                    {videoCallService.isVideoCallAvailable(appointment) && (
                       <button 
-                        className={styles.videoCallButton}
-                        onClick={() => handleJoinVideoCall(appointment.id)}
+                        className={`${styles.videoCallButton} ${
+                          (appointment.can_join_session === false || 
+                           (appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment))) 
+                          ? styles.disabledButton : ''
+                        }`}
+                        onClick={() => {
+                          const canJoin = appointment.can_join_session !== undefined 
+                            ? appointment.can_join_session 
+                            : videoCallService.canJoinNow(appointment);
+                          if (canJoin) {
+                            handleJoinVideoCall(appointment.id);
+                          }
+                        }}
+                        disabled={
+                          appointment.can_join_session === false || 
+                          (appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment))
+                        }
+                        title={
+                          appointment.can_join_session === false 
+                            ? 'Video call is not available at this time' 
+                            : appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment)
+                            ? 'Video call will be available 15 minutes before the appointment'
+                            : 'Join video session'
+                        }
                       >
-                        🎥 Join Video Session
+                        🎥 {
+                          appointment.can_join_session === true || 
+                          (appointment.can_join_session === undefined && videoCallService.canJoinNow(appointment))
+                          ? 'Join Video Session' 
+                          : 'Video Call (Not Available Yet)'
+                        }
                       </button>
                     )}
                     
@@ -315,22 +444,24 @@ export const PatientAppointmentsPage: React.FC = () => {
                       className={styles.secondaryButton}
                       onClick={() => handleViewDetails(appointment)}
                     >
-                      View Details
+                      📋 View Details
                     </button>
+                    
                     {appointment.can_reschedule && (
                       <button 
                         className={styles.secondaryButton}
                         onClick={() => handleRescheduleAppointment(appointment)}
                       >
-                        Reschedule
+                        📅 Reschedule
                       </button>
                     )}
+                    
                     {appointment.can_cancel && (
                       <button 
                         className={styles.dangerButton}
                         onClick={() => handleCancelAppointment(appointment)}
                       >
-                        Cancel
+                        ✖️ Cancel
                       </button>
                     )}
                   </div>

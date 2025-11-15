@@ -1428,6 +1428,149 @@
   }
 }
 
+.appointmentActions {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  margin-top: $spacing-md;
+}
+
+.videoCallButton {
+  @include button-primary;
+  padding: $spacing-sm $spacing-lg;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  cursor: pointer;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &.disabledButton {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    
+    &:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.videoSessionsCard {
+  grid-column: 1 / -1; // Full width
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border: 2px solid #3b82f6;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+  
+  h3 {
+    color: #1e40af;
+    font-size: 1.5rem;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.videoSessionsList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.videoSessionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md;
+  background: white;
+  border-radius: $border-radius;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  transition: all $transition-normal ease;
+  
+  &:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+.videoSessionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.videoSessionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.videoSessionPatient {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: $text-dark;
+}
+
+.videoSessionTime {
+  background: #3b82f6;
+  color: white;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.videoSessionDetails {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 0.9rem;
+  color: $text-light;
+}
+
+.videoJoinButton {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: $spacing-sm $spacing-lg;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: $border-radius;
+  transition: all $transition-normal ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
 .emptyState {
   background: white;
   border-radius: $border-radius-lg;

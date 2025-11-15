@@ -144,6 +144,13 @@ export interface PatientAppointment {
   can_cancel: boolean;
   reschedule_deadline: string;
   cancellation_deadline: string;
+  // New timer fields
+  session_start_time?: string;
+  session_end_time?: string;
+  time_until_start_seconds?: number | null;
+  time_remaining_seconds?: number | null;
+  session_status?: 'upcoming' | 'starting_soon' | 'in_progress' | 'ended' | 'unknown';
+  can_join_session?: boolean;
 }
 
 export interface PatientAppointmentsResponse {
@@ -363,6 +370,13 @@ export class AppointmentsService {
       notes: string | null;
       location: string | null;
       meeting_link: string | null;
+      // Timer fields
+      session_start_time?: string;
+      session_end_time?: string;
+      time_until_start_seconds?: number | null;
+      time_remaining_seconds?: number | null;
+      session_status?: 'upcoming' | 'starting_soon' | 'in_progress' | 'ended' | 'unknown';
+      can_join_session?: boolean;
     }[];
   }> {
     try {

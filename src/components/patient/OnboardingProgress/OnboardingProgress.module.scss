@@ -151,6 +151,28 @@
   color: white;
 }
 
+.stepItem.extraStep {
+  background: #fef3c7;
+  border-color: #fde68a;
+  
+  &:hover {
+    background: #fef3c7;
+    border-color: #fbbf24;
+  }
+  
+  .stepNumber {
+    background: #fbbf24;
+    color: white;
+  }
+}
+
+.extraLabel {
+  color: #92400e;
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-style: italic;
+}
+
 .stepContent {
   flex: 1;
 }
@@ -170,10 +192,35 @@
 
 .stepAction {
   @include button-ghost;
-  padding: $spacing-xs $spacing-sm;
+  padding: $spacing-xs $spacing-md;
   font-size: 0.85rem;
+  font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
+  color: $primary-color;
+  border: 1px solid $primary-color;
+  border-radius: $border-radius-sm;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  
+  &:hover {
+    background: $primary-color;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba($primary-color, 0.2);
+  }
+  
+  &.completedAction {
+    color: #059669;
+    border-color: #10b981;
+    
+    &:hover {
+      background: #10b981;
+      color: white;
+      border-color: #059669;
+    }
+  }
 }
 
 // Mobile responsiveness
