@@ -40,14 +40,17 @@ export const PatientAccountPage: React.FC = () => {
   const [deletionReason, setDeletionReason] = useState('');
   const [deletionError, setDeletionError] = useState<string | null>(null);
   
-  // Preferences state
-  const [preferences, setPreferences] = useState<{
+  // Preferences type
+  type PatientPreferences = {
     email_notifications_enabled: boolean;
     sms_notifications_enabled: boolean;
     appointment_reminders_enabled: boolean;
     telehealth_recording_consent: boolean;
     share_progress_with_emergency_contact: boolean;
-  } | null>(null);
+  };
+
+  // Preferences state
+  const [preferences, setPreferences] = useState<PatientPreferences | null>(null);
   const [preferencesLoading, setPreferencesLoading] = useState(false);
   const [preferencesSaving, setPreferencesSaving] = useState(false);
   const [preferencesError, setPreferencesError] = useState<string | null>(null);
@@ -208,7 +211,7 @@ export const PatientAccountPage: React.FC = () => {
     }
   };
 
-  const handlePreferenceChange = (field: keyof typeof preferences, value: boolean) => {
+  const handlePreferenceChange = (field: keyof PatientPreferences, value: boolean) => {
     if (preferences) {
       setPreferences({
         ...preferences,
