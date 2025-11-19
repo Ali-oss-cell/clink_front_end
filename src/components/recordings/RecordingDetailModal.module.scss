@@ -59,6 +59,88 @@
 
 .modalBody {
   padding: 1.5rem;
+  max-height: calc(90vh - 200px);
+  overflow-y: auto;
+}
+
+.videoSection {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid $border-light;
+}
+
+.videoSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.videoSectionTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0;
+}
+
+.toggleVideoButton {
+  padding: 0.5rem 1rem;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $primary-dark;
+    transform: translateY(-1px);
+  }
+}
+
+.videoPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: $background-light;
+  border-radius: 8px;
+  border: 2px dashed $border-medium;
+  text-align: center;
+}
+
+.videoPlaceholderIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.videoPlaceholder p {
+  color: $text-light;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.videoError {
+  padding: 1.5rem;
+  background: rgba($error-red, 0.1);
+  border: 1px solid rgba($error-red, 0.3);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.videoError p {
+  color: $error-red;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.videoErrorHint {
+  color: $text-light !important;
+  font-weight: 400 !important;
+  font-size: 0.875rem;
 }
 
 .detailRow {

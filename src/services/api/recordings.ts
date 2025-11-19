@@ -67,6 +67,26 @@ class RecordingService {
     const downloadData = await this.getDownloadUrl(recordingId);
     window.open(downloadData.download_url, '_blank');
   }
+
+  /**
+   * Get playable video URL for a recording
+   * Returns the media_uri if available, otherwise tries to get download URL
+   * @param recording - Recording object
+   * @returns Video URL that can be used for playback
+   */
+  getVideoUrl(recording: { media_uri?: string; media_external_location?: string; id: number }): string | null {
+    // Prefer external location if available (usually more reliable)
+    if (recording.media_external_location) {
+      return recording.media_external_location;
+    }
+    
+    // Fall back to media_uri
+    if (recording.media_uri) {
+      return recording.media_uri;
+    }
+    
+    return null;
+  }
 }
 
 export const recordingService = new RecordingService();
