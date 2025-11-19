@@ -393,27 +393,6 @@ export const PatientAccountPage: React.FC = () => {
                     </div>
 
                     <div className={styles.preferenceSection}>
-                      <h3 className={styles.subsectionTitle}>Session Preferences</h3>
-                      <div className={styles.formGroup}>
-                        <label className={styles.label}>Preferred Session Type</label>
-                        <select className={styles.select}>
-                          <option>Video sessions</option>
-                          <option>In-person sessions</option>
-                          <option>No preference</option>
-                        </select>
-                      </div>
-                      <div className={styles.formGroup}>
-                        <label className={styles.label}>Best Times for Appointments</label>
-                        <select className={styles.select}>
-                          <option>Morning (9am-12pm)</option>
-                          <option>Afternoon (12pm-5pm)</option>
-                          <option>Evening (5pm-8pm)</option>
-                          <option>Flexible</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className={styles.preferenceSection}>
                       <h3 className={styles.subsectionTitle}>Privacy</h3>
                       <div className={styles.preferenceItem}>
                         <label className={styles.checkboxLabel}>
