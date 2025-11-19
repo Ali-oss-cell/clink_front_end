@@ -44,9 +44,13 @@ $pbs-orange: #ff6b35;           // PBS scheme orange
 
 // Status Colors
 $success-green: #16a34a;        // Success states
-$error-red: #dc2626;            // Error states  
+$success-color: #16a34a;        // Alias for success states
+$error-red: #dc2626;            // Error states
+$error-color: #dc2626;          // Alias for error states
 $warning-orange: #ea580c;       // Warning states
+$warning-color: #ea580c;        // Alias for warning states
 $info-blue: #0ea5e9;            // Information states
+$info-color: #0ea5e9;           // Alias for information states
 
 // Border Colors
 $border-light: #e2e8f0;         // Light borders
