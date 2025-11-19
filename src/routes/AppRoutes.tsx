@@ -20,6 +20,7 @@ import { PatientIntakeFormPage } from '../pages/patient/PatientIntakeFormPage';
 import { PatientAppointmentPage } from '../pages/patient/PatientAppointmentPage';
 import { PatientAppointmentsPage } from '../pages/patient/PatientAppointmentsPage';
 import { PatientInvoicesPage } from '../pages/patient/PatientInvoicesPage';
+import { RecordingsPage } from '../pages/RecordingsPage';
 import { ServiceSelectionPage } from '../pages/patient/ServiceSelectionPage';
 import { PsychologistSelectionPage } from '../pages/patient/PsychologistSelectionPage';
 import { DateTimeSelectionPage } from '../pages/patient/DateTimeSelectionPage';
@@ -251,6 +252,17 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['patient']}
         >
           <PatientInvoicesPage />
+        </ProtectedRoute>
+      } />
+      
+      {/* Session Recordings */}
+      <Route path="/recordings" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['patient', 'psychologist', 'admin', 'practice_manager']}
+        >
+          <RecordingsPage />
         </ProtectedRoute>
       } />
       

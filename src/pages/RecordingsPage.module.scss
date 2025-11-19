@@ -1,0 +1,124 @@
+@use '../assets/styles/variables' as *;
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: $text-light;
+  margin: 0;
+}
+
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+}
+
+.loadingMessage {
+  color: $text-light;
+  font-size: 1rem;
+}
+
+.errorContainer {
+  background: rgba($error-red, 0.1);
+  border: 1px solid rgba($error-red, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.errorMessage {
+  color: $error-red;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background: $error-red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: darken($error-red, 10%);
+    transform: translateY(-2px);
+  }
+}
+
+.emptyState {
+  background: $background-light;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.emptyMessage {
+  color: $text-light;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.recordingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid $border-light;
+}
+
+.paginationButton {
+  padding: 0.75rem 1.5rem;
+  background: $background-gray;
+  color: $text-dark;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: darken($background-gray, 5%);
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.paginationInfo {
+  color: $text-light;
+  font-size: 0.875rem;
+}
+
