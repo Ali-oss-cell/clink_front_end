@@ -6,8 +6,7 @@ import { appointmentsService } from '../../services/api/appointments';
 import type { PatientAppointment } from '../../services/api/appointments';
 import { videoCallService } from '../../services/api/videoCall';
 import { SessionTimer } from '../../components/patient/SessionTimer';
-import { useAppointmentRecording } from '../../hooks/useRecordings';
-import { RecordingDetailModal } from '../../components/recordings';
+import { AppointmentRecordingIndicator } from '../../components/recordings';
 import { 
   CalendarIcon,
   CalendarPlusIcon,
