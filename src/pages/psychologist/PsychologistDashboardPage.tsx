@@ -5,6 +5,18 @@ import { authService } from '../../services/api/auth';
 import { dashboardService, type PsychologistDashboard } from '../../services/api/dashboard';
 import { appointmentsService } from '../../services/api/appointments';
 import { videoCallService } from '../../services/api/videoCall';
+import {
+  WarningIcon,
+  CalendarIcon,
+  UsersIcon,
+  NotesIcon,
+  CheckCircleIcon,
+  StarIcon,
+  VideoIcon,
+  ChartIcon,
+  HospitalIcon,
+  BoltIcon
+} from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
 
 export const PsychologistDashboardPage: React.FC = () => {
@@ -181,7 +193,7 @@ export const PsychologistDashboardPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3>⚠️ Error Loading Dashboard</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h3>
               <p>{error}</p>
             </div>
           </div>
@@ -212,42 +224,42 @@ export const PsychologistDashboardPage: React.FC = () => {
           {/* Stats Cards */}
           <div ref={statsGridRef} className={styles.statsGrid}>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📅</div>
+              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{dashboardData.today_appointments_count}</div>
                 <div className={styles.statLabel}>Today's Appointments</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📆</div>
+              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{dashboardData.upcoming_appointments_this_week}</div>
                 <div className={styles.statLabel}>This Week</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>👥</div>
+              <div className={styles.statIcon}><UsersIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{dashboardData.active_patients_count}</div>
                 <div className={styles.statLabel}>Active Patients</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📝</div>
+              <div className={styles.statIcon}><NotesIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{dashboardData.pending_notes_count}</div>
                 <div className={styles.statLabel}>Pending Notes</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>✅</div>
+              <div className={styles.statIcon}><CheckCircleIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{dashboardData.completed_sessions_today}</div>
                 <div className={styles.statLabel}>Completed Today</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>⭐</div>
+              <div className={styles.statIcon}><StarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{dashboardData.stats.average_rating.toFixed(1)}</div>
                 <div className={styles.statLabel}>Avg Rating</div>
@@ -258,7 +270,7 @@ export const PsychologistDashboardPage: React.FC = () => {
           <div ref={dashboardGridRef} className={styles.dashboardGrid}>
             {/* Video Sessions Card - Prominent */}
             <div className={`${styles.dashboardCard} ${styles.videoSessionsCard}`}>
-              <h3>🎥 Video Sessions</h3>
+              <h3><VideoIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Video Sessions</h3>
               <div className={styles.cardContent}>
                 {videoCallAppointments.length > 0 ? (
                   <div className={styles.videoSessionsList}>
@@ -300,7 +312,8 @@ export const PsychologistDashboardPage: React.FC = () => {
                               : 'Join video session'
                           }
                         >
-                          🎥 {
+                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                          {
                             appointment.can_join_session === false 
                               ? 'Not Available' 
                               : 'Join Now'
@@ -320,7 +333,7 @@ export const PsychologistDashboardPage: React.FC = () => {
             {/* Recent Notes Card */}
             <div className={styles.dashboardCard}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3>📝 Recent Progress Notes</h3>
+                <h3><NotesIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Progress Notes</h3>
                 <button className={styles.viewAllButton} onClick={handleViewNotes}>
                   View All →
                 </button>
@@ -357,7 +370,7 @@ export const PsychologistDashboardPage: React.FC = () => {
 
             {/* Quick Stats Card */}
             <div className={styles.dashboardCard}>
-              <h3>📊 This Month</h3>
+              <h3><ChartIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> This Month</h3>
               <div style={{ marginTop: '1rem' }}>
                 <div style={{ marginBottom: '1rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -378,23 +391,26 @@ export const PsychologistDashboardPage: React.FC = () => {
 
             {/* Quick Actions Card */}
             <div className={styles.dashboardCard}>
-              <h3>⚡ Quick Actions</h3>
+              <h3><BoltIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Quick Actions</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1rem' }}>
                 <button className={styles.actionButton} onClick={handleViewPatients}>
-                  👥 Manage Patients
+                  <UsersIcon size="sm" style={{ marginRight: '6px' }} />
+                  Manage Patients
                 </button>
                 <button className={styles.actionButton} onClick={handleViewSchedule}>
-                  📅 View Schedule
+                  <CalendarIcon size="sm" style={{ marginRight: '6px' }} />
+                  View Schedule
                 </button>
                 <button className={styles.actionButton} onClick={handleViewNotes}>
-                  📝 Write Progress Note
+                  <NotesIcon size="sm" style={{ marginRight: '6px' }} />
+                  Write Progress Note
                 </button>
               </div>
             </div>
 
             {/* Overview Card */}
             <div className={styles.dashboardCard}>
-              <h3>🏥 Practice Overview</h3>
+              <h3><HospitalIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Practice Overview</h3>
               <div style={{ marginTop: '1rem' }}>
                 <p style={{ fontSize: '0.9rem', color: '#6b7280', lineHeight: '1.6' }}>
                   You have <strong>{dashboardData.today_appointments_count}</strong> appointment{dashboardData.today_appointments_count !== 1 ? 's' : ''} today

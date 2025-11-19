@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { dashboardService } from '../../../services/api/dashboard';
 import type { PatientDashboard } from '../../../services/api/dashboard';
+import { CheckCircleIcon, LightbulbIcon } from '../../../utils/icons';
 import styles from './OnboardingProgress.module.scss';
 
 interface OnboardingStep {
@@ -127,7 +128,13 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
               className={`${styles.stepItem} ${step.completed ? styles.completed : ''} ${isExtraStep ? styles.extraStep : ''}`}
             >
               <div className={styles.stepNumber}>
-                {step.completed ? '✅' : isExtraStep ? '💡' : index + 1}
+                {step.completed ? (
+                  <CheckCircleIcon size="sm" />
+                ) : isExtraStep ? (
+                  <LightbulbIcon size="sm" />
+                ) : (
+                  index + 1
+                )}
               </div>
               <div className={styles.stepContent}>
                 <h4 className={styles.stepTitle}>

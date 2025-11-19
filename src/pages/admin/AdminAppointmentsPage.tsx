@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { VideoIcon, HospitalIcon, CloseIcon } from '../../utils/icons';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type AdminAppointment } from '../../services/api/admin';
@@ -117,7 +118,7 @@ export const AdminAppointmentsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
+              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 
@@ -177,7 +178,17 @@ export const AdminAppointmentsPage: React.FC = () => {
                       <td>{appointment.service_name || 'N/A'}</td>
                       <td>
                         <span className={styles.sessionTypeBadge}>
-                          {appointment.session_type === 'telehealth' ? '📹 Telehealth' : '🏥 In-Person'}
+                          {appointment.session_type === 'telehealth' ? (
+                            <>
+                              <VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                              Telehealth
+                            </>
+                          ) : (
+                            <>
+                              <HospitalIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                              In-Person
+                            </>
+                          )}
                         </span>
                       </td>
                       <td>

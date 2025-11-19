@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { auditService, type AuditLog, type AuditLogStats } from '../../services/api/audit';
+import { CloseIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
 
 export const AdminAuditLogsPage: React.FC = () => {
@@ -141,7 +142,7 @@ export const AdminAuditLogsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
+              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 

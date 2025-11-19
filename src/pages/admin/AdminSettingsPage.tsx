@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type SystemSettings } from '../../services/api/admin';
+import { CloseIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
 
 export const AdminSettingsPage: React.FC = () => {
@@ -101,14 +102,14 @@ export const AdminSettingsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
+              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 
           {success && (
             <div className={styles.successBanner}>
               <p>{success}</p>
-              <button onClick={() => setSuccess(null)}>×</button>
+              <button onClick={() => setSuccess(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 

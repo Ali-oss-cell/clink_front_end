@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { resourceService, type Resource, type CreateResourceRequest, type UpdateResourceRequest, type ResourceCategory } from '../../services/api/resources';
+import { DocumentIcon, CloseIcon } from '../../utils/icons';
 import styles from '../admin/AdminPages.module.scss';
 
 export const ManagerResourcesPage: React.FC = () => {
@@ -158,7 +159,7 @@ export const ManagerResourcesPage: React.FC = () => {
       setPdfFile(null);
       setImagePreview(null);
       fetchResources();
-      alert('✅ Resource created successfully!');
+      alert('Resource created successfully!');
     } catch (err: any) {
       console.error('Failed to create resource:', err);
       setError(err.message || 'Failed to create resource');
@@ -197,7 +198,7 @@ export const ManagerResourcesPage: React.FC = () => {
       setExistingImageUrl(null);
       setExistingPdfUrl(null);
       fetchResources();
-      alert('✅ Resource updated successfully!');
+      alert('Resource updated successfully!');
     } catch (err: any) {
       console.error('Failed to update resource:', err);
       setError(err.message || 'Failed to update resource');
@@ -212,7 +213,7 @@ export const ManagerResourcesPage: React.FC = () => {
     try {
       await resourceService.deleteResource(id);
       fetchResources();
-      alert('✅ Resource deleted successfully!');
+      alert('Resource deleted successfully!');
     } catch (err: any) {
       console.error('Failed to delete resource:', err);
       alert(`Failed to delete resource: ${err.message}`);
@@ -491,7 +492,7 @@ export const ManagerResourcesPage: React.FC = () => {
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
-                    ×
+                    <CloseIcon size="sm" />
                   </button>
                 </div>
                 <form onSubmit={handleCreateResource}>
@@ -551,7 +552,7 @@ export const ManagerResourcesPage: React.FC = () => {
                         type="text"
                         value={createForm.icon}
                         onChange={(e) => setCreateForm({ ...createForm, icon: e.target.value })}
-                        placeholder="📄"
+                        placeholder="Document icon"
                       />
                     </div>
 
@@ -637,7 +638,7 @@ export const ManagerResourcesPage: React.FC = () => {
                               fontSize: '14px'
                             }}
                           >
-                            ×
+                            <CloseIcon size="sm" />
                           </button>
                         </div>
                       )}
@@ -657,7 +658,8 @@ export const ManagerResourcesPage: React.FC = () => {
                       {pdfFile && (
                         <div style={{ marginTop: '0.5rem' }}>
                           <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
-                            📄 {pdfFile.name}
+                            <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                            {pdfFile.name}
                           </span>
                           <button
                             type="button"
@@ -787,7 +789,7 @@ export const ManagerResourcesPage: React.FC = () => {
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
-                    ×
+                    <CloseIcon size="sm" />
                   </button>
                 </div>
                 <form onSubmit={handleEditResource}>
@@ -930,7 +932,7 @@ export const ManagerResourcesPage: React.FC = () => {
                               fontSize: '14px'
                             }}
                           >
-                            ×
+                            <CloseIcon size="sm" />
                           </button>
                         </div>
                       )}
@@ -963,7 +965,7 @@ export const ManagerResourcesPage: React.FC = () => {
                               fontSize: '14px'
                             }}
                           >
-                            ×
+                            <CloseIcon size="sm" />
                           </button>
                           <small style={{ display: 'block', marginTop: '0.25rem', color: '#6b7280' }}>
                             Current image
@@ -986,7 +988,8 @@ export const ManagerResourcesPage: React.FC = () => {
                       {editPdfFile && (
                         <div style={{ marginTop: '0.5rem' }}>
                           <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
-                            📄 {editPdfFile.name}
+                            <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                            {editPdfFile.name}
                           </span>
                           <button
                             type="button"
@@ -1014,7 +1017,8 @@ export const ManagerResourcesPage: React.FC = () => {
                             rel="noopener noreferrer"
                             style={{ color: '#3b82f6', fontSize: '0.875rem', textDecoration: 'none' }}
                           >
-                            📄 View current PDF
+                            <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                            View current PDF
                           </a>
                           <button
                             type="button"

@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { progressNotesService, type Patient } from '../../../services/api/progressNotes';
 import type { ProgressNote, CreateNoteRequest } from '../../../types/progressNote';
+import {
+  EditIcon,
+  NotesIcon,
+  WarningIcon,
+  EyeIcon,
+  SearchIcon,
+  ClipboardIcon
+} from '../../../utils/icons';
 import styles from './SOAPNoteForm.module.scss';
 
 interface SOAPNoteFormProps {
@@ -175,7 +183,19 @@ export const SOAPNoteForm: React.FC<SOAPNoteFormProps> = ({
   return (
     <div className={containerClass}>
       <div className={styles.formHeader}>
-        <h2>{noteId ? '✏️ Edit SOAP Note' : '📝 Write SOAP Note'}</h2>
+        <h2>
+          {noteId ? (
+            <>
+              <EditIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+              Edit SOAP Note
+            </>
+          ) : (
+            <>
+              <NotesIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+              Write SOAP Note
+            </>
+          )}
+        </h2>
         <p className={styles.subtitle}>
           Complete all four sections of the SOAP format (minimum 50 characters each)
         </p>
@@ -183,7 +203,7 @@ export const SOAPNoteForm: React.FC<SOAPNoteFormProps> = ({
 
       {error && (
         <div className={styles.errorAlert}>
-          <span className={styles.errorIcon}>⚠️</span>
+          <span className={styles.errorIcon}><WarningIcon size="md" /></span>
           {error}
         </div>
       )}
@@ -269,7 +289,7 @@ export const SOAPNoteForm: React.FC<SOAPNoteFormProps> = ({
         {/* SOAP Sections */}
         <div className={styles.soapSection}>
           <div className={styles.soapHeader}>
-            <span className={styles.soapIcon}>📝</span>
+            <span className={styles.soapIcon}><NotesIcon size="md" /></span>
             <div>
               <label htmlFor="subjective" className={styles.soapLabel}>
                 Subjective <span className={styles.required}>*</span>
@@ -295,7 +315,7 @@ export const SOAPNoteForm: React.FC<SOAPNoteFormProps> = ({
 
         <div className={styles.soapSection}>
           <div className={styles.soapHeader}>
-            <span className={styles.soapIcon}>👁️</span>
+            <span className={styles.soapIcon}><EyeIcon size="md" /></span>
             <div>
               <label htmlFor="objective" className={styles.soapLabel}>
                 Objective <span className={styles.required}>*</span>
@@ -321,7 +341,7 @@ export const SOAPNoteForm: React.FC<SOAPNoteFormProps> = ({
 
         <div className={styles.soapSection}>
           <div className={styles.soapHeader}>
-            <span className={styles.soapIcon}>🔍</span>
+            <span className={styles.soapIcon}><SearchIcon size="md" /></span>
             <div>
               <label htmlFor="assessment" className={styles.soapLabel}>
                 Assessment <span className={styles.required}>*</span>
@@ -347,7 +367,7 @@ export const SOAPNoteForm: React.FC<SOAPNoteFormProps> = ({
 
         <div className={styles.soapSection}>
           <div className={styles.soapHeader}>
-            <span className={styles.soapIcon}>📋</span>
+            <span className={styles.soapIcon}><ClipboardIcon size="md" /></span>
             <div>
               <label htmlFor="plan" className={styles.soapLabel}>
                 Plan <span className={styles.required}>*</span>

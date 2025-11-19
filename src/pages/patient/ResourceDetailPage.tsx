@@ -4,6 +4,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { resourceService, type ResourceDetail } from '../../services/api/resources';
 import { markResourcesViewed } from '../../utils/onboardingTracking';
+import { EyeIcon, StarIcon, PrintIcon, BookIcon, ShareIcon, DownloadIcon, BookmarkIcon, getIconFromEmoji } from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
 export const ResourceDetailPage: React.FC = () => {
@@ -119,7 +120,7 @@ export const ResourceDetailPage: React.FC = () => {
         total_ratings: 234,
         is_bookmarked: false,
         user_progress: 0,
-        estimated_reading_time: '15 minutes',
+        estimated_time: '15 minutes',
         references: [
           {
             title: 'American Psychological Association - Anxiety',
@@ -135,18 +136,21 @@ export const ResourceDetailPage: React.FC = () => {
             id: 5,
             title: 'Breathing Exercises for Anxiety Relief',
             type: 'video',
+            type_display: 'Video',
             thumbnail_url: undefined
           },
           {
             id: 8,
             title: 'Mindfulness Meditation Guide',
             type: 'audio',
+            type_display: 'Audio',
             thumbnail_url: undefined
           },
           {
             id: 12,
             title: 'Anxiety Tracking Worksheet',
             type: 'worksheet',
+            type_display: 'Worksheet',
             thumbnail_url: undefined
           }
         ]
@@ -169,7 +173,7 @@ export const ResourceDetailPage: React.FC = () => {
       const action = isBookmarked ? 'remove' : 'add';
       const result = await resourceService.toggleBookmark(parseInt(id), action);
       setIsBookmarked(result.is_bookmarked);
-      alert(result.is_bookmarked ? '✅ Added to bookmarks' : '❌ Removed from bookmarks');
+      alert(result.is_bookmarked ? 'Added to bookmarks' : 'Removed from bookmarks');
     } catch (err: any) {
       console.error('Failed to bookmark:', err);
       alert('Failed to update bookmark. Please try again.');
@@ -182,7 +186,7 @@ export const ResourceDetailPage: React.FC = () => {
     try {
       setUserRating(rating);
       const result = await resourceService.rateResource(parseInt(id), rating);
-      alert(`✅ Rated ${rating} stars. Thank you for your feedback!`);
+      alert(`Rated ${rating} stars. Thank you for your feedback!`);
       setShowRatingForm(false);
       
       // Update resource with new rating
@@ -261,7 +265,7 @@ export const ResourceDetailPage: React.FC = () => {
           {/* Resource Header */}
           <div className={styles.resourceDetailHeader}>
             <div className={styles.resourceMeta}>
-              <span className={styles.resourceIcon}>{resource.icon}</span>
+              <span className={styles.resourceIcon}>{getIconFromEmoji(resource.icon, 'md')}</span>
               <span className={styles.resourceCategory}>{resource.category_display}</span>
               <span className={styles.resourceType}>{resource.type_display}</span>
               <span className={styles.resourceDifficulty}>{resource.difficulty_display}</span>
@@ -272,25 +276,28 @@ export const ResourceDetailPage: React.FC = () => {
             
             <div className={styles.resourceInfo}>
               <div className={styles.infoItem}>
-                <span>📖 {resource.estimated_time || resource.estimated_reading_time || `${resource.duration_minutes || 0} min`}</span>
+                <span><BookIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> {resource.estimated_time || `${resource.duration_minutes || 0} min`}</span>
               </div>
               <div className={styles.infoItem}>
-                <span>👁️ {resource.view_count.toLocaleString()} views</span>
+                <span><EyeIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> {resource.view_count.toLocaleString()} views</span>
               </div>
               <div className={styles.infoItem}>
-                <span>⭐ {resource.average_rating.toFixed(1)} ({resource.total_ratings} ratings)</span>
+                <span><StarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> {resource.average_rating.toFixed(1)} ({resource.total_ratings} ratings)</span>
               </div>
             </div>
 
             <div className={styles.resourceActions}>
               <button onClick={handleBookmark} className={styles.actionButton}>
-                {isBookmarked ? '🔖 Bookmarked' : '🔖 Bookmark'}
+                <BookmarkIcon size="sm" style={{ marginRight: '6px' }} />
+                {isBookmarked ? 'Bookmarked' : 'Bookmark'}
               </button>
               <button onClick={handlePrint} className={styles.actionButton}>
-                🖨️ Print
+                <PrintIcon size="sm" style={{ marginRight: '6px' }} />
+                Print
               </button>
               <button onClick={handleShare} className={styles.actionButton}>
-                📤 Share
+                <ShareIcon size="sm" style={{ marginRight: '6px' }} />
+                Share
               </button>
               {(resource.has_download && (resource.download_file_url || resource.download_url)) && (
                 <a 
@@ -298,7 +305,8 @@ export const ResourceDetailPage: React.FC = () => {
                   download 
                   className={styles.actionButton}
                 >
-                  📥 Download
+                  <DownloadIcon size="sm" style={{ marginRight: '6px' }} />
+                  Download
                 </a>
               )}
             </div>
@@ -384,7 +392,9 @@ export const ResourceDetailPage: React.FC = () => {
                 <h3>Rate this Resource</h3>
                 {resource.user_rating ? (
                   <div className={styles.userRating}>
-                    <p>Your rating: {'⭐'.repeat(resource.user_rating.rating)}</p>
+                    <p>Your rating: {Array.from({ length: resource.user_rating.rating }, (_, i) => (
+                      <StarIcon key={i} size="sm" style={{ marginRight: '2px' }} />
+                    ))}</p>
                     {resource.user_rating.review && (
                       <p className={styles.userReview}>{resource.user_rating.review}</p>
                     )}
@@ -411,7 +421,11 @@ export const ResourceDetailPage: React.FC = () => {
                           onClick={() => handleRate(star)}
                           className={styles.starButton}
                         >
-                          {star <= userRating ? '⭐' : '☆'}
+                          {star <= userRating ? (
+                            <StarIcon size="lg" />
+                          ) : (
+                            <StarIcon size="lg" style={{ color: '#d1d5db' }} />
+                          )}
                         </button>
                       ))}
                     </div>

@@ -5,6 +5,7 @@ import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import { servicesService } from '../../services/api/services';
 import type { AvailableSlotsResponse, TimeSlot } from '../../services/api/appointments';
+import { WarningIcon, EditIcon, ClipboardIcon, VideoIcon, HospitalIcon, CalendarIcon, ClockIcon } from '../../utils/icons';
 import styles from './DateTimeSelection.module.scss';
 
 export const DateTimeSelectionPage: React.FC = () => {
@@ -209,10 +210,11 @@ export const DateTimeSelectionPage: React.FC = () => {
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
-              <h3>⚠️ Unable to Load Available Slots</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Available Slots</h3>
               <p>{error}</p>
               <button className={styles.retryButton} onClick={fetchAvailableSlots}>
-                🔄 Retry
+                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                Retry
               </button>
             </div>
           </div>
@@ -239,7 +241,7 @@ export const DateTimeSelectionPage: React.FC = () => {
           {/* Booking Summary */}
           <div className={styles.selectionSummary}>
             <div className={styles.summaryCard}>
-              <h3>📋 Booking Summary</h3>
+              <h3><ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Booking Summary</h3>
               <div className={styles.summaryItem}>
                 <span className={styles.summaryLabel}>Psychologist:</span>
                 <span className={styles.summaryValue}>{availabilityData.psychologist_name}</span>
@@ -263,13 +265,13 @@ export const DateTimeSelectionPage: React.FC = () => {
 
           {/* Session Type Selection */}
           <div className={styles.sessionTypeSection}>
-            <h2 className={styles.sessionTypeTitle}>📹 Session Type</h2>
+            <h2 className={styles.sessionTypeTitle}><VideoIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Session Type</h2>
             <div className={styles.sessionTypeOptions}>
               <div 
                 className={`${styles.sessionTypeCard} ${sessionType === 'telehealth' ? styles.selected : ''} ${!availabilityData.telehealth_available ? styles.disabled : ''}`}
                 onClick={() => availabilityData.telehealth_available && setSessionType('telehealth')}
               >
-                <div className={styles.sessionTypeIcon}>🎥</div>
+                <div className={styles.sessionTypeIcon}><VideoIcon size="xl" /></div>
                 <div className={styles.sessionTypeContent}>
                   <h4>Telehealth</h4>
                   <p>Video consultation from home</p>
@@ -284,7 +286,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                 className={`${styles.sessionTypeCard} ${sessionType === 'in_person' ? styles.selected : ''} ${!availabilityData.in_person_available ? styles.disabled : ''}`}
                 onClick={() => availabilityData.in_person_available && setSessionType('in_person')}
               >
-                <div className={styles.sessionTypeIcon}>🏥</div>
+                <div className={styles.sessionTypeIcon}><HospitalIcon size="xl" /></div>
                 <div className={styles.sessionTypeContent}>
                   <h4>In-Person</h4>
                   <p>Face-to-face at clinic</p>
@@ -301,7 +303,7 @@ export const DateTimeSelectionPage: React.FC = () => {
           {availabilityData.available_dates.length > 0 ? (
             <>
               <div className={styles.calendarSection}>
-                <h2 className={styles.calendarTitle}>📅 Select a Date</h2>
+                <h2 className={styles.calendarTitle}><CalendarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Select a Date</h2>
                 <div className={styles.calendarGrid}>
                   {availabilityData.available_dates.map((dateObj) => (
                     <div
@@ -328,7 +330,8 @@ export const DateTimeSelectionPage: React.FC = () => {
               {selectedDate && (
                 <div className={styles.timeSelectionSection}>
                   <h2 className={styles.timeSectionTitle}>
-                    ⏰ Available Times - {formatDate(selectedDate)}
+                    <ClockIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    Available Times - {formatDate(selectedDate)}
                   </h2>
                   <div className={styles.timeSlotsGrid}>
                     {getSelectedDateSlots().map((slot) => (
@@ -352,7 +355,7 @@ export const DateTimeSelectionPage: React.FC = () => {
             </>
           ) : (
             <div className={styles.emptyState}>
-              <h3>😔 No Available Appointments</h3>
+              <h3>No Available Appointments</h3>
               <p>
                 {availabilityData.psychologist_name} has no available appointments in the next 30 days for {sessionType} sessions.
               </p>
@@ -375,7 +378,14 @@ export const DateTimeSelectionPage: React.FC = () => {
               onClick={handleBookAppointment}
               disabled={!selectedSlot || booking}
             >
-              {booking ? '⏳ Booking...' : 'Continue to Payment →'}
+              {booking ? (
+                <>
+                  <ClockIcon size="sm" style={{ marginRight: '6px' }} />
+                  Booking...
+                </>
+              ) : (
+                'Continue to Payment →'
+              )}
             </button>
           </div>
         </div>

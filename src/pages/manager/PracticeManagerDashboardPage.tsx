@@ -2,6 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { dashboardService, type PracticeManagerDashboard } from '../../services/api/dashboard';
+import {
+  WarningIcon,
+  CalendarIcon,
+  UsersIcon,
+  StethoscopeIcon,
+  CheckCircleIcon,
+  DollarIcon,
+  ClipboardIcon,
+  ClockIcon,
+  StarIcon,
+  BriefcaseIcon
+} from '../../utils/icons';
 import styles from './ManagerPages.module.scss';
 
 export const PracticeManagerDashboardPage: React.FC = () => {
@@ -131,7 +143,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3>⚠️ Error Loading Dashboard</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h3>
               <p>{error}</p>
             </div>
           </div>
@@ -164,42 +176,42 @@ export const PracticeManagerDashboardPage: React.FC = () => {
           {/* Main Stats Cards */}
           <div ref={statsGridRef} className={styles.statsGrid}>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📅</div>
+              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.today_appointments}</div>
                 <div className={styles.statLabel}>Today's Appointments</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📆</div>
+              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.this_week_appointments}</div>
                 <div className={styles.statLabel}>This Week</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>👥</div>
+              <div className={styles.statIcon}><UsersIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.total_patients}</div>
                 <div className={styles.statLabel}>Total Patients</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>🩺</div>
+              <div className={styles.statIcon}><StethoscopeIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.total_psychologists}</div>
                 <div className={styles.statLabel}>Psychologists</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>✅</div>
+              <div className={styles.statIcon}><CheckCircleIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.completed_sessions_today}</div>
                 <div className={styles.statLabel}>Completed Today</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>💰</div>
+              <div className={styles.statIcon}><DollarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{formatCurrency(stats.today_revenue)}</div>
                 <div className={styles.statLabel}>Today's Revenue</div>
@@ -238,7 +250,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
           <div ref={dashboardGridRef} className={styles.dashboardGrid}>
             {/* Recent Appointments */}
             <div className={styles.dashboardCard}>
-              <h3>📋 Recent Appointments</h3>
+              <h3><ClipboardIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Appointments</h3>
               {dashboardData.recent_appointments.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No recent appointments</p>
@@ -264,7 +276,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
 
             {/* Upcoming Appointments */}
             <div className={styles.dashboardCard}>
-              <h3>⏰ Upcoming Appointments</h3>
+              <h3><ClockIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Upcoming Appointments</h3>
               {dashboardData.upcoming_appointments.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No upcoming appointments</p>
@@ -290,7 +302,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
 
             {/* Top Psychologists */}
             <div className={styles.dashboardCard}>
-              <h3>⭐ Top Psychologists</h3>
+              <h3><StarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Top Psychologists</h3>
               {dashboardData.top_psychologists.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No psychologist data available</p>
@@ -305,7 +317,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
                         {psychologist.rating && (
                           <>
                             <span>•</span>
-                            <span>⭐ {psychologist.rating.toFixed(1)}</span>
+                            <span><StarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> {psychologist.rating.toFixed(1)}</span>
                           </>
                         )}
                       </div>
@@ -317,7 +329,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
 
             {/* Financial Summary */}
             <div className={styles.dashboardCard}>
-              <h3>💼 Financial Summary</h3>
+              <h3><BriefcaseIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Financial Summary</h3>
               <div className={styles.financialSummary}>
                 <div className={styles.financialItem}>
                   <span className={styles.financialLabel}>Today</span>

@@ -32,7 +32,7 @@
 
 .progressFill {
   height: 100%;
-  background: $primary-color;
+  background: $patient-primary;
   border-radius: 2px;
   transition: width 0.3s ease;
 }
@@ -89,10 +89,10 @@
   
   // Override hover styles for better visibility
   &:hover:not(:disabled) {
-    background-color: $primary-dark !important;
+    background-color: $patient-dark !important;
     color: white !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    box-shadow: 0 4px 12px rgba($patient-primary, 0.3);
     
     &::before {
       display: none; // Disable shimmer effect on hover
@@ -100,7 +100,7 @@
   }
   
   &:active:not(:disabled) {
-    background-color: $primary-dark !important;
+    background-color: $patient-dark !important;
     color: white !important;
     transform: translateY(-1px);
   }
@@ -197,18 +197,18 @@
   font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
-  color: $primary-color;
-  border: 1px solid $primary-color;
+  color: $patient-primary;
+  border: 1px solid $patient-primary;
   border-radius: $border-radius-sm;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   
   &:hover {
-    background: $primary-color;
+    background: $patient-primary;
     color: white;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba($primary-color, 0.2);
+    box-shadow: 0 2px 8px rgba($patient-primary, 0.2);
   }
   
   &.completedAction {

@@ -3,6 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { dashboardService, type AdminDashboard } from '../../services/api/dashboard';
+import {
+  WarningIcon,
+  UsersIcon,
+  StethoscopeIcon,
+  DoctorIcon,
+  CalendarIcon,
+  CheckCircleIcon,
+  DollarIcon,
+  SettingsIcon,
+  ChartIcon,
+  BookIcon,
+  ClipboardIcon,
+  UserIcon,
+  UserPlusIcon
+} from '../../utils/icons';
 import styles from './AdminPages.module.scss';
 
 export const AdminDashboardPage: React.FC = () => {
@@ -144,7 +159,7 @@ export const AdminDashboardPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3>⚠️ Error Loading Dashboard</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h3>
               <p>{error}</p>
             </div>
           </div>
@@ -193,42 +208,42 @@ export const AdminDashboardPage: React.FC = () => {
           {/* Main Stats Cards */}
           <div ref={statsGridRef} className={styles.statsGrid}>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>👥</div>
+              <div className={styles.statIcon}><UsersIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.total_users}</div>
                 <div className={styles.statLabel}>Total Users</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>🩺</div>
+              <div className={styles.statIcon}><StethoscopeIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.total_patients}</div>
                 <div className={styles.statLabel}>Patients</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>🧠</div>
+              <div className={styles.statIcon}><DoctorIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.total_psychologists}</div>
                 <div className={styles.statLabel}>Psychologists</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📅</div>
+              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.total_appointments}</div>
                 <div className={styles.statLabel}>Total Appointments</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>✅</div>
+              <div className={styles.statIcon}><CheckCircleIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{stats.completed_appointments}</div>
                 <div className={styles.statLabel}>Completed</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>💰</div>
+              <div className={styles.statIcon}><DollarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{formatCurrency(stats.total_revenue)}</div>
                 <div className={styles.statLabel}>Total Revenue</div>
@@ -283,7 +298,7 @@ export const AdminDashboardPage: React.FC = () => {
           <div ref={dashboardGridRef} className={styles.dashboardGrid}>
             {/* User Statistics */}
             <div className={styles.dashboardCard}>
-              <h3>👥 User Statistics</h3>
+              <h3><UsersIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> User Statistics</h3>
               <div className={styles.statisticsList}>
                 <div className={styles.statisticItem}>
                   <span className={styles.statisticLabel}>Total Patients</span>
@@ -306,7 +321,7 @@ export const AdminDashboardPage: React.FC = () => {
 
             {/* Appointment Statistics */}
             <div className={styles.dashboardCard}>
-              <h3>📅 Appointment Statistics</h3>
+              <h3><CalendarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Appointment Statistics</h3>
               <div className={styles.statisticsList}>
                 <div className={styles.statisticItem}>
                   <span className={styles.statisticLabel}>Total</span>
@@ -329,7 +344,7 @@ export const AdminDashboardPage: React.FC = () => {
 
             {/* Financial Overview */}
             <div className={styles.dashboardCard}>
-              <h3>💰 Financial Overview</h3>
+              <h3><DollarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Financial Overview</h3>
               <div className={styles.financialSummary}>
                 <div className={styles.financialItem}>
                   <span className={styles.financialLabel}>Total Revenue</span>
@@ -348,7 +363,7 @@ export const AdminDashboardPage: React.FC = () => {
 
             {/* Recent Users */}
             <div className={styles.dashboardCard}>
-              <h3>🆕 Recent Users</h3>
+              <h3><UserPlusIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Users</h3>
               {dashboardData.recent_users.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No recent users</p>
@@ -365,7 +380,17 @@ export const AdminDashboardPage: React.FC = () => {
                         <span>{user.email}</span>
                         <span>•</span>
                         <span className={user.is_verified ? styles.verified : styles.unverified}>
-                          {user.is_verified ? '✓ Verified' : '⚠ Unverified'}
+                          {user.is_verified ? (
+                            <>
+                              <CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                              Verified
+                            </>
+                          ) : (
+                            <>
+                              <WarningIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                              Unverified
+                            </>
+                          )}
                         </span>
                         <span>•</span>
                         <span>{formatDate(user.created_at)}</span>
@@ -385,7 +410,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/users')}
               >
-                <div className={styles.quickActionIcon}>👥</div>
+                <div className={styles.quickActionIcon}><UsersIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>User Management</h3>
                   <p>Manage all system users, roles, and permissions</p>
@@ -397,7 +422,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/appointments')}
               >
-                <div className={styles.quickActionIcon}>📅</div>
+                <div className={styles.quickActionIcon}><CalendarIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>All Appointments</h3>
                   <p>View and manage all clinic appointments</p>
@@ -409,7 +434,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/patients')}
               >
-                <div className={styles.quickActionIcon}>🩺</div>
+                <div className={styles.quickActionIcon}><StethoscopeIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>All Patients</h3>
                   <p>View and manage all patient records</p>
@@ -421,7 +446,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/staff')}
               >
-                <div className={styles.quickActionIcon}>👨‍💼</div>
+                <div className={styles.quickActionIcon}><UserIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>Staff Management</h3>
                   <p>View psychologists and practice managers</p>
@@ -433,7 +458,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/billing')}
               >
-                <div className={styles.quickActionIcon}>💰</div>
+                <div className={styles.quickActionIcon}><DollarIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>Billing & Financials</h3>
                   <p>Manage invoices, payments, and Medicare claims</p>
@@ -445,7 +470,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/settings')}
               >
-                <div className={styles.quickActionIcon}>⚙️</div>
+                <div className={styles.quickActionIcon}><SettingsIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>System Settings</h3>
                   <p>Configure clinic information and system preferences</p>
@@ -457,7 +482,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/analytics')}
               >
-                <div className={styles.quickActionIcon}>📊</div>
+                <div className={styles.quickActionIcon}><ChartIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>System Analytics</h3>
                   <p>View detailed analytics and performance metrics</p>
@@ -469,7 +494,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/resources')}
               >
-                <div className={styles.quickActionIcon}>📚</div>
+                <div className={styles.quickActionIcon}><BookIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>Resource Management</h3>
                   <p>Create and manage mental health resources</p>
@@ -481,7 +506,7 @@ export const AdminDashboardPage: React.FC = () => {
                 className={styles.quickActionCard}
                 onClick={() => navigate('/admin/audit-logs')}
               >
-                <div className={styles.quickActionIcon}>📋</div>
+                <div className={styles.quickActionIcon}><ClipboardIcon size="xl" /></div>
                 <div className={styles.quickActionContent}>
                   <h3>Audit Logs</h3>
                   <p>View system activity and change history</p>

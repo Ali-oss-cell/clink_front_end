@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type SystemAnalytics } from '../../services/api/admin';
+import { UsersIcon, CalendarIcon, DollarIcon, NotesIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
 
 export const AdminAnalyticsPage: React.FC = () => {
@@ -149,7 +150,7 @@ export const AdminAnalyticsPage: React.FC = () => {
 
           {/* User Analytics */}
           <div className={styles.analyticsSection}>
-            <h2>👥 User Analytics</h2>
+            <h2><UsersIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> User Analytics</h2>
             <div className={styles.analyticsGrid}>
               <div className={styles.analyticsCard}>
                 <div className={styles.analyticsValue}>{analytics.users.total}</div>
@@ -237,7 +238,7 @@ export const AdminAnalyticsPage: React.FC = () => {
 
           {/* Appointment Analytics */}
           <div className={styles.analyticsSection}>
-            <h2>📅 Appointment Analytics</h2>
+            <h2><CalendarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Appointment Analytics</h2>
             <div className={styles.analyticsGrid}>
               <div className={styles.analyticsCard}>
                 <div className={styles.analyticsValue}>{analytics.appointments.total}</div>
@@ -341,7 +342,7 @@ export const AdminAnalyticsPage: React.FC = () => {
 
           {/* Financial Analytics */}
           <div className={styles.analyticsSection}>
-            <h2>💰 Financial Analytics</h2>
+            <h2><DollarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Financial Analytics</h2>
             <div className={styles.analyticsGrid}>
               <div className={styles.analyticsCard}>
                 <div className={styles.analyticsValue}>{formatCurrency(analytics.financial.total_revenue)}</div>
@@ -368,7 +369,7 @@ export const AdminAnalyticsPage: React.FC = () => {
 
           {/* Progress Notes */}
           <div className={styles.analyticsSection}>
-            <h2>📝 Progress Notes</h2>
+            <h2><NotesIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Progress Notes</h2>
             <div className={styles.analyticsGrid}>
               <div className={styles.analyticsCard}>
                 <div className={styles.analyticsValue}>{analytics.progress_notes.total}</div>

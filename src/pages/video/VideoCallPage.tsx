@@ -4,6 +4,17 @@ import Video, { Room, RemoteParticipant, RemoteVideoTrack, RemoteAudioTrack } fr
 import type { RemoteTrack } from 'twilio-video';
 import { videoCallService } from '../../services/api/videoCall';
 import { authService } from '../../services/api/auth';
+import {
+  ErrorCircleIcon,
+  UsersIcon,
+  ClockIcon,
+  VideoIcon,
+  CameraIcon,
+  MicrophoneIcon,
+  MicrophoneSlashIcon,
+  PhoneIcon,
+  CircleIcon
+} from '../../utils/icons';
 import styles from './VideoCallPage.module.scss';
 
 export const VideoCallPage: React.FC = () => {
@@ -18,8 +29,9 @@ export const VideoCallPage: React.FC = () => {
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
   
-  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const localVideoContainerRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
+  const roomRef = useRef<Room | null>(null); // Use ref to track room for cleanup
 
   const user = authService.getStoredUser();
 
@@ -37,26 +49,124 @@ export const VideoCallPage: React.FC = () => {
         setError(null);
         setConnectionStatus('connecting');
 
-        // Get video token from backend
+        // Get video token from backend - always get fresh token
+        console.log('🔵 Step 1: Requesting video token for appointment:', appointmentId);
         const tokenData = await videoCallService.getVideoToken(appointmentId);
+        console.log('🟢 Step 2: Token received from backend:', {
+          hasToken: !!tokenData.access_token,
+          tokenLength: tokenData.access_token?.length,
+          tokenPreview: tokenData.access_token ? `${tokenData.access_token.substring(0, 20)}...${tokenData.access_token.substring(tokenData.access_token.length - 20)}` : 'N/A',
+          roomName: tokenData.room_name,
+          userIdentity: tokenData.user_identity,
+          expiresAt: tokenData.expires_at,
+          expiresIn: tokenData.expires_in,
+          appointmentId: tokenData.appointment_id,
+          fullResponse: tokenData // Log full response for debugging
+        });
 
-        // Connect to Twilio Video room
-        // Backend returns 'access_token' not 'token'
+        // Validate token data before using it
+        if (!tokenData.access_token || tokenData.access_token.length < 100) {
+          console.error('❌ Token validation failed:', {
+            hasToken: !!tokenData.access_token,
+            tokenLength: tokenData.access_token?.length
+          });
+          throw new Error('Invalid token received from server. Token is missing or too short.');
+        }
+
+        if (!tokenData.room_name || tokenData.room_name.trim() === '') {
+          console.error('❌ Room name validation failed:', {
+            roomName: tokenData.room_name
+          });
+          throw new Error('Invalid room name received from server.');
+        }
+
+        // Try to decode JWT token to inspect its contents (for debugging)
+        try {
+          const tokenParts = tokenData.access_token.split('.');
+          if (tokenParts.length === 3) {
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log('🔍 Token payload (decoded):', {
+              iss: payload.iss, // Issuer
+              sub: payload.sub, // Subject
+              aud: payload.aud, // Audience
+              exp: payload.exp, // Expiration
+              nbf: payload.nbf, // Not before
+              jti: payload.jti, // JWT ID
+              grants: payload.grants // Twilio grants
+            });
+          }
+        } catch (e) {
+          console.warn('⚠️ Could not decode token payload:', e);
+        }
+
+        // Check if token is expired (if expires_at is provided)
+        if (tokenData.expires_at) {
+          const expiresAt = new Date(tokenData.expires_at);
+          const now = new Date();
+          if (now > expiresAt) {
+            console.error('❌ Token expired:', {
+              expiresAt: tokenData.expires_at,
+              now: now.toISOString()
+            });
+            throw new Error('Token has expired. Please refresh the page to get a new token.');
+          }
+        }
+
+        // Connect to Twilio Video room immediately after getting token
+        // Use the exact access_token and room_name from backend response
+        console.log('🔵 Step 3: Connecting to Twilio room:', tokenData.room_name);
+        console.log('🔵 Connection options:', {
+          name: tokenData.room_name,
+          audio: true,
+          video: { width: 640, height: 480 }
+        });
+        
         const twilioRoom = await Video.connect(tokenData.access_token, {
           name: tokenData.room_name,
           audio: true,
           video: { width: 640, height: 480 }
         });
+        
+        console.log('🟢 Step 4: Successfully connected to Twilio room:', twilioRoom.name);
 
         setRoom(twilioRoom);
+        roomRef.current = twilioRoom; // Update ref for cleanup
         setConnectionStatus('connected');
         setLoading(false);
 
-        // Attach local video
+        // Attach local video tracks
+        // Clear any existing video elements first
+        if (localVideoContainerRef.current) {
+          localVideoContainerRef.current.innerHTML = '';
+        }
+        
         twilioRoom.localParticipant.videoTracks.forEach(publication => {
-          if (publication.track && localVideoRef.current) {
-            const videoElement = publication.track.attach();
-            localVideoRef.current.appendChild(videoElement);
+          if (publication.track && localVideoContainerRef.current) {
+            // Type assertion for LocalVideoTrack
+            const videoTrack = publication.track as any;
+            if (videoTrack.attach) {
+              const videoElement = videoTrack.attach();
+              videoElement.setAttribute('playsinline', 'true');
+              videoElement.setAttribute('autoplay', 'true');
+              videoElement.setAttribute('muted', 'true');
+              localVideoContainerRef.current.appendChild(videoElement);
+            }
+          }
+        });
+        
+        // Also listen for new video tracks
+        twilioRoom.localParticipant.on('trackPublished', (publication) => {
+          if (publication.track && localVideoContainerRef.current) {
+            // Type assertion for LocalVideoTrack
+            const videoTrack = publication.track as any;
+            if (videoTrack.attach) {
+              const videoElement = videoTrack.attach();
+              videoElement.setAttribute('playsinline', 'true');
+              videoElement.setAttribute('autoplay', 'true');
+              videoElement.setAttribute('muted', 'true');
+              localVideoContainerRef.current.innerHTML = '';
+              localVideoContainerRef.current.appendChild(videoElement);
+            }
           }
         });
 
@@ -76,8 +186,61 @@ export const VideoCallPage: React.FC = () => {
         });
 
       } catch (err: any) {
-        console.error('Failed to connect to video room:', err);
-        setError(err.message || 'Failed to connect to video call');
+        console.error('❌ Failed to connect to video room:', err);
+        console.error('❌ Error details:', {
+          name: err.name,
+          message: err.message,
+          code: err.code,
+          cause: err.cause,
+          stack: err.stack,
+          response: err.response?.data,
+          status: err.response?.status
+        });
+        
+        // Provide more specific error messages
+        let errorMessage = 'Failed to connect to video call';
+        
+        if (err.message) {
+          errorMessage = err.message;
+          
+          // Check for specific Twilio error patterns
+          if (err.message.includes('issuer/subject') || err.message.includes('Invalid Access Token issuer/subject')) {
+            errorMessage = 'Invalid access token. The token may be for a different Twilio account or malformed. Please check backend configuration.';
+            console.error('❌ Token issuer/subject error - This usually means:');
+            console.error('   1. Token was generated for a different Twilio Account SID');
+            console.error('   2. Backend Twilio credentials don\'t match');
+            console.error('   3. Token format is incorrect');
+            console.error('   Please check your backend Twilio configuration (Account SID, API Key, API Secret)');
+          } else if (err.message.includes('expired')) {
+            errorMessage = 'Token has expired. Please refresh the page to get a new token.';
+          } else if (err.message.includes('room')) {
+            errorMessage = 'Unable to connect to video room. Please check your connection and try again.';
+          }
+        } else if (err.name === 'TwilioError') {
+          // Handle Twilio-specific errors
+          if (err.message?.includes('issuer/subject') || err.code === 20101) {
+            errorMessage = 'Invalid access token. The token may be for a different Twilio account. Please check backend configuration.';
+            console.error('❌ Twilio Error Code 20101 - Invalid Access Token issuer/subject');
+          } else if (err.message?.includes('expired')) {
+            errorMessage = 'Token has expired. Please refresh the page to get a new token.';
+          } else if (err.message?.includes('room')) {
+            errorMessage = 'Unable to connect to video room. Please check your connection and try again.';
+          } else {
+            errorMessage = `Video connection error: ${err.message || err.code || 'Unknown error'}`;
+          }
+        } else if (err.response) {
+          // API error responses
+          const status = err.response.status;
+          if (status === 403) {
+            errorMessage = 'You do not have permission to access this video call.';
+          } else if (status === 404) {
+            errorMessage = 'Appointment or video room not found.';
+          } else if (status === 500) {
+            errorMessage = 'Server error. Please try again later.';
+          }
+        }
+        
+        setError(errorMessage);
         setLoading(false);
         setConnectionStatus('disconnected');
       }
@@ -87,8 +250,9 @@ export const VideoCallPage: React.FC = () => {
 
     // Cleanup on unmount
     return () => {
-      if (room) {
-        room.disconnect();
+      if (roomRef.current) {
+        roomRef.current.disconnect();
+        roomRef.current = null;
       }
     };
   }, [appointmentId]);
@@ -200,11 +364,25 @@ export const VideoCallPage: React.FC = () => {
     return (
       <div className={styles.videoCallContainer}>
         <div className={styles.errorState}>
-          <h2>❌ Connection Failed</h2>
+          <h2><ErrorCircleIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Connection Failed</h2>
           <p>{error}</p>
-          <button onClick={() => navigate(-1)} className={styles.backButton}>
-            Go Back
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+            <button 
+              onClick={() => {
+                setError(null);
+                setLoading(true);
+                // Trigger reconnection by updating state
+                window.location.reload();
+              }} 
+              className={styles.backButton}
+              style={{ backgroundColor: '#3b82f6', color: 'white' }}
+            >
+              Retry Connection
+            </button>
+            <button onClick={() => navigate(-1)} className={styles.backButton}>
+              Go Back
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -217,12 +395,23 @@ export const VideoCallPage: React.FC = () => {
         <div className={styles.headerLeft}>
           <h2>Video Session</h2>
           <span className={`${styles.statusBadge} ${styles[connectionStatus]}`}>
-            {connectionStatus === 'connected' ? '🟢 Connected' : '🔴 Disconnected'}
+            {connectionStatus === 'connected' ? (
+              <>
+                <CircleIcon size="xs" color="#10b981" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                Connected
+              </>
+            ) : (
+              <>
+                <CircleIcon size="xs" color="#ef4444" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                Disconnected
+              </>
+            )}
           </span>
         </div>
         <div className={styles.headerRight}>
           <span className={styles.participantCount}>
-            👥 {participants.length + 1} participant{participants.length !== 0 ? 's' : ''}
+            <UsersIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            {participants.length + 1} participant{participants.length !== 0 ? 's' : ''}
           </span>
         </div>
       </div>
@@ -234,7 +423,7 @@ export const VideoCallPage: React.FC = () => {
           <div className={styles.remoteParticipants} ref={remoteVideoRef}>
             {participants.length === 0 && connectionStatus === 'connected' && (
               <div className={styles.waitingMessage}>
-                <h3>⏳ Waiting for other participant...</h3>
+                <h3><ClockIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Waiting for other participant...</h3>
                 <p>They will appear here when they join</p>
               </div>
             )}
@@ -242,7 +431,7 @@ export const VideoCallPage: React.FC = () => {
         ) : (
           <div className={styles.remoteParticipants}>
             <div className={styles.waitingMessage}>
-              <h3>⏳ Waiting for other participant...</h3>
+              <h3><ClockIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Waiting for other participant...</h3>
               <p>They will appear here when they join</p>
             </div>
           </div>
@@ -251,7 +440,7 @@ export const VideoCallPage: React.FC = () => {
         {/* Local video */}
         <div className={styles.localVideoContainer}>
           <div className={styles.localVideoWrapper}>
-            <video ref={localVideoRef} autoPlay muted className={styles.localVideo} />
+            <div ref={localVideoContainerRef} className={styles.localVideo}></div>
             <span className={styles.localLabel}>You</span>
           </div>
         </div>
@@ -264,7 +453,7 @@ export const VideoCallPage: React.FC = () => {
           className={`${styles.controlButton} ${isAudioMuted ? styles.active : ''}`}
           title={isAudioMuted ? 'Unmute' : 'Mute'}
         >
-          {isAudioMuted ? '🔇' : '🎤'}
+          {isAudioMuted ? <MicrophoneSlashIcon size="md" /> : <MicrophoneIcon size="md" />}
           <span>{isAudioMuted ? 'Unmute' : 'Mute'}</span>
         </button>
 
@@ -273,7 +462,7 @@ export const VideoCallPage: React.FC = () => {
           className={`${styles.controlButton} ${isVideoOff ? styles.active : ''}`}
           title={isVideoOff ? 'Turn On Camera' : 'Turn Off Camera'}
         >
-          {isVideoOff ? '📷' : '📹'}
+          {isVideoOff ? <CameraIcon size="md" /> : <VideoIcon size="md" />}
           <span>{isVideoOff ? 'Camera Off' : 'Camera On'}</span>
         </button>
 
@@ -282,7 +471,7 @@ export const VideoCallPage: React.FC = () => {
           className={`${styles.controlButton} ${styles.leaveButton}`}
           title="Leave Call"
         >
-          📞
+          <PhoneIcon size="md" />
           <span>Leave Call</span>
         </button>
       </div>

@@ -4,6 +4,7 @@ import { ProtectedRoute } from '../components/common/ProtectedRoute/ProtectedRou
 // Public pages
 import { Homepage } from '../pages/public/Homepage';
 import { AboutPage } from '../pages/public/AboutPage';
+import { ServicesPage } from '../pages/public/ServicesPage';
 
 // Auth pages
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -78,13 +79,8 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
       <Route path="/" element={<Homepage />} />
       <Route path="/about" element={<AboutPage />} />
       
-      {/* Services page - TODO */}
-      <Route path="/services" element={
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h1>Services Page Coming Soon</h1>
-          <p>Our comprehensive psychology services will be listed here.</p>
-        </div>
-      } />
+      {/* Services page */}
+      <Route path="/services" element={<ServicesPage />} />
       
       {/* Resources page - TODO */}
       <Route path="/resources" element={

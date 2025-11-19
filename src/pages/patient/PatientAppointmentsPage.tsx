@@ -6,6 +6,20 @@ import { appointmentsService } from '../../services/api/appointments';
 import type { PatientAppointment } from '../../services/api/appointments';
 import { videoCallService } from '../../services/api/videoCall';
 import { SessionTimer } from '../../components/patient/SessionTimer';
+import { 
+  CalendarIcon,
+  CalendarPlusIcon,
+  VideoIcon,
+  ClipboardIcon,
+  EditIcon,
+  CloseIcon,
+  WarningIcon,
+  BuildingIcon,
+  ClockIcon,
+  LocationIcon,
+  LinkIcon,
+  NotesIcon
+} from '../../utils/icons';
 import styles from './PatientAppointments.module.scss';
 
 // Using PatientAppointment interface from appointments service
@@ -183,16 +197,6 @@ export const PatientAppointmentsPage: React.FC = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'upcoming': return '📅';
-      case 'completed': return '✅';
-      case 'cancelled': return '❌';
-      case 'rescheduled': return '🔄';
-      default: return '📅';
-    }
-  };
-
   if (loading) {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
@@ -214,13 +218,14 @@ export const PatientAppointmentsPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3>⚠️ Unable to Load Appointments</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Appointments</h3>
               <p>{error}</p>
               <button 
                 className={styles.retryButton}
                 onClick={() => window.location.reload()}
               >
-                🔄 Retry
+                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                Retry
               </button>
             </div>
           </div>
@@ -269,7 +274,8 @@ export const PatientAppointmentsPage: React.FC = () => {
               </button>
             </div>
             <button className={styles.primaryButton} onClick={handleBookNew}>
-              📅 Book New Appointment
+              <CalendarPlusIcon size="sm" style={{ marginRight: '8px' }} /> 
+              Book New Appointment
             </button>
           </div>
 
@@ -277,7 +283,7 @@ export const PatientAppointmentsPage: React.FC = () => {
           <div className={styles.appointmentsList}>
             {filteredAppointments.length === 0 ? (
               <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>📅</div>
+                <div className={styles.emptyIcon}><CalendarIcon size="2xl" /></div>
                 <h3>No appointments found</h3>
                 <p>
                   {filter === 'all' 
@@ -295,7 +301,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                   {/* Status Badge - Top Right */}
                   <div className={styles.cardStatusBadge}>
                     <span className={`${styles.statusBadge} ${getStatusColor(appointment.status)}`}>
-                      {getStatusIcon(appointment.status)} {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                      {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
                     </span>
                   </div>
 
@@ -317,14 +323,14 @@ export const PatientAppointmentsPage: React.FC = () => {
                     {/* Date & Time Section */}
                     <div className={styles.dateTimeSection}>
                       <div className={styles.dateTimeItem}>
-                        <span className={styles.dateTimeIcon}>📅</span>
+                        <span className={styles.dateTimeIcon}><CalendarIcon size="sm" /></span>
                         <div className={styles.dateTimeContent}>
                           <span className={styles.dateTimeLabel}>Date</span>
                           <span className={styles.dateTimeValue}>{formatAppointmentDate(appointment)}</span>
                         </div>
                       </div>
                       <div className={styles.dateTimeItem}>
-                        <span className={styles.dateTimeIcon}>🕐</span>
+                        <span className={styles.dateTimeIcon}><ClockIcon size="sm" /></span>
                         <div className={styles.dateTimeContent}>
                           <span className={styles.dateTimeLabel}>Time</span>
                           <span className={styles.dateTimeValue}>{formatAppointmentTime(appointment)}</span>
@@ -336,7 +342,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                     <div className={styles.detailsGrid}>
                       <div className={styles.detailItem}>
                         <span className={styles.detailIcon}>
-                          {appointment.session_type === 'in_person' ? '🏢' : '💻'}
+                          {appointment.session_type === 'in_person' ? <BuildingIcon size="sm" /> : <VideoIcon size="sm" />}
                         </span>
                         <div className={styles.detailContent}>
                           <span className={styles.detailLabel}>Type</span>
@@ -347,7 +353,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                       </div>
                       
                       <div className={styles.detailItem}>
-                        <span className={styles.detailIcon}>⏱️</span>
+                        <span className={styles.detailIcon}><ClockIcon size="sm" /></span>
                         <div className={styles.detailContent}>
                           <span className={styles.detailLabel}>Duration</span>
                           <span className={styles.detailValue}>{appointment.duration_minutes} min</span>
@@ -356,7 +362,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                       
                       {appointment.location && (
                         <div className={styles.detailItem}>
-                          <span className={styles.detailIcon}>📍</span>
+                          <span className={styles.detailIcon}><LocationIcon size="sm" /></span>
                           <div className={styles.detailContent}>
                             <span className={styles.detailLabel}>Location</span>
                             <span className={styles.detailValue}>{appointment.location}</span>
@@ -366,7 +372,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                       
                       {appointment.meeting_link && (
                         <div className={styles.detailItem}>
-                          <span className={styles.detailIcon}>🔗</span>
+                          <span className={styles.detailIcon}><LinkIcon size="sm" /></span>
                           <div className={styles.detailContent}>
                             <span className={styles.detailLabel}>Meeting Link</span>
                             <a 
@@ -385,7 +391,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                     {/* Notes Section */}
                     {appointment.notes && (
                       <div className={styles.notesSection}>
-                        <span className={styles.notesLabel}>📝 Notes</span>
+                        <span className={styles.notesLabel}><NotesIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Notes</span>
                         <p className={styles.notesText}>{appointment.notes}</p>
                       </div>
                     )}
@@ -431,7 +437,8 @@ export const PatientAppointmentsPage: React.FC = () => {
                             : 'Join video session'
                         }
                       >
-                        🎥 {
+                        <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                        {
                           appointment.can_join_session === true || 
                           (appointment.can_join_session === undefined && videoCallService.canJoinNow(appointment))
                           ? 'Join Video Session' 
@@ -444,7 +451,8 @@ export const PatientAppointmentsPage: React.FC = () => {
                       className={styles.secondaryButton}
                       onClick={() => handleViewDetails(appointment)}
                     >
-                      📋 View Details
+                      <ClipboardIcon size="sm" style={{ marginRight: '6px' }} />
+                      View Details
                     </button>
                     
                     {appointment.can_reschedule && (
@@ -452,7 +460,8 @@ export const PatientAppointmentsPage: React.FC = () => {
                         className={styles.secondaryButton}
                         onClick={() => handleRescheduleAppointment(appointment)}
                       >
-                        📅 Reschedule
+                        <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                        Reschedule
                       </button>
                     )}
                     
@@ -461,7 +470,8 @@ export const PatientAppointmentsPage: React.FC = () => {
                         className={styles.dangerButton}
                         onClick={() => handleCancelAppointment(appointment)}
                       >
-                        ✖️ Cancel
+                        <CloseIcon size="sm" style={{ marginRight: '6px' }} />
+                        Cancel
                       </button>
                     )}
                   </div>

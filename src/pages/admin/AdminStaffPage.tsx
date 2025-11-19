@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CheckCircleIcon, WarningIcon, CloseIcon } from '../../utils/icons';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type User } from '../../services/api/admin';
@@ -87,7 +88,7 @@ export const AdminStaffPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
+              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 
@@ -147,7 +148,17 @@ export const AdminStaffPage: React.FC = () => {
                       <td>
                         <div className={styles.statusCell}>
                           <span className={staff.is_verified ? styles.verified : styles.unverified}>
-                            {staff.is_verified ? '✓ Verified' : '⚠ Unverified'}
+                            {staff.is_verified ? (
+                              <>
+                                <CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                                Verified
+                              </>
+                            ) : (
+                              <>
+                                <WarningIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                                Unverified
+                              </>
+                            )}
                           </span>
                           <span className={staff.is_active ? styles.active : styles.inactive}>
                             {staff.is_active ? 'Active' : 'Inactive'}

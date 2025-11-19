@@ -55,6 +55,7 @@
 }
 
 .errorAlert {
+  white-space: pre-line; // Allow line breaks in error messages
   background-color: rgba($error-red, 0.1);
   border: 1px solid rgba($error-red, 0.3);
   color: $error-red;

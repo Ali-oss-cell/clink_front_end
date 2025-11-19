@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Patient } from '../../services/api/admin';
+import { CloseIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
 
 export const AdminPatientsPage: React.FC = () => {
@@ -89,7 +90,7 @@ export const AdminPatientsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
+              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 

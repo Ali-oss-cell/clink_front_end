@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { PatientAppointment } from '../../../services/api/appointments';
+import { WarningIcon } from '../../../utils/icons';
 import styles from './SessionTimer.module.scss';
 
 interface SessionTimerProps {
@@ -111,7 +112,7 @@ export const SessionTimer: React.FC<SessionTimerProps> = ({ appointment, onJoinS
       case 'starting_soon':
         return (
           <div className={`${styles.timerContainer} ${styles.timerStartingSoon}`}>
-            <p className={styles.timerLabel}>⚠️ Session starting soon!</p>
+            <p className={styles.timerLabel}><WarningIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Session starting soon!</p>
             <p className={styles.timerValue}>{formatTime(timeUntilStart)}</p>
             {appointment.can_join_session && onJoinSession && (
               <button className={styles.btnJoin} onClick={onJoinSession}>

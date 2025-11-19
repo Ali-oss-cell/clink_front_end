@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import type { LoginRequest } from '../../../types/simple-auth';
 import { authService } from '../../../services/api/auth';
+import { getPrivacyPolicyStatus } from '../../../services/api/privacy';
+import { WarningIcon, CheckCircleIcon } from '../../../utils/icons';
 import styles from './Login.module.scss';
 
 // Helper function to get redirect path based on user role
@@ -65,10 +67,30 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
         onLoginSuccess();
       }
       
-      // Get user data and redirect based on role
+      // Get user data and check Privacy Policy status
       const user = authService.getStoredUser();
       
       if (user) {
+        // Check Privacy Policy status
+        try {
+          const privacyStatus = await getPrivacyPolicyStatus();
+          
+          // If Privacy Policy not accepted or needs update, store status for ProtectedRoute
+          if (!privacyStatus.accepted || privacyStatus.needs_update) {
+            // Store privacy status in sessionStorage to show modal on next page
+            sessionStorage.setItem('privacy_policy_required', 'true');
+            sessionStorage.setItem('privacy_policy_status', JSON.stringify(privacyStatus));
+            console.log('[Login] Privacy Policy acceptance required');
+          } else {
+            console.log('[Login] Privacy Policy already accepted');
+          }
+        } catch (privacyError: any) {
+          // If Privacy Policy check fails, continue with normal flow
+          // User will be prompted on protected routes if needed
+          console.warn('[Login] Privacy Policy check failed:', privacyError.message);
+          console.warn('[Login] User will be prompted on protected routes if needed');
+        }
+        
         // Small delay to show success message
         setTimeout(() => {
           const redirectPath = getRedirectPath(user.role);
@@ -103,14 +125,14 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
 
         {error && (
           <div className={styles.errorAlert}>
-            <span className={styles.errorIcon}>⚠️</span>
+            <span className={styles.errorIcon}><WarningIcon size="md" /></span>
             {error}
           </div>
         )}
 
         {success && (
           <div className={styles.successAlert}>
-            <span className={styles.successIcon}>✅</span>
+            <span className={styles.successIcon}><CheckCircleIcon size="md" /></span>
             {success}
           </div>
         )}

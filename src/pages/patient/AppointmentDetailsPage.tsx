@@ -5,6 +5,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import type { BookingSummaryResponse } from '../../services/api/appointments';
+import { WarningIcon, CalendarIcon, BuildingIcon, VideoIcon } from '../../utils/icons';
 import styles from './AppointmentDetails.module.scss';
 
 interface AppointmentDetailsFormData {
@@ -102,7 +103,7 @@ export const AppointmentDetailsPage: React.FC = () => {
         <div className={styles.appointmentDetailsContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3>⚠️ Unable to Load Appointment</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Appointment</h3>
               <p>{error || 'Appointment not found'}</p>
               <button className={styles.retryButton} onClick={() => navigate('/appointments/date-time')}>
                 Go Back
@@ -137,7 +138,7 @@ export const AppointmentDetailsPage: React.FC = () => {
 
           <div className={styles.appointmentSummary}>
             <div className={styles.summaryCard}>
-              <h3>📅 Appointment Summary</h3>
+              <h3><CalendarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Appointment Summary</h3>
               <div className={styles.summaryGrid}>
                 <div className={styles.summaryItem}>
                   <span className={styles.summaryLabel}>Psychologist:</span>
@@ -173,7 +174,17 @@ export const AppointmentDetailsPage: React.FC = () => {
                 <div className={styles.summaryItem}>
                   <span className={styles.summaryLabel}>Session Type:</span>
                   <span className={styles.summaryValue}>
-                    {bookingData.session.type === 'in_person' ? '🏢 In-Person Session' : '🎥 Telehealth (Video Call)'}
+                    {bookingData.session.type === 'in_person' ? (
+                      <>
+                        <BuildingIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                        In-Person Session
+                      </>
+                    ) : (
+                      <>
+                        <VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                        Telehealth (Video Call)
+                      </>
+                    )}
                   </span>
                 </div>
               </div>
@@ -242,7 +253,7 @@ export const AppointmentDetailsPage: React.FC = () => {
 
             <div className={styles.emergencyReminder}>
               <div className={styles.emergencyBox}>
-                <div className={styles.emergencyIcon}>⚠️</div>
+                <div className={styles.emergencyIcon}><WarningIcon size="xl" /></div>
                 <div className={styles.emergencyContent}>
                   <h4>Important Reminder:</h4>
                   <p>If you're experiencing a mental health emergency, please:</p>

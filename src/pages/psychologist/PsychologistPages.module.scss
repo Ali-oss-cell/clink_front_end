@@ -1,10 +1,10 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 
-// Psychologist Layout
+// Psychologist Layout - GREEN THEME
 .psychologistLayout {
   min-height: 100vh;
-  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
+  background: linear-gradient(135deg, $psychologist-bg-gradient-start 0%, $psychologist-bg-gradient-end 100%);
 }
 
 // Profile Container
@@ -35,7 +35,7 @@
 .pageTitle {
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-dark 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -94,7 +94,7 @@
     left: 0;
     width: 100px;
     height: 2px;
-    background: linear-gradient(90deg, $primary-color, transparent);
+    background: linear-gradient(90deg, $psychologist-primary, transparent);
   }
 }
 
@@ -145,16 +145,16 @@
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 
   &:hover {
-    border-color: $primary-color;
+    border-color: $psychologist-primary;
     border-style: solid;
-    background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($primary-light, 0.15) 100%);
+    background: linear-gradient(135deg, rgba($psychologist-primary, 0.1) 0%, rgba($psychologist-light, 0.15) 100%);
     transform: scale(1.05);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   }
 }
 
 .placeholderUploadButton {
-  color: $primary-color;
+  color: $psychologist-primary;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -163,7 +163,7 @@
   transition: color 0.3s ease;
 
   &:hover {
-    color: $primary-dark;
+    color: $psychologist-dark;
   }
 }
 
@@ -173,7 +173,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba($primary-color, 0.95) 0%, rgba($primary-dark, 0.95) 100%);
+  background: linear-gradient(135deg, rgba($psychologist-primary, 0.95) 0%, rgba($psychologist-dark, 0.95) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -201,7 +201,7 @@
 
   &:hover {
     background: white;
-    color: $primary-color;
+    color: $psychologist-primary;
     transform: scale(1.05);
   }
 }
@@ -261,18 +261,18 @@
 }
 
 .experienceBadge {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-dark 100%);
   color: white;
   padding: 0.6rem 1.2rem;
   border-radius: 25px;
   font-size: 0.95rem;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  box-shadow: 0 4px 12px rgba($psychologist-primary, 0.3);
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba($primary-color, 0.4);
+    box-shadow: 0 6px 20px rgba($psychologist-primary, 0.4);
   }
 }
 
@@ -321,7 +321,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary-color, $primary-light);
+    background: linear-gradient(90deg, $psychologist-primary, $psychologist-light);
     transform: scaleX(0);
     transition: transform 0.3s ease;
   }
@@ -329,7 +329,7 @@
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-    border-color: $primary-light;
+    border-color: $psychologist-light;
 
     &::before {
       transform: scaleX(1);
@@ -365,19 +365,19 @@
 }
 
 .specializationTag {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-light 100%);
   color: white;
   padding: 0.65rem 1.25rem;
   border-radius: 25px;
   font-size: 0.95rem;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba($primary-color, 0.25);
+  box-shadow: 0 4px 12px rgba($psychologist-primary, 0.25);
   transition: all 0.3s ease;
   cursor: default;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba($primary-color, 0.35);
+    box-shadow: 0 6px 18px rgba($psychologist-primary, 0.35);
   }
 }
 
@@ -390,19 +390,19 @@
 }
 
 .languageTag {
-  background: linear-gradient(135deg, $secondary-color 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, $psychologist-accent 0%, #7c3aed 100%);
   color: white;
   padding: 0.65rem 1.25rem;
   border-radius: 25px;
   font-size: 0.95rem;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba($secondary-color, 0.25);
+  box-shadow: 0 4px 12px rgba($psychologist-accent, 0.25);
   transition: all 0.3s ease;
   cursor: default;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba($secondary-color, 0.35);
+    box-shadow: 0 6px 18px rgba($psychologist-accent, 0.35);
   }
 }
 
@@ -429,7 +429,7 @@
 }
 
 .contactInfo a {
-  color: $primary-color;
+  color: $psychologist-primary;
   text-decoration: none;
 
   &:hover {
@@ -460,7 +460,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: rgba($primary-color, 0.1);
+    background: rgba($psychologist-primary, 0.1);
   }
 
   input[type="checkbox"] {
@@ -485,7 +485,7 @@
 }
 
 .dayTag {
-  background: $primary-color;
+  background: $psychologist-primary;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -535,7 +535,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, $primary-color, $primary-light);
+    background: linear-gradient(90deg, $psychologist-primary, $psychologist-light);
     transform: scaleX(0);
     transition: transform 0.3s ease;
   }
@@ -543,7 +543,7 @@
   &:hover {
     transform: translateY(-8px) scale(1.03);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    border-color: $primary-color;
+    border-color: $psychologist-primary;
 
     &::before {
       transform: scaleX(1);
@@ -551,7 +551,7 @@
 
     .statNumber {
       transform: scale(1.1);
-      color: $primary-dark;
+      color: $psychologist-dark;
     }
   }
 }
@@ -560,7 +560,7 @@
   display: block;
   font-size: 2.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-dark 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -592,7 +592,7 @@
 
   &:focus {
     outline: none;
-    border-color: $primary-color;
+    border-color: $psychologist-primary;
   }
 }
 
@@ -608,7 +608,7 @@
 
   &:focus {
     outline: none;
-    border-color: $primary-color;
+    border-color: $psychologist-primary;
   }
 }
 
@@ -623,7 +623,7 @@
 }
 
 .editButton {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-dark 100%);
   color: white;
   border: none;
   padding: 1rem 3rem;
@@ -632,7 +632,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+  box-shadow: 0 6px 20px rgba($psychologist-primary, 0.3);
   position: relative;
   overflow: hidden;
 
@@ -651,7 +651,7 @@
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba($primary-color, 0.4);
+    box-shadow: 0 10px 30px rgba($psychologist-primary, 0.4);
 
     &::before {
       width: 300px;
@@ -693,7 +693,7 @@
 }
 
 .cancelButton {
-  background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
+  background: linear-gradient(135deg, $psychologist-accent 0%, darken($psychologist-accent, 10%) 100%);
   color: white;
   border: none;
   padding: 1rem 3rem;
@@ -702,11 +702,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba($secondary-color, 0.3);
+  box-shadow: 0 6px 20px rgba($psychologist-accent, 0.3);
 
   &:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba($secondary-color, 0.4);
+    box-shadow: 0 10px 30px rgba($psychologist-accent, 0.4);
   }
 
   &:active:not(:disabled) {
@@ -736,7 +736,7 @@
 }
 
 .retryButton {
-  background: $primary-color;
+  background: $psychologist-primary;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -748,7 +748,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: darken($primary-color, 10%);
+    background: darken($psychologist-primary, 10%);
   }
 }
 
@@ -828,7 +828,7 @@
   font-weight: 700;
   color: $text-dark;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -864,7 +864,7 @@
 
   &:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 12px 32px rgba($primary-color, 0.2);
+    box-shadow: 0 12px 32px rgba($psychologist-primary, 0.2);
   }
   
   &.isVisible:hover {
@@ -895,7 +895,7 @@
 
     .actionButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-dark 100%);
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -906,7 +906,7 @@
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba($primary-color, 0.4);
+    box-shadow: 0 6px 20px rgba($psychologist-primary, 0.4);
   }
   
   &:active {
@@ -961,7 +961,7 @@
 
 .retryButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-dark 100%);
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -972,7 +972,7 @@
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba($primary-color, 0.4);
+    box-shadow: 0 6px 20px rgba($psychologist-primary, 0.4);
   }
   
   &:active {
@@ -984,16 +984,16 @@
 .scheduleContainer {
   padding: 0;
   min-height: calc(100vh - 200px);
-  background: linear-gradient(135deg, rgba($primary-color, 0.03) 0%, rgba($secondary-color, 0.03) 100%);
+  background: linear-gradient(135deg, rgba($psychologist-primary, 0.03) 0%, rgba($psychologist-accent, 0.03) 100%);
 }
 
 .pageHeader {
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
   padding: 2.5rem 0;
   margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba($primary-color, 0.2);
+  box-shadow: 0 4px 20px rgba($psychologist-primary, 0.2);
   
   &::before {
     content: '';
@@ -1095,7 +1095,7 @@
     
     &.active {
       background: white;
-      color: $primary-color;
+      color: $psychologist-primary;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       transform: translateY(-2px);
     }
@@ -1134,7 +1134,7 @@
   align-items: center;
   gap: 1.5rem;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba($primary-color, 0.1);
+  border: 1px solid rgba($psychologist-primary, 0.1);
   position: relative;
   overflow: hidden;
   opacity: 0;
@@ -1152,15 +1152,15 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, $primary-color 0%, $secondary-color 100%);
+    background: linear-gradient(180deg, $psychologist-primary 0%, $psychologist-accent 100%);
     transform: scaleY(0);
     transition: transform 0.4s ease;
   }
   
   &:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba($primary-color, 0.2);
-    border-color: $primary-color;
+    box-shadow: 0 12px 40px rgba($psychologist-primary, 0.2);
+    border-color: $psychologist-primary;
     
     &::before {
       transform: scaleY(1);
@@ -1179,10 +1179,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($secondary-color, 0.1) 100%);
+  background: linear-gradient(135deg, rgba($psychologist-primary, 0.1) 0%, rgba($psychologist-accent, 0.1) 100%);
   border-radius: $border-radius-lg;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba($primary-color, 0.1);
+  box-shadow: 0 4px 12px rgba($psychologist-primary, 0.1);
 }
 
 .statContent {
@@ -1192,7 +1192,7 @@
 .statValue {
   font-size: 2.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1244,18 +1244,18 @@
     }
     
     &.active {
-      background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+      background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
       color: white;
       border-color: transparent;
-      box-shadow: 0 4px 20px rgba($primary-color, 0.3);
+      box-shadow: 0 4px 20px rgba($psychologist-primary, 0.3);
       transform: translateY(-2px);
     }
     
     &:hover:not(.active) {
-      border-color: $primary-color;
-      color: $primary-color;
+      border-color: $psychologist-primary;
+      color: $psychologist-primary;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba($primary-color, 0.1);
+      box-shadow: 0 4px 12px rgba($psychologist-primary, 0.1);
     }
   }
 }
@@ -1285,18 +1285,18 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary-color 0%, $secondary-color 100%);
+    background: linear-gradient(90deg, $psychologist-primary 0%, $psychologist-accent 100%);
     opacity: 1;
   }
   
   &:hover {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
     transform: translateY(-4px);
-    border-color: rgba($primary-color, 0.3);
+    border-color: rgba($psychologist-primary, 0.3);
     
     .patientAvatar {
       transform: scale(1.05);
-      box-shadow: 0 6px 16px rgba($primary-color, 0.4);
+      box-shadow: 0 6px 16px rgba($psychologist-primary, 0.4);
     }
   }
 
@@ -1341,14 +1341,14 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 1.3rem;
-  box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  box-shadow: 0 4px 12px rgba($psychologist-primary, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 3px solid white;
   flex-shrink: 0;
@@ -1375,9 +1375,9 @@
   grid-template-columns: repeat(2, 1fr);
   gap: $spacing-md;
   padding: $spacing-lg;
-  background: linear-gradient(135deg, rgba($primary-color, 0.06) 0%, rgba($primary-color, 0.02) 100%);
+  background: linear-gradient(135deg, rgba($psychologist-primary, 0.06) 0%, rgba($psychologist-primary, 0.02) 100%);
   border-radius: $border-radius-lg;
-  border: 1px solid rgba($primary-color, 0.1);
+  border: 1px solid rgba($psychologist-primary, 0.1);
 }
 
 .dateTimeItem {
@@ -1467,16 +1467,16 @@
 .timerSection {
   margin: $spacing-lg 0;
   padding: $spacing-md;
-  background: rgba($primary-color, 0.02);
+  background: rgba($psychologist-primary, 0.02);
   border-radius: $border-radius-lg;
-  border: 1px solid rgba($primary-color, 0.1);
+  border: 1px solid rgba($psychologist-primary, 0.1);
 }
 
 .notesSection {
   padding: $spacing-md;
   background: rgba(0, 0, 0, 0.02);
   border-radius: $border-radius;
-  border-left: 3px solid $primary-color;
+  border-left: 3px solid $psychologist-primary;
 }
 
 .notesLabel {
@@ -1497,7 +1497,7 @@
 }
 
 .meetingLink {
-  color: $primary-color;
+  color: $psychologist-primary;
   text-decoration: none;
   font-weight: 600;
   display: inline-flex;
@@ -1506,7 +1506,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    color: darken($primary-color, 10%);
+    color: darken($psychologist-primary, 10%);
     gap: 0.5rem;
   }
 }
@@ -1567,26 +1567,26 @@
 }
 
 .primaryButton {
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+  box-shadow: 0 4px 15px rgba($psychologist-primary, 0.3);
   
   &:hover {
-    box-shadow: 0 6px 25px rgba($primary-color, 0.4);
+    box-shadow: 0 6px 25px rgba($psychologist-primary, 0.4);
     transform: translateY(-2px);
   }
 }
 
 .secondaryButton {
   background: white;
-  color: $primary-color;
-  border: 2px solid $primary-color;
+  color: $psychologist-primary;
+  border: 2px solid $psychologist-primary;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   
   &:hover {
-    background: $primary-color;
+    background: $psychologist-primary;
     color: white;
-    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+    box-shadow: 0 4px 15px rgba($psychologist-primary, 0.3);
     transform: translateY(-2px);
   }
 }
@@ -1784,7 +1784,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary-color 0%, $secondary-color 100%);
+    background: linear-gradient(90deg, $psychologist-primary 0%, $psychologist-accent 100%);
   }
   
   h3 {
@@ -1815,8 +1815,8 @@
   
   &:focus {
     outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
+    border-color: $psychologist-primary;
+    box-shadow: 0 0 0 4px rgba($psychologist-primary, 0.1);
   }
 }
 
@@ -1954,7 +1954,7 @@
 .patientsContainer {
   padding: 0;
   min-height: calc(100vh - 200px);
-  background: linear-gradient(135deg, rgba($primary-color, 0.03) 0%, rgba($secondary-color, 0.03) 100%);
+  background: linear-gradient(135deg, rgba($psychologist-primary, 0.03) 0%, rgba($psychologist-accent, 0.03) 100%);
 }
 
 // Search & Filter Section
@@ -1993,8 +1993,8 @@
   
   &:focus {
     outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
+    border-color: $psychologist-primary;
+    box-shadow: 0 0 0 4px rgba($psychologist-primary, 0.1);
   }
   
   &::placeholder {
@@ -2027,15 +2027,15 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, $primary-color 0%, $secondary-color 100%);
+    background: linear-gradient(90deg, $psychologist-primary 0%, $psychologist-accent 100%);
     transform: scaleX(0);
     transition: transform 0.4s ease;
   }
   
   &:hover {
-    box-shadow: 0 12px 40px rgba($primary-color, 0.15);
+    box-shadow: 0 12px 40px rgba($psychologist-primary, 0.15);
     transform: translateY(-4px);
-    border-color: $primary-color;
+    border-color: $psychologist-primary;
     
     &::before {
       transform: scaleX(1);
@@ -2095,9 +2095,9 @@
 }
 
 .statusCompleted {
-  background: rgba($primary-color, 0.1);
-  color: $primary-color;
-  border: 2px solid $primary-color;
+  background: rgba($psychologist-primary, 0.1);
+  color: $psychologist-primary;
+  border: 2px solid $psychologist-primary;
 }
 
 .statusInactive {
@@ -2139,7 +2139,7 @@
   display: flex;
   gap: 2rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, rgba($primary-color, 0.05) 0%, rgba($secondary-color, 0.05) 100%);
+  background: linear-gradient(135deg, rgba($psychologist-primary, 0.05) 0%, rgba($psychologist-accent, 0.05) 100%);
   border-radius: $border-radius;
   margin-bottom: 1.5rem;
 }
@@ -2155,7 +2155,7 @@
 .sessionStatValue {
   font-size: 2rem;
   font-weight: 800;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2251,11 +2251,11 @@
   }
   
   &::-webkit-scrollbar-thumb {
-    background: $primary-color;
+    background: $psychologist-primary;
     border-radius: 4px;
     
     &:hover {
-      background: $primary-dark;
+      background: $psychologist-dark;
     }
   }
 }
@@ -2935,7 +2935,7 @@
 }
 
 .calendarNavButton {
-  background: $primary-color;
+  background: $psychologist-primary;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -2946,7 +2946,7 @@
   font-size: 0.9rem;
 
   &:hover {
-    background: $primary-dark;
+    background: $psychologist-dark;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   }
@@ -3021,10 +3021,10 @@
 
 .calendarDayToday {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  border: 2px solid $primary-color;
+  border: 2px solid $psychologist-primary;
 
   .calendarDayNumber {
-    background: $primary-color;
+    background: $psychologist-primary;
     color: white;
     font-weight: 700;
   }
@@ -3068,7 +3068,7 @@
   transition: all 0.2s ease;
   
   &.statusUpcoming, &.statusScheduled {
-    background: $primary-color;
+    background: $psychologist-primary;
   }
   
   &.statusConfirmed {

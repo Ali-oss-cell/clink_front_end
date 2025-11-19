@@ -2,11 +2,28 @@
 // Australian Healthcare Colors & Professional Styling
 
 // Primary Brand Colors
-$primary-color: #2c5aa0;        // Professional blue
+$primary-color: #2c5aa0;        // Professional blue (default)
 $primary-dark: #1e3a8a;         // Darker blue for hover states
 $primary-light: #3b82f6;        // Lighter blue for accents
 $secondary-color: #64748b;       // Professional gray-blue
 $accent-color: #10b981;          // Calming teal for success states
+
+// Role-Specific Colors
+// Patient Theme (Blue)
+$patient-primary: #2563eb;      // Vibrant blue for patients
+$patient-dark: #1e40af;         // Darker blue
+$patient-light: #60a5fa;        // Lighter blue
+$patient-bg-gradient-start: #dbeafe;  // Light blue background
+$patient-bg-gradient-end: #bfdbfe;    // Blue background end
+$patient-accent: #3b82f6;       // Accent blue
+
+// Psychologist Theme (Green)
+$psychologist-primary: #10b981;  // Professional emerald green for healthcare providers
+$psychologist-dark: #059669;     // Darker green
+$psychologist-light: #34d399;    // Lighter green
+$psychologist-bg-gradient-start: #d1fae5;  // Light green background
+$psychologist-bg-gradient-end: #a7f3d0;    // Green background end
+$psychologist-accent: #14b8a6;   // Accent teal-green
 
 // Background Colors
 $background-light: #f8fafc;      // Very light gray-blue

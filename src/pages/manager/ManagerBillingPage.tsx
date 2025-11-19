@@ -3,6 +3,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Invoice } from '../../services/api/admin';
 import { downloadInvoicePDF } from '../../utils/invoicePDF';
+import { ClockIcon, DocumentIcon } from '../../utils/icons';
 import styles from './ManagerPages.module.scss';
 
 export const ManagerBillingPage: React.FC = () => {
@@ -213,7 +214,17 @@ export const ManagerBillingPage: React.FC = () => {
                           className={styles.actionButton}
                           title="Download Invoice PDF"
                         >
-                          {downloadingId === invoice.id ? '⏳ Downloading...' : '📄 Download PDF'}
+                            {downloadingId === invoice.id ? (
+                              <>
+                                <ClockIcon size="sm" style={{ marginRight: '6px' }} />
+                                Downloading...
+                              </>
+                            ) : (
+                              <>
+                                <DocumentIcon size="sm" style={{ marginRight: '6px' }} />
+                                Download PDF
+                              </>
+                            )}
                         </button>
                       </td>
                     </tr>

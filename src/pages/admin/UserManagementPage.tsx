@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type User, type CreateUserRequest, type CreateUserResponse, type UpdateUserRequest } from '../../services/api/admin';
+import { CheckCircleIcon, WarningIcon, InfoIcon, CloseIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
 
 export const UserManagementPage: React.FC = () => {
@@ -142,11 +143,11 @@ export const UserManagementPage: React.FC = () => {
       
       // Show success message
       if (response.message) {
-        alert(`✅ ${response.message}`);
+        alert(response.message);
       } else if (createForm.role === 'psychologist') {
-        alert('✅ Psychologist created successfully with profile!');
+        alert('Psychologist created successfully with profile!');
       } else {
-        alert('✅ User created successfully!');
+        alert('User created successfully!');
       }
     } catch (err: any) {
       console.error('Create user error:', err);
@@ -213,7 +214,7 @@ export const UserManagementPage: React.FC = () => {
         is_accepting_new_patients: true
       });
       fetchUsers();
-      alert('✅ User updated successfully!');
+      alert('User updated successfully!');
     } catch (err: any) {
       console.error('Update user error:', err);
       let errorMessage = 'Failed to update user';
@@ -254,7 +255,7 @@ export const UserManagementPage: React.FC = () => {
       setError(null); // Clear previous errors
       await adminService.deleteUser(id);
       fetchUsers();
-      alert('✅ User deleted successfully!');
+      alert('User deleted successfully!');
     } catch (err: any) {
       console.error('Delete user error:', err);
       let errorMessage = 'Failed to delete user';
@@ -275,7 +276,7 @@ export const UserManagementPage: React.FC = () => {
       }
       
       // Show error in alert for delete operations (more visible)
-      alert(`❌ ${errorMessage}`);
+      alert(errorMessage);
       setError(errorMessage);
     }
   };
@@ -381,7 +382,7 @@ export const UserManagementPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
+              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 
@@ -454,7 +455,17 @@ export const UserManagementPage: React.FC = () => {
                       <td>
                         <div className={styles.statusCell}>
                           <span className={user.is_verified ? styles.verified : styles.unverified}>
-                            {user.is_verified ? '✓ Verified' : '⚠ Unverified'}
+                            {user.is_verified ? (
+                              <>
+                                <CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                                Verified
+                              </>
+                            ) : (
+                              <>
+                                <WarningIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                                Unverified
+                              </>
+                            )}
                           </span>
                           <span className={user.is_active ? styles.active : styles.inactive}>
                             {user.is_active ? 'Active' : 'Inactive'}
@@ -491,7 +502,7 @@ export const UserManagementPage: React.FC = () => {
               <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
                   <h2>Create New User</h2>
-                  <button onClick={() => setShowCreateModal(false)}>×</button>
+                  <button onClick={() => setShowCreateModal(false)}><CloseIcon size="sm" /></button>
                 </div>
                 <form onSubmit={handleCreateUser} className={styles.modalForm}>
                   <div className={styles.formGroup}>
@@ -559,7 +570,7 @@ export const UserManagementPage: React.FC = () => {
                         fontSize: '0.875rem',
                         color: '#1e40af'
                       }}>
-                        <strong>ℹ️ Psychologist Profile:</strong> The psychologist profile will be created automatically with the information below.
+                        <strong><InfoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Psychologist Profile:</strong> The psychologist profile will be created automatically with the information below.
                       </div>
 
                       <div className={styles.formGroup}>
@@ -677,7 +688,7 @@ export const UserManagementPage: React.FC = () => {
               <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
                   <h2>Edit User</h2>
-                  <button onClick={() => setShowEditModal(false)}>×</button>
+                  <button onClick={() => setShowEditModal(false)}><CloseIcon size="sm" /></button>
                 </div>
                 <form onSubmit={handleEditUser} className={styles.modalForm}>
                   <div className={styles.formGroup}>
@@ -765,7 +776,7 @@ export const UserManagementPage: React.FC = () => {
                         fontSize: '0.875rem',
                         color: '#1e40af'
                       }}>
-                        <strong>ℹ️ Psychologist Profile:</strong> Update psychologist profile information below.
+                        <strong><InfoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Psychologist Profile:</strong> Update psychologist profile information below.
                       </div>
 
                       <div className={styles.formGroup}>

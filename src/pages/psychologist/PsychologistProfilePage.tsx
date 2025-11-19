@@ -3,6 +3,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { psychologistService } from '../../services/api/psychologist';
 import { authService } from '../../services/api/auth';
 import type { PsychologistProfile } from '../../services/api/psychologist';
+import { StarIcon } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
 
 export const PsychologistProfilePage: React.FC = () => {
@@ -592,7 +593,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   </div>
                   {profile.is_highly_rated && (
                     <div className={styles.statItem}>
-                      <span className={styles.statNumber}>⭐</span>
+                      <span className={styles.statNumber}><StarIcon size="lg" /></span>
                       <span className={styles.statLabel}>Highly Rated</span>
                     </div>
                   )}

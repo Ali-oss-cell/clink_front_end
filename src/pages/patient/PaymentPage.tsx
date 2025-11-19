@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
+import { VideoIcon, BuildingIcon, CreditCardIcon, PhoneIcon, LockIcon } from '../../utils/icons';
 import styles from './Payment.module.scss';
 
 export const PaymentPage: React.FC = () => {
@@ -179,7 +180,17 @@ export const PaymentPage: React.FC = () => {
                   <div className={styles.summaryItem}>
                     <span className={styles.summaryLabel}>Session Type:</span>
                     <span className={styles.summaryValue}>
-                      {selectedSessionType === 'in-person' ? '🏢 In-Person Session' : '🎥 Telehealth (Video Call)'}
+                      {selectedSessionType === 'in-person' ? (
+                        <>
+                          <BuildingIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                          In-Person Session
+                        </>
+                      ) : (
+                        <>
+                          <VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                          Telehealth (Video Call)
+                        </>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -208,7 +219,8 @@ export const PaymentPage: React.FC = () => {
                     <span>${totalAmount.toFixed(2)}</span>
                   </div>
                   <div className={styles.paymentNote}>
-                    💳 Payment due now to confirm appointment
+                    <CreditCardIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                    Payment due now to confirm appointment
                   </div>
                 </div>
               </div>
@@ -223,7 +235,7 @@ export const PaymentPage: React.FC = () => {
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'card' ? styles.selected : ''}`}
                     onClick={() => setPaymentMethod('card')}
                   >
-                    <div className={styles.paymentMethodIcon}>💳</div>
+                    <div className={styles.paymentMethodIcon}><CreditCardIcon size="xl" /></div>
                     <div className={styles.paymentMethodContent}>
                       <h4>Credit/Debit Card</h4>
                       <p>Pay securely online with your card</p>
@@ -243,7 +255,7 @@ export const PaymentPage: React.FC = () => {
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'phone' ? styles.selected : ''}`}
                     onClick={() => setPaymentMethod('phone')}
                   >
-                    <div className={styles.paymentMethodIcon}>📞</div>
+                    <div className={styles.paymentMethodIcon}><PhoneIcon size="xl" /></div>
                     <div className={styles.paymentMethodContent}>
                       <h4>Pay by Phone</h4>
                       <p>Call (03) 9xxx-xxxx to pay over the phone</p>
@@ -263,7 +275,7 @@ export const PaymentPage: React.FC = () => {
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'in-person' ? styles.selected : ''}`}
                     onClick={() => setPaymentMethod('in-person')}
                   >
-                    <div className={styles.paymentMethodIcon}>🏢</div>
+                    <div className={styles.paymentMethodIcon}><BuildingIcon size="xl" /></div>
                     <div className={styles.paymentMethodContent}>
                       <h4>Pay in Person</h4>
                       <p>Pay cash or EFTPOS at your appointment</p>
@@ -329,7 +341,8 @@ export const PaymentPage: React.FC = () => {
                     </div>
                     
                     <div className={styles.securityNote}>
-                      🔒 Secured by Stripe - Your payment info is encrypted
+                      <LockIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                      Secured by Stripe - Your payment info is encrypted
                     </div>
                   </div>
                 </div>

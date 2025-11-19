@@ -5,11 +5,14 @@ export interface VideoTokenRequest {
 }
 
 export interface VideoTokenResponse {
-  access_token: string; // Backend returns 'access_token'
-  room_name: string;
-  user_identity: string; // Backend returns 'user_identity'
-  expires_in: number;
-  appointment_id: number;
+  access_token: string; // Twilio JWT token for joining the video room
+  room_name: string; // The Twilio room name to connect to
+  user_identity: string; // User identifier (format: {user_id}-{email})
+  expires_in: number; // Token expiration time in seconds
+  expires_at: string; // ISO 8601 timestamp when token expires
+  appointment_id: number; // The appointment ID
+  appointment_duration_minutes: number; // Duration of the appointment
+  token_valid_until: string; // Human-readable description of token validity
 }
 
 export interface VideoRoomInfo {
@@ -22,18 +25,110 @@ export interface VideoRoomInfo {
 class VideoCallService {
   /**
    * Get Twilio video access token for an appointment
+   * @param appointmentId - The appointment ID
+   * @returns Video token response with access_token, room_name, and expiration info
+   * @throws Error with user-friendly message for 403, 404, 500, or network errors
    */
   async getVideoToken(appointmentId: number | string): Promise<VideoTokenResponse> {
     try {
-      const response = await axiosInstance.get(`/appointments/video-token/${appointmentId}/`);
+      // Verify token exists before making request
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('No authentication token found. Please log in again.');
+      }
+
+      // Construct full URL for logging
+      const endpoint = `/appointments/video-token/${appointmentId}/`;
+      const fullUrl = `http://127.0.0.1:8000/api${endpoint}`;
+      
+      console.log(`[VideoCallService] Requesting token for appointment ${appointmentId}`);
+      console.log(`[VideoCallService] Full URL: ${fullUrl}`);
+      console.log(`[VideoCallService] Token exists: ${!!token}`);
+      console.log(`[VideoCallService] Token preview: ${token.substring(0, 20)}...`);
+      
+      // Always fetch fresh token - prevent all caching
+      const response = await axiosInstance.get(endpoint, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        },
+        params: {
+          _t: Date.now() // Cache buster
+        }
+      });
+      
+      console.log('[VideoCallService] Token received:', {
+        room: response.data.room_name,
+        expiresIn: response.data.expires_in,
+        appointmentId: response.data.appointment_id
+      });
+      
       return response.data;
     } catch (error: any) {
-      console.error('Failed to get video token:', error);
-      throw new Error(
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        'Failed to get video access token'
-      );
+      console.error('[VideoCallService] Error getting token:', error);
+      console.error('[VideoCallService] Error details:', {
+        message: error.message,
+        code: error.code,
+        response: error.response ? {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data
+        } : null,
+        request: error.request ? {
+          url: error.config?.url,
+          method: error.config?.method,
+          baseURL: error.config?.baseURL,
+          fullURL: error.config?.baseURL + error.config?.url
+        } : null
+      });
+      
+      // Handle specific error responses according to API documentation
+      if (error.response) {
+        // Server responded with error status
+        const status = error.response.status;
+        const errorData = error.response.data;
+        
+        console.log(`[VideoCallService] Server responded with status ${status}`);
+        
+        switch (status) {
+          case 401:
+            throw new Error('Authentication failed. Please log in again.');
+          case 403:
+            throw new Error(errorData?.error || 'Permission denied. You are not authorized to access this video call.');
+          case 404:
+            if (errorData?.error?.includes('video room')) {
+              throw new Error('No video room found for this appointment.');
+            }
+            throw new Error(errorData?.error || 'Appointment not found.');
+          case 500:
+            throw new Error(errorData?.error || 'Failed to generate access token. Please try again later.');
+          default:
+            throw new Error(
+              errorData?.error ||
+              errorData?.detail ||
+              errorData?.message ||
+              'Failed to get video access token'
+            );
+        }
+      } else if (error.request) {
+        // Request made but no response received
+        console.error('[VideoCallService] Network error - No response from server');
+        console.error('[VideoCallService] Request URL:', error.config?.baseURL + error.config?.url);
+        console.error('[VideoCallService] This usually means:');
+        console.error('  1. Django server is not running on port 8000');
+        console.error('  2. Wrong baseURL in axios configuration');
+        console.error('  3. Firewall/network blocking the connection');
+        console.error('  4. CORS issue (but this would show CORS error, not network error)');
+        
+        throw new Error('Network error: No response from server. Please check:\n' +
+          '1. Django server is running: python manage.py runserver\n' +
+          '2. Server is accessible at: http://127.0.0.1:8000\n' +
+          '3. Check browser Network tab for the actual request URL');
+      } else {
+        // Error in request setup
+        console.error('[VideoCallService] Request setup error:', error.message);
+        throw new Error(`Failed to get video token: ${error.message}`);
+      }
     }
   }
 

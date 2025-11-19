@@ -88,12 +88,12 @@
   
   &:focus {
     outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
+    border-color: $patient-primary;
+    box-shadow: 0 0 0 4px rgba($patient-primary, 0.1);
   }
 
   &:hover {
-    border-color: $primary-light;
+    border-color: $patient-light;
   }
 }
 
@@ -128,15 +128,15 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $primary-color, $primary-light);
+    background: linear-gradient(90deg, $patient-primary, $patient-light);
     transform: scaleX(0);
     transition: transform 0.4s ease;
   }
   
   &:hover {
-    border-color: $primary-color;
+    border-color: $patient-primary;
     transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba($primary-color, 0.15);
+    box-shadow: 0 20px 50px rgba($patient-primary, 0.15);
 
     &::before {
       transform: scaleX(1);
@@ -144,18 +144,18 @@
 
     .profilePicture {
       transform: scale(1.1);
-      border-color: $primary-color;
+      border-color: $patient-primary;
     }
 
     .psychologistName {
-      color: $primary-color;
+      color: $patient-primary;
     }
   }
   
   &.psychologistCardSelected {
-    border-color: $primary-color;
-    background: linear-gradient(135deg, white 0%, rgba($primary-color, 0.03) 100%);
-    box-shadow: 0 15px 40px rgba($primary-color, 0.2);
+    border-color: $patient-primary;
+    background: linear-gradient(135deg, white 0%, rgba($patient-primary, 0.03) 100%);
+    box-shadow: 0 15px 40px rgba($patient-primary, 0.2);
 
     &::before {
       transform: scaleX(1);
@@ -271,8 +271,8 @@
   transition: all 0.3s ease;
 
   &:hover {
-    background: linear-gradient(135deg, white 0%, rgba($primary-color, 0.02) 100%);
-    border-color: $primary-light;
+    background: linear-gradient(135deg, white 0%, rgba($patient-primary, 0.02) 100%);
+    border-color: $patient-light;
   }
 }
 
@@ -320,18 +320,18 @@
 }
 
 .specializationItem {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+  background: linear-gradient(135deg, $patient-primary 0%, $patient-light 100%);
   color: white;
   padding: 0.65rem 1.25rem;
   border-radius: 25px;
   font-size: 0.95rem;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba($primary-color, 0.25);
+  box-shadow: 0 4px 12px rgba($patient-primary, 0.25);
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba($primary-color, 0.35);
+    box-shadow: 0 6px 18px rgba($patient-primary, 0.35);
   }
 }
 
@@ -345,8 +345,8 @@
   transition: all 0.3s ease;
 
   &:hover {
-    background: linear-gradient(135deg, white 0%, rgba($primary-color, 0.02) 100%);
-    border-color: $primary-light;
+    background: linear-gradient(135deg, white 0%, rgba($patient-primary, 0.02) 100%);
+    border-color: $patient-light;
   }
 }
 
@@ -378,7 +378,7 @@
   align-items: center;
   font-size: 1rem;
   padding: 0.75rem 1rem;
-  background: rgba($primary-color, 0.05);
+  background: rgba($patient-primary, 0.05);
   border-radius: 12px;
   margin-bottom: 0.5rem;
 
@@ -393,7 +393,7 @@
 }
 
 .availabilityValue {
-  color: $primary-color;
+  color: $patient-primary;
   font-weight: 700;
 }
 
@@ -435,7 +435,7 @@
 }
 
 .retryButton {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
   color: white;
   border: none;
   padding: 1rem 2.5rem;
@@ -444,11 +444,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+  box-shadow: 0 6px 20px rgba($patient-primary, 0.3);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba($primary-color, 0.4);
+    box-shadow: 0 10px 30px rgba($patient-primary, 0.4);
   }
 }
 
@@ -478,9 +478,9 @@
   width: 100%;
   padding: 1rem;
   background: white;
-  border: 3px solid $primary-color;
+  border: 3px solid $patient-primary;
   border-radius: 50px;
-  color: $primary-color;
+  color: $patient-primary;
   font-weight: 700;
   font-size: 1.05rem;
   cursor: pointer;
@@ -488,16 +488,16 @@
   margin-top: 1rem;
   
   &:hover {
-    background: $primary-color;
+    background: $patient-primary;
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+    box-shadow: 0 6px 20px rgba($patient-primary, 0.3);
   }
   
   &.selectButtonSelected {
-    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+    background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
     color: white;
-    box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+    box-shadow: 0 6px 20px rgba($patient-primary, 0.3);
   }
 }
 
@@ -531,7 +531,7 @@
 
 .continueButton {
   padding: 1.25rem 3rem;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
   color: white;
   border: none;
   border-radius: 50px;
@@ -539,11 +539,11 @@
   font-size: 1.05rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba($primary-color, 0.3);
+  box-shadow: 0 8px 25px rgba($patient-primary, 0.3);
   
   &:hover:not(:disabled) {
     transform: translateY(-5px);
-    box-shadow: 0 12px 35px rgba($primary-color, 0.4);
+    box-shadow: 0 12px 35px rgba($patient-primary, 0.4);
   }
   
   &:disabled {
@@ -563,7 +563,7 @@
 .backButton {
   background: white;
   border: 2px solid $border-light;
-  color: $primary-color;
+  color: $patient-primary;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -574,18 +574,18 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   
   &:hover {
-    background: $primary-color;
+    background: $patient-primary;
     color: white;
-    border-color: $primary-color;
+    border-color: $patient-primary;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+    box-shadow: 0 6px 20px rgba($patient-primary, 0.3);
   }
 }
 
 .pageTitle {
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

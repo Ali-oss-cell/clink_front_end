@@ -5,6 +5,22 @@ import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import { videoCallService } from '../../services/api/videoCall';
 import { SessionTimer } from '../../components/patient/SessionTimer';
+import {
+  CalendarIcon,
+  CheckCircleIcon,
+  ErrorCircleIcon,
+  WarningIcon,
+  ClipboardIcon,
+  UsersIcon,
+  VideoIcon,
+  ClockIcon,
+  EditIcon,
+  BuildingIcon,
+  NotesIcon,
+  LocationIcon,
+  LinkIcon,
+  CloseIcon
+} from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
 
 interface Appointment {
@@ -195,15 +211,15 @@ export const PsychologistSchedulePage: React.FC = () => {
     switch (status) {
       case 'scheduled':
       case 'confirmed':
-        return '📅';
+        return <CalendarIcon size="sm" />;
       case 'completed':
-        return '✅';
+        return <CheckCircleIcon size="sm" />;
       case 'cancelled':
-        return '❌';
+        return <ErrorCircleIcon size="sm" />;
       case 'no_show':
-        return '⚠️';
+        return <WarningIcon size="sm" />;
       default:
-        return '📅';
+        return <CalendarIcon size="sm" />;
     }
   };
 
@@ -318,10 +334,11 @@ export const PsychologistSchedulePage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h2>⚠️ Unable to Load Schedule</h2>
+              <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Schedule</h2>
               <p>{error}</p>
               <button className={styles.retryButton} onClick={fetchAppointments}>
-                🔄 Retry
+                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                Retry
               </button>
             </div>
           </div>
@@ -339,7 +356,7 @@ export const PsychologistSchedulePage: React.FC = () => {
             <div className={styles.headerContent}>
               <div className={styles.headerText}>
                 <h1 className={styles.pageTitle}>
-                  <span className={styles.titleIcon}>📅</span>
+                  <span className={styles.titleIcon}><CalendarIcon size="lg" /></span>
                   My Schedule
                 </h1>
                 <p className={styles.pageSubtitle}>
@@ -352,14 +369,14 @@ export const PsychologistSchedulePage: React.FC = () => {
                     className={viewMode === 'list' ? styles.active : ''}
                     onClick={() => setViewMode('list')}
                   >
-                    <span>📋</span>
+                    <span><ClipboardIcon size="sm" /></span>
                     <span className={styles.buttonText}>List View</span>
                   </button>
                   <button
                     className={viewMode === 'calendar' ? styles.active : ''}
                     onClick={() => setViewMode('calendar')}
                   >
-                    <span>📅</span>
+                    <span><CalendarIcon size="sm" /></span>
                     <span className={styles.buttonText}>Calendar</span>
                   </button>
                 </div>
@@ -370,14 +387,14 @@ export const PsychologistSchedulePage: React.FC = () => {
           {/* Stats Cards */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📅</div>
+              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{todayAppointments.length}</div>
                 <div className={styles.statLabel}>Today's Sessions</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>⏰</div>
+              <div className={styles.statIcon}><ClockIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>
                   {filteredAppointments.filter(a => a.status === 'confirmed' || a.status === 'scheduled').length}
@@ -386,7 +403,7 @@ export const PsychologistSchedulePage: React.FC = () => {
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>✅</div>
+              <div className={styles.statIcon}><CheckCircleIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>
                   {appointments.filter(a => a.status === 'completed').length}
@@ -395,7 +412,7 @@ export const PsychologistSchedulePage: React.FC = () => {
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>👥</div>
+              <div className={styles.statIcon}><UsersIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>
                   {new Set(appointments.map(a => a.patient_id)).size}
@@ -432,7 +449,7 @@ export const PsychologistSchedulePage: React.FC = () => {
             <div className={styles.appointmentsList}>
               {filteredAppointments.length === 0 ? (
                 <div className={styles.emptyState}>
-                  <div className={styles.emptyIcon}>📅</div>
+                  <div className={styles.emptyIcon}><CalendarIcon size="2xl" /></div>
                   <h3>No Appointments Found</h3>
                   <p>You don't have any {filterStatus === 'all' ? '' : filterStatus} appointments.</p>
                 </div>
@@ -462,14 +479,14 @@ export const PsychologistSchedulePage: React.FC = () => {
                       {/* Date & Time Section */}
                       <div className={styles.dateTimeSection}>
                         <div className={styles.dateTimeItem}>
-                          <span className={styles.dateTimeIcon}>📅</span>
+                          <span className={styles.dateTimeIcon}><CalendarIcon size="sm" /></span>
                           <div className={styles.dateTimeContent}>
                             <span className={styles.dateTimeLabel}>Date</span>
                             <span className={styles.dateTimeValue}>{appointment.formatted_date}</span>
                           </div>
                         </div>
                         <div className={styles.dateTimeItem}>
-                          <span className={styles.dateTimeIcon}>🕐</span>
+                          <span className={styles.dateTimeIcon}><ClockIcon size="sm" /></span>
                           <div className={styles.dateTimeContent}>
                             <span className={styles.dateTimeLabel}>Time</span>
                             <span className={styles.dateTimeValue}>{appointment.formatted_time}</span>
@@ -481,7 +498,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                       <div className={styles.detailsGrid}>
                         <div className={styles.detailItem}>
                           <span className={styles.detailIcon}>
-                            {appointment.session_type === 'in_person' ? '🏢' : '💻'}
+                            {appointment.session_type === 'in_person' ? <BuildingIcon size="sm" /> : <VideoIcon size="sm" />}
                           </span>
                           <div className={styles.detailContent}>
                             <span className={styles.detailLabel}>Type</span>
@@ -492,7 +509,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                         </div>
                         
                         <div className={styles.detailItem}>
-                          <span className={styles.detailIcon}>⏱️</span>
+                          <span className={styles.detailIcon}><ClockIcon size="sm" /></span>
                           <div className={styles.detailContent}>
                             <span className={styles.detailLabel}>Duration</span>
                             <span className={styles.detailValue}>{appointment.duration_minutes} min</span>
@@ -501,7 +518,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                         
                         {appointment.location && (
                           <div className={styles.detailItem}>
-                            <span className={styles.detailIcon}>📍</span>
+                            <span className={styles.detailIcon}><LocationIcon size="sm" /></span>
                             <div className={styles.detailContent}>
                               <span className={styles.detailLabel}>Location</span>
                               <span className={styles.detailValue}>{appointment.location}</span>
@@ -511,7 +528,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                         
                         {appointment.meeting_link && (
                           <div className={styles.detailItem}>
-                            <span className={styles.detailIcon}>🔗</span>
+                            <span className={styles.detailIcon}><LinkIcon size="sm" /></span>
                             <div className={styles.detailContent}>
                               <span className={styles.detailLabel}>Meeting Link</span>
                               <a 
@@ -530,7 +547,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                       {/* Notes Section */}
                       {appointment.notes && (
                         <div className={styles.notesSection}>
-                          <span className={styles.notesLabel}>📝 Notes</span>
+                          <span className={styles.notesLabel}><NotesIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Notes</span>
                           <p className={styles.notesText}>{appointment.notes}</p>
                         </div>
                       )}
@@ -576,7 +593,8 @@ export const PsychologistSchedulePage: React.FC = () => {
                               : 'Join video session'
                           }
                         >
-                          🎥 {
+                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                          {
                             appointment.can_join_session === true || 
                             (appointment.can_join_session === undefined && videoCallService.canJoinNow(appointment))
                             ? 'Join Video Session' 
@@ -589,7 +607,8 @@ export const PsychologistSchedulePage: React.FC = () => {
                           className={styles.successButton}
                           onClick={() => handleCompleteSession(appointment.id)}
                         >
-                          ✅ Complete Session
+                          <CheckCircleIcon size="sm" style={{ marginRight: '6px' }} />
+                          Complete Session
                         </button>
                       )}
                     </div>
@@ -672,12 +691,12 @@ export const PsychologistSchedulePage: React.FC = () => {
               <h3>
                 Appointments on {dayModalDate ? new Date(dayModalDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
               </h3>
-              <button className={styles.closeButton} onClick={closeDayModal}>✕</button>
+              <button className={styles.closeButton} onClick={closeDayModal}><CloseIcon size="md" /></button>
             </div>
             <div className={styles.modalBody}>
               {dayModalAppointments.length === 0 ? (
                 <div className={styles.emptyState}>
-                  <div className={styles.emptyIcon}>📅</div>
+                  <div className={styles.emptyIcon}><CalendarIcon size="2xl" /></div>
                   <h3>No appointments for this day</h3>
                 </div>
               ) : (
@@ -740,7 +759,8 @@ export const PsychologistSchedulePage: React.FC = () => {
                               }
                               style={{ marginRight: '0.5rem', padding: '0.5rem 1rem' }}
                             >
-                              🎥 {
+                              <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                              {
                                 apt.can_join_session === true || 
                                 (apt.can_join_session === undefined && videoCallService.canJoinNow(apt))
                                 ? 'Join Video' 
@@ -789,7 +809,7 @@ export const PsychologistSchedulePage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
             <div className={styles.modalHeader}>
               <h3>Cancel Appointment</h3>
-              <button className={styles.closeButton} onClick={() => setShowCancelModal(false)}>✕</button>
+              <button className={styles.closeButton} onClick={() => setShowCancelModal(false)}><CloseIcon size="md" /></button>
             </div>
             <div className={styles.modalBody}>
               <p>Are you sure you want to cancel this appointment?</p>
@@ -822,7 +842,7 @@ export const PsychologistSchedulePage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
             <div className={styles.modalHeader}>
               <h3>Reschedule Appointment</h3>
-              <button className={styles.closeButton} onClick={() => setShowRescheduleModal(false)}>✕</button>
+              <button className={styles.closeButton} onClick={() => setShowRescheduleModal(false)}><CloseIcon size="md" /></button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.formGroup}>

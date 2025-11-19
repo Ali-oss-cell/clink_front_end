@@ -105,15 +105,61 @@
 }
 
 .hero {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   color: $text-white;
-  padding: 5rem 0;
+  padding: 0;
   text-align: center;
   position: relative;
   overflow: hidden;
   min-height: 600px;
   display: flex;
   align-items: center;
+}
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  z-index: 1;
+  
+  // Background image overlay for better text readability
+  &.hasImage::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(44, 90, 160, 0.75) 0%, rgba(30, 61, 114, 0.75) 100%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    z-index: 2;
+  }
+
+  // Previous slide animation - slides that were active go left
+  // Removed empty ruleset
 
   // Multiple animated background layers
   &::before,
@@ -280,6 +326,20 @@
     position: relative;
     z-index: 2;
     animation: fadeInUp 1s ease-out;
+    width: 100%;
+    padding: 5rem 0;
+  }
+
+  .slideIcon {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    animation: fadeInUp 1s ease-out 0.2s both;
+    color: rgba($text-white, 0.9);
+    
+    svg {
+      filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.2));
+    }
   }
 
   .heroTitle {
@@ -396,6 +456,135 @@
       }
     }
   }
+
+  // Slider Navigation Arrows
+  .sliderArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: $text-white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    font-size: 2rem;
+    font-weight: bold;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.8);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    &:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    span {
+      line-height: 1;
+      display: block;
+    }
+
+    &.arrowRight {
+      right: 2rem;
+    }
+
+    &:not(.arrowRight) {
+      left: 2rem;
+    }
+
+    @include mobile {
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+
+      &.arrowRight {
+        right: 1rem;
+      }
+
+      &:not(.arrowRight) {
+        left: 1rem;
+      }
+    }
+  }
+
+  // Slider Indicators
+  .sliderIndicators {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+    z-index: 10;
+
+    @include mobile {
+      bottom: 1.5rem;
+      gap: 0.5rem;
+    }
+  }
+
+  .indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $text-white;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.8);
+      transform: scale(1.2);
+
+      &::after {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    &.active {
+      border-color: $text-white;
+      background: rgba(255, 255, 255, 0.3);
+
+      &::after {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @include mobile {
+      width: 10px;
+      height: 10px;
+
+      &::after {
+        width: 5px;
+        height: 5px;
+      }
+    }
+  }
 }
 
 .features {
@@ -498,6 +687,313 @@
 
     &:hover p {
       color: $text-dark;
+    }
+  }
+}
+
+.howItWorks {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba($primary-color, 0.2), transparent);
+  }
+
+  .sectionTitle {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease-out;
+    letter-spacing: -0.5px;
+
+    @include mobile {
+      font-size: 2rem;
+    }
+  }
+
+  .sectionSubtitle {
+    text-align: center;
+    font-size: 1.25rem;
+    color: $text-light;
+    max-width: 700px;
+    margin: 0 auto 4rem;
+    line-height: 1.8;
+    animation: fadeInUp 1s ease-out 0.2s both;
+
+    @include mobile {
+      font-size: 1rem;
+      margin-bottom: 3rem;
+      padding: 0 1rem;
+    }
+  }
+
+  .stepsContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto 4rem;
+    position: relative;
+    flex-wrap: wrap;
+    gap: 2rem;
+
+    @include mobile {
+      flex-direction: column;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    @include tablet {
+      gap: 1.5rem;
+    }
+  }
+
+  .stepCard {
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+    position: relative;
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 2px solid transparent;
+    opacity: 0;
+    transform: translateY(80px) scale(0.95);
+    visibility: hidden;
+    will-change: transform, opacity; // Optimize animation performance
+
+    &.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      visibility: visible;
+
+      &:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 12px 40px rgba($primary-color, 0.15);
+        border-color: rgba($primary-color, 0.2);
+
+        .stepIcon {
+          transform: scale(1.1) rotate(5deg);
+          color: $primary-color;
+        }
+
+        .stepNumber {
+          background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+          color: white;
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    @include mobile {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  }
+
+  .stepNumber {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($primary-dark, 0.1) 100%);
+    color: $primary-color;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    border: 3px solid rgba($primary-color, 0.2);
+
+    @include mobile {
+      width: 45px;
+      height: 45px;
+      font-size: 1.25rem;
+    }
+  }
+
+  .stepIcon {
+    margin: 0 auto 1.5rem;
+    color: $primary-color;
+    display: flex;
+    justify-content: center;
+    transition: all 0.3s ease;
+    width: 80px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba($primary-color, 0.05) 0%, rgba($primary-dark, 0.05) 100%);
+    border-radius: 20px;
+
+    @include mobile {
+      width: 70px;
+      height: 70px;
+    }
+
+    svg {
+      filter: drop-shadow(0 2px 8px rgba($primary-color, 0.2));
+    }
+  }
+
+  .stepTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+
+    @include mobile {
+      font-size: 1.25rem;
+    }
+  }
+
+  .stepDescription {
+    font-size: 1rem;
+    color: $text-light;
+    line-height: 1.7;
+    margin: 0;
+    transition: color 0.3s ease;
+
+    @include mobile {
+      font-size: 0.95rem;
+    }
+  }
+
+  .stepCard:hover .stepDescription {
+    color: $text-dark;
+  }
+
+  .stepConnector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 60px;
+    margin-top: 3rem;
+    position: relative;
+    opacity: 0;
+    transform: scaleX(0);
+    transition: all 0.8s ease 0.5s;
+
+    &.visible {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    @include mobile {
+      display: none;
+    }
+
+    @include tablet {
+      width: 40px;
+      margin-top: 2.5rem;
+    }
+  }
+
+  .connectorLine {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba($primary-color, 0.3) 0%, rgba($primary-dark, 0.3) 100%);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .connectorArrow {
+    position: relative;
+    z-index: 1;
+    background: white;
+    padding: 0 8px;
+    color: $primary-color;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .ctaContainer {
+    text-align: center;
+    margin-top: 4rem;
+    animation: fadeInUp 1s ease-out 0.5s both;
+
+    @include mobile {
+      margin-top: 3rem;
+      padding: 0 1rem;
+    }
+  }
+
+  .ctaButton {
+    @include button-base;
+    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+    color: $text-white;
+    padding: 1.25rem 3.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 50px;
+    box-shadow: 0 8px 25px rgba($primary-color, 0.3);
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba($primary-color, 0.4);
+      text-decoration: none;
+      color: $text-white;
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(-1px);
+    }
+
+    @include mobile {
+      padding: 1rem 2.5rem;
+      font-size: 1.1rem;
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+
+  .ctaSubtext {
+    margin-top: 1rem;
+    color: $text-light;
+    font-size: 0.95rem;
+    font-style: italic;
+
+    @include mobile {
+      font-size: 0.85rem;
     }
   }
 }

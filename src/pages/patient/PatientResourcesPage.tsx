@@ -4,6 +4,16 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { resourceService, type Resource, type ResourceCategory } from '../../services/api/resources';
 import { markResourcesViewed } from '../../utils/onboardingTracking';
+import {
+  BookIcon,
+  WarningIcon,
+  SettingsIcon,
+  ChartIcon,
+  NotesIcon,
+  ChatIcon,
+  AudioIcon,
+  getIconFromEmoji
+} from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
 export const PatientResourcesPage: React.FC = () => {
@@ -78,8 +88,11 @@ export const PatientResourcesPage: React.FC = () => {
 
   // Build categories list with "All" option
   const allCategories = [
-    { id: 'all', name: 'All Resources', icon: '📚', description: 'Browse all resources', resource_count: resources.length },
-    ...categories
+    { id: 'all', name: 'All Resources', icon: <BookIcon size="md" />, description: 'Browse all resources', resource_count: resources.length },
+    ...categories.map(cat => ({
+      ...cat,
+      icon: typeof cat.icon === 'string' ? getIconFromEmoji(cat.icon, 'md') : cat.icon
+    }))
   ];
 
   return (
@@ -93,7 +106,7 @@ export const PatientResourcesPage: React.FC = () => {
 
           {/* Emergency Contacts */}
           <div className={styles.emergencySection}>
-            <h2>🚨 Need Immediate Help?</h2>
+            <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle', color: '#dc2626' }} /> Need Immediate Help?</h2>
             <div className={styles.emergencyGrid}>
               {emergencyContacts.map((contact, index) => (
                 <div key={index} className={styles.emergencyCard}>
@@ -152,7 +165,7 @@ export const PatientResourcesPage: React.FC = () => {
               <div className={styles.resourcesGrid}>
                 {resources.map((resource) => (
                   <div key={resource.id} className={styles.resourceCard}>
-                    <div className={styles.resourceIcon}>{resource.icon}</div>
+                    <div className={styles.resourceIcon}>{getIconFromEmoji(resource.icon, 'lg')}</div>
                     <div className={styles.resourceContent}>
                       <div className={styles.resourceHeader}>
                         <h3>{resource.title}</h3>
@@ -179,25 +192,25 @@ export const PatientResourcesPage: React.FC = () => {
 
           {/* Self-Help Tools */}
           <div className={styles.toolsSection}>
-            <h2>🛠️ Self-Help Tools</h2>
+            <h2><SettingsIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Self-Help Tools</h2>
             <div className={styles.toolsGrid}>
               <div className={styles.toolCard}>
-                <h3>🎯 Mood Tracker</h3>
+                <h3><ChartIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Mood Tracker</h3>
                 <p>Track your daily mood and identify patterns over time.</p>
                 <button className={styles.toolButton}>Coming Soon</button>
               </div>
               <div className={styles.toolCard}>
-                <h3>📝 Thought Journal</h3>
+                <h3><NotesIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Thought Journal</h3>
                 <p>Record and reflect on your thoughts and feelings.</p>
                 <button className={styles.toolButton}>Coming Soon</button>
               </div>
               <div className={styles.toolCard}>
-                <h3>🎧 Guided Exercises</h3>
+                <h3><AudioIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Guided Exercises</h3>
                 <p>Audio exercises for relaxation and mindfulness.</p>
                 <button className={styles.toolButton}>Coming Soon</button>
               </div>
               <div className={styles.toolCard}>
-                <h3>📊 Progress Dashboard</h3>
+                <h3><ChartIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Progress Dashboard</h3>
                 <p>View your mental health journey progress.</p>
                 <button className={styles.toolButton}>Coming Soon</button>
               </div>
@@ -206,7 +219,7 @@ export const PatientResourcesPage: React.FC = () => {
 
           {/* Additional Support */}
           <div className={styles.supportSection}>
-            <h2>💬 Additional Support</h2>
+            <h2><ChatIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Additional Support</h2>
             <div className={styles.supportGrid}>
               <div className={styles.supportCard}>
                 <h3>Support Groups</h3>

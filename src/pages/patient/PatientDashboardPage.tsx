@@ -7,7 +7,17 @@ import type { PatientDashboard } from '../../services/api/dashboard';
 import { authService } from '../../services/api/auth';
 import { videoCallService } from '../../services/api/videoCall';
 import { appointmentsService } from '../../services/api/appointments';
-import type { PatientAppointment } from '../../services/api/appointments';
+import type { PatientAppointment, MedicareSessionInfoResponse } from '../../services/api/appointments';
+import {
+  VideoIcon,
+  CalendarIcon,
+  ChartIcon,
+  ClipboardIcon,
+  StarIcon,
+  BookIcon,
+  WarningIcon,
+  DollarIcon
+} from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
 export const PatientDashboardPage: React.FC = () => {
@@ -16,6 +26,7 @@ export const PatientDashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [videoCallAppointments, setVideoCallAppointments] = useState<PatientAppointment[]>([]);
+  const [medicareInfo, setMedicareInfo] = useState<MedicareSessionInfoResponse | null>(null);
   
   // Get user data from auth service
   const user = authService.getStoredUser() || {
@@ -49,6 +60,21 @@ export const PatientDashboardPage: React.FC = () => {
     };
 
     loadDashboardData();
+  }, []);
+
+  // Load Medicare session info
+  useEffect(() => {
+    const loadMedicareInfo = async () => {
+      try {
+        const info = await appointmentsService.getMedicareSessionInfo();
+        setMedicareInfo(info);
+      } catch (err: any) {
+        // Don't show error if Medicare info fails - it's optional
+        console.warn('Failed to load Medicare session info:', err);
+      }
+    };
+
+    loadMedicareInfo();
   }, []);
 
   // Load appointments for video call card
@@ -110,7 +136,7 @@ export const PatientDashboardPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorContainer}>
-              <h2>⚠️ Error Loading Dashboard</h2>
+              <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h2>
               <p>{error}</p>
               <button 
                 className={styles.retryButton}
@@ -145,7 +171,7 @@ export const PatientDashboardPage: React.FC = () => {
           <div className={styles.dashboardGrid}>
             {/* Video Sessions Card - Prominent */}
             <div className={`${styles.dashboardCard} ${styles.videoSessionsCard}`}>
-              <h3>🎥 Video Sessions</h3>
+              <h3><VideoIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Video Sessions</h3>
               <div className={styles.cardContent}>
                 {videoCallAppointments.length > 0 ? (
                   <div className={styles.videoSessionsList}>
@@ -172,7 +198,8 @@ export const PatientDashboardPage: React.FC = () => {
                           className={`${styles.actionButton} ${styles.videoJoinButton}`}
                           onClick={() => handleJoinVideoCall(appointment.id)}
                         >
-                          🎥 Join Now
+                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                          Join Now
                         </button>
                       </div>
                     ))}
@@ -196,7 +223,7 @@ export const PatientDashboardPage: React.FC = () => {
 
             {/* Next Appointment Card */}
             <div className={styles.dashboardCard}>
-              <h3>📅 Next Appointment</h3>
+              <h3><CalendarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Next Appointment</h3>
               <div className={styles.cardContent}>
                 {dashboardData?.next_appointment && Object.keys(dashboardData.next_appointment).length > 0 ? (
                   <div className={styles.appointmentInfo}>
@@ -208,7 +235,7 @@ export const PatientDashboardPage: React.FC = () => {
                      videoCallService.canJoinNow(dashboardData.next_appointment) && (
                       <div className={styles.videoCallSection}>
                         <div className={styles.videoCallInfo}>
-                          <span className={styles.videoBadge}>🎥 Telehealth</span>
+                          <span className={styles.videoBadge}><VideoIcon size="xs" style={{ marginRight: '4px' }} /> Telehealth</span>
                           <span className={styles.timeUntil}>
                             {videoCallService.getTimeUntilAppointment(dashboardData.next_appointment)}
                           </span>
@@ -217,7 +244,8 @@ export const PatientDashboardPage: React.FC = () => {
                           className={`${styles.actionButton} ${styles.videoButton}`}
                           onClick={() => handleJoinVideoCall(dashboardData.next_appointment!.id)}
                         >
-                          🎥 Join Video Session
+                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                          Join Video Session
                         </button>
                       </div>
                     )}
@@ -236,9 +264,53 @@ export const PatientDashboardPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Medicare Sessions Card */}
+            {medicareInfo && (
+              <div className={`${styles.dashboardCard} ${medicareInfo.sessions_remaining <= 2 ? styles.warningCard : ''}`}>
+                <h3>
+                  <DollarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 
+                  Medicare Sessions {medicareInfo.current_year}
+                </h3>
+                <div className={styles.cardContent}>
+                  <div className={styles.medicareProgress}>
+                    <div className={styles.progressBar}>
+                      <div 
+                        className={styles.progressFill} 
+                        style={{ 
+                          width: `${(medicareInfo.sessions_used / medicareInfo.max_sessions) * 100}%`,
+                          backgroundColor: medicareInfo.sessions_remaining <= 2 ? '#f59e0b' : '#10b981'
+                        }}
+                      />
+                    </div>
+                    <div className={styles.medicareStats}>
+                      <span className={styles.medicareUsed}>{medicareInfo.sessions_used}</span>
+                      <span className={styles.medicareSeparator}>/</span>
+                      <span className={styles.medicareMax}>{medicareInfo.max_sessions}</span>
+                      <span className={styles.medicareLabel}>sessions used</span>
+                    </div>
+                    <p className={styles.medicareRemaining}>
+                      {medicareInfo.sessions_remaining} session{medicareInfo.sessions_remaining !== 1 ? 's' : ''} remaining
+                    </p>
+                    {medicareInfo.sessions_remaining === 0 && (
+                      <div className={styles.medicareAlert}>
+                        <WarningIcon size="sm" />
+                        <span>Medicare limit reached. You can still book private sessions.</span>
+                      </div>
+                    )}
+                    {medicareInfo.sessions_remaining > 0 && medicareInfo.sessions_remaining <= 2 && (
+                      <div className={styles.medicareWarning}>
+                        <WarningIcon size="sm" />
+                        <span>Only {medicareInfo.sessions_remaining} Medicare session{medicareInfo.sessions_remaining !== 1 ? 's' : ''} remaining this year</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Total Sessions Card */}
             <div className={styles.dashboardCard}>
-              <h3>📊 Total Sessions</h3>
+              <h3><ChartIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Total Sessions</h3>
               <div className={styles.cardContent}>
                 <div className={styles.statNumber}>
                   {dashboardData?.total_sessions || 0}
@@ -249,7 +321,7 @@ export const PatientDashboardPage: React.FC = () => {
 
             {/* Intake Form Card */}
             <div className={styles.dashboardCard}>
-              <h3>📋 Intake Form</h3>
+              <h3><ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Intake Form</h3>
               <div className={styles.cardContent}>
                 {dashboardData?.intake_completed ? (
                   <div className={styles.completedStatus}>
@@ -274,7 +346,7 @@ export const PatientDashboardPage: React.FC = () => {
 
             {/* Outstanding Invoices Card */}
             <div className={styles.dashboardCard}>
-              <h3>💰 Outstanding Invoices</h3>
+              <h3><DollarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Outstanding Invoices</h3>
               <div className={styles.cardContent}>
                 <div className={styles.statNumber}>
                   {dashboardData?.outstanding_invoices || 0}
@@ -291,7 +363,7 @@ export const PatientDashboardPage: React.FC = () => {
 
             {/* Recent Progress Card */}
             <div className={styles.dashboardCard}>
-              <h3>📈 Recent Progress</h3>
+              <h3><ChartIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Progress</h3>
               <div className={styles.cardContent}>
                 {dashboardData?.recent_progress && dashboardData.recent_progress.length > 0 ? (
                   <div className={styles.progressList}>
@@ -300,7 +372,7 @@ export const PatientDashboardPage: React.FC = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                           <strong>Session #{progress.session_number || index + 1}</strong>
                           {progress.progress_rating && (
-                            <span>⭐ {progress.progress_rating}/10</span>
+                            <span><StarIcon size="sm" style={{ marginRight: '4px' }} /> {progress.progress_rating}/10</span>
                           )}
                         </div>
                         <p style={{ fontSize: '0.9rem', color: '#6b7280', margin: 0 }}>
@@ -324,7 +396,7 @@ export const PatientDashboardPage: React.FC = () => {
 
             {/* Resources Card */}
             <div className={styles.dashboardCard}>
-              <h3>💬 Resources</h3>
+              <h3><BookIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Resources</h3>
               <div className={styles.cardContent}>
                 <div className={styles.placeholder}>
                   <p>Mental health resources and tools</p>

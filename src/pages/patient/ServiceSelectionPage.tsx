@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
+import { InfoIcon, VideoIcon, PhoneIcon } from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
 interface Service {
@@ -164,7 +165,7 @@ export const ServiceSelectionPage: React.FC = () => {
 
           <div className={styles.infoBoxes}>
             <div className={styles.infoBox}>
-              <div className={styles.infoIcon}>ℹ️</div>
+              <div className={styles.infoIcon}><InfoIcon size="lg" /></div>
               <div className={styles.infoContent}>
                 <h4>Medicare Information</h4>
                 <p>With a valid Mental Health Care Plan from your GP, you can claim Medicare rebates. We can process this for you at the time of payment.</p>
@@ -172,7 +173,7 @@ export const ServiceSelectionPage: React.FC = () => {
             </div>
 
             <div className={styles.infoBox}>
-              <div className={styles.infoIcon}>🎥</div>
+              <div className={styles.infoIcon}><VideoIcon size="lg" /></div>
               <div className={styles.infoContent}>
                 <h4>Telehealth Available</h4>
                 <p>All services are available via secure video call from the comfort of your home. Perfect for busy schedules or remote locations.</p>
@@ -180,7 +181,7 @@ export const ServiceSelectionPage: React.FC = () => {
             </div>
 
             <div className={styles.infoBox}>
-              <div className={styles.infoIcon}>📞</div>
+              <div className={styles.infoIcon}><PhoneIcon size="lg" /></div>
               <div className={styles.infoContent}>
                 <h4>Need Help Choosing?</h4>
                 <p>Not sure which service is right for you? Call us on (03) 9xxx-xxxx for a free 10-minute consultation.</p>

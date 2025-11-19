@@ -4,6 +4,14 @@ import { SOAPNoteForm } from '../../components/psychologist/SOAPNoteForm';
 import { progressNotesService, type Patient } from '../../services/api/progressNotes';
 import { authService } from '../../services/api/auth';
 import type { ProgressNote } from '../../types/progressNote';
+import {
+  NotesIcon,
+  SearchIcon,
+  WarningIcon,
+  EyeIcon,
+  ClipboardIcon,
+  CloseIcon
+} from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
 
 export const PsychologistNotesPage: React.FC = () => {
@@ -142,7 +150,7 @@ export const PsychologistNotesPage: React.FC = () => {
             <div className={styles.headerContent}>
               <div className={styles.headerText}>
                 <h1 className={styles.pageTitle}>
-                  <span className={styles.titleIcon}>📝</span>
+                  <span className={styles.titleIcon}><NotesIcon size="lg" /></span>
                   Progress Notes
                 </h1>
                 <p className={styles.pageSubtitle}>
@@ -161,7 +169,7 @@ export const PsychologistNotesPage: React.FC = () => {
           {/* Search and Filters */}
           <div className={styles.searchFilterSection}>
             <div className={styles.searchBox}>
-              <span className={styles.searchIcon}>🔍</span>
+              <span className={styles.searchIcon}><SearchIcon size="md" /></span>
               <input
                 type="text"
                 placeholder="Search by patient name or note content..."
@@ -195,7 +203,7 @@ export const PsychologistNotesPage: React.FC = () => {
             </div>
           ) : error ? (
             <div className={styles.errorState}>
-              <h3>⚠️ Error Loading Notes</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Notes</h3>
               <p>{error}</p>
               <p style={{ fontSize: '0.9rem', color: '#6b7280', marginTop: '1rem' }}>
                 Make sure your Django backend is running on port 8000
@@ -206,7 +214,7 @@ export const PsychologistNotesPage: React.FC = () => {
             </div>
           ) : filteredNotes.length === 0 ? (
             <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>📝</div>
+              <div className={styles.emptyIcon}><NotesIcon size="2xl" /></div>
               <h3>No Progress Notes Found</h3>
               <p>
                 {searchQuery || selectedPatient
@@ -239,28 +247,28 @@ export const PsychologistNotesPage: React.FC = () => {
                   <div className={styles.noteContent}>
                     <div className={styles.soapPreview}>
                       <div className={styles.soapItem}>
-                        <span className={styles.soapLabel}>📝 S:</span>
+                        <span className={styles.soapLabel}><NotesIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> S:</span>
                         <span className={styles.soapText}>
                           {note.subjective.substring(0, 100)}
                           {note.subjective.length > 100 ? '...' : ''}
                         </span>
                       </div>
                       <div className={styles.soapItem}>
-                        <span className={styles.soapLabel}>👁️ O:</span>
+                        <span className={styles.soapLabel}><EyeIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> O:</span>
                         <span className={styles.soapText}>
                           {note.objective.substring(0, 100)}
                           {note.objective.length > 100 ? '...' : ''}
                         </span>
                       </div>
                       <div className={styles.soapItem}>
-                        <span className={styles.soapLabel}>🔍 A:</span>
+                        <span className={styles.soapLabel}><SearchIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> A:</span>
                         <span className={styles.soapText}>
                           {note.assessment.substring(0, 100)}
                           {note.assessment.length > 100 ? '...' : ''}
                         </span>
                       </div>
                       <div className={styles.soapItem}>
-                        <span className={styles.soapLabel}>📋 P:</span>
+                        <span className={styles.soapLabel}><ClipboardIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> P:</span>
                         <span className={styles.soapText}>
                           {note.plan.substring(0, 100)}
                           {note.plan.length > 100 ? '...' : ''}
@@ -314,7 +322,7 @@ export const PsychologistNotesPage: React.FC = () => {
               onClick={handleCancelNote}
               aria-label="Close"
             >
-              ✕
+              <CloseIcon size="md" />
             </button>
             <SOAPNoteForm
               noteId={selectedNoteId || undefined}
@@ -333,7 +341,7 @@ export const PsychologistNotesPage: React.FC = () => {
             <div className={styles.modalHeader}>
               <h3>Session #{selectedNote.session_number} - {selectedNote.patient_name}</h3>
               <button className={styles.modalClose} onClick={handleCloseNote}>
-                ✕
+                <CloseIcon size="md" />
               </button>
             </div>
 
@@ -353,22 +361,22 @@ export const PsychologistNotesPage: React.FC = () => {
 
               <div className={styles.soapFull}>
                 <div className={styles.soapFullSection}>
-                  <h4>📝 Subjective</h4>
+                  <h4><NotesIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Subjective</h4>
                   <p>{selectedNote.subjective}</p>
                 </div>
 
                 <div className={styles.soapFullSection}>
-                  <h4>👁️ Objective</h4>
+                  <h4><EyeIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Objective</h4>
                   <p>{selectedNote.objective}</p>
                 </div>
 
                 <div className={styles.soapFullSection}>
-                  <h4>🔍 Assessment</h4>
+                  <h4><SearchIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Assessment</h4>
                   <p>{selectedNote.assessment}</p>
                 </div>
 
                 <div className={styles.soapFullSection}>
-                  <h4>📋 Plan</h4>
+                  <h4><ClipboardIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Plan</h4>
                   <p>{selectedNote.plan}</p>
                 </div>
               </div>
@@ -401,7 +409,7 @@ export const PsychologistNotesPage: React.FC = () => {
       {showDeleteConfirm && (
         <div className={styles.modalOverlay} onClick={handleCancelDelete}>
           <div className={styles.confirmModal} onClick={(e) => e.stopPropagation()}>
-            <h3>⚠️ Delete Progress Note?</h3>
+            <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Delete Progress Note?</h3>
             <p>Are you sure you want to delete this progress note? This action cannot be undone.</p>
             <div className={styles.confirmActions}>
               <button className={styles.secondaryButton} onClick={handleCancelDelete}>

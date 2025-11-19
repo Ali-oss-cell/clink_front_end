@@ -138,7 +138,7 @@
   
   &:focus {
     outline: none;
-    border-color: $primary-color;
+    border-color: $patient-primary;
   }
 }
 
@@ -154,7 +154,7 @@
   
   &:focus {
     outline: none;
-    border-color: $primary-color;
+    border-color: $patient-primary;
   }
 }
 
@@ -188,7 +188,7 @@
   transition: all 0.2s ease;
   
   &:hover {
-    background-color: rgba($primary-color, 0.05);
+    background-color: rgba($patient-primary, 0.05);
   }
 }
 
@@ -219,14 +219,14 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: $primary-color;
+  background-color: $patient-primary;
   opacity: 0;
   transform: scale(0);
   transition: all 0.2s ease;
 }
 
 .radioInput:checked + .radioCustom {
-  border-color: $primary-color;
+  border-color: $patient-primary;
   
   .radioDot {
     opacity: 1;
@@ -321,7 +321,7 @@
 
 .submitButton {
   padding: $spacing-md $spacing-lg;
-  background: $primary-color;
+  background: $patient-primary;
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -330,9 +330,9 @@
   transition: all 0.2s ease;
   
   &:hover:not(:disabled) {
-    background: $primary-dark;
+    background: $patient-dark;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    box-shadow: 0 4px 12px rgba($patient-primary, 0.3);
   }
   
   &:disabled {
@@ -373,7 +373,7 @@
 
 .retryButton {
   padding: $spacing-sm $spacing-lg;
-  background: $primary-color;
+  background: $patient-primary;
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -382,7 +382,7 @@
   transition: all 0.2s ease;
   
   &:hover {
-    background: $primary-dark;
+    background: $patient-dark;
     transform: translateY(-1px);
   }
 }

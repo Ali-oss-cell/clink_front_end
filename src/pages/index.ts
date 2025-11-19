@@ -1,6 +1,7 @@
 // Public pages
 export { Homepage } from './public/Homepage';
 export { AboutPage } from './public/AboutPage';
+export { ServicesPage } from './public/ServicesPage';
 
 // Auth pages
 export { LoginPage } from './auth/LoginPage';

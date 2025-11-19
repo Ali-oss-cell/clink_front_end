@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authService } from '../../../services/api/auth';
+import { getPrivacyPolicyStatus, acceptPrivacyPolicy } from '../../../services/api/privacy';
+import { WarningIcon } from '../../../utils/icons';
 import styles from './Register.module.scss';
 
 interface RegisterProps {
@@ -30,6 +32,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
+  const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState<string>('/privacy');
 
   const {
     register,
@@ -66,6 +69,31 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const state = watch('state');
   const postcode = watch('postcode');
   const medicare_number = watch('medicare_number');
+
+  // Load Privacy Policy URL on mount
+  // Note: This will fail if user is not authenticated (which is expected during registration)
+  // We use a default URL as fallback
+  useEffect(() => {
+    const loadPrivacyPolicy = async () => {
+      try {
+        // Try to get Privacy Policy URL (will fail if not authenticated, that's okay)
+        const status = await getPrivacyPolicyStatus();
+        if (status.privacy_policy_url) {
+          setPrivacyPolicyUrl(status.privacy_policy_url);
+        }
+      } catch (error: any) {
+        // If not authenticated or endpoint doesn't exist yet, use default URL
+        // This is expected during registration since user is not logged in yet
+        if (error.message?.includes('not authenticated')) {
+          console.log('[Register] User not authenticated yet, using default Privacy Policy URL');
+        } else {
+          console.warn('[Register] Could not load Privacy Policy URL from API, using default:', error.message);
+        }
+        setPrivacyPolicyUrl('/privacy');
+      }
+    };
+    loadPrivacyPolicy();
+  }, []);
 
   // Helper function to calculate completed fields
   const getCompletedFields = () => {
@@ -120,6 +148,17 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         if (response.tokens) {
           localStorage.setItem('access_token', response.tokens.access);
           localStorage.setItem('refresh_token', response.tokens.refresh);
+          
+          // After successful registration, accept Privacy Policy
+          try {
+            await acceptPrivacyPolicy();
+            console.log('[Register] Privacy Policy accepted successfully');
+          } catch (privacyError: any) {
+            // Log error but don't block registration
+            // User will be prompted to accept on next login or when accessing protected routes
+            console.warn('[Register] Failed to accept Privacy Policy after registration:', privacyError.message);
+            console.warn('[Register] User will be prompted to accept Privacy Policy on next login');
+          }
         }
         if (response.user) {
           localStorage.setItem('user', JSON.stringify(response.user));
@@ -131,7 +170,26 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         }, 2000);
       }
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Please try again.');
+      console.error('[Register] Registration error:', err);
+      
+      // Format error message for display
+      let errorMessage = err.message || 'Registration failed. Please try again.';
+      
+      // If error contains multiple lines (field-specific errors), format it nicely
+      if (errorMessage.includes('\n')) {
+        // Split into main error and field errors
+        const lines = errorMessage.split('\n');
+        const mainError = lines[0];
+        const fieldErrors = lines.slice(1).filter((line: string) => line.trim());
+        
+        if (fieldErrors.length > 0) {
+          errorMessage = `${mainError}\n\nPlease fix the following:\n${fieldErrors.map((err: string) => `• ${err}`).join('\n')}`;
+        } else {
+          errorMessage = mainError;
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +219,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
 
         {error && (
           <div className={styles.errorAlert}>
-            <span className={styles.errorIcon}>⚠️</span>
+            <span className={styles.errorIcon}><WarningIcon size="md" /></span>
             {error}
           </div>
         )}
@@ -591,15 +649,16 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 disabled={isLoading}
               />
               <span className={styles.checkboxText}>
-                I agree to the{' '}
-                <Link to="/terms" className={styles.termsLink}>
-                  Terms and Conditions
-                </Link>{' '}
-                and{' '}
-                <Link to="/privacy" className={styles.termsLink}>
+                I have read and agree to the{' '}
+                <a
+                  href={privacyPolicyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.termsLink}
+                >
                   Privacy Policy
-                </Link>
-                *
+                </a>
+                {' '}*
               </span>
             </label>
             {errors.terms_accepted && (

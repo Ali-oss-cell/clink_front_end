@@ -59,7 +59,7 @@ export const ManagerStaffPage: React.FC = () => {
       setShowEditModal(false);
       setSelectedStaff(null);
       fetchStaff();
-      alert('✅ Staff member updated successfully!');
+      alert('Staff member updated successfully!');
     } catch (err: any) {
       console.error('Update staff error:', err);
       setError(err.message || 'Failed to update staff member');

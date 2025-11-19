@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
 import { authService } from '../../services/api/auth';
+import { UserIcon, HospitalIcon, SettingsIcon, LockIcon, ClipboardIcon, DownloadIcon } from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
 export const PatientAccountPage: React.FC = () => {
@@ -21,8 +22,11 @@ export const PatientAccountPage: React.FC = () => {
     created_at: '2024-01-01'
   };
 
-  const [activeTab, setActiveTab] = useState<'personal' | 'medical' | 'preferences' | 'security'>('personal');
+  const [activeTab, setActiveTab] = useState<'personal' | 'medical' | 'preferences' | 'security' | 'privacy'>('personal');
   const [medicalInfo, setMedicalInfo] = useState<any>(null);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [downloadingCSV, setDownloadingCSV] = useState(false);
+  const [dataDownloadError, setDataDownloadError] = useState<string | null>(null);
 
   // Load data from intake form
   useEffect(() => {
@@ -31,11 +35,54 @@ export const PatientAccountPage: React.FC = () => {
   }, []);
 
   const tabs = [
-    { id: 'personal', label: 'Personal Info', icon: '👤' },
-    { id: 'medical', label: 'Medical Info', icon: '🏥' },
-    { id: 'preferences', label: 'Preferences', icon: '⚙️' },
-    { id: 'security', label: 'Security', icon: '🔒' }
+    { id: 'personal', label: 'Personal Info', icon: <UserIcon size="md" /> },
+    { id: 'medical', label: 'Medical Info', icon: <HospitalIcon size="md" /> },
+    { id: 'preferences', label: 'Preferences', icon: <SettingsIcon size="md" /> },
+    { id: 'security', label: 'Security', icon: <LockIcon size="md" /> },
+    { id: 'privacy', label: 'Privacy & Data', icon: <LockIcon size="md" /> }
   ];
+
+  const handleDownloadPDF = async () => {
+    setDownloadingPDF(true);
+    setDataDownloadError(null);
+    
+    try {
+      console.log('[PatientAccount] Starting PDF download...');
+      const result = await authService.requestDataAccess('pdf');
+      
+      // Service handles the download automatically
+      if (result && result.success) {
+        console.log('[PatientAccount] PDF download successful:', result.filename);
+        // Success message is optional since download happens automatically
+      }
+    } catch (error: any) {
+      console.error('[PatientAccount] Error downloading PDF:', error);
+      setDataDownloadError(error.message || 'Failed to download your data as PDF. Please try again.');
+    } finally {
+      setDownloadingPDF(false);
+    }
+  };
+
+  const handleDownloadCSV = async () => {
+    setDownloadingCSV(true);
+    setDataDownloadError(null);
+    
+    try {
+      console.log('[PatientAccount] Starting CSV download...');
+      const result = await authService.requestDataAccess('csv');
+      
+      // Service handles the download automatically
+      if (result && result.success) {
+        console.log('[PatientAccount] CSV download successful:', result.filename);
+        // Success message is optional since download happens automatically
+      }
+    } catch (error: any) {
+      console.error('[PatientAccount] Error downloading CSV:', error);
+      setDataDownloadError(error.message || 'Failed to download your data as CSV. Please try again.');
+    } finally {
+      setDownloadingCSV(false);
+    }
+  };
 
   return (
     <Layout 
@@ -104,7 +151,7 @@ export const PatientAccountPage: React.FC = () => {
                   
                   {!intakeService.isIntakeFormCompleted() && (
                     <div className={styles.completionNotice}>
-                      <div className={styles.noticeIcon}>📋</div>
+                      <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                       <h3>Complete Your Intake Form</h3>
                       <p>Provide comprehensive information about your health and preferences.</p>
                       <button className={styles.primaryButton}>
@@ -221,7 +268,7 @@ export const PatientAccountPage: React.FC = () => {
                     </div>
                   ) : (
                     <div className={styles.completionNotice}>
-                      <div className={styles.noticeIcon}>📋</div>
+                      <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                       <h3>Complete Your Intake Form</h3>
                       <p>To view and manage your medical information, please complete your intake form first.</p>
                       <button className={styles.primaryButton}>
@@ -342,6 +389,98 @@ export const PatientAccountPage: React.FC = () => {
                         <span className={styles.activityLocation}>Melbourne, Australia</span>
                       </div>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'privacy' && (
+                <div className={styles.tabContent}>
+                  <h2 className={styles.sectionTitle}>Privacy & Data Management</h2>
+                  
+                  <div className={styles.privacySection}>
+                    <h3 className={styles.subsectionTitle}>Your Data Rights</h3>
+                    <p className={styles.privacyDescription}>
+                      Under the Australian Privacy Act 1988 (APP 12), you have the right to access 
+                      all personal information we hold about you. You can request a copy of your data 
+                      at any time.
+                    </p>
+                  </div>
+
+                  <div className={styles.dataAccessSection}>
+                    <h3 className={styles.subsectionTitle}>Download My Data</h3>
+                    <p className={styles.dataAccessDescription}>
+                      Download a complete copy of all your personal information, including:
+                    </p>
+                    <ul className={styles.dataList}>
+                      <li>Personal information and account details</li>
+                      <li>Medical information and health records</li>
+                      <li>Appointment history</li>
+                      <li>Progress notes and session records</li>
+                      <li>Billing and payment information</li>
+                      <li>Medicare claims</li>
+                      <li>Consent records</li>
+                      <li>Account activity logs</li>
+                    </ul>
+                    
+                    {dataDownloadError && (
+                      <div className={styles.errorAlert}>
+                        <span>{dataDownloadError}</span>
+                      </div>
+                    )}
+
+                    <div className={styles.downloadButtons}>
+                      <button
+                        className={styles.downloadButton}
+                        onClick={handleDownloadPDF}
+                        disabled={downloadingPDF || downloadingCSV}
+                      >
+                        {downloadingPDF ? (
+                          <>
+                            <span className={styles.spinner}></span>
+                            Downloading PDF...
+                          </>
+                        ) : (
+                          <>
+                            <DownloadIcon size="md" />
+                            Download as PDF
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        className={`${styles.downloadButton} ${styles.downloadButtonSecondary}`}
+                        onClick={handleDownloadCSV}
+                        disabled={downloadingPDF || downloadingCSV}
+                      >
+                        {downloadingCSV ? (
+                          <>
+                            <span className={styles.spinner}></span>
+                            Downloading CSV...
+                          </>
+                        ) : (
+                          <>
+                            <DownloadIcon size="md" />
+                            Download as CSV
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    
+                    <p className={styles.dataAccessNote}>
+                      Choose your preferred format: PDF for a formatted document, or CSV for spreadsheet compatibility. 
+                      This may take a few moments depending on the amount of data. All requests are logged for security purposes.
+                    </p>
+                  </div>
+
+                  <div className={styles.privacyInfoSection}>
+                    <h3 className={styles.subsectionTitle}>Privacy Policy</h3>
+                    <p className={styles.privacyDescription}>
+                      For more information about how we collect, use, and protect your personal 
+                      information, please review our Privacy Policy.
+                    </p>
+                    <button className={styles.secondaryButton}>
+                      View Privacy Policy
+                    </button>
                   </div>
                 </div>
               )}

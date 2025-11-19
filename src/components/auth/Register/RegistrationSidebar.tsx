@@ -1,3 +1,4 @@
+import { PhoneIcon, EmailIcon } from '../../../utils/icons';
 import styles from './RegistrationSidebar.module.scss';
 
 export const RegistrationSidebar: React.FC = () => {
@@ -36,7 +37,7 @@ export const RegistrationSidebar: React.FC = () => {
         <h3 className={styles.sectionTitle}>Need Assistance?</h3>
         <div className={styles.helpItems}>
           <div className={styles.helpItem}>
-            <div className={styles.helpIcon}>📞</div>
+            <div className={styles.helpIcon}><PhoneIcon size="lg" /></div>
             <div className={styles.helpText}>
               <strong>Call 1800 MINDWELL</strong>
               <span>Mon-Fri 9am-5pm AEST</span>
@@ -44,7 +45,7 @@ export const RegistrationSidebar: React.FC = () => {
           </div>
           
           <div className={styles.helpItem}>
-            <div className={styles.helpIcon}>✉️</div>
+            <div className={styles.helpIcon}><EmailIcon size="lg" /></div>
             <div className={styles.helpText}>
               <strong>Email Support</strong>
               <span>support@mindwellclinic.com.au</span>

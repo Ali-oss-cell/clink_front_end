@@ -168,7 +168,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   placeholder="Enter your first name"
                 />
                 {preFilledData.first_name && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.first_name && <span className={styles.fieldError}>{errors.first_name.message}</span>}
               </div>
@@ -181,7 +181,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   placeholder="Enter your last name"
                 />
                 {preFilledData.last_name && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.last_name && <span className={styles.fieldError}>{errors.last_name.message}</span>}
               </div>
@@ -203,7 +203,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   className={`${styles.input} ${errors.date_of_birth ? styles.inputError : ''} ${preFilledData.date_of_birth ? styles.preFilled : ''}`}
                 />
                 {preFilledData.date_of_birth && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.date_of_birth && <span className={styles.fieldError}>{errors.date_of_birth.message}</span>}
               </div>
@@ -234,7 +234,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   placeholder="Enter your street address"
                 />
                 {preFilledData.address_line_1 && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.address_line_1 && <span className={styles.fieldError}>{errors.address_line_1.message}</span>}
               </div>
@@ -247,7 +247,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   placeholder="Enter your suburb"
                 />
                 {preFilledData.suburb && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.suburb && <span className={styles.fieldError}>{errors.suburb.message}</span>}
               </div>
@@ -269,7 +269,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   <option value="NT">Northern Territory (NT)</option>
                 </select>
                 {preFilledData.state && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.state && <span className={styles.fieldError}>{errors.state.message}</span>}
               </div>
@@ -282,7 +282,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   placeholder="Enter your postcode"
                 />
                 {preFilledData.postcode && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.postcode && <span className={styles.fieldError}>{errors.postcode.message}</span>}
               </div>
@@ -304,7 +304,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   placeholder="Enter mobile phone number"
                 />
                 {preFilledData.phone_number && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.phone_number && <span className={styles.fieldError}>{errors.phone_number.message}</span>}
               </div>
@@ -324,7 +324,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   placeholder="Enter your email address"
                 />
                 {preFilledData.email && (
-                  <span className={styles.preFilledLabel}>✅ Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
                 {errors.email && <span className={styles.fieldError}>{errors.email.message}</span>}
               </div>
@@ -776,7 +776,7 @@ export const PatientIntakeFormPage: React.FC = () => {
             </p>
             
             <div className={styles.requirementSummary}>
-              <h3>📋 Form Requirements</h3>
+              <h3><ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Form Requirements</h3>
               <div className={styles.requirementGrid}>
                 <div className={styles.requirementItem}>
                   <span className={styles.requiredIcon}>*</span>

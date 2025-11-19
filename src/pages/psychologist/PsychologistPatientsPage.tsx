@@ -4,6 +4,17 @@ import { SOAPNoteForm } from '../../components/psychologist/SOAPNoteForm';
 import { progressNotesService, type Patient as ApiPatient } from '../../services/api/progressNotes';
 import { authService } from '../../services/api/auth';
 import type { ProgressNote } from '../../types/progressNote';
+import {
+  UsersIcon,
+  ChartIcon,
+  CheckCircleIcon,
+  CalendarIcon,
+  SearchIcon,
+  WarningIcon,
+  EmailIcon,
+  MobileIcon,
+  CloseIcon
+} from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
 
 interface Patient {
@@ -206,7 +217,7 @@ export const PsychologistPatientsPage: React.FC = () => {
             <div className={styles.headerContent}>
               <div className={styles.headerText}>
                 <h1 className={styles.pageTitle}>
-                  <span className={styles.titleIcon}>👥</span>
+                  <span className={styles.titleIcon}><UsersIcon size="lg" /></span>
                   My Patients
                 </h1>
                 <p className={styles.pageSubtitle}>
@@ -219,28 +230,28 @@ export const PsychologistPatientsPage: React.FC = () => {
           {/* Statistics Cards */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>👥</div>
+              <div className={styles.statIcon}><UsersIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{activePatients}</div>
                 <div className={styles.statLabel}>Active Patients</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📊</div>
+              <div className={styles.statIcon}><ChartIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{totalPatients}</div>
                 <div className={styles.statLabel}>Total Patients</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>✅</div>
+              <div className={styles.statIcon}><CheckCircleIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{completedTherapies}</div>
                 <div className={styles.statLabel}>Completed</div>
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>📅</div>
+              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
               <div className={styles.statContent}>
                 <div className={styles.statValue}>{totalSessionsThisMonth}</div>
                 <div className={styles.statLabel}>Sessions This Month</div>
@@ -251,7 +262,7 @@ export const PsychologistPatientsPage: React.FC = () => {
           {/* Search and Filters */}
           <div className={styles.searchFilterSection}>
             <div className={styles.searchBox}>
-              <span className={styles.searchIcon}>🔍</span>
+              <span className={styles.searchIcon}><SearchIcon size="md" /></span>
               <input
                 type="text"
                 placeholder="Search by name, email, or patient ID..."
@@ -295,7 +306,7 @@ export const PsychologistPatientsPage: React.FC = () => {
             </div>
           ) : error ? (
             <div className={styles.errorState}>
-              <h3>⚠️ Error Loading Patients</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Patients</h3>
               <p>{error}</p>
               <button className={styles.retryButton} onClick={fetchPatients}>
                 Retry
@@ -305,7 +316,7 @@ export const PsychologistPatientsPage: React.FC = () => {
           <div className={styles.patientsList}>
             {filteredPatients.length === 0 ? (
               <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>🔍</div>
+                <div className={styles.emptyIcon}><SearchIcon size="2xl" /></div>
                 <h3>No patients found</h3>
                 <p>Try adjusting your search or filter criteria.</p>
               </div>
@@ -332,19 +343,19 @@ export const PsychologistPatientsPage: React.FC = () => {
                   <div className={styles.patientCardBody}>
                     <div className={styles.infoGrid}>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>📧 Email:</span>
+                        <span className={styles.infoLabel}><EmailIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Email:</span>
                         <span className={styles.infoValue}>{patient.email}</span>
                       </div>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>📱 Phone:</span>
+                        <span className={styles.infoLabel}><MobileIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Phone:</span>
                         <span className={styles.infoValue}>{patient.phone}</span>
                       </div>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>🎯 Focus:</span>
+                        <span className={styles.infoLabel}><ChartIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Focus:</span>
                         <span className={styles.infoValue}>{patient.therapyFocus}</span>
                       </div>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>📅 Registered:</span>
+                        <span className={styles.infoLabel}><CalendarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Registered:</span>
                         <span className={styles.infoValue}>{formatDate(patient.registeredDate)}</span>
                       </div>
                     </div>
@@ -410,7 +421,7 @@ export const PsychologistPatientsPage: React.FC = () => {
                 className={styles.closeButton}
                 onClick={() => setShowDetailsModal(false)}
               >
-                ✕
+                <CloseIcon size="md" />
               </button>
             </div>
 
@@ -589,7 +600,7 @@ export const PsychologistPatientsPage: React.FC = () => {
         <div className={styles.modalOverlay} onClick={handleNoteFormClose}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <button className={styles.modalClose} onClick={handleNoteFormClose}>
-              ✕
+              <CloseIcon size="md" />
             </button>
             <SOAPNoteForm
               patientId={selectedPatient.id}
@@ -612,7 +623,7 @@ export const PsychologistPatientsPage: React.FC = () => {
                 className={styles.closeButton}
                 onClick={() => setShowNoteDetail(false)}
               >
-                ✕
+                <CloseIcon size="md" />
               </button>
             </div>
             <div className={styles.modalBody}>

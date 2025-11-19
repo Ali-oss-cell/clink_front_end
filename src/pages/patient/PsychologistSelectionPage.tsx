@@ -4,6 +4,20 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { psychologistService } from '../../services/api/psychologist';
 import type { PsychologistProfile } from '../../services/api/psychologist';
 import { authService } from '../../services/api/auth';
+import {
+  ChartIcon,
+  UsersIcon,
+  CalendarIcon,
+  VideoIcon,
+  WarningIcon,
+  CheckCircleIcon,
+  ErrorCircleIcon,
+  ClipboardIcon,
+  StarIcon,
+  ChatIcon,
+  EditIcon,
+  GraduationIcon
+} from '../../utils/icons';
 import styles from './PsychologistSelection.module.scss';
 
 interface Psychologist {
@@ -200,7 +214,7 @@ export const PsychologistSelectionPage: React.FC = () => {
             <h3 className={styles.filtersTitle}>Filter Psychologists:</h3>
             <div className={styles.filtersGrid}>
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>🎯 Specialization:</label>
+                <label className={styles.filterLabel}><ChartIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Specialization:</label>
                 <select 
                   className={styles.filterSelect}
                   value={filters.specialization}
@@ -216,7 +230,7 @@ export const PsychologistSelectionPage: React.FC = () => {
               </div>
 
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>👥 Gender:</label>
+                <label className={styles.filterLabel}><UsersIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Gender:</label>
                 <select 
                   className={styles.filterSelect}
                   value={filters.gender}
@@ -230,7 +244,7 @@ export const PsychologistSelectionPage: React.FC = () => {
               </div>
 
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>📅 Availability:</label>
+                <label className={styles.filterLabel}><CalendarIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Availability:</label>
                 <select 
                   className={styles.filterSelect}
                   value={filters.availability}
@@ -243,7 +257,7 @@ export const PsychologistSelectionPage: React.FC = () => {
               </div>
 
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>🎥 Session Type:</label>
+                <label className={styles.filterLabel}><VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Session Type:</label>
                 <select 
                   className={styles.filterSelect}
                   value={filters.sessionType}
@@ -263,13 +277,14 @@ export const PsychologistSelectionPage: React.FC = () => {
             </div>
           ) : error ? (
             <div className={styles.errorState}>
-              <h3>⚠️ Unable to Load Psychologists</h3>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Psychologists</h3>
               <p>{error}</p>
               <button 
                 className={styles.retryButton}
                 onClick={() => window.location.reload()}
               >
-                🔄 Retry
+                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                Retry
               </button>
             </div>
           ) : filteredPsychologists.length === 0 ? (
@@ -303,30 +318,30 @@ export const PsychologistSelectionPage: React.FC = () => {
                   </div>
                   <div className={styles.psychologistStatus}>
                     {psychologist.acceptingNewPatients ? (
-                      <span className={styles.statusAvailable}>✅ Accepting new patients</span>
+                      <span className={styles.statusAvailable}><CheckCircleIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Accepting new patients</span>
                     ) : (
-                      <span className={styles.statusUnavailable}>❌ Not accepting new patients</span>
+                      <span className={styles.statusUnavailable}><ErrorCircleIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Not accepting new patients</span>
                     )}
                   </div>
                 </div>
 
                 <div className={styles.psychologistDetails}>
                   <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>📋 AHPRA:</span>
+                    <span className={styles.detailLabel}><ClipboardIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> AHPRA:</span>
                     <span className={styles.detailValue}>{psychologist.ahpraNumber}</span>
                   </div>
                   <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>🎓 Qualifications:</span>
+                    <span className={styles.detailLabel}><GraduationIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Qualifications:</span>
                     <span className={styles.detailValue}>{psychologist.qualifications}</span>
                   </div>
                   <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>⭐ Experience:</span>
+                    <span className={styles.detailLabel}><StarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Experience:</span>
                     <span className={styles.detailValue}>{psychologist.experience} years</span>
                   </div>
                 </div>
 
                 <div className={styles.specializationsSection}>
-                  <h4 className={styles.specializationsTitle}>🎯 Specializations:</h4>
+                  <h4 className={styles.specializationsTitle}><ChartIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Specializations:</h4>
                   <div className={styles.specializationsList}>
                     {psychologist.specializations.map((spec) => (
                       <span key={spec.id} className={styles.specializationItem}>
@@ -337,13 +352,13 @@ export const PsychologistSelectionPage: React.FC = () => {
                 </div>
 
                 <div className={styles.psychologistBio}>
-                  <h4 className={styles.bioTitle}>💬 About {psychologist.name.split(' ')[1]}:</h4>
+                  <h4 className={styles.bioTitle}><ChatIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> About {psychologist.name.split(' ')[1]}:</h4>
                   <p className={styles.bioText}>"{psychologist.bio}"</p>
                 </div>
 
                 <div className={styles.availabilitySection}>
                   <div className={styles.availabilityRow}>
-                    <span className={styles.availabilityLabel}>📅 Next available:</span>
+                    <span className={styles.availabilityLabel}><CalendarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Next available:</span>
                     <span className={styles.availabilityValue}>{psychologist.nextAvailable}</span>
                   </div>
                 </div>

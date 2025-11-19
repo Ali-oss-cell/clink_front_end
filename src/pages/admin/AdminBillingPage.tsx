@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ClockIcon, DocumentIcon, CloseIcon } from '../../utils/icons';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Invoice, type Payment, type MedicareClaim } from '../../services/api/admin';
@@ -125,7 +126,7 @@ export const AdminBillingPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}>×</button>
+              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
             </div>
           )}
 
@@ -215,7 +216,17 @@ export const AdminBillingPage: React.FC = () => {
                             className={styles.actionButton}
                             title="Download Invoice PDF"
                           >
-                            {downloadingId === invoice.id ? '⏳ Downloading...' : '📄 Download PDF'}
+                            {downloadingId === invoice.id ? (
+                              <>
+                                <ClockIcon size="sm" style={{ marginRight: '6px' }} />
+                                Downloading...
+                              </>
+                            ) : (
+                              <>
+                                <DocumentIcon size="sm" style={{ marginRight: '6px' }} />
+                                Download PDF
+                              </>
+                            )}
                           </button>
                         </td>
                       </tr>

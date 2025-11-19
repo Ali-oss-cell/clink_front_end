@@ -124,6 +124,28 @@ export interface BookingSummaryResponse {
   created_at: string;
 }
 
+export interface MedicareLimitCheckResponse {
+  sessions_used: number;
+  sessions_remaining: number;
+  max_sessions: number;
+  service_id: number;
+  service_name: string;
+}
+
+export interface MedicareSessionInfoResponse {
+  current_year: number;
+  sessions_used: number;
+  sessions_remaining: number;
+  max_sessions: number;
+  services: Array<{
+    service_id: number;
+    service_name: string;
+    item_number: string;
+    sessions_used: number;
+    sessions_remaining: number;
+  }>;
+}
+
 export interface PatientAppointment {
   id: string;
   appointment_date: string;
@@ -466,8 +488,51 @@ export class AppointmentsService {
       throw new Error(`Failed to ${action} appointment`);
     }
   }
+
+  /**
+   * Check Medicare session limit for a specific service
+   */
+  async checkMedicareLimit(serviceId: number): Promise<MedicareLimitCheckResponse> {
+    try {
+      const response = await axiosInstance.get<MedicareLimitCheckResponse>(
+        `/appointments/medicare-limit-check/?service_id=${serviceId}`
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error('[AppointmentsService] Error checking Medicare limit:', error);
+      if (error.response) {
+        throw new Error(error.response.data?.detail || error.response.data?.error || 'Failed to check Medicare limit');
+      } else if (error.request) {
+        throw new Error('Network error: Unable to connect to server');
+      } else {
+        throw new Error(error.message || 'Failed to check Medicare limit');
+      }
+    }
+  }
+
+  /**
+   * Get patient's Medicare session information
+   */
+  async getMedicareSessionInfo(): Promise<MedicareSessionInfoResponse> {
+    try {
+      const response = await axiosInstance.get<MedicareSessionInfoResponse>(
+        '/appointments/medicare-session-info/'
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error('[AppointmentsService] Error fetching Medicare session info:', error);
+      if (error.response) {
+        throw new Error(error.response.data?.detail || error.response.data?.error || 'Failed to fetch Medicare session info');
+      } else if (error.request) {
+        throw new Error('Network error: Unable to connect to server');
+      } else {
+        throw new Error(error.message || 'Failed to fetch Medicare session info');
+      }
+    }
+  }
 }
 
 // Export singleton instance
+
 export const appointmentsService = new AppointmentsService();
 

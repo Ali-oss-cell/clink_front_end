@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import type { User } from '../../../types/simple-auth';
+import { getPrivacyPolicyStatus, type PrivacyPolicyStatus } from '../../../services/api/privacy';
+import { PrivacyPolicyModal } from '../PrivacyPolicyModal/PrivacyPolicyModal';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,10 +20,92 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   user = null,
 }) => {
   const location = useLocation();
+  const [privacyStatus, setPrivacyStatus] = useState<PrivacyPolicyStatus | null>(null);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [privacyChecked, setPrivacyChecked] = useState(false);
+
+  // Check Privacy Policy status for authenticated users
+  useEffect(() => {
+    const checkPrivacyPolicy = async () => {
+      if (requireAuth && isAuthenticated && user) {
+        try {
+          const status = await getPrivacyPolicyStatus();
+          setPrivacyStatus(status);
+          
+          // Check if Privacy Policy needs to be accepted
+          if (!status.accepted || status.needs_update) {
+            setShowPrivacyModal(true);
+          } else {
+            setPrivacyChecked(true);
+          }
+        } catch (error) {
+          // If check fails, allow access (will be checked on next request)
+          console.warn('Privacy Policy check failed:', error);
+          setPrivacyChecked(true);
+        }
+      } else {
+        setPrivacyChecked(true);
+      }
+    };
+
+    checkPrivacyPolicy();
+  }, [requireAuth, isAuthenticated, user]);
 
   // If authentication is required but user is not authenticated
   if (requireAuth && !isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Show Privacy Policy modal if needed
+  if (showPrivacyModal && privacyStatus) {
+    return (
+      <>
+        <PrivacyPolicyModal
+          isOpen={showPrivacyModal}
+          onClose={() => {
+            // If user closes without accepting, redirect to login
+            setShowPrivacyModal(false);
+            // Don't redirect, just close - user can still access but will be prompted again
+          }}
+          onAccept={() => {
+            setShowPrivacyModal(false);
+            setPrivacyChecked(true);
+            // Reload privacy status
+            getPrivacyPolicyStatus().then(setPrivacyStatus).catch(console.error);
+          }}
+          required={true}
+        />
+        {/* Show loading state while checking */}
+        {!privacyChecked && (
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh',
+            fontSize: '18px',
+            color: '#2c5aa0'
+          }}>
+            Loading...
+          </div>
+        )}
+      </>
+    );
+  }
+
+  // Wait for privacy check to complete
+  if (requireAuth && isAuthenticated && !privacyChecked) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontSize: '18px',
+        color: '#2c5aa0'
+      }}>
+        Loading...
+      </div>
+    );
   }
 
   // If specific roles are required and user doesn't have the right role

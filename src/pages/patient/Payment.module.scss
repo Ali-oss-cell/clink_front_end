@@ -150,15 +150,15 @@
   position: relative;
   
   &:hover {
-    border-color: $primary-color;
+    border-color: $patient-primary;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
   &.selected {
-    border-color: $primary-color;
-    background: rgba($primary-color, 0.02);
-    box-shadow: 0 4px 15px rgba($primary-color, 0.1);
+    border-color: $patient-primary;
+    background: rgba($patient-primary, 0.02);
+    box-shadow: 0 4px 15px rgba($patient-primary, 0.1);
   }
   
   &:has(input:disabled) {
@@ -259,7 +259,7 @@
   
   &:focus {
     outline: none;
-    border-color: $primary-color;
+    border-color: $patient-primary;
   }
 }
 
@@ -335,8 +335,8 @@
 }
 
 .checkboxWrapper input[type="checkbox"]:checked + .checkboxCustom {
-  background: $primary-color;
-  border-color: $primary-color;
+  background: $patient-primary;
+  border-color: $patient-primary;
   
   &::after {
     transform: translate(-50%, -50%) scale(1);
@@ -375,7 +375,7 @@
 
 .payButton {
   padding: $spacing-md $spacing-lg;
-  background: $primary-color;
+  background: $patient-primary;
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -384,9 +384,9 @@
   transition: all 0.2s ease;
   
   &:hover:not(:disabled) {
-    background: $primary-dark;
+    background: $patient-dark;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    box-shadow: 0 4px 12px rgba($patient-primary, 0.3);
   }
   
   &:disabled {
