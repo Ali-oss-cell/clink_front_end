@@ -1,5 +1,6 @@
 export { AdminDashboardPage } from './AdminDashboardPage';
 export { UserManagementPage } from './UserManagementPage';
+export { AdminDataDeletionPage } from './AdminDataDeletionPage';
 export { AdminAppointmentsPage } from './AdminAppointmentsPage';
 export { AdminPatientsPage } from './AdminPatientsPage';
 export { AdminStaffPage } from './AdminStaffPage';

@@ -1,0 +1,204 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/mixins' as *;
+
+.telehealthCard {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: $text-dark;
+  }
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summaryItem {
+  background: rgba($patient-primary, 0.04);
+  border: 1px solid rgba($patient-primary, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+
+  span {
+    display: block;
+    font-size: 0.85rem;
+    color: $text-light;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+  }
+
+  strong {
+    font-size: 1.1rem;
+    color: $text-dark;
+  }
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+
+  &.active {
+    background: rgba($success-green, 0.15);
+    color: $success-green;
+  }
+
+  &.pending {
+    background: rgba($warning-orange, 0.15);
+    color: $warning-orange;
+  }
+}
+
+.emergencyCard {
+  background: rgba($warning-orange, 0.08);
+  border: 1px solid rgba($warning-orange, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+
+  h4 {
+    margin: 0 0 0.5rem;
+    color: $warning-orange;
+  }
+
+  p {
+    margin: 0.25rem 0;
+    color: $text-dark;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  @include button-base;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.primaryButton {
+  @include button-primary;
+}
+
+.secondaryButton {
+  background: white;
+  color: $patient-primary;
+  border: 2px solid $patient-primary;
+
+  &:hover {
+    background: rgba($patient-primary, 0.05);
+  }
+}
+
+.form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-weight: 600;
+    color: $text-dark;
+  }
+
+  input[type='text'],
+  textarea {
+    border: 1px solid $border-light;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $patient-primary;
+      box-shadow: 0 0 0 3px rgba($patient-primary, 0.12);
+    }
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+}
+
+.checkboxRow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+
+  input {
+    margin-top: 0.25rem;
+  }
+
+  label {
+    font-weight: 500;
+    color: $text-dark;
+  }
+}
+
+.requirementsLink {
+  color: $patient-primary;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.errorAlert {
+  background: rgba($error-red, 0.1);
+  border: 1px solid rgba($error-red, 0.25);
+  color: $error-red;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.successAlert {
+  background: rgba($success-green, 0.1);
+  border: 1px solid rgba($success-green, 0.25);
+  color: $success-green;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.loading {
+  color: $text-light;
+  font-style: italic;
+}
+

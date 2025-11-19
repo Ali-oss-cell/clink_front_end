@@ -2,6 +2,7 @@
 export { Homepage } from './public/Homepage';
 export { AboutPage } from './public/AboutPage';
 export { ServicesPage } from './public/ServicesPage';
+export { TelehealthRequirementsPage } from './public/TelehealthRequirementsPage';
 
 // Auth pages
 export { LoginPage } from './auth/LoginPage';

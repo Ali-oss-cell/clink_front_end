@@ -482,4 +482,132 @@ export const authService = {
     }
   },
 
+  /**
+   * Request data deletion (APP 13 compliance)
+   * @param reason - Optional reason for deletion request
+   * @returns Promise with request details
+   */
+  requestDataDeletion: async (reason?: string): Promise<any> => {
+    try {
+      const response = await authAPI.post('/data-deletion-request/', { reason });
+      return response.data;
+    } catch (error: any) {
+      console.error('[AuthService] Error requesting data deletion:', error);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 403) {
+          throw new Error('You do not have permission to request data deletion. This feature is only available for patients.');
+        } else if (status === 400) {
+          throw new Error(error.response.data?.error || error.response.data?.detail || 'Invalid deletion request');
+        } else if (status === 409) {
+          throw new Error('You already have a pending deletion request');
+        }
+        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to submit deletion request');
+      }
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+  },
+
+  /**
+   * Get data deletion request status
+   * @returns Promise with current deletion request status
+   */
+  getDataDeletionStatus: async (): Promise<any> => {
+    try {
+      const response = await authAPI.get('/data-deletion-request/');
+      return response.data;
+    } catch (error: any) {
+      console.error('[AuthService] Error getting deletion status:', error);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 404) {
+          // No request found - this is OK, return empty status
+          return { has_request: false, request: null };
+        }
+        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to get deletion status');
+      }
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+  },
+
+  /**
+   * Cancel a data deletion request
+   * @param requestId - ID of the deletion request to cancel
+   * @returns Promise with cancellation confirmation
+   */
+  cancelDataDeletion: async (requestId: number): Promise<any> => {
+    try {
+      const response = await authAPI.delete(`/data-deletion-request/${requestId}/cancel/`);
+      return response.data;
+    } catch (error: any) {
+      console.error('[AuthService] Error cancelling deletion request:', error);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 404) {
+          throw new Error('Deletion request not found');
+        } else if (status === 400) {
+          throw new Error(error.response.data?.error || 'Cannot cancel this deletion request');
+        }
+        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to cancel deletion request');
+      }
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+  },
+
+  /**
+   * List all data deletion requests (Admin/Practice Manager only)
+   * @param status - Optional status filter (pending, approved, rejected, completed, cancelled)
+   * @returns Promise with list of deletion requests
+   */
+  listDataDeletionRequests: async (status?: string): Promise<any> => {
+    try {
+      const response = await authAPI.get('/data-deletion-requests/', {
+        params: status ? { status } : undefined,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('[AuthService] Error listing deletion requests:', error);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 403) {
+          throw new Error('You do not have permission to view deletion requests');
+        }
+        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to load deletion requests');
+      }
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+  },
+
+  /**
+   * Review a data deletion request (Admin/Practice Manager only)
+   * @param requestId - ID of the deletion request to review
+   * @param payload - Review action and details
+   * @returns Promise with updated request details
+   */
+  reviewDataDeletionRequest: async (requestId: number, payload: {
+    action: 'approve' | 'reject';
+    rejection_reason?: string;
+    rejection_notes?: string;
+    notes?: string;
+  }): Promise<any> => {
+    try {
+      const response = await authAPI.post(`/data-deletion-requests/${requestId}/review/`, payload);
+      return response.data;
+    } catch (error: any) {
+      console.error('[AuthService] Error reviewing deletion request:', error);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 403) {
+          throw new Error('You do not have permission to review deletion requests');
+        } else if (status === 404) {
+          throw new Error('Deletion request not found');
+        } else if (status === 400) {
+          throw new Error(error.response.data?.error || error.response.data?.detail || 'Invalid review action');
+        }
+        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to review deletion request');
+      }
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+  },
+
 };

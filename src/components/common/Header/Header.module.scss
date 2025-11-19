@@ -8,7 +8,8 @@
   position: sticky;
   top: 0;
   z-index: $z-sticky;
-  height: $header-height;
+  min-height: $header-height;
+  padding: $spacing-sm 0;
   transition: all $transition-fast ease;
   
   &:hover {
@@ -19,7 +20,9 @@
 .container {
   @include container;
   @include flex-between;
-  height: 100%;
+  align-items: center;
+  min-height: 100%;
+  gap: $spacing-md;
 }
 
 .logo {
@@ -124,23 +127,45 @@
   .authNav {
     @include flex-center;
     gap: $spacing-lg;
+    flex-wrap: wrap;
 
     .welcomeText {
       color: $text-light;
       font-size: $font-size-sm;
       margin-right: $spacing-md;
+      white-space: nowrap;
     }
 
     .userMenu {
       @include flex-center;
-      gap: $spacing-md;
+      gap: $spacing-sm;
+      flex-wrap: wrap;
+
+      a {
+        color: $text-dark;
+        font-weight: $font-weight-medium;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $border-radius;
+        transition: all $transition-fast ease;
+        text-decoration: none;
+        font-size: $font-size-sm;
+        white-space: nowrap;
+
+        &:hover {
+          color: $primary-color;
+          background-color: rgba($primary-color, 0.1);
+          text-decoration: none;
+        }
+      }
 
       .navLink {
         color: $text-dark;
         font-weight: $font-weight-medium;
-        padding: $spacing-sm $spacing-md;
+        padding: $spacing-xs $spacing-sm;
         border-radius: $border-radius;
         transition: all $transition-fast ease;
+        font-size: $font-size-sm;
+        white-space: nowrap;
 
         &:hover {
           color: $primary-color;
@@ -151,8 +176,9 @@
 
       .logoutButton {
         @include button-secondary;
-        padding: $spacing-sm $spacing-md;
+        padding: $spacing-xs $spacing-sm;
         font-size: $font-size-sm;
+        white-space: nowrap;
       }
     }
   }

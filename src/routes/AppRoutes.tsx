@@ -5,6 +5,7 @@ import { ProtectedRoute } from '../components/common/ProtectedRoute/ProtectedRou
 import { Homepage } from '../pages/public/Homepage';
 import { AboutPage } from '../pages/public/AboutPage';
 import { ServicesPage } from '../pages/public/ServicesPage';
+import { TelehealthRequirementsPage } from '../pages/public/TelehealthRequirementsPage';
 
 // Auth pages
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -54,7 +55,8 @@ import {
   AdminSettingsPage,
   AdminAnalyticsPage,
   AdminResourcesPage,
-  AdminAuditLogsPage
+  AdminAuditLogsPage,
+  AdminDataDeletionPage
 } from '../pages/admin';
 
 // Video call page
@@ -81,6 +83,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
       
       {/* Services page */}
       <Route path="/services" element={<ServicesPage />} />
+      <Route path="/telehealth-requirements" element={<TelehealthRequirementsPage />} />
       
       {/* Resources page - TODO */}
       <Route path="/resources" element={
@@ -481,6 +484,16 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['admin']}
         >
           <AdminAuditLogsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/data-deletion" element={
+        <ProtectedRoute 
+          isAuthenticated={isAuthenticated} 
+          user={user} 
+          allowedRoles={['admin', 'practice_manager']}
+        >
+          <AdminDataDeletionPage />
         </ProtectedRoute>
       } />
 

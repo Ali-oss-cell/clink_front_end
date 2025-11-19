@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
+import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
 import { InfoIcon, VideoIcon, PhoneIcon } from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
@@ -15,14 +16,36 @@ interface Service {
   medicareApplicable: boolean;
   specializations: string[];
   description: string;
+  requiresTelehealthConsent?: boolean;
 }
 
 export const ServiceSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
+  const [consentLoading, setConsentLoading] = useState(true);
+  const [consentError, setConsentError] = useState<string | null>(null);
   
   // Get user data from auth service
   const user = authService.getStoredUser();
+
+  useEffect(() => {
+    const loadConsent = async () => {
+      try {
+        setConsentLoading(true);
+        const response = await TelehealthService.getConsent();
+        setTelehealthConsent(response);
+        setConsentError(null);
+      } catch (err: any) {
+        setTelehealthConsent(null);
+        setConsentError(err.message || 'Unable to verify telehealth consent.');
+      } finally {
+        setConsentLoading(false);
+      }
+    };
+
+    loadConsent();
+  }, []);
 
   // TODO: Fetch services from Django backend API
   // TODO: Implement service filtering by user preferences
@@ -62,6 +85,18 @@ export const ServiceSelectionPage: React.FC = () => {
       medicareApplicable: true,
       specializations: ['ADHD Assessment', 'Autism Spectrum Assessment', 'Cognitive Assessment'],
       description: 'Comprehensive psychological evaluation and assessment'
+    },
+    {
+      id: 'telehealth-video-session',
+      name: 'Telehealth Video Session',
+      duration: 50,
+      standardFee: 180.0,
+      medicareRebate: 87.45,
+      yourCost: 92.55,
+      medicareApplicable: true,
+      specializations: ['Remote Therapy', 'Follow-up Care', 'Medication Reviews'],
+      description: 'Secure video consultation with your clinician from home.',
+      requiresTelehealthConsent: true
     }
   ];
 
@@ -72,6 +107,15 @@ export const ServiceSelectionPage: React.FC = () => {
   const handleContinue = () => {
     if (!selectedService) {
       alert('Please select a service to continue.');
+      return;
+    }
+
+    const selectedServiceMeta = services.find((service) => service.id === selectedService);
+    if (
+      selectedServiceMeta?.requiresTelehealthConsent &&
+      (!telehealthConsent || !telehealthConsent.consent_to_telehealth)
+    ) {
+      alert('Telehealth consent is required before booking a video session. Please update your consent first.');
       return;
     }
     
@@ -107,6 +151,22 @@ export const ServiceSelectionPage: React.FC = () => {
               Choose the service that best fits your needs. All sessions include Medicare rebates for eligible patients.
             </p>
           </div>
+
+          {!consentLoading && (!telehealthConsent || !telehealthConsent.consent_to_telehealth) && (
+            <div className={styles.telehealthWarning}>
+              <div>
+                <h3>Telehealth consent pending</h3>
+                <p>
+                  Complete the telehealth consent form before booking a telehealth session. This ensures we have an
+                  emergency contact and plan on file.
+                </p>
+                {consentError && <p className={styles.placeholderSubtext}>{consentError}</p>}
+              </div>
+              <button className={styles.actionButton} onClick={() => navigate('/patient/account?tab=privacy')}>
+                Update Consent
+              </button>
+            </div>
+          )}
 
           <div className={styles.servicesGrid}>
             {services.map((service) => (

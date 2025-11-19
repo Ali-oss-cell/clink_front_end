@@ -1,0 +1,208 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/mixins' as *;
+
+.privacySection {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $text-dark;
+  }
+
+  p {
+    margin: 0;
+    color: $text-light;
+    font-size: 1rem;
+  }
+}
+
+.statusCard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba($patient-primary, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba($patient-primary, 0.15);
+}
+
+.statusItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  span {
+    font-size: 0.9rem;
+    color: $text-light;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  strong {
+    font-size: 1.1rem;
+    color: $text-dark;
+  }
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+
+  &.accepted {
+    background: rgba($success-green, 0.15);
+    color: $success-green;
+  }
+
+  &.pending {
+    background: rgba($warning-orange, 0.15);
+    color: $warning-orange;
+  }
+}
+
+.warning {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgba($warning-orange, 0.1);
+  border: 1px solid rgba($warning-orange, 0.3);
+  color: $warning-orange;
+  font-weight: 600;
+}
+
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.button {
+  @include button-base;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.primaryButton {
+  @include button-primary;
+}
+
+.secondaryButton {
+  background: white;
+  color: $patient-primary;
+  border: 2px solid $patient-primary;
+
+  &:hover {
+    background: rgba($patient-primary, 0.05);
+  }
+}
+
+.errorAlert {
+  background: rgba($error-red, 0.1);
+  border: 1px solid rgba($error-red, 0.3);
+  color: $error-red;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.loadingState {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: $text-light;
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba($patient-primary, 0.2);
+    border-top: 3px solid $patient-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.thirdPartySection {
+  margin-top: 2rem;
+}
+
+.thirdPartyIntro {
+  color: $text-light;
+  margin-bottom: 1.5rem;
+}
+
+.thirdPartyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.thirdPartyCard {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: #fdfdfd;
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: $text-dark;
+  }
+
+  p {
+    margin: 0.25rem 0;
+    color: $text-light;
+    font-size: 0.95rem;
+  }
+}
+
+.dataList,
+.safeguardList {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  color: $text-light;
+  font-size: 0.95rem;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: $patient-primary;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 1rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+

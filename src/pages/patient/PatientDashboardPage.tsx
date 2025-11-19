@@ -6,6 +6,7 @@ import { dashboardService } from '../../services/api/dashboard';
 import type { PatientDashboard } from '../../services/api/dashboard';
 import { authService } from '../../services/api/auth';
 import { videoCallService } from '../../services/api/videoCall';
+import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
 import { appointmentsService } from '../../services/api/appointments';
 import type { PatientAppointment, MedicareSessionInfoResponse } from '../../services/api/appointments';
 import {
@@ -27,6 +28,7 @@ export const PatientDashboardPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [videoCallAppointments, setVideoCallAppointments] = useState<PatientAppointment[]>([]);
   const [medicareInfo, setMedicareInfo] = useState<MedicareSessionInfoResponse | null>(null);
+  const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
   
   // Get user data from auth service
   const user = authService.getStoredUser() || {
@@ -75,6 +77,20 @@ export const PatientDashboardPage: React.FC = () => {
     };
 
     loadMedicareInfo();
+  }, []);
+
+  useEffect(() => {
+    const loadTelehealthConsent = async () => {
+      try {
+        const consent = await TelehealthService.getConsent();
+        setTelehealthConsent(consent);
+      } catch (err: any) {
+        console.warn('Failed to load telehealth consent:', err);
+        setTelehealthConsent(null);
+      }
+    };
+
+    loadTelehealthConsent();
   }, []);
 
   // Load appointments for video call card
@@ -167,6 +183,27 @@ export const PatientDashboardPage: React.FC = () => {
           </div>
 
           <OnboardingProgress user={user} />
+
+          {(!telehealthConsent || !telehealthConsent.consent_to_telehealth) && (
+            <div className={styles.telehealthWarning}>
+              <div>
+                <h3>
+                  <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                  Telehealth consent required
+                </h3>
+                <p>
+                  Before booking or joining video appointments, please complete the Telehealth consent form and provide
+                  an emergency plan.
+                </p>
+              </div>
+              <button
+                className={styles.actionButton}
+                onClick={() => navigate('/patient/account?tab=privacy')}
+              >
+                Update Telehealth Consent
+              </button>
+            </div>
+          )}
 
           <div className={styles.dashboardGrid}>
             {/* Video Sessions Card - Prominent */}

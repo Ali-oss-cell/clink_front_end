@@ -26,6 +26,37 @@
   }
 }
 
+.telehealthBoard {
+  padding: $spacing-md $spacing-xl;
+  background: rgba(15, 23, 42, 0.95);
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-lg;
+    font-size: 0.95rem;
+  }
+
+  strong {
+    color: white;
+  }
+}
+
 .headerLeft {
   display: flex;
   align-items: center;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { dashboardService } from '../../../services/api/dashboard';
 import type { PatientDashboard } from '../../../services/api/dashboard';
+import { TelehealthService, type TelehealthConsentResponse } from '../../../services/api/telehealth';
 import { CheckCircleIcon, LightbulbIcon } from '../../../utils/icons';
 import styles from './OnboardingProgress.module.scss';
 
@@ -22,6 +23,8 @@ interface OnboardingProgressProps {
 export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
   const [dashboardData, setDashboardData] = useState<PatientDashboard | null>(null);
   const [loading, setLoading] = useState(true);
+  const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
+  const [telehealthLoading, setTelehealthLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -38,7 +41,26 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
     fetchDashboardData();
   }, []);
 
+  useEffect(() => {
+    const fetchTelehealthConsent = async () => {
+      try {
+        setTelehealthLoading(true);
+        const consent = await TelehealthService.getConsent();
+        setTelehealthConsent(consent);
+      } catch (error) {
+        console.warn('Failed to load telehealth consent:', error);
+        setTelehealthConsent(null);
+      } finally {
+        setTelehealthLoading(false);
+      }
+    };
+
+    fetchTelehealthConsent();
+  }, []);
+
   // Main steps (counted in progress)
+  const telehealthCompleted = Boolean(telehealthConsent?.consent_to_telehealth);
+
   const mainSteps: OnboardingStep[] = [
     {
       id: 'profile',
@@ -56,6 +78,15 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
       completed: true, // Mark as complete
       actionText: dashboardData?.intake_completed ? 'View Form' : 'Start Assessment',
       actionUrl: '/patient/intake-form',
+      priority: 'high'
+    },
+    {
+      id: 'telehealth-consent',
+      title: 'Review Telehealth Consent',
+      description: 'Provide emergency contact and confirm recording preferences for video sessions',
+      completed: telehealthCompleted,
+      actionText: telehealthCompleted ? 'Review Consent' : 'Complete Consent',
+      actionUrl: '/patient/account?tab=privacy',
       priority: 'high'
     },
     {
@@ -88,7 +119,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
   // Combine main steps and extra step for display
   const allSteps = [...mainSteps, extraStep];
 
-  if (loading) {
+  if (loading || telehealthLoading) {
     return (
       <div className={styles.onboardingProgress}>
         <div className={styles.progressHeader}>

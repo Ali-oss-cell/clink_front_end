@@ -1,5 +1,15 @@
 import axiosInstance from './axiosInstance';
 
+export interface ThirdPartyService {
+  name: string;
+  purpose: string;
+  data_shared: string[];
+  location: string;
+  privacy_policy_url: string;
+  safeguards: string[];
+  active: boolean;
+}
+
 export interface PrivacyPolicyStatus {
   accepted: boolean;
   accepted_date: string | null;
@@ -7,6 +17,7 @@ export interface PrivacyPolicyStatus {
   latest_version: string;
   needs_update: boolean;
   privacy_policy_url: string;
+  third_party_data_sharing?: Record<string, ThirdPartyService>;
 }
 
 export interface AcceptPrivacyPolicyResponse {
@@ -25,6 +36,12 @@ export interface WithdrawConsentResponse {
   message: string;
   withdrawn_date: string;
   withdrawal_reason: string;
+}
+
+export interface ThirdPartyDataSharingResponse {
+  note: string;
+  total_active_services: number;
+  third_parties: Record<string, ThirdPartyService>;
 }
 
 /**
@@ -157,5 +174,43 @@ export const withdrawConsent = async (
       throw new Error(error.message || 'Failed to withdraw consent');
     }
   }
+};
+
+/**
+ * Get third-party data sharing disclosure
+ */
+export const getThirdPartyDataSharing = async (): Promise<ThirdPartyDataSharingResponse> => {
+  try {
+    const response = await axiosInstance.get<ThirdPartyDataSharingResponse>('/auth/third-party-data-sharing/');
+    return response.data;
+  } catch (error: any) {
+    console.error('[PrivacyService] Error getting third-party data sharing info:', error);
+    if (error.response) {
+      const status = error.response.status;
+      switch (status) {
+        case 401:
+          throw new Error('Authentication required to view third-party disclosures.');
+        case 404:
+          throw new Error('Third-party disclosure endpoint not found. Please contact support.');
+        default:
+          throw new Error(
+            error.response.data?.detail ||
+            error.response.data?.error ||
+            'Failed to load third-party data sharing information'
+          );
+      }
+    } else if (error.request) {
+      throw new Error('Network error: Unable to fetch third-party disclosures. Please try again.');
+    } else {
+      throw new Error(error.message || 'Failed to load third-party data sharing information');
+    }
+  }
+};
+
+export const PrivacyService = {
+  getPrivacyPolicyStatus,
+  acceptPrivacyPolicy,
+  withdrawConsent,
+  getThirdPartyDataSharing,
 };
 

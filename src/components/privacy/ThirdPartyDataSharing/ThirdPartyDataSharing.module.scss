@@ -1,0 +1,82 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/mixins' as *;
+
+.disclosureSection {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.sectionHeader {
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: $text-dark;
+  }
+
+  p {
+    margin: 0.25rem 0 0;
+    color: $text-light;
+  }
+}
+
+.note {
+  padding: 1rem;
+  background: rgba($info-blue, 0.1);
+  border: 1px solid rgba($info-blue, 0.3);
+  color: $info-blue;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.servicesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.serviceCard {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: #fdfdfd;
+
+  h3 {
+    margin: 0 0 0.5rem;
+    color: $text-dark;
+  }
+
+  p {
+    margin: 0.35rem 0;
+    color: $text-light;
+    font-size: 0.95rem;
+  }
+}
+
+.dataList,
+.safeguardList {
+  margin: 0.35rem 0 0;
+  padding-left: 1.25rem;
+  color: $text-light;
+  font-size: 0.95rem;
+}
+
+.linkButton {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: $patient-primary;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+

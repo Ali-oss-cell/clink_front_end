@@ -156,8 +156,8 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link to="/admin/billing">
                       Billing
                     </Link>
-                    <Link to="/admin/settings">
-                      Settings
+                    <Link to="/admin/data-deletion">
+                      Data Deletion
                     </Link>
                     <Link to="/admin/analytics">
                       Analytics
@@ -167,6 +167,9 @@ export const Header: React.FC<HeaderProps> = ({
                     </Link>
                     <Link to="/admin/audit-logs">
                       Audit Logs
+                    </Link>
+                    <Link to="/admin/settings">
+                      Settings
                     </Link>
                   </>
                 )}

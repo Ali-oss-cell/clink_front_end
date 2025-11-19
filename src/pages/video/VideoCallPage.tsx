@@ -4,6 +4,7 @@ import Video, { Room, RemoteParticipant, RemoteVideoTrack, RemoteAudioTrack } fr
 import type { RemoteTrack } from 'twilio-video';
 import { videoCallService } from '../../services/api/videoCall';
 import { authService } from '../../services/api/auth';
+import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
 import {
   ErrorCircleIcon,
   UsersIcon,
@@ -28,6 +29,8 @@ export const VideoCallPage: React.FC = () => {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
+  const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
+  const [recordingRequired, setRecordingRequired] = useState(false);
   
   const localVideoContainerRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
@@ -48,6 +51,14 @@ export const VideoCallPage: React.FC = () => {
         setLoading(true);
         setError(null);
         setConnectionStatus('connecting');
+
+        // Ensure telehealth consent is up to date
+        const consentResponse = await TelehealthService.getConsent();
+        setTelehealthConsent(consentResponse);
+
+        if (!consentResponse.consent_to_telehealth) {
+          throw new Error('Telehealth consent is required before joining this video session.');
+        }
 
         // Get video token from backend - always get fresh token
         console.log('🔵 Step 1: Requesting video token for appointment:', appointmentId);
@@ -111,6 +122,14 @@ export const VideoCallPage: React.FC = () => {
             throw new Error('Token has expired. Please refresh the page to get a new token.');
           }
         }
+
+        const shouldRecord = Boolean((tokenData as any).recording_required);
+        if (shouldRecord && !consentResponse.telehealth_recording_consent) {
+          throw new Error(
+            'Recording is enabled for this session but you have not opted in. Please update your telehealth consent with recording enabled or ask your clinician to disable recording.'
+          );
+        }
+        setRecordingRequired(shouldRecord);
 
         // Connect to Twilio Video room immediately after getting token
         // Use the exact access_token and room_name from backend response
@@ -415,6 +434,30 @@ export const VideoCallPage: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {telehealthConsent && (
+        <div className={styles.telehealthBoard}>
+          <h3>Telehealth Safety & Emergency Plan</h3>
+          <div className={styles.details}>
+            <p>
+              <strong>Emergency contact:</strong> {telehealthConsent.telehealth_emergency_contact || 'Not provided'}
+            </p>
+            <p>
+              <strong>Plan:</strong>{' '}
+              {telehealthConsent.telehealth_emergency_plan || 'Patient has not provided an emergency plan.'}
+            </p>
+            <p>
+              <strong>Recording:</strong> {telehealthConsent.telehealth_recording_consent ? 'Allowed' : 'Not allowed'}
+            </p>
+            {recordingRequired && !telehealthConsent.telehealth_recording_consent && (
+              <p>
+                <strong>Action required:</strong> Recording is enabled for this appointment but the patient has not
+                opted in. Disable recording or collect consent before proceeding.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Video Grid */}
       <div className={styles.videoGrid}>
