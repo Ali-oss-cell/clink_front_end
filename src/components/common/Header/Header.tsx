@@ -93,6 +93,9 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link to="/patient/appointments">
                       My Appointments
                     </Link>
+                    <Link to="/recordings">
+                      Recordings
+                    </Link>
                     <Link to="/patient/resources">
                       Resources
                     </Link>
@@ -111,6 +114,9 @@ export const Header: React.FC<HeaderProps> = ({
                     </Link>
                     <Link to="/psychologist/patients">
                       Patients
+                    </Link>
+                    <Link to="/recordings">
+                      Recordings
                     </Link>
                     <Link to="/manager/resources">
                       Resources
@@ -131,6 +137,9 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link to="/manager/appointments">
                       Appointments
                     </Link>
+                    <Link to="/recordings">
+                      Recordings
+                    </Link>
                     <Link to="/manager/billing">
                       Billing
                     </Link>
@@ -146,6 +155,9 @@ export const Header: React.FC<HeaderProps> = ({
                     </Link>
                     <Link to="/admin/appointments">
                       Appointments
+                    </Link>
+                    <Link to="/recordings">
+                      Recordings
                     </Link>
                     <Link to="/admin/patients">
                       Patients
