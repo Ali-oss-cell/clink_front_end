@@ -1,0 +1,61 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/mixins' as *;
+
+.ahpraInputWrapper {
+  width: 100%;
+}
+
+.ahpraInput {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $border-light;
+  border-radius: $border-radius;
+  font-size: $font-size-base;
+  font-family: $font-family-base;
+  transition: all $transition-fast ease;
+  background-color: $background-white;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+
+  &:disabled {
+    background-color: $background-light;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &.error {
+    border-color: $error-color;
+    
+    &:focus {
+      border-color: $error-color;
+      box-shadow: 0 0 0 3px rgba($error-color, 0.1);
+    }
+  }
+}
+
+.errorMessage {
+  margin-top: $spacing-xs;
+  color: $error-color;
+  font-size: $font-size-sm;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.helpText {
+  display: block;
+  margin-top: $spacing-xs;
+  color: $text-light;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

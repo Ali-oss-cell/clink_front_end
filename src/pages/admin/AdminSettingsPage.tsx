@@ -3,6 +3,8 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type SystemSettings } from '../../services/api/admin';
 import { CloseIcon } from '../../utils/icons';
+import { AHPRAInput } from '../../components/common/AHPRAInput';
+import { validateAHPRA } from '../../utils/validation';
 import styles from './AdminPages.module.scss';
 
 export const AdminSettingsPage: React.FC = () => {
@@ -11,6 +13,7 @@ export const AdminSettingsPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [ahpraError, setAhpraError] = useState<string | undefined>();
 
   const user = authService.getStoredUser();
 
@@ -40,12 +43,36 @@ export const AdminSettingsPage: React.FC = () => {
       setSaving(true);
       setError(null);
       setSuccess(null);
+      setAhpraError(undefined);
+      
+      // Validate AHPRA if provided
+      if (settings.system.ahpra_registration_number?.trim()) {
+        const ahpraValidation = validateAHPRA(settings.system.ahpra_registration_number);
+        if (!ahpraValidation.isValid) {
+          setError(ahpraValidation.error || 'Invalid AHPRA registration number');
+          setAhpraError(ahpraValidation.error);
+          setSaving(false);
+          return;
+        }
+        
+        // Use normalized value if available
+        if (ahpraValidation.normalized) {
+          settings.system.ahpra_registration_number = ahpraValidation.normalized;
+        }
+      }
+      
       await adminService.updateSystemSettings(settings);
       setSuccess('Settings updated successfully!');
       setTimeout(() => setSuccess(null), 5000);
     } catch (err: any) {
       console.error('Failed to update settings:', err);
-      setError(err.message || 'Failed to update system settings');
+      const errorMessage = err.message || 'Failed to update system settings';
+      setError(errorMessage);
+      
+      // Check if error is AHPRA-related
+      if (errorMessage.toLowerCase().includes('ahpra')) {
+        setAhpraError(errorMessage);
+      }
     } finally {
       setSaving(false);
     }
@@ -218,10 +245,17 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>AHPRA Registration Number</label>
-                  <input
-                    type="text"
-                    value={settings.system.ahpra_registration_number}
-                    onChange={(e) => handleChange('system', 'ahpra_registration_number', e.target.value)}
+                  <AHPRAInput
+                    value={settings.system.ahpra_registration_number || ''}
+                    onChange={(value, validation) => {
+                      handleChange('system', 'ahpra_registration_number', value);
+                      setAhpraError(validation.isValid ? undefined : validation.error);
+                      if (error && error.toLowerCase().includes('ahpra')) {
+                        setError(null);
+                      }
+                    }}
+                    error={ahpraError}
+                    showHelpText={true}
                   />
                 </div>
               </div>

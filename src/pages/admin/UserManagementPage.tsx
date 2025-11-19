@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
-import { adminService, type User, type CreateUserRequest, type CreateUserResponse, type UpdateUserRequest } from '../../services/api/admin';
+import { adminService, type User, type CreateUserRequest, type UpdateUserRequest } from '../../services/api/admin';
 import { CheckCircleIcon, WarningIcon, InfoIcon, CloseIcon } from '../../utils/icons';
+import { AHPRAInput } from '../../components/common/AHPRAInput';
+import { validateAHPRA } from '../../utils/validation';
 import styles from './AdminPages.module.scss';
 
 export const UserManagementPage: React.FC = () => {
@@ -15,6 +17,8 @@ export const UserManagementPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [createAHPRAError, setCreateAHPRAError] = useState<string | undefined>();
+  const [editAHPRAError, setEditAHPRAError] = useState<string | undefined>();
   
   const [createForm, setCreateForm] = useState<CreateUserRequest>({
     email: '',
@@ -110,8 +114,23 @@ export const UserManagementPage: React.FC = () => {
       if (createForm.role === 'psychologist') {
         if (!createForm.ahpra_registration_number?.trim()) {
           setError('AHPRA registration number is required for psychologists');
+          setCreateAHPRAError('AHPRA registration number is required');
           return;
         }
+        
+        // Validate AHPRA format
+        const ahpraValidation = validateAHPRA(createForm.ahpra_registration_number, 'psychologist');
+        if (!ahpraValidation.isValid) {
+          setError(ahpraValidation.error || 'Invalid AHPRA registration number');
+          setCreateAHPRAError(ahpraValidation.error);
+          return;
+        }
+        
+        // Use normalized value if available
+        if (ahpraValidation.normalized) {
+          createForm.ahpra_registration_number = ahpraValidation.normalized;
+        }
+        
         if (!createForm.ahpra_expiry_date) {
           setError('AHPRA expiry date is required for psychologists');
           return;
@@ -138,6 +157,7 @@ export const UserManagementPage: React.FC = () => {
         bio: '',
         is_accepting_new_patients: true
       });
+      setCreateAHPRAError(undefined);
       
       fetchUsers();
       
@@ -181,6 +201,11 @@ export const UserManagementPage: React.FC = () => {
         errorMessage = err.message;
       }
       
+      // Check if error is AHPRA-related and set field-specific error
+      if (errorMessage.toLowerCase().includes('ahpra')) {
+        setCreateAHPRAError(errorMessage);
+      }
+      
       setError(errorMessage);
     }
   };
@@ -191,6 +216,23 @@ export const UserManagementPage: React.FC = () => {
     
     try {
       setError(null); // Clear previous errors
+      setEditAHPRAError(undefined);
+      
+      // Validate AHPRA if psychologist and AHPRA is provided
+      if (editForm.role === 'psychologist' && editForm.ahpra_registration_number?.trim()) {
+        const ahpraValidation = validateAHPRA(editForm.ahpra_registration_number, 'psychologist');
+        if (!ahpraValidation.isValid) {
+          setError(ahpraValidation.error || 'Invalid AHPRA registration number');
+          setEditAHPRAError(ahpraValidation.error);
+          return;
+        }
+        
+        // Use normalized value if available
+        if (ahpraValidation.normalized) {
+          editForm.ahpra_registration_number = ahpraValidation.normalized;
+        }
+      }
+      
       await adminService.updateUser(selectedUser.id, editForm);
       setShowEditModal(false);
       setSelectedUser(null);
@@ -242,6 +284,11 @@ export const UserManagementPage: React.FC = () => {
         }
       } else if (err.message) {
         errorMessage = err.message;
+      }
+      
+      // Check if error is AHPRA-related and set field-specific error
+      if (errorMessage.toLowerCase().includes('ahpra')) {
+        setEditAHPRAError(errorMessage);
       }
       
       setError(errorMessage);
@@ -575,12 +622,19 @@ export const UserManagementPage: React.FC = () => {
 
                       <div className={styles.formGroup}>
                         <label>AHPRA Registration Number <span style={{ color: '#ef4444' }}>*</span></label>
-                        <input
-                          type="text"
-                          placeholder="PSY0001234567"
+                        <AHPRAInput
                           value={createForm.ahpra_registration_number || ''}
-                          onChange={(e) => setCreateForm({ ...createForm, ahpra_registration_number: e.target.value })}
+                          onChange={(value, validation) => {
+                            setCreateForm({ ...createForm, ahpra_registration_number: value });
+                            setCreateAHPRAError(validation.isValid ? undefined : validation.error);
+                            if (error && error.includes('AHPRA')) {
+                              setError(null);
+                            }
+                          }}
+                          role="psychologist"
                           required
+                          error={createAHPRAError}
+                          showHelpText={true}
                         />
                       </div>
 
@@ -781,11 +835,15 @@ export const UserManagementPage: React.FC = () => {
 
                       <div className={styles.formGroup}>
                         <label>AHPRA Registration Number</label>
-                        <input
-                          type="text"
-                          placeholder="PSY0001234567"
+                        <AHPRAInput
                           value={editForm.ahpra_registration_number || ''}
-                          onChange={(e) => setEditForm({ ...editForm, ahpra_registration_number: e.target.value })}
+                          onChange={(value, validation) => {
+                            setEditForm({ ...editForm, ahpra_registration_number: value });
+                            setEditAHPRAError(validation.isValid ? undefined : validation.error);
+                          }}
+                          role={editForm.role === 'psychologist' ? 'psychologist' : undefined}
+                          error={editAHPRAError}
+                          showHelpText={true}
                         />
                       </div>
 

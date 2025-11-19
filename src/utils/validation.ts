@@ -46,6 +46,47 @@ export const australianValidation = {
   }
 };
 
+// AHPRA Registration Number Validation
+export interface AHPRAValidationResult {
+  isValid: boolean;
+  error?: string;
+  normalized?: string;
+}
+
+export const validateAHPRA = (
+  ahpraNumber: string,
+  role: string = 'psychologist'
+): AHPRAValidationResult => {
+  if (!ahpraNumber || !ahpraNumber.trim()) {
+    return { 
+      isValid: false, 
+      error: 'AHPRA registration number is required' 
+    };
+  }
+
+  // Remove spaces, dashes, underscores and convert to uppercase
+  const cleaned = ahpraNumber.replace(/[\s\-_]/g, '').toUpperCase();
+
+  // Check format: 3 letters + 10 digits
+  const pattern = /^[A-Z]{3}[0-9]{10}$/;
+  if (!pattern.test(cleaned)) {
+    return {
+      isValid: false,
+      error: 'Invalid format. Expected: 3 letters (e.g., PSY) followed by 10 digits (e.g., PSY0001234567)'
+    };
+  }
+
+  // Check profession code for psychologists
+  if (role === 'psychologist' && !cleaned.startsWith('PSY')) {
+    return {
+      isValid: false,
+      error: 'Psychologists must have an AHPRA number starting with PSY'
+    };
+  }
+
+  return { isValid: true, normalized: cleaned };
+};
+
 // Cross-field validation
 export const crossFieldValidation = {
   // Validate GP referral fields
