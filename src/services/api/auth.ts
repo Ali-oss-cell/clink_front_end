@@ -610,4 +610,49 @@ export const authService = {
     }
   },
 
+  // Patient Preferences
+  async getPatientPreferences() {
+    try {
+      const response = await authAPI.get('/preferences/');
+      return {
+        success: true,
+        preferences: response.data.preferences,
+        emergency_contact: response.data.emergency_contact || null,
+      };
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status === 403) {
+        throw new Error('You do not have permission to access preferences');
+      } else if (status === 404) {
+        throw new Error('Preferences not found');
+      }
+      throw new Error(error.response?.data?.error || error.response?.data?.detail || 'Failed to fetch preferences');
+    }
+  },
+
+  async updatePatientPreferences(preferences: Partial<{
+    email_notifications_enabled: boolean;
+    sms_notifications_enabled: boolean;
+    appointment_reminders_enabled: boolean;
+    telehealth_recording_consent: boolean;
+    share_progress_with_emergency_contact: boolean;
+  }>) {
+    try {
+      const response = await authAPI.patch('/preferences/', preferences);
+      return {
+        success: true,
+        message: response.data.message || 'Preferences updated successfully',
+        preferences: response.data.preferences,
+      };
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status === 403) {
+        throw new Error('You do not have permission to update preferences');
+      } else if (status === 400) {
+        throw new Error(error.response.data?.error || error.response.data?.detail || 'Invalid preferences data');
+      }
+      throw new Error(error.response?.data?.error || error.response?.data?.detail || 'Failed to update preferences');
+    }
+  },
+
 };

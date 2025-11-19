@@ -1748,6 +1748,48 @@
   }
 }
 
+.helpText {
+  display: block;
+  margin-top: 0.5rem;
+  margin-left: 2rem; // Align with checkbox text
+  color: $text-light;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.preferencesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.preferenceSection {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid $border-light;
+}
+
+.subsectionTitle {
+  color: $text-dark;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid $background-light;
+}
+
+.preferenceItem {
+  margin-bottom: 1rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
 .checkbox {
   margin: 0;
   margin-top: 4px;
@@ -2190,8 +2232,33 @@
   color: $error-red;
   padding: 1rem;
   border-radius: 8px;
-  margin: 1rem 0;
+  margin-bottom: 1.5rem;
+}
+
+.successAlert {
+  background: rgba($success-green, 0.1);
+  border: 1px solid rgba($success-green, 0.3);
+  color: $success-green;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &::before {
+    content: '✓';
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+}
+
+.loadingMessage {
+  text-align: center;
+  padding: 2rem;
+  color: $text-light;
   font-size: 0.95rem;
+  margin: 1rem 0;
 }
 
 // Data Deletion Section

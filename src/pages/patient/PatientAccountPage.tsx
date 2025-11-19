@@ -39,6 +39,20 @@ export const PatientAccountPage: React.FC = () => {
   const [deletionLoading, setDeletionLoading] = useState(false);
   const [deletionReason, setDeletionReason] = useState('');
   const [deletionError, setDeletionError] = useState<string | null>(null);
+  
+  // Preferences state
+  const [preferences, setPreferences] = useState<{
+    email_notifications_enabled: boolean;
+    sms_notifications_enabled: boolean;
+    appointment_reminders_enabled: boolean;
+    telehealth_recording_consent: boolean;
+    share_progress_with_emergency_contact: boolean;
+  } | null>(null);
+  const [preferencesLoading, setPreferencesLoading] = useState(false);
+  const [preferencesSaving, setPreferencesSaving] = useState(false);
+  const [preferencesError, setPreferencesError] = useState<string | null>(null);
+  const [preferencesSuccess, setPreferencesSuccess] = useState<string | null>(null);
+  
   const location = useLocation();
 
   // Load data from intake form
@@ -46,6 +60,29 @@ export const PatientAccountPage: React.FC = () => {
     const medical = intakeService.getMedicalInfo();
     setMedicalInfo(medical);
   }, []);
+
+  // Load preferences when preferences tab is active
+  useEffect(() => {
+    const loadPreferences = async () => {
+      if (activeTab === 'preferences') {
+        setPreferencesLoading(true);
+        setPreferencesError(null);
+        try {
+          const result = await authService.getPatientPreferences();
+          if (result.success && result.preferences) {
+            setPreferences(result.preferences);
+          }
+        } catch (error: any) {
+          console.error('[PatientAccount] Error loading preferences:', error);
+          setPreferencesError(error.message || 'Failed to load preferences');
+        } finally {
+          setPreferencesLoading(false);
+        }
+      }
+    };
+    
+    loadPreferences();
+  }, [activeTab]);
 
   // Load deletion request status
   useEffect(() => {
@@ -168,6 +205,40 @@ export const PatientAccountPage: React.FC = () => {
       setDeletionError(error.message || 'Failed to cancel deletion request. Please try again.');
     } finally {
       setDeletionLoading(false);
+    }
+  };
+
+  const handlePreferenceChange = (field: keyof typeof preferences, value: boolean) => {
+    if (preferences) {
+      setPreferences({
+        ...preferences,
+        [field]: value,
+      });
+      // Clear success message when user makes changes
+      setPreferencesSuccess(null);
+    }
+  };
+
+  const handleSavePreferences = async () => {
+    if (!preferences) return;
+    
+    setPreferencesSaving(true);
+    setPreferencesError(null);
+    setPreferencesSuccess(null);
+    
+    try {
+      const result = await authService.updatePatientPreferences(preferences);
+      if (result.success) {
+        setPreferences(result.preferences);
+        setPreferencesSuccess(result.message || 'Preferences saved successfully!');
+        // Clear success message after 3 seconds
+        setTimeout(() => setPreferencesSuccess(null), 3000);
+      }
+    } catch (error: any) {
+      console.error('[PatientAccount] Error saving preferences:', error);
+      setPreferencesError(error.message || 'Failed to save preferences. Please try again.');
+    } finally {
+      setPreferencesSaving(false);
     }
   };
 
@@ -369,46 +440,117 @@ export const PatientAccountPage: React.FC = () => {
               {activeTab === 'preferences' && (
                 <div className={styles.tabContent}>
                   <h2 className={styles.sectionTitle}>Preferences & Settings</h2>
-                  <div className={styles.preferencesGrid}>
-                    <div className={styles.preferenceSection}>
-                      <h3 className={styles.subsectionTitle}>Communication</h3>
-                      <div className={styles.preferenceItem}>
-                        <label className={styles.checkboxLabel}>
-                          <input type="checkbox" className={styles.checkbox} defaultChecked />
-                          <span>Email notifications</span>
-                        </label>
-                      </div>
-                      <div className={styles.preferenceItem}>
-                        <label className={styles.checkboxLabel}>
-                          <input type="checkbox" className={styles.checkbox} />
-                          <span>SMS notifications</span>
-                        </label>
-                      </div>
-                      <div className={styles.preferenceItem}>
-                        <label className={styles.checkboxLabel}>
-                          <input type="checkbox" className={styles.checkbox} defaultChecked />
-                          <span>Appointment reminders</span>
-                        </label>
-                      </div>
+                  
+                  {preferencesLoading ? (
+                    <div className={styles.loadingMessage}>Loading preferences...</div>
+                  ) : preferencesError ? (
+                    <div className={styles.errorAlert}>
+                      <span>{preferencesError}</span>
                     </div>
+                  ) : preferences ? (
+                    <>
+                      {preferencesSuccess && (
+                        <div className={styles.successAlert}>
+                          <span>{preferencesSuccess}</span>
+                        </div>
+                      )}
+                      
+                      <div className={styles.preferencesGrid}>
+                        <div className={styles.preferenceSection}>
+                          <h3 className={styles.subsectionTitle}>Communication</h3>
+                          <div className={styles.preferenceItem}>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                className={styles.checkbox}
+                                checked={preferences.email_notifications_enabled}
+                                onChange={(e) => handlePreferenceChange('email_notifications_enabled', e.target.checked)}
+                                disabled={preferencesSaving}
+                              />
+                              <span>Email notifications</span>
+                            </label>
+                          </div>
+                          <div className={styles.preferenceItem}>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                className={styles.checkbox}
+                                checked={preferences.sms_notifications_enabled}
+                                onChange={(e) => handlePreferenceChange('sms_notifications_enabled', e.target.checked)}
+                                disabled={preferencesSaving}
+                              />
+                              <span>SMS notifications</span>
+                            </label>
+                          </div>
+                          <div className={styles.preferenceItem}>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                className={styles.checkbox}
+                                checked={preferences.appointment_reminders_enabled}
+                                onChange={(e) => handlePreferenceChange('appointment_reminders_enabled', e.target.checked)}
+                                disabled={preferencesSaving}
+                              />
+                              <span>Appointment reminders</span>
+                            </label>
+                          </div>
+                        </div>
 
-                    <div className={styles.preferenceSection}>
-                      <h3 className={styles.subsectionTitle}>Privacy</h3>
-                      <div className={styles.preferenceItem}>
-                        <label className={styles.checkboxLabel}>
-                          <input type="checkbox" className={styles.checkbox} defaultChecked />
-                          <span>Allow session recordings for quality assurance</span>
-                        </label>
+                        <div className={styles.preferenceSection}>
+                          <h3 className={styles.subsectionTitle}>Privacy</h3>
+                          <div className={styles.preferenceItem}>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                className={styles.checkbox}
+                                checked={preferences.telehealth_recording_consent}
+                                onChange={(e) => handlePreferenceChange('telehealth_recording_consent', e.target.checked)}
+                                disabled={preferencesSaving}
+                              />
+                              <span>Allow session recordings for quality assurance</span>
+                            </label>
+                            <p className={styles.helpText}>
+                              You can withdraw this consent at any time
+                            </p>
+                          </div>
+                          <div className={styles.preferenceItem}>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                className={styles.checkbox}
+                                checked={preferences.share_progress_with_emergency_contact}
+                                onChange={(e) => handlePreferenceChange('share_progress_with_emergency_contact', e.target.checked)}
+                                disabled={preferencesSaving}
+                              />
+                              <span>Share progress with emergency contact</span>
+                            </label>
+                            <p className={styles.helpText}>
+                              Allow your emergency contact to receive progress updates
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className={styles.preferenceItem}>
-                        <label className={styles.checkboxLabel}>
-                          <input type="checkbox" className={styles.checkbox} />
-                          <span>Share progress with emergency contact</span>
-                        </label>
-                      </div>
+                      
+                      <button
+                        className={styles.saveButton}
+                        onClick={handleSavePreferences}
+                        disabled={preferencesSaving}
+                      >
+                        {preferencesSaving ? (
+                          <>
+                            <span className={styles.spinner}></span>
+                            Saving...
+                          </>
+                        ) : (
+                          'Save Preferences'
+                        )}
+                      </button>
+                    </>
+                  ) : (
+                    <div className={styles.errorAlert}>
+                      <span>Unable to load preferences. Please try again later.</span>
                     </div>
-                  </div>
-                  <button className={styles.saveButton}>Save Preferences</button>
+                  )}
                 </div>
               )}
 
