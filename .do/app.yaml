@@ -1,0 +1,27 @@
+name: clink-frontend
+static_sites:
+  - name: frontend
+    github:
+      repo: your-username/your-repo-name
+      branch: main
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    output_dir: dist
+    routes:
+      - path: /
+    catchall_document: index.html
+    envs:
+      - key: VITE_API_BASE_URL
+        value: https://your-backend-api.com/api
+        scope: RUN_TIME
+        type: SECRET
+      - key: VITE_ENV
+        value: production
+        scope: RUN_TIME
+      - key: VITE_APP_NAME
+        value: Clink Psychology Clinic
+        scope: RUN_TIME
+      - key: VITE_DEBUG
+        value: "false"
+        scope: RUN_TIME
+
