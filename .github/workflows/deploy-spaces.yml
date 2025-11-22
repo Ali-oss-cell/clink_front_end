@@ -1,0 +1,63 @@
+# GitHub Actions workflow for deploying to DigitalOcean Spaces
+# This is an alternative deployment method for static website hosting
+
+name: Deploy to DigitalOcean Spaces
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_ENV: production
+          VITE_APP_NAME: Clink Psychology Clinic
+          VITE_DEBUG: false
+      
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.SPACES_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SPACES_SECRET_KEY }}
+          aws-endpoint: https://nyc3.digitaloceanspaces.com
+      
+      - name: Deploy to Spaces
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.SPACES_NAME }}/ \
+            --endpoint-url https://nyc3.digitaloceanspaces.com \
+            --delete \
+            --acl public-read \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "*.html" \
+            --exclude "*.json"
+      
+      - name: Deploy HTML files with no cache
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.SPACES_NAME }}/ \
+            --endpoint-url https://nyc3.digitaloceanspaces.com \
+            --delete \
+            --acl public-read \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --exclude "*" \
+            --include "*.html" \
+            --include "*.json"
+

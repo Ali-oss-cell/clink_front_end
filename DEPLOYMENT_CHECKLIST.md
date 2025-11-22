@@ -1,6 +1,6 @@
-# Deployment Checklist
+# Static Website Deployment Checklist
 
-Use this checklist to ensure your app is ready for DigitalOcean deployment.
+Use this checklist to ensure your app is ready for DigitalOcean static website deployment.
 
 ## ✅ Pre-Deployment Checklist
 
@@ -36,6 +36,8 @@ Use this checklist to ensure your app is ready for DigitalOcean deployment.
 
 ## 🚀 Deployment Steps
 
+### Option A: DigitalOcean App Platform (Static Site) - Recommended
+
 1. **Update `.do/app.yaml`**:
    - Replace `your-username/your-repo-name` with your actual repository
    - Update `VITE_API_BASE_URL` with your production backend URL
@@ -43,33 +45,63 @@ Use this checklist to ensure your app is ready for DigitalOcean deployment.
 2. **Push to Git**:
    ```bash
    git add .
-   git commit -m "Ready for deployment"
+   git commit -m "Ready for static site deployment"
    git push origin main
    ```
 
-3. **Create App on DigitalOcean**:
+3. **Create Static Site on DigitalOcean**:
    - Go to App Platform
    - Create new app
+   - Select **"Static Site"** as resource type
    - Connect repository
-   - Use `.do/app.yaml` or configure manually
+   - Use `.do/app.yaml` or configure manually:
+     - Build Command: `npm ci && npm run build`
+     - Output Directory: `dist`
 
 4. **Set Environment Variables**:
    - Add all `VITE_*` variables in DigitalOcean dashboard
    - Ensure `VITE_API_BASE_URL` points to production backend
 
-5. **Configure Routes**:
+5. **Configure SPA Routing**:
    - Add rewrite rule: `/*` → `/index.html`
-   - This enables SPA routing
+   - Or set `catchall_document: index.html` in app.yaml
+   - This enables React Router to handle all routes
 
 6. **Deploy**:
    - Click "Deploy" or push to trigger auto-deploy
-   - Wait for build to complete
+   - Wait for build to complete (5-10 minutes)
 
 7. **Verify**:
    - Check app URL is accessible
    - Test login/logout
    - Test API calls
    - Check browser console for errors
+   - Test all routes work (no 404s)
+
+### Option B: DigitalOcean Spaces (Alternative)
+
+1. **Build locally**:
+   ```bash
+   VITE_API_BASE_URL=https://your-backend.com/api npm run build
+   ```
+
+2. **Create Space**:
+   - Go to Spaces in DigitalOcean
+   - Create new Space with CDN enabled
+   - Disable file listing
+
+3. **Upload files**:
+   - Upload all files from `dist` folder
+   - Or use GitHub Actions workflow (`.github/workflows/deploy-spaces.yml`)
+
+4. **Configure Static Website Hosting**:
+   - Enable static website hosting
+   - Set Index Document: `index.html`
+   - Set Error Document: `index.html`
+
+5. **Configure Custom Domain** (optional):
+   - Add domain in Spaces settings
+   - Configure DNS with CNAME record
 
 ## 🔍 Post-Deployment Verification
 
