@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
-import { adminService, type Appointment } from '../../services/api/admin';
+import { adminService, type AdminAppointment } from '../../services/api/admin';
 import styles from './ManagerPages.module.scss';
 
 export const ManagerAppointmentsPage: React.FC = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -176,9 +176,7 @@ export const ManagerAppointmentsPage: React.FC = () => {
                         </span>
                       </td>
                       <td>
-                        {appointment.consultation_fee 
-                          ? `$${parseFloat(appointment.consultation_fee).toFixed(2)}` 
-                          : 'N/A'}
+                        {appointment.service_name || 'N/A'}
                       </td>
                     </tr>
                   ))

@@ -58,8 +58,12 @@ export const ResourceDetailPage: React.FC = () => {
         title: 'Understanding Anxiety: A Comprehensive Guide',
         description: 'Learn about anxiety disorders, symptoms, and evidence-based coping strategies.',
         category: 'anxiety',
+        category_display: 'Anxiety',
         type: 'article',
+        type_display: 'Article',
         icon: '😰',
+        difficulty_level: 'beginner',
+        difficulty_display: 'Beginner',
         content: `
           <h2>What is Anxiety?</h2>
           <p>Anxiety is a normal and often healthy emotion. However, when a person regularly feels disproportionate levels of anxiety, it might become a medical disorder.</p>
@@ -113,7 +117,6 @@ export const ResourceDetailPage: React.FC = () => {
         reviewer: 'Dr. Michael Chen, Psychiatrist',
         last_reviewed_date: '2024-01-20',
         duration_minutes: 15,
-        difficulty_level: 'beginner',
         tags: ['anxiety', 'mental-health', 'coping-strategies', 'beginners', 'CBT'],
         view_count: 1520,
         average_rating: 4.7,
@@ -153,7 +156,9 @@ export const ResourceDetailPage: React.FC = () => {
             type_display: 'Worksheet',
             thumbnail_url: undefined
           }
-        ]
+        ],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
       
       setResource(mockResource);

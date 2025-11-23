@@ -80,8 +80,8 @@ export interface NoteSummary {
   key_points: string;
 }
 
-// Patient interface for notes context
-export interface Patient {
+// Patient interface for notes context (renamed to avoid conflict with user.Patient)
+export interface PatientNoteContext {
   id: number;
   name: string;
   email: string;

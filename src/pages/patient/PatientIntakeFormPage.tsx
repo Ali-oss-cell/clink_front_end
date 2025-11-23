@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
 import { validateIntakeForm } from '../../utils/validation';
+import { CheckCircleIcon, ClipboardIcon } from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
 // Import the interface from the service

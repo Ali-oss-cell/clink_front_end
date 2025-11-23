@@ -4,7 +4,13 @@ export * from './user';
 export * from './intake';
 export * from './appointment';
 export * from './api';
-export * from './progressNote';
+// Export progressNote types explicitly to avoid Patient name conflict with user.Patient
+export type { 
+  ProgressNote, 
+  CreateNoteRequest, 
+  PatientProgress,
+  PatientNoteContext
+} from './progressNote';
 
 // Common utility types
 export type LoadingState = 'idle' | 'loading' | 'succeeded' | 'failed';
