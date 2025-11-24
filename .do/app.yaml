@@ -9,8 +9,6 @@ static_sites:
     output_dir: dist
     # SPA routing - all routes go to index.html
     catchall_document: index.html
-    routes:
-      - path: /
     envs:
       - key: VITE_API_BASE_URL
         value: https://your-backend-api.com/api
