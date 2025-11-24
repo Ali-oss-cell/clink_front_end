@@ -16,36 +16,28 @@ const formatDate = (value: string) =>
   }).format(new Date(value));
 
 export const PrivacyPolicyPage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [policyUrl, setPolicyUrl] = useState<string | null>(null);
   const [showIframe, setShowIframe] = useState(false);
 
   useEffect(() => {
+    // Only try to load iframe URL if user is authenticated
+    // For public access, always show static content
     const token = localStorage.getItem('access_token');
     if (token) {
       void loadPolicyUrl();
-    } else {
-      setLoading(false);
-      setShowIframe(false);
     }
   }, []);
 
   const loadPolicyUrl = async () => {
     try {
-      setLoading(true);
-      setError(null);
       const status: PrivacyPolicyStatus = await getPrivacyPolicyStatus();
       if (status.privacy_policy_url) {
         setPolicyUrl(status.privacy_policy_url);
         setShowIframe(true);
       }
     } catch (err: any) {
+      // Silently fail - just show static content
       console.warn('Could not load privacy policy from API:', err);
-      setError(null);
-      setShowIframe(false);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -60,29 +52,8 @@ export const PrivacyPolicyPage: React.FC = () => {
             </p>
           </div>
 
-          <div className={styles.contentSection}>
-            <p>
-              <strong>Effective Date:</strong> {formatDate(effectiveDate)}
-              <br />
-              <strong>Version:</strong> {version}
-              <br />
-              <strong>Last Updated:</strong> {formatDate(lastUpdated)}
-            </p>
-          </div>
-
-          {loading && (
-            <div className={styles.loadingState}>
-              <p>Loading Privacy Policy...</p>
-            </div>
-          )}
-
-          {error && (
-            <div className={styles.errorAlert}>
-              <p>{error}</p>
-            </div>
-          )}
-
-          {showIframe && policyUrl && !loading && (
+          {/* Show iframe if available (for authenticated users with API URL) */}
+          {showIframe && policyUrl && (
             <div className={styles.policyContent}>
               <iframe
                 src={policyUrl}
@@ -93,7 +64,8 @@ export const PrivacyPolicyPage: React.FC = () => {
             </div>
           )}
 
-          {!showIframe && !loading && (
+          {/* Always show static content (for public access or fallback) */}
+          {!showIframe && (
             <div className={styles.contentSection}>
               <section>
                 <h2>1. Introduction</h2>
