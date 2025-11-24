@@ -1,4 +1,5 @@
 import { authService } from './auth';
+import axiosInstance from './axiosInstance';
 
 // Intake form data interface matching backend serializer exactly
 export interface IntakeFormData {
@@ -49,19 +50,8 @@ export const intakeService = {
   // Get intake form data (pre-filled from backend)
   getIntakeForm: async (): Promise<IntakeFormData> => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('http://127.0.0.1:8000/api/users/intake-form/', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to load intake form data');
-      }
-      
-      return response.json();
+      const response = await axiosInstance.get('/users/intake-form/');
+      return response.data;
     } catch (error) {
       console.error('Failed to get intake form:', error);
       throw new Error('Failed to load intake form data');
@@ -71,26 +61,11 @@ export const intakeService = {
   // Submit intake form data
   submitIntakeForm: async (data: IntakeFormData): Promise<void> => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('http://127.0.0.1:8000/api/users/intake-form/', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to submit intake form');
-      }
-      
-      const result = await response.json();
-      console.log('Intake form submitted:', result);
-    } catch (error) {
+      const response = await axiosInstance.post('/users/intake-form/', data);
+      console.log('Intake form submitted:', response.data);
+    } catch (error: any) {
       console.error('Failed to submit intake form:', error);
-      throw new Error('Failed to submit intake form data');
+      throw new Error(error.response?.data?.message || 'Failed to submit intake form data');
     }
   },
 

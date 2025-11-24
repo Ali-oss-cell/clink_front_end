@@ -127,24 +127,11 @@ export interface AdminDashboard {
 
 // Dashboard service class
 export class DashboardService {
-  private baseURL = 'http://127.0.0.1:8000/api';
-
   // Get patient dashboard data
   async getPatientDashboard(): Promise<PatientDashboard> {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch(`${this.baseURL}/auth/dashboard/patient/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to load patient dashboard');
-      }
-      
-      return response.json();
+      const response = await axiosInstance.get('/auth/dashboard/patient/');
+      return response.data;
     } catch (error) {
       console.error('Failed to get patient dashboard:', error);
       throw new Error('Failed to load patient dashboard');

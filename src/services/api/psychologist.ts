@@ -79,7 +79,6 @@ export interface PsychologistDashboard {
 
 // Psychologist service class
 export class PsychologistService {
-  private baseURL = 'http://127.0.0.1:8000/api';
 
   // Get all psychologists (for patient selection)
   async getAllPsychologists(): Promise<PsychologistProfile[]> {
@@ -126,19 +125,8 @@ export class PsychologistService {
   // Get specific psychologist profile
   async getPsychologistProfile(id: number): Promise<PsychologistProfile> {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch(`${this.baseURL}/services/psychologists/${id}/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to load psychologist profile');
-      }
-      
-      return response.json();
+      const response = await axiosInstance.get(`/services/psychologists/${id}/`);
+      return response.data;
     } catch (error) {
       console.error('Failed to get psychologist profile:', error);
       throw new Error('Failed to load psychologist profile');
@@ -148,87 +136,38 @@ export class PsychologistService {
   // Get current psychologist's own profile
   async getMyProfile(): Promise<PsychologistProfile> {
     try {
-      const token = localStorage.getItem('access_token');
-      console.log('Token:', token ? 'Present' : 'Missing');
-      console.log('Fetching from:', `${this.baseURL}/services/psychologists/my_profile/`);
-      
-      const response = await fetch(`${this.baseURL}/services/psychologists/my_profile/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error Response:', errorText);
-        throw new Error(`Failed to load my profile: ${response.status} ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      console.log('Profile data:', data);
-      return data;
-    } catch (error) {
+      const response = await axiosInstance.get('/services/psychologists/my_profile/');
+      return response.data;
+    } catch (error: any) {
       console.error('Failed to get my profile:', error);
-      throw new Error(`Failed to load my profile: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to load my profile: ${error.response?.status || 'Unknown error'}`);
     }
   }
 
   // Update psychologist profile
   async updateProfile(id: number, profileData: Partial<PsychologistProfile>): Promise<PsychologistProfile> {
     try {
-      const token = localStorage.getItem('access_token');
-      console.log('Updating profile with data:', profileData);
-      
-      const response = await fetch(`${this.baseURL}/services/psychologists/${id}/`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(profileData)
-      });
-      
-      console.log('Update response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Update error response:', errorText);
-        throw new Error(`Failed to update profile: ${response.status} ${response.statusText}`);
-      }
-      
-      const updatedProfile = await response.json();
-      console.log('Profile updated successfully:', updatedProfile);
-      return updatedProfile;
-    } catch (error) {
+      const response = await axiosInstance.put(`/services/psychologists/${id}/`, profileData);
+      return response.data;
+    } catch (error: any) {
       console.error('Failed to update profile:', error);
-      throw new Error(`Failed to update profile: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to update profile: ${error.response?.data?.message || 'Unknown error'}`);
     }
   }
 
   // Upload profile image
   async uploadProfileImage(id: number, imageFile: File): Promise<{ image_url: string }> {
     try {
-      const token = localStorage.getItem('access_token');
       const formData = new FormData();
       formData.append('image', imageFile);
       
-      const response = await fetch(`${this.baseURL}/services/psychologists/${id}/upload_image/`, {
-        method: 'POST',
+      const response = await axiosInstance.post(`/services/psychologists/${id}/upload_image/`, formData, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
+          'Content-Type': 'multipart/form-data'
+        }
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
-      }
-      
-      return response.json();
+      return response.data;
     } catch (error) {
       console.error('Failed to upload image:', error);
       throw new Error('Failed to upload image');
@@ -238,19 +177,8 @@ export class PsychologistService {
   // Get psychologist dashboard data
   async getDashboard(): Promise<PsychologistDashboard> {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch(`${this.baseURL}/auth/dashboard/psychologist/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to load dashboard');
-      }
-      
-      return response.json();
+      const response = await axiosInstance.get('/auth/dashboard/psychologist/');
+      return response.data;
     } catch (error) {
       console.error('Failed to get dashboard:', error);
       throw new Error('Failed to load dashboard');
@@ -260,19 +188,8 @@ export class PsychologistService {
   // Get psychologist appointments
   async getAppointments(): Promise<any[]> {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch(`${this.baseURL}/appointments/appointments/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to load appointments');
-      }
-      
-      return response.json();
+      const response = await axiosInstance.get('/appointments/appointments/');
+      return response.data;
     } catch (error) {
       console.error('Failed to get appointments:', error);
       throw new Error('Failed to load appointments');

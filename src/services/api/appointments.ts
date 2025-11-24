@@ -184,7 +184,6 @@ export interface PatientAppointmentsResponse {
 
 // Appointments service class
 export class AppointmentsService {
-  private baseURL = 'http://127.0.0.1:8000/api';
 
   /**
    * Get available time slots for a psychologist
@@ -233,15 +232,8 @@ export class AppointmentsService {
       if (params.month) queryParams.append('month', params.month.toString());
       if (params.year) queryParams.append('year', params.year.toString());
       
-      const response = await fetch(
-        `${this.baseURL}/appointments/calendar-view/?${queryParams.toString()}`
-      );
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch calendar');
-      }
-      
-      return response.json();
+      const response = await axiosInstance.get(`/appointments/calendar-view/?${queryParams.toString()}`);
+      return response.data;
     } catch (error) {
       console.error('Failed to get calendar view:', error);
       throw new Error('Failed to load calendar');
@@ -266,22 +258,10 @@ export class AppointmentsService {
    */
   async getBookingSummary(appointmentId: number): Promise<BookingSummaryResponse> {
     try {
-      const token = localStorage.getItem('access_token');
-      
-      const response = await fetch(
-        `${this.baseURL}/appointments/booking-summary/?appointment_id=${appointmentId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
+      const response = await axiosInstance.get(
+        `/appointments/booking-summary/?appointment_id=${appointmentId}`
       );
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch booking summary');
-      }
-      
-      return response.json();
+      return response.data;
     } catch (error) {
       console.error('Failed to get booking summary:', error);
       throw new Error('Failed to load booking summary');

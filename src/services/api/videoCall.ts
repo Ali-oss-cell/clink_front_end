@@ -39,7 +39,8 @@ class VideoCallService {
 
       // Construct full URL for logging
       const endpoint = `/appointments/video-token/${appointmentId}/`;
-      const fullUrl = `http://127.0.0.1:8000/api${endpoint}`;
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+      const fullUrl = `${API_BASE_URL}${endpoint}`;
       
       console.log(`[VideoCallService] Requesting token for appointment ${appointmentId}`);
       console.log(`[VideoCallService] Full URL: ${fullUrl}`);

@@ -214,9 +214,20 @@ export const PsychologistProfilePage: React.FC = () => {
                 {profile.profile_image_url ? (
                   <>
                     <img 
-                      src={profile.profile_image_url?.startsWith('http') 
-                        ? profile.profile_image_url 
-                        : `http://127.0.0.1:8000${profile.profile_image_url}`} 
+                      src={(() => {
+                        if (!profile.profile_image_url) return '';
+                        if (profile.profile_image_url.startsWith('http')) {
+                          return profile.profile_image_url;
+                        }
+                        // For relative paths, construct URL from API base URL
+                        // Remove /api suffix if present, as media files are served from root
+                        const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+                        const baseUrl = apiBase.replace(/\/api$/, '');
+                        const imagePath = profile.profile_image_url.startsWith('/') 
+                          ? profile.profile_image_url 
+                          : `/${profile.profile_image_url}`;
+                        return `${baseUrl}${imagePath}`;
+                      })()}
                       alt={`${profile.display_name} profile`}
                       className={styles.profileImage}
                     />
