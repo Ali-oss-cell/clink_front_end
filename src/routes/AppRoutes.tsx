@@ -6,6 +6,7 @@ import { Homepage } from '../pages/public/Homepage';
 import { AboutPage } from '../pages/public/AboutPage';
 import { ServicesPage } from '../pages/public/ServicesPage';
 import { TelehealthRequirementsPage } from '../pages/public/TelehealthRequirementsPage';
+import { PrivacyPolicyPage } from '../pages/public/PrivacyPolicyPage';
 
 // Auth pages
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -85,6 +86,9 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
       {/* Services page */}
       <Route path="/services" element={<ServicesPage />} />
       <Route path="/telehealth-requirements" element={<TelehealthRequirementsPage />} />
+      
+      {/* Privacy Policy */}
+      <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
       
       {/* Resources page - TODO */}
       <Route path="/resources" element={

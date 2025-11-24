@@ -32,7 +32,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState<string>('/privacy');
+  const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState<string>('/privacy-policy');
 
   const {
     register,
@@ -89,7 +89,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         } else {
           console.warn('[Register] Could not load Privacy Policy URL from API, using default:', error.message);
         }
-        setPrivacyPolicyUrl('/privacy');
+        setPrivacyPolicyUrl('/privacy-policy');
       }
     };
     loadPrivacyPolicy();

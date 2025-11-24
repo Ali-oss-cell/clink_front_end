@@ -72,7 +72,7 @@ export const Footer: React.FC = () => {
             © {currentYear} MindWell Clinic. All rights reserved.
           </div>
           <div className={styles.legalLinks}>
-            <Link to="/privacy" className={styles.legalLink}>Privacy Policy</Link>
+            <Link to="/privacy-policy" className={styles.legalLink}>Privacy Policy</Link>
             <Link to="/terms" className={styles.legalLink}>Terms of Service</Link>
             <Link to="/accessibility" className={styles.legalLink}>Accessibility</Link>
           </div>

@@ -69,4 +69,51 @@
       margin-bottom: $spacing-sm;
     }
   }
+
+  section {
+    margin-bottom: $spacing-2xl;
+
+    h3 {
+      color: $primary-color;
+      font-size: $font-size-xl;
+      margin-top: $spacing-xl;
+      margin-bottom: $spacing-md;
+    }
+  }
+}
+
+.policyContent {
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: $spacing-2xl;
+}
+
+.policyIframe {
+  width: 100%;
+  min-height: 800px;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  background: $background-white;
+
+  @include mobile {
+    min-height: 600px;
+  }
+}
+
+.loadingState,
+.errorAlert {
+  text-align: center;
+  padding: $spacing-2xl;
+  margin: $spacing-2xl 0;
+  border-radius: $border-radius-md;
+}
+
+.loadingState {
+  color: $text-light;
+}
+
+.errorAlert {
+  background-color: $error-bg;
+  color: $error-color;
+  border: 1px solid $error-color;
 }
