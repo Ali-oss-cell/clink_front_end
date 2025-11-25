@@ -205,6 +205,14 @@ class VideoCallService {
           return data;
         } catch (fetchError: any) {
           console.error('[VideoCallService] ❌ Fallback fetch also failed:', fetchError);
+          console.error('[VideoCallService] Fetch error type:', fetchError.name);
+          console.error('[VideoCallService] Fetch error message:', fetchError.message);
+          
+          // Detect CORS error specifically
+          const isCorsBlocked = fetchError.name === 'TypeError' && 
+                              (fetchError.message === 'Failed to fetch' || 
+                               fetchError.message.includes('CORS') ||
+                               fetchError.message.includes('network'));
           
           // If fetch also fails, throw detailed error
           let errorMsg = `Network error: Could not reach API server at ${attemptedUrl}.\n\n`;
@@ -213,24 +221,39 @@ class VideoCallService {
           errorMsg += `- API URL: ${envUrl}\n`;
           errorMsg += `- Frontend origin: ${frontendOrigin}\n`;
           errorMsg += `- Has auth token: ${hasToken ? 'Yes' : 'No'}\n`;
-          errorMsg += `- Error type: ${isCorsError ? 'CORS/Network (browser blocked request)' : 'No response from server'}\n`;
+          errorMsg += `- Error type: ${isCorsBlocked ? 'CORS BLOCKED (browser blocked request)' : 'Network error'}\n`;
           errorMsg += `- Tried both axios and native fetch - both failed\n\n`;
-          errorMsg += `🔍 TO TROUBLESHOOT:\n\n`;
-          errorMsg += `1. Open DevTools (F12) → Network tab\n`;
-          errorMsg += `2. Try joining video call again\n`;
-          errorMsg += `3. Find the request to "video-token/13/"\n`;
-          errorMsg += `4. Check the Status column:\n`;
-          errorMsg += `   - If you see "(blocked)" or "CORS" → Backend CORS issue\n`;
-          errorMsg += `   - If you see "Failed" or "ERR_" → Network/SSL issue\n`;
-          errorMsg += `   - If you see "0" or blank → Request never sent\n`;
-          errorMsg += `5. Click on the request → Check "Response" and "Headers" tabs\n\n`;
-          errorMsg += `🔧 BACKEND FIX (if CORS error):\n`;
-          errorMsg += `Add to Django settings.py:\n`;
-          errorMsg += `CORS_ALLOWED_ORIGINS = [\n`;
-          errorMsg += `    "${frontendOrigin}",\n`;
-          errorMsg += `]\n\n`;
-          errorMsg += `Or test backend directly:\n`;
-          errorMsg += `curl -X GET "${attemptedUrl}" -H "Authorization: Bearer YOUR_TOKEN"`;
+          
+          if (isCorsBlocked) {
+            errorMsg += `🚫 CORS ERROR DETECTED:\n\n`;
+            errorMsg += `The browser is blocking the request due to CORS policy.\n`;
+            errorMsg += `This means the backend is NOT allowing requests from:\n`;
+            errorMsg += `  ${frontendOrigin}\n\n`;
+            errorMsg += `✅ BACKEND FIX REQUIRED:\n\n`;
+            errorMsg += `1. SSH into your backend server\n`;
+            errorMsg += `2. Edit Django settings.py:\n\n`;
+            errorMsg += `   CORS_ALLOWED_ORIGINS = [\n`;
+            errorMsg += `       "${frontendOrigin}",\n`;
+            errorMsg += `   ]\n\n`;
+            errorMsg += `3. Restart Django/nginx:\n\n`;
+            errorMsg += `   sudo systemctl restart gunicorn\n`;
+            errorMsg += `   sudo systemctl reload nginx\n\n`;
+            errorMsg += `4. Test CORS preflight:\n\n`;
+            errorMsg += `   Run in browser console:\n`;
+            errorMsg += `   await videoCallService.testCORS(13)\n\n`;
+          } else {
+            errorMsg += `🔍 TO TROUBLESHOOT:\n\n`;
+            errorMsg += `1. Open DevTools (F12) → Network tab\n`;
+            errorMsg += `2. Try joining video call again\n`;
+            errorMsg += `3. Find the request to "video-token/13/"\n`;
+            errorMsg += `4. Check the Status column:\n`;
+            errorMsg += `   - If you see "(blocked)" or "CORS" → Backend CORS issue\n`;
+            errorMsg += `   - If you see "Failed" or "ERR_" → Network/SSL issue\n`;
+            errorMsg += `   - If you see "0" or blank → Request never sent\n`;
+            errorMsg += `5. Click on the request → Check "Response" and "Headers" tabs\n\n`;
+            errorMsg += `Or test backend directly:\n`;
+            errorMsg += `curl -X GET "${attemptedUrl}" -H "Authorization: Bearer YOUR_TOKEN"`;
+          }
           
           throw new Error(errorMsg);
         }
@@ -336,6 +359,56 @@ class VideoCallService {
     const testUrl = `${axiosInstance.defaults.baseURL}/`;
     console.log('Test URL:', testUrl);
     console.log('Run: videoCallService.testAxiosConfig() to see this info');
+  }
+
+  /**
+   * Test CORS preflight (for debugging)
+   * Call from browser console: videoCallService.testCORS(13)
+   */
+  async testCORS(appointmentId: number | string): Promise<void> {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+      (import.meta.env.PROD 
+        ? 'https://api.tailoredpsychology.com.au/api' 
+        : 'http://127.0.0.1:8000/api');
+    const url = `${API_BASE_URL}/appointments/video-token/${appointmentId}/`;
+    
+    console.log('🔍 Testing CORS Preflight...');
+    console.log('URL:', url);
+    console.log('Origin:', window.location.origin);
+    
+    try {
+      // Test OPTIONS request (CORS preflight)
+      const optionsResponse = await fetch(url, {
+        method: 'OPTIONS',
+        headers: {
+          'Origin': window.location.origin,
+          'Access-Control-Request-Method': 'GET',
+          'Access-Control-Request-Headers': 'authorization,content-type'
+        }
+      });
+      
+      console.log('✅ OPTIONS (Preflight) Status:', optionsResponse.status);
+      console.log('OPTIONS Headers:', [...optionsResponse.headers.entries()]);
+      
+      const corsOrigin = optionsResponse.headers.get('access-control-allow-origin');
+      const corsMethods = optionsResponse.headers.get('access-control-allow-methods');
+      const corsHeaders = optionsResponse.headers.get('access-control-allow-headers');
+      
+      console.log('CORS Origin:', corsOrigin);
+      console.log('CORS Methods:', corsMethods);
+      console.log('CORS Headers:', corsHeaders);
+      
+      if (corsOrigin !== window.location.origin && corsOrigin !== '*') {
+        console.error('❌ CORS Origin mismatch!');
+        console.error(`   Expected: ${window.location.origin}`);
+        console.error(`   Got: ${corsOrigin}`);
+      } else {
+        console.log('✅ CORS Origin matches!');
+      }
+    } catch (error: any) {
+      console.error('❌ OPTIONS request failed:', error);
+      console.error('This means CORS preflight is being blocked');
+    }
   }
 
   /**
