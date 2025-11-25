@@ -13,15 +13,15 @@ static_sites:
     envs:
       - key: VITE_API_BASE_URL
         value: https://api.tailoredpsychology.com.au/api
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
         type: SECRET
       - key: VITE_ENV
         value: production
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
       - key: VITE_APP_NAME
         value: Clink Psychology Clinic
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
       - key: VITE_DEBUG
         value: "false"
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
 
