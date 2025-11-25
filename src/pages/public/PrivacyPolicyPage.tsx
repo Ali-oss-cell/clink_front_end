@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
-import { getPrivacyPolicyStatus, type PrivacyPolicyStatus } from '../../services/api/privacy';
 import styles from './PublicPages.module.scss';
 
 const clinicName = 'Tailored Psychology';
@@ -16,31 +14,6 @@ const formatDate = (value: string) =>
   }).format(new Date(value));
 
 export const PrivacyPolicyPage: React.FC = () => {
-  const [policyUrl, setPolicyUrl] = useState<string | null>(null);
-  const [showIframe, setShowIframe] = useState(false);
-
-  useEffect(() => {
-    // Only try to load iframe URL if user is authenticated
-    // For public access, always show static content
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      void loadPolicyUrl();
-    }
-  }, []);
-
-  const loadPolicyUrl = async () => {
-    try {
-      const status: PrivacyPolicyStatus = await getPrivacyPolicyStatus();
-      if (status.privacy_policy_url) {
-        setPolicyUrl(status.privacy_policy_url);
-        setShowIframe(true);
-      }
-    } catch (err: any) {
-      // Silently fail - just show static content
-      console.warn('Could not load privacy policy from API:', err);
-    }
-  };
-
   return (
     <Layout className={styles.publicLayout}>
       <div className={styles.pageContainer}>
@@ -51,22 +24,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               How we collect, use, disclose, and protect your personal information
             </p>
           </div>
-
-          {/* Show iframe if available (for authenticated users with API URL) */}
-          {showIframe && policyUrl && (
-            <div className={styles.policyContent}>
-              <iframe
-                src={policyUrl}
-                className={styles.policyIframe}
-                title="Privacy Policy"
-                sandbox="allow-same-origin allow-scripts allow-forms"
-              />
-            </div>
-          )}
-
-          {/* Always show static content (for public access or fallback) */}
-          {!showIframe && (
-            <div className={styles.contentSection}>
+          <div className={styles.contentSection}>
               <section>
                 <h2>1. Introduction</h2>
                 <p>
@@ -355,8 +313,7 @@ export const PrivacyPolicyPage: React.FC = () => {
                   </li>
                 </ul>
               </section>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </Layout>
