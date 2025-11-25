@@ -206,6 +206,8 @@ export const PsychologistDashboardPage: React.FC = () => {
     return null;
   }
 
+  const averageRating = dashboardData?.stats?.average_rating;
+
   return (
     <Layout 
       user={user} 
@@ -261,7 +263,9 @@ export const PsychologistDashboardPage: React.FC = () => {
             <div className={styles.statCard}>
               <div className={styles.statIcon}><StarIcon size="xl" /></div>
               <div className={styles.statContent}>
-                <div className={styles.statValue}>{dashboardData.stats.average_rating.toFixed(1)}</div>
+                <div className={styles.statValue}>
+                  {typeof averageRating === 'number' ? averageRating.toFixed(1) : '—'}
+                </div>
                 <div className={styles.statLabel}>Avg Rating</div>
               </div>
             </div>
