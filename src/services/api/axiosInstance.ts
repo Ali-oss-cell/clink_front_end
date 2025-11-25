@@ -2,7 +2,22 @@ import axios, { AxiosError } from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
 
 // Get API base URL from environment variable or use default
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+// In production, this should be set via VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+  (import.meta.env.PROD 
+    ? 'https://api.tailoredpsychology.com.au/api' 
+    : 'http://127.0.0.1:8000/api');
+
+// Log API configuration for debugging (only in development or if URL seems wrong)
+if (import.meta.env.DEV || (import.meta.env.PROD && API_BASE_URL.includes('127.0.0.1'))) {
+  console.log('[API Config] Environment:', import.meta.env.MODE);
+  console.log('[API Config] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL || 'NOT SET');
+  console.log('[API Config] Using API URL:', API_BASE_URL);
+  if (import.meta.env.PROD && API_BASE_URL.includes('127.0.0.1')) {
+    console.warn('[API Config] ⚠️ WARNING: Production build is using localhost!');
+    console.warn('[API Config] Make sure VITE_API_BASE_URL is set in .env.production');
+  }
+}
 
 // Create axios instance with base configuration
 const axiosInstance = axios.create({

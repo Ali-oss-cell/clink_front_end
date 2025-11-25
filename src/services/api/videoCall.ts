@@ -39,7 +39,10 @@ class VideoCallService {
 
       // Construct full URL for logging
       const endpoint = `/appointments/video-token/${appointmentId}/`;
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+        (import.meta.env.PROD 
+          ? 'https://api.tailoredpsychology.com.au/api' 
+          : 'http://127.0.0.1:8000/api');
       const fullUrl = `${API_BASE_URL}${endpoint}`;
       
       console.log(`[VideoCallService] Requesting token for appointment ${appointmentId}`);
@@ -113,18 +116,32 @@ class VideoCallService {
         }
       } else if (error.request) {
         // Request made but no response received
-        console.error('[VideoCallService] Network error - No response from server');
-        console.error('[VideoCallService] Request URL:', error.config?.baseURL + error.config?.url);
-        console.error('[VideoCallService] This usually means:');
-        console.error('  1. Django server is not running on port 8000');
-        console.error('  2. Wrong baseURL in axios configuration');
-        console.error('  3. Firewall/network blocking the connection');
-        console.error('  4. CORS issue (but this would show CORS error, not network error)');
+        const attemptedUrl = error.config?.baseURL 
+          ? `${error.config.baseURL}${error.config.url}` 
+          : 'Unknown URL';
+        const envUrl = import.meta.env.VITE_API_BASE_URL || 'Not set';
+        const isProd = import.meta.env.PROD;
         
-        throw new Error('Network error: No response from server. Please check:\n' +
-          '1. Django server is running: python manage.py runserver\n' +
-          '2. Server is accessible at: http://127.0.0.1:8000\n' +
-          '3. Check browser Network tab for the actual request URL');
+        console.error('[VideoCallService] Network error - No response from server');
+        console.error('[VideoCallService] Attempted URL:', attemptedUrl);
+        console.error('[VideoCallService] Environment:', isProd ? 'PRODUCTION' : 'DEVELOPMENT');
+        console.error('[VideoCallService] VITE_API_BASE_URL:', envUrl);
+        console.error('[VideoCallService] This usually means:');
+        console.error('  1. Wrong API URL configured (check VITE_API_BASE_URL)');
+        console.error('  2. Backend server is not accessible');
+        console.error('  3. CORS or network blocking the connection');
+        
+        const errorMsg = isProd
+          ? `Network error: Could not reach API server at ${attemptedUrl}. Please verify:\n` +
+            `1. VITE_API_BASE_URL is set correctly in production build\n` +
+            `2. Backend is running at https://api.tailoredpsychology.com.au\n` +
+            `3. Check browser Network tab for the actual request URL`
+          : `Network error: No response from server. Please check:\n` +
+            `1. Django server is running: python manage.py runserver\n` +
+            `2. Server is accessible at: http://127.0.0.1:8000\n` +
+            `3. Check browser Network tab for the actual request URL`;
+        
+        throw new Error(errorMsg);
       } else {
         // Error in request setup
         console.error('[VideoCallService] Request setup error:', error.message);
