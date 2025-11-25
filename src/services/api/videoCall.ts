@@ -49,6 +49,7 @@ class VideoCallService {
       console.log(`[VideoCallService] Full URL: ${fullUrl}`);
       console.log(`[VideoCallService] Token exists: ${!!token}`);
       console.log(`[VideoCallService] Token preview: ${token.substring(0, 20)}...`);
+      console.log(`[VideoCallService] Frontend origin: ${window.location.origin}`);
       
       // Always fetch fresh token - prevent all caching
       const response = await axiosInstance.get(endpoint, {
@@ -146,18 +147,31 @@ class VideoCallService {
                            error.message?.includes('Access-Control') ||
                            (error.code === 'ERR_NETWORK' && !error.response);
         
+        const frontendOrigin = typeof window !== 'undefined' ? window.location.origin : 'Unknown';
+        
         let errorMsg = `Network error: Could not reach API server at ${attemptedUrl}.\n\n`;
         errorMsg += `Diagnostics:\n`;
         errorMsg += `- Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}\n`;
         errorMsg += `- API URL: ${envUrl}\n`;
+        errorMsg += `- Frontend origin: ${frontendOrigin}\n`;
         errorMsg += `- Has auth token: ${hasToken ? 'Yes' : 'No'}\n`;
-        errorMsg += `- Error type: ${isCorsError ? 'CORS/Network' : 'No response'}\n\n`;
-        errorMsg += `Please check:\n`;
-        errorMsg += `1. Open browser DevTools → Network tab → Find the failed request\n`;
-        errorMsg += `2. Check if you see CORS error (red text about Access-Control-Allow-Origin)\n`;
-        errorMsg += `3. Verify backend is running: curl ${attemptedUrl.replace('/appointments/video-token/13/', '/')}\n`;
-        errorMsg += `4. Check backend CORS settings allow requests from: ${window.location.origin}\n`;
-        errorMsg += `5. Verify SSL certificate is valid for api.tailoredpsychology.com.au`;
+        errorMsg += `- Error type: ${isCorsError ? 'CORS/Network (browser blocked request)' : 'No response from server'}\n\n`;
+        errorMsg += `🔍 TO TROUBLESHOOT:\n\n`;
+        errorMsg += `1. Open DevTools (F12) → Network tab\n`;
+        errorMsg += `2. Try joining video call again\n`;
+        errorMsg += `3. Find the request to "video-token/13/"\n`;
+        errorMsg += `4. Check the Status column:\n`;
+        errorMsg += `   - If you see "(blocked)" or "CORS" → Backend CORS issue\n`;
+        errorMsg += `   - If you see "Failed" or "ERR_" → Network/SSL issue\n`;
+        errorMsg += `   - If you see "0" or blank → Request never sent\n`;
+        errorMsg += `5. Click on the request → Check "Response" and "Headers" tabs\n\n`;
+        errorMsg += `🔧 BACKEND FIX (if CORS error):\n`;
+        errorMsg += `Add to Django settings.py:\n`;
+        errorMsg += `CORS_ALLOWED_ORIGINS = [\n`;
+        errorMsg += `    "${frontendOrigin}",\n`;
+        errorMsg += `]\n\n`;
+        errorMsg += `Or test backend directly:\n`;
+        errorMsg += `curl -X GET "${attemptedUrl}" -H "Authorization: Bearer YOUR_TOKEN"`;
         
         throw new Error(errorMsg);
       } else {
