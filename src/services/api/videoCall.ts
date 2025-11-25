@@ -121,25 +121,43 @@ class VideoCallService {
           : 'Unknown URL';
         const envUrl = import.meta.env.VITE_API_BASE_URL || 'Not set';
         const isProd = import.meta.env.PROD;
+        const hasToken = !!localStorage.getItem('access_token');
         
         console.error('[VideoCallService] Network error - No response from server');
         console.error('[VideoCallService] Attempted URL:', attemptedUrl);
         console.error('[VideoCallService] Environment:', isProd ? 'PRODUCTION' : 'DEVELOPMENT');
         console.error('[VideoCallService] VITE_API_BASE_URL:', envUrl);
-        console.error('[VideoCallService] This usually means:');
-        console.error('  1. Wrong API URL configured (check VITE_API_BASE_URL)');
-        console.error('  2. Backend server is not accessible');
-        console.error('  3. CORS or network blocking the connection');
+        console.error('[VideoCallService] Has auth token:', hasToken);
+        console.error('[VideoCallService] Request config:', {
+          method: error.config?.method,
+          url: error.config?.url,
+          baseURL: error.config?.baseURL,
+          headers: error.config?.headers
+        });
+        console.error('[VideoCallService] Possible causes:');
+        console.error('  1. CORS issue - backend not allowing requests from frontend domain');
+        console.error('  2. Backend server is down or not accessible');
+        console.error('  3. SSL certificate issue');
+        console.error('  4. Network firewall blocking the request');
+        console.error('  5. Check browser Network tab for detailed error');
         
-        const errorMsg = isProd
-          ? `Network error: Could not reach API server at ${attemptedUrl}. Please verify:\n` +
-            `1. VITE_API_BASE_URL is set correctly in production build\n` +
-            `2. Backend is running at https://api.tailoredpsychology.com.au\n` +
-            `3. Check browser Network tab for the actual request URL`
-          : `Network error: No response from server. Please check:\n` +
-            `1. Django server is running: python manage.py runserver\n` +
-            `2. Server is accessible at: http://127.0.0.1:8000\n` +
-            `3. Check browser Network tab for the actual request URL`;
+        // Check if it's a CORS error specifically
+        const isCorsError = error.message?.includes('CORS') || 
+                           error.message?.includes('Access-Control') ||
+                           (error.code === 'ERR_NETWORK' && !error.response);
+        
+        let errorMsg = `Network error: Could not reach API server at ${attemptedUrl}.\n\n`;
+        errorMsg += `Diagnostics:\n`;
+        errorMsg += `- Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}\n`;
+        errorMsg += `- API URL: ${envUrl}\n`;
+        errorMsg += `- Has auth token: ${hasToken ? 'Yes' : 'No'}\n`;
+        errorMsg += `- Error type: ${isCorsError ? 'CORS/Network' : 'No response'}\n\n`;
+        errorMsg += `Please check:\n`;
+        errorMsg += `1. Open browser DevTools → Network tab → Find the failed request\n`;
+        errorMsg += `2. Check if you see CORS error (red text about Access-Control-Allow-Origin)\n`;
+        errorMsg += `3. Verify backend is running: curl ${attemptedUrl.replace('/appointments/video-token/13/', '/')}\n`;
+        errorMsg += `4. Check backend CORS settings allow requests from: ${window.location.origin}\n`;
+        errorMsg += `5. Verify SSL certificate is valid for api.tailoredpsychology.com.au`;
         
         throw new Error(errorMsg);
       } else {
