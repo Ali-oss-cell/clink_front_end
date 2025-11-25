@@ -139,22 +139,11 @@ axiosInstance.interceptors.response.use(
           console.error('API Error:', error.response.data);
       }
     } else if (error.request) {
-      // Request made but no response received
-      const requestUrl = error.config?.baseURL 
-        ? `${error.config.baseURL}${error.config.url}` 
-        : 'Unknown URL';
-      console.error('[Axios] Network error: No response from server');
-      console.error('[Axios] Request URL:', requestUrl);
-      console.error('[Axios] Method:', error.config?.method?.toUpperCase());
-      console.error('[Axios] This usually indicates:');
-      console.error('  1. CORS issue - backend not allowing requests from frontend');
-      console.error('  2. Network connectivity issue');
-      console.error('  3. Backend server is down or unreachable');
-      console.error('  4. SSL/certificate issue');
-      console.error('[Axios] Check browser Network tab for detailed error');
+      // Request made but no response received - likely CORS or network issue
+      // Error will be handled by the calling code
     } else {
-      // Something else happened
-      console.error('[Axios] Request setup error:', error.message);
+      // Request setup error
+      console.error('Request error:', error.message);
     }
     
     return Promise.reject(error);
