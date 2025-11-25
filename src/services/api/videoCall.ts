@@ -133,9 +133,15 @@ class VideoCallService {
         }
       } else if (error.request) {
         // Request made but no response received
+        // Reconstruct URL for fallback attempt
+        const endpoint = `/appointments/video-token/${appointmentId}/`;
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+          (import.meta.env.PROD 
+            ? 'https://api.tailoredpsychology.com.au/api' 
+            : 'http://127.0.0.1:8000/api');
         const attemptedUrl = error.config?.baseURL 
           ? `${error.config.baseURL}${error.config.url}` 
-          : 'Unknown URL';
+          : `${API_BASE_URL}${endpoint}`;
         const envUrl = import.meta.env.VITE_API_BASE_URL || 'Not set';
         const isProd = import.meta.env.PROD;
         const hasToken = !!localStorage.getItem('access_token');
@@ -165,31 +171,69 @@ class VideoCallService {
         
         const frontendOrigin = typeof window !== 'undefined' ? window.location.origin : 'Unknown';
         
-        let errorMsg = `Network error: Could not reach API server at ${attemptedUrl}.\n\n`;
-        errorMsg += `Diagnostics:\n`;
-        errorMsg += `- Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}\n`;
-        errorMsg += `- API URL: ${envUrl}\n`;
-        errorMsg += `- Frontend origin: ${frontendOrigin}\n`;
-        errorMsg += `- Has auth token: ${hasToken ? 'Yes' : 'No'}\n`;
-        errorMsg += `- Error type: ${isCorsError ? 'CORS/Network (browser blocked request)' : 'No response from server'}\n\n`;
-        errorMsg += `🔍 TO TROUBLESHOOT:\n\n`;
-        errorMsg += `1. Open DevTools (F12) → Network tab\n`;
-        errorMsg += `2. Try joining video call again\n`;
-        errorMsg += `3. Find the request to "video-token/13/"\n`;
-        errorMsg += `4. Check the Status column:\n`;
-        errorMsg += `   - If you see "(blocked)" or "CORS" → Backend CORS issue\n`;
-        errorMsg += `   - If you see "Failed" or "ERR_" → Network/SSL issue\n`;
-        errorMsg += `   - If you see "0" or blank → Request never sent\n`;
-        errorMsg += `5. Click on the request → Check "Response" and "Headers" tabs\n\n`;
-        errorMsg += `🔧 BACKEND FIX (if CORS error):\n`;
-        errorMsg += `Add to Django settings.py:\n`;
-        errorMsg += `CORS_ALLOWED_ORIGINS = [\n`;
-        errorMsg += `    "${frontendOrigin}",\n`;
-        errorMsg += `]\n\n`;
-        errorMsg += `Or test backend directly:\n`;
-        errorMsg += `curl -X GET "${attemptedUrl}" -H "Authorization: Bearer YOUR_TOKEN"`;
-        
-        throw new Error(errorMsg);
+        // Try fallback with native fetch before giving up
+        console.warn('[VideoCallService] Axios failed, trying native fetch fallback...');
+        try {
+          const token = localStorage.getItem('access_token');
+          const fetchResponse = await fetch(attemptedUrl, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache'
+            },
+            cache: 'no-store'
+          });
+          
+          console.log('[VideoCallService] Fetch response status:', fetchResponse.status);
+          
+          if (!fetchResponse.ok) {
+            const errorData = await fetchResponse.json().catch(() => ({ detail: 'Unknown error' }));
+            throw {
+              response: {
+                status: fetchResponse.status,
+                data: errorData,
+                statusText: fetchResponse.statusText
+              },
+              message: errorData?.error || errorData?.detail || `HTTP ${fetchResponse.status}`
+            };
+          }
+          
+          const data = await fetchResponse.json();
+          console.log('[VideoCallService] ✅ Fallback fetch succeeded!');
+          return data;
+        } catch (fetchError: any) {
+          console.error('[VideoCallService] ❌ Fallback fetch also failed:', fetchError);
+          
+          // If fetch also fails, throw detailed error
+          let errorMsg = `Network error: Could not reach API server at ${attemptedUrl}.\n\n`;
+          errorMsg += `Diagnostics:\n`;
+          errorMsg += `- Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}\n`;
+          errorMsg += `- API URL: ${envUrl}\n`;
+          errorMsg += `- Frontend origin: ${frontendOrigin}\n`;
+          errorMsg += `- Has auth token: ${hasToken ? 'Yes' : 'No'}\n`;
+          errorMsg += `- Error type: ${isCorsError ? 'CORS/Network (browser blocked request)' : 'No response from server'}\n`;
+          errorMsg += `- Tried both axios and native fetch - both failed\n\n`;
+          errorMsg += `🔍 TO TROUBLESHOOT:\n\n`;
+          errorMsg += `1. Open DevTools (F12) → Network tab\n`;
+          errorMsg += `2. Try joining video call again\n`;
+          errorMsg += `3. Find the request to "video-token/13/"\n`;
+          errorMsg += `4. Check the Status column:\n`;
+          errorMsg += `   - If you see "(blocked)" or "CORS" → Backend CORS issue\n`;
+          errorMsg += `   - If you see "Failed" or "ERR_" → Network/SSL issue\n`;
+          errorMsg += `   - If you see "0" or blank → Request never sent\n`;
+          errorMsg += `5. Click on the request → Check "Response" and "Headers" tabs\n\n`;
+          errorMsg += `🔧 BACKEND FIX (if CORS error):\n`;
+          errorMsg += `Add to Django settings.py:\n`;
+          errorMsg += `CORS_ALLOWED_ORIGINS = [\n`;
+          errorMsg += `    "${frontendOrigin}",\n`;
+          errorMsg += `]\n\n`;
+          errorMsg += `Or test backend directly:\n`;
+          errorMsg += `curl -X GET "${attemptedUrl}" -H "Authorization: Bearer YOUR_TOKEN"`;
+          
+          throw new Error(errorMsg);
+        }
       } else {
         // Error in request setup
         console.error('[VideoCallService] Request setup error:', error.message);
