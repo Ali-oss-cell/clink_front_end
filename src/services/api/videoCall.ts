@@ -63,6 +63,7 @@ class VideoCallService {
           _t: Date.now() // Cache buster
         },
         validateStatus: (status) => status < 500, // Don't throw on 4xx, let us handle it
+        timeout: 30000, // 30 second timeout
       });
       
       // Check if response is an error (4xx status)
@@ -113,8 +114,30 @@ class VideoCallService {
             );
         }
       } else if (error.request) {
-        // Request made but no response received - likely CORS issue
+        // Request made but no response received - network error
         const frontendOrigin = typeof window !== 'undefined' ? window.location.origin : 'Unknown';
+        
+        // Enhanced network error diagnostics
+        console.error('[VideoCallService] Network error - request not reaching server');
+        console.error('  Error code:', error.code);
+        console.error('  Error message:', error.message);
+        console.error('  Request config:', {
+          url: error.config?.url,
+          baseURL: error.config?.baseURL,
+          method: error.config?.method,
+          fullURL: error.config?.baseURL ? `${error.config.baseURL}${error.config.url}` : 'Unknown'
+        });
+        
+        if (error.code === 'ECONNABORTED') {
+          console.error('  ⚠️ Request timed out after 30 seconds');
+        } else if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
+          console.error('  ⚠️ Network error - request may not have reached server');
+          console.error('  Possible causes:');
+          console.error('    1. API server is down or unreachable');
+          console.error('    2. Wrong API URL in axiosInstance');
+          console.error('    3. Network connectivity issue');
+          console.error('    4. Check browser Network tab for actual request details');
+        }
         
         // Try fallback with native fetch
         const endpoint = `/appointments/video-token/${appointmentId}/`;
@@ -125,6 +148,8 @@ class VideoCallService {
         const attemptedUrl = error.config?.baseURL 
           ? `${error.config.baseURL}${error.config.url}` 
           : `${API_BASE_URL}${endpoint}`;
+        
+        console.error('  Attempting fallback fetch to:', attemptedUrl);
         
         try {
           const token = localStorage.getItem('access_token');
@@ -266,6 +291,107 @@ class VideoCallService {
     const testUrl = `${axiosInstance.defaults.baseURL}/`;
     console.log('Test URL:', testUrl);
     console.log('Run: videoCallService.testAxiosConfig() to see this info');
+  }
+
+  /**
+   * Comprehensive network diagnostic test
+   * Call from browser console: await videoCallService.testNetwork(13)
+   */
+  async testNetwork(appointmentId: number | string): Promise<void> {
+    console.log('🔍 Network Diagnostic Test for Video Token');
+    console.log('='.repeat(50));
+    
+    const token = localStorage.getItem('access_token');
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+      (import.meta.env.PROD 
+        ? 'https://api.tailoredpsychology.com.au/api' 
+        : 'http://127.0.0.1:8000/api');
+    const endpoint = `/appointments/video-token/${appointmentId}/`;
+    const fullUrl = `${API_BASE_URL}${endpoint}`;
+    
+    console.log('📋 Configuration:');
+    console.log('  Appointment ID:', appointmentId);
+    console.log('  API Base URL:', API_BASE_URL);
+    console.log('  Endpoint:', endpoint);
+    console.log('  Full URL:', fullUrl);
+    console.log('  Frontend Origin:', window.location.origin);
+    console.log('  Has Auth Token:', !!token);
+    console.log('  Token Preview:', token ? `${token.substring(0, 20)}...` : 'NONE');
+    console.log('  Axios BaseURL:', axiosInstance.defaults.baseURL);
+    console.log('');
+    
+    // Test 1: Direct fetch
+    console.log('🧪 Test 1: Direct fetch()');
+    try {
+      const startTime = Date.now();
+      const response = await fetch(fullUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      });
+      const duration = Date.now() - startTime;
+      
+      console.log(`  ✅ Status: ${response.status} (took ${duration}ms)`);
+      console.log('  Response Headers:', [...response.headers.entries()]);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('  ✅ Success! Data received:', {
+          hasToken: !!data.access_token,
+          roomName: data.room_name,
+          expiresIn: data.expires_in
+        });
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('  ❌ Error Response:', errorData);
+      }
+    } catch (err: any) {
+      console.error('  ❌ Fetch failed:', err.name, err.message);
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        console.error('  ⚠️ This is a network/CORS error - request blocked by browser');
+      }
+    }
+    console.log('');
+    
+    // Test 2: Axios
+    console.log('🧪 Test 2: Axios request');
+    try {
+      const startTime = Date.now();
+      const response = await axiosInstance.get(endpoint, {
+        headers: {
+          'Cache-Control': 'no-cache'
+        },
+        timeout: 10000
+      });
+      const duration = Date.now() - startTime;
+      
+      console.log(`  ✅ Status: ${response.status} (took ${duration}ms)`);
+      console.log('  ✅ Success! Data received:', {
+        hasToken: !!response.data.access_token,
+        roomName: response.data.room_name
+      });
+    } catch (err: any) {
+      console.error('  ❌ Axios failed:', err.code || err.name, err.message);
+      if (err.request && !err.response) {
+        console.error('  ⚠️ Network error - no response from server');
+        console.error('  Error code:', err.code);
+        console.error('  Request URL:', err.config?.baseURL + err.config?.url);
+      } else if (err.response) {
+        console.error('  ⚠️ Server responded with error:', err.response.status);
+        console.error('  Error data:', err.response.data);
+      }
+    }
+    console.log('');
+    
+    console.log('='.repeat(50));
+    console.log('💡 Next Steps:');
+    console.log('  1. Check browser Network tab for the actual request');
+    console.log('  2. If status is 0 or (failed) → Network/CORS issue');
+    console.log('  3. If status is 4xx → Backend error (check error message)');
+    console.log('  4. If status is 200 → Request works, check why app fails');
   }
 
   /**
