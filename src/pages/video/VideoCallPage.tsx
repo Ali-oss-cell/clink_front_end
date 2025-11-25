@@ -148,17 +148,28 @@ export const VideoCallPage: React.FC = () => {
         console.log('🔵 Step 3: Connecting to Twilio room:', tokenData.room_name);
         console.log('🔵 Connection options:', {
           name: tokenData.room_name,
+          region: 'au1', // Australia region - must match backend token
           audio: true,
           video: { width: 640, height: 480 }
         });
         
         const twilioRoom = await Video.connect(tokenData.access_token, {
           name: tokenData.room_name,
+          region: 'au1', // IMPORTANT: Must match backend token region
           audio: true,
-          video: { width: 640, height: 480 }
+          video: { width: 640, height: 480 },
+          // Add connection options for better reliability
+          networkQuality: {
+            local: 1, // LocalParticipant's Network Quality verbosity [1 - 3]
+            remote: 2 // RemoteParticipants' Network Quality verbosity [0 - 3]
+          },
+          preferredVideoCodecs: ['VP8'],
+          logLevel: 'info' // Enable Twilio SDK logging for debugging
         });
         
         console.log('🟢 Step 4: Successfully connected to Twilio room:', twilioRoom.name);
+        console.log('🟢 Room SID:', twilioRoom.sid);
+        console.log('🟢 Connected to region:', 'au1');
 
         setRoom(twilioRoom);
         roomRef.current = twilioRoom; // Update ref for cleanup
@@ -231,7 +242,19 @@ export const VideoCallPage: React.FC = () => {
         // Provide more specific error messages
         let errorMessage = 'Failed to connect to video call';
         
-        if (err.message) {
+        // Check for WebSocket-specific errors first
+        if (err.message && err.message.includes('WebSocket')) {
+          errorMessage = 'Network error: Could not establish video connection. This may be due to firewall or network restrictions blocking WebSocket connections. Please check your internet connection and try again.';
+          console.error('⚠️ WebSocket connection failed - this is usually a network/firewall issue');
+        } else if (err.code === 53000 || (err.message && err.message.includes('SignatureValidationFailed'))) {
+          errorMessage = 'Invalid video token. Please refresh the page and try again.';
+        } else if (err.code === 53001 || (err.message && err.message.includes('RoomNotFound'))) {
+          errorMessage = 'Video room not found. Please contact support.';
+        } else if (err.code === 53002 || (err.message && err.message.includes('RoomCompleted'))) {
+          errorMessage = 'This video session has ended.';
+        } else if (err.code === 53405 || (err.message && err.message.includes('MediaNotAllowedError'))) {
+          errorMessage = 'Camera/microphone access denied. Please allow access in your browser settings and try again.';
+        } else if (err.message) {
           errorMessage = err.message;
           
           // Check for specific Twilio error patterns
