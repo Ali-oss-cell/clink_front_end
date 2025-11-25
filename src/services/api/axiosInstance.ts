@@ -3,12 +3,23 @@ import type { InternalAxiosRequestConfig } from 'axios';
 
 // Get API base URL from environment variable or use default
 // In production, this should be set via VITE_API_BASE_URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
-  (import.meta.env.PROD 
-    ? 'https://api.tailoredpsychology.com.au/api' 
-    : 'http://127.0.0.1:8000/api');
+const getApiBaseUrl = () => {
+  // Check environment variable first
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  
+  // Fallback based on environment
+  if (import.meta.env.PROD) {
+    return 'https://api.tailoredpsychology.com.au/api';
+  }
+  
+  return 'http://127.0.0.1:8000/api';
+};
 
-// Log API configuration for debugging (only in development or if URL seems wrong)
+const API_BASE_URL = getApiBaseUrl();
+
+// Log API configuration for debugging
 if (import.meta.env.DEV || (import.meta.env.PROD && API_BASE_URL.includes('127.0.0.1'))) {
   console.log('[API Config] Environment:', import.meta.env.MODE);
   console.log('[API Config] VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL || 'NOT SET');
@@ -28,6 +39,32 @@ const axiosInstance = axios.create({
   },
   withCredentials: false, // CORS with credentials - set to false for Bearer token auth
 });
+
+// Expose config for browser console debugging
+if (typeof window !== 'undefined') {
+  (window as any).__API_CONFIG__ = {
+    baseURL: API_BASE_URL,
+    env: import.meta.env.MODE,
+    viteApiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'NOT SET',
+    isProd: import.meta.env.PROD,
+    axiosBaseURL: axiosInstance.defaults.baseURL,
+    checkConfig: () => {
+      console.log('📋 API Configuration:');
+      console.log('  Base URL:', API_BASE_URL);
+      console.log('  Environment:', import.meta.env.MODE);
+      console.log('  VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL || 'NOT SET');
+      console.log('  Is Production:', import.meta.env.PROD);
+      console.log('  Axios Instance BaseURL:', axiosInstance.defaults.baseURL);
+      return {
+        baseURL: API_BASE_URL,
+        env: import.meta.env.MODE,
+        viteApiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'NOT SET',
+        isProd: import.meta.env.PROD,
+        axiosBaseURL: axiosInstance.defaults.baseURL
+      };
+    }
+  };
+}
 
 // Request interceptor - Add auth token to all requests
 axiosInstance.interceptors.request.use(
@@ -103,10 +140,21 @@ axiosInstance.interceptors.response.use(
       }
     } else if (error.request) {
       // Request made but no response received
-      console.error('Network error: No response from server');
+      const requestUrl = error.config?.baseURL 
+        ? `${error.config.baseURL}${error.config.url}` 
+        : 'Unknown URL';
+      console.error('[Axios] Network error: No response from server');
+      console.error('[Axios] Request URL:', requestUrl);
+      console.error('[Axios] Method:', error.config?.method?.toUpperCase());
+      console.error('[Axios] This usually indicates:');
+      console.error('  1. CORS issue - backend not allowing requests from frontend');
+      console.error('  2. Network connectivity issue');
+      console.error('  3. Backend server is down or unreachable');
+      console.error('  4. SSL/certificate issue');
+      console.error('[Axios] Check browser Network tab for detailed error');
     } else {
       // Something else happened
-      console.error('Request error:', error.message);
+      console.error('[Axios] Request setup error:', error.message);
     }
     
     return Promise.reject(error);

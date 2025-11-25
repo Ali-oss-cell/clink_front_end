@@ -317,6 +317,28 @@ class VideoCallService {
   }
 
   /**
+   * Test axiosInstance configuration (for debugging)
+   * Call from browser console: videoCallService.testAxiosConfig()
+   */
+  testAxiosConfig(): void {
+    console.log('🔧 Testing Axios Configuration...');
+    console.log('axiosInstance.defaults.baseURL:', axiosInstance.defaults.baseURL);
+    console.log('Environment:', import.meta.env.PROD ? 'PRODUCTION' : 'DEVELOPMENT');
+    console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL || 'NOT SET');
+    console.log('Frontend origin:', window.location.origin);
+    
+    // Check if __API_CONFIG__ is available
+    if ((window as any).__API_CONFIG__) {
+      console.log('API Config object:', (window as any).__API_CONFIG__.checkConfig());
+    }
+    
+    // Test a simple endpoint to verify connectivity
+    const testUrl = `${axiosInstance.defaults.baseURL}/`;
+    console.log('Test URL:', testUrl);
+    console.log('Run: videoCallService.testAxiosConfig() to see this info');
+  }
+
+  /**
    * Test video token endpoint directly (for debugging)
    * Call from browser console: videoCallService.testVideoToken(13)
    */
