@@ -176,14 +176,16 @@ class VideoCallService {
     try {
       const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}`);
       const now = new Date();
+      const duration = appointment.duration_minutes || 60; // Default 60 min
       
-      // Allow joining 15 minutes before the appointment
-      const fifteenMinutesBefore = new Date(appointmentDateTime.getTime() - 15 * 60 * 1000);
+      // Allow joining 30 minutes before the appointment
+      const thirtyMinutesBefore = new Date(appointmentDateTime.getTime() - 30 * 60 * 1000);
       
-      // Allow joining up to 2 hours after the appointment (in case it runs late)
-      const twoHoursAfter = new Date(appointmentDateTime.getTime() + 2 * 60 * 60 * 1000);
+      // Allow joining until appointment duration + 4 hours after start time
+      // This allows: late joins, reconnects, and sessions that run over time
+      const extendedEnd = new Date(appointmentDateTime.getTime() + (duration + 240) * 60 * 1000);
       
-      return now >= fifteenMinutesBefore && now <= twoHoursAfter;
+      return now >= thirtyMinutesBefore && now <= extendedEnd;
     } catch (error) {
       console.error('Error parsing appointment date/time:', error);
       return false;
@@ -222,8 +224,18 @@ class VideoCallService {
       const diffMs = appointmentDateTime.getTime() - now.getTime();
       const diffMins = Math.floor(diffMs / (1000 * 60));
 
-      if (diffMins < 0) {
-        return 'Started';
+      if (diffMins < -5) {
+        // More than 5 minutes past start time
+        const minutesLate = Math.abs(diffMins);
+        if (minutesLate < 60) {
+          return `In progress (${minutesLate} min)`;
+        } else {
+          const hours = Math.floor(minutesLate / 60);
+          const mins = minutesLate % 60;
+          return mins === 0 ? `In progress (${hours}h)` : `In progress (${hours}h ${mins}m)`;
+        }
+      } else if (diffMins < 0) {
+        return 'Starting now';
       } else if (diffMins === 0) {
         return 'Starting now';
       } else if (diffMins < 60) {
