@@ -22,10 +22,11 @@ if (import.meta.env.DEV || (import.meta.env.PROD && API_BASE_URL.includes('127.0
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000, // Increased timeout for video token requests
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: false, // CORS with credentials - set to false for Bearer token auth
 });
 
 // Request interceptor - Add auth token to all requests

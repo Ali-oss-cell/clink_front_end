@@ -50,6 +50,8 @@ class VideoCallService {
       console.log(`[VideoCallService] Token exists: ${!!token}`);
       console.log(`[VideoCallService] Token preview: ${token.substring(0, 20)}...`);
       console.log(`[VideoCallService] Frontend origin: ${window.location.origin}`);
+      console.log(`[VideoCallService] Base URL: ${API_BASE_URL}`);
+      console.log(`[VideoCallService] Endpoint: ${endpoint}`);
       
       // Always fetch fresh token - prevent all caching
       const response = await axiosInstance.get(endpoint, {
@@ -59,8 +61,22 @@ class VideoCallService {
         },
         params: {
           _t: Date.now() // Cache buster
-        }
+        },
+        validateStatus: (status) => status < 500, // Don't throw on 4xx, let us handle it
       });
+      
+      // Check if response is an error (4xx status)
+      if (response.status >= 400) {
+        const errorData = response.data;
+        throw {
+          response: {
+            status: response.status,
+            data: errorData,
+            statusText: response.statusText
+          },
+          message: errorData?.error || errorData?.detail || `HTTP ${response.status}`
+        };
+      }
       
       console.log('[VideoCallService] Token received:', {
         room: response.data.room_name,
@@ -254,6 +270,51 @@ class VideoCallService {
     const validStatuses = ['scheduled', 'in_progress', 'upcoming', 'confirmed'];
     
     return validStatuses.includes(status);
+  }
+
+  /**
+   * Test video token endpoint directly (for debugging)
+   * Call from browser console: videoCallService.testVideoToken(13)
+   */
+  async testVideoToken(appointmentId: number | string): Promise<void> {
+    const token = localStorage.getItem('access_token');
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+      (import.meta.env.PROD 
+        ? 'https://api.tailoredpsychology.com.au/api' 
+        : 'http://127.0.0.1:8000/api');
+    const url = `${API_BASE_URL}/appointments/video-token/${appointmentId}/`;
+    
+    console.log('🧪 Testing video token endpoint...');
+    console.log('URL:', url);
+    console.log('Token:', token ? `${token.substring(0, 20)}...` : 'MISSING');
+    console.log('Origin:', window.location.origin);
+    
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('✅ Response Status:', response.status);
+      console.log('Response Headers:', [...response.headers.entries()]);
+      
+      const data = await response.json();
+      if (response.ok) {
+        console.log('✅ Success! Token received:', data);
+      } else {
+        console.error('❌ Error Response:', data);
+      }
+    } catch (error: any) {
+      console.error('❌ Fetch Error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
+    }
   }
 
   /**
