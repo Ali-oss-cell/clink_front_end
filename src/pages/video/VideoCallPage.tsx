@@ -52,12 +52,23 @@ export const VideoCallPage: React.FC = () => {
         setError(null);
         setConnectionStatus('connecting');
 
-        // Ensure telehealth consent is up to date
-        const consentResponse = await TelehealthService.getConsent();
-        setTelehealthConsent(consentResponse);
+        // Only check telehealth consent for patients (not psychologists)
+        if (user?.role === 'patient') {
+          try {
+            const consentResponse = await TelehealthService.getConsent();
+            setTelehealthConsent(consentResponse);
 
-        if (!consentResponse.consent_to_telehealth) {
-          throw new Error('Telehealth consent is required before joining this video session.');
+            if (!consentResponse.consent_to_telehealth) {
+              throw new Error('Telehealth consent is required before joining this video session.');
+            }
+          } catch (consentError: any) {
+            // If consent check fails (e.g., 403 for non-patients), skip it
+            if (consentError.response?.status === 403) {
+              console.warn('Telehealth consent check skipped (not a patient)');
+            } else {
+              throw consentError;
+            }
+          }
         }
 
         // Get video token from backend - always get fresh token

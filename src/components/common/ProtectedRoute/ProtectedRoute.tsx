@@ -24,10 +24,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [privacyChecked, setPrivacyChecked] = useState(false);
 
-  // Check Privacy Policy status for authenticated users
+  // Check Privacy Policy status only for patients (not psychologists/admins)
   useEffect(() => {
     const checkPrivacyPolicy = async () => {
-      if (requireAuth && isAuthenticated && user) {
+      if (requireAuth && isAuthenticated && user && user.role === 'patient') {
         try {
           const status = await getPrivacyPolicyStatus();
           setPrivacyStatus(status);
@@ -38,12 +38,17 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
           } else {
             setPrivacyChecked(true);
           }
-        } catch (error) {
-          // If check fails, allow access (will be checked on next request)
-          console.warn('Privacy Policy check failed:', error);
+        } catch (error: any) {
+          // If check fails (e.g., 403 for non-patients), skip it
+          if (error.response?.status === 403) {
+            console.warn('Privacy Policy check skipped (not a patient)');
+          } else {
+            console.warn('Privacy Policy check failed:', error);
+          }
           setPrivacyChecked(true);
         }
       } else {
+        // Not a patient or not authenticated - skip privacy check
         setPrivacyChecked(true);
       }
     };
