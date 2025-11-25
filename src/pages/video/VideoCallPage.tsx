@@ -135,7 +135,8 @@ export const VideoCallPage: React.FC = () => {
         }
 
         const shouldRecord = Boolean((tokenData as any).recording_required);
-        if (shouldRecord && !consentResponse.telehealth_recording_consent) {
+        // Only check recording consent for patients
+        if (shouldRecord && user?.role === 'patient' && telehealthConsent && !telehealthConsent.telehealth_recording_consent) {
           throw new Error(
             'Recording is enabled for this session but you have not opted in. Please update your telehealth consent with recording enabled or ask your clinician to disable recording.'
           );
