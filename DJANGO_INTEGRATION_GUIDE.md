@@ -79,7 +79,7 @@ Password: wrongpassword
 
 #### Demo Mode (if backend is not ready):
 ```
-Email: demo@mindwellclinic.com.au
+Email: demo@tailoredpsychology.com.au
 Password: demo123
 ```
 

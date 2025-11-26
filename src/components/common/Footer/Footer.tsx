@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
         <div className={styles.content}>
           {/* Company Info */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>MindWell Clinic</h3>
+            <h3 className={styles.sectionTitle}>Tailored Psychology</h3>
             <p className={styles.description}>
               Professional psychological services providing compassionate care 
               and evidence-based treatments for mental health and wellbeing.
@@ -50,10 +50,10 @@ export const Footer: React.FC = () => {
             <h4 className={styles.sectionTitle}>Contact Information</h4>
             <div className={styles.contactInfo}>
               <div className={styles.contactItem}>
-                <strong>Phone:</strong> 1300 MINDWELL
+                <strong>Phone:</strong> 1300 646 393
               </div>
               <div className={styles.contactItem}>
-                <strong>Email:</strong> info@mindwellclinic.com.au
+                <strong>Email:</strong> info@tailoredpsychology.com.au
               </div>
               <div className={styles.contactItem}>
                 <strong>Address:</strong> 123 Collins Street<br />
@@ -69,7 +69,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
           <div className={styles.copyright}>
-            © {currentYear} MindWell Clinic. All rights reserved.
+            © {currentYear} Tailored Psychology. All rights reserved.
           </div>
           <div className={styles.legalLinks}>
             <Link to="/privacy-policy" className={styles.legalLink}>Privacy Policy</Link>

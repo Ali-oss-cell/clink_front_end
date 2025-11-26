@@ -40,7 +40,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onAuthUpdate }) => {
         <div className={styles.loginImageSection} style={{ backgroundImage: `url(${loginImage})` }}>
           <div className={styles.imageOverlay}>
             <div className={styles.imageContent}>
-              <h2 className={styles.imageTitle}>Welcome to MindWell Clinic</h2>
+              <h2 className={styles.imageTitle}>Welcome to Tailored Psychology</h2>
               <p className={styles.imageSubtitle}>
                 Professional psychology services for your mental health and wellbeing
               </p>

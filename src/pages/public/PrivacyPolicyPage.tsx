@@ -233,7 +233,7 @@ export const PrivacyPolicyPage: React.FC = () => {
                 <p>If you have questions or wish to exercise your rights, contact:</p>
                 <ul>
                   <li>
-                    <strong>Privacy Officer:</strong> privacy@tailoredpsychology.com.au | 1300 MINDWELL |
+                    <strong>Privacy Officer:</strong> privacy@tailoredpsychology.com.au | 1300 646 393 |
                     Level 12, 123 Collins Street, Melbourne VIC 3000
                   </li>
                   <li>

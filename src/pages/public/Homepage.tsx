@@ -267,7 +267,7 @@ export const Homepage: React.FC = () => {
 
       <section className={styles.features}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>Why Choose MindWell Clinic?</h2>
+          <h2 className={styles.sectionTitle}>Why Choose Tailored Psychology?</h2>
           <div className={styles.featureGrid}>
             <div className={styles.featureCard}>
               <h3>AHPRA Registered</h3>

@@ -7,7 +7,7 @@ export const AboutPage: React.FC = () => {
       <div className={styles.pageContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <h1 className={styles.pageTitle}>About MindWell Clinic</h1>
+            <h1 className={styles.pageTitle}>About Tailored Psychology</h1>
             <p className={styles.pageSubtitle}>
               Professional, compassionate psychology services across Australia
             </p>
@@ -16,7 +16,7 @@ export const AboutPage: React.FC = () => {
           <div className={styles.contentSection}>
             <h2>Our Mission</h2>
             <p>
-              At MindWell Clinic, we're committed to providing accessible, evidence-based 
+              At Tailored Psychology, we're committed to providing accessible, evidence-based 
               psychological services to help Australians achieve better mental health and wellbeing. 
               Our team of qualified psychologists work with you to develop personalized treatment 
               plans that address your unique needs and goals.

@@ -10,7 +10,7 @@ export const RegisterPage: React.FC = () => {
         <div className={styles.registerImageSection} style={{ backgroundImage: `url(${registerImage})` }}>
           <div className={styles.imageOverlay}>
             <div className={styles.imageContent}>
-              <h2 className={styles.imageTitle}>Join MindWell Clinic</h2>
+              <h2 className={styles.imageTitle}>Join Tailored Psychology</h2>
               <p className={styles.imageSubtitle}>
                 Start your journey to better mental health. Register today and connect with our professional psychologists.
               </p>

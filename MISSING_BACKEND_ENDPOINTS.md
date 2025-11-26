@@ -1,7 +1,7 @@
 # Missing Backend Endpoints Documentation
 
 **Date:** 2025-01-19  
-**Project:** MindWell Clinic - Frontend Requirements  
+**Project:** Tailored Psychology - Frontend Requirements  
 **Status:** Backend Implementation Required
 
 ---
@@ -314,11 +314,11 @@ The frontend `AdminSettingsPage.tsx` exists and is fully functional, but cannot 
 ```json
 {
   "clinic": {
-    "name": "MindWell Clinic",
+    "name": "Tailored Psychology",
     "address": "123 Health Street, Melbourne VIC 3000",
     "phone": "+61 3 9000 0000",
-    "email": "info@mindwellclinic.com.au",
-    "website": "https://mindwellclinic.com.au",
+    "email": "info@tailoredpsychology.com.au",
+    "website": "https://tailoredpsychology.com.au",
     "abn": "12 345 678 901"
   },
   "system": {
@@ -360,11 +360,11 @@ The frontend `AdminSettingsPage.tsx` exists and is fully functional, but cannot 
 ```json
 {
   "clinic": {
-    "name": "MindWell Clinic",
+    "name": "Tailored Psychology",
     "address": "123 Health Street, Melbourne VIC 3000",
     "phone": "+61 3 9000 0000",
-    "email": "info@mindwellclinic.com.au",
-    "website": "https://mindwellclinic.com.au",
+    "email": "info@tailoredpsychology.com.au",
+    "website": "https://tailoredpsychology.com.au",
     "abn": "12 345 678 901"
   },
   "system": {

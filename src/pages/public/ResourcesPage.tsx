@@ -107,7 +107,7 @@ export const ResourcesPage: React.FC = () => {
           <div className={styles.pageHeader}>
             <h1 className={styles.pageTitle}>Mental Health Resources</h1>
             <p className={styles.pageSubtitle}>
-              Evidence-informed tools, emergency contacts and practical guides curated by the MindWell team.
+              Evidence-informed tools, emergency contacts and practical guides curated by the Tailored Psychology team.
             </p>
           </div>
 
@@ -208,7 +208,7 @@ export const ResourcesPage: React.FC = () => {
 
           <section className={styles.calloutSection}>
             <div className={styles.calloutCard}>
-              <h2>Ready to work with MindWell?</h2>
+              <h2>Ready to work with Tailored Psychology?</h2>
               <p>
                 We blend telehealth and in-clinic appointments so you can access care anywhere in Australia. 
                 Bookings are available Monday to Saturday, with daytime and evening options.
@@ -219,7 +219,7 @@ export const ResourcesPage: React.FC = () => {
                 <li>Integrated Medicare and private health claiming</li>
               </ul>
               <p className={styles.cardNote}>
-                Call our client team on <a href="tel:1300646393">1300 MINDWELL</a> or email <a href="mailto:info@mindwellclinic.com.au">info@mindwellclinic.com.au</a>.
+                Call our client team on <a href="tel:1300646393">1300 646 393</a> or email <a href="mailto:info@tailoredpsychology.com.au">info@tailoredpsychology.com.au</a>.
               </p>
             </div>
           </section>

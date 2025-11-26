@@ -5,7 +5,7 @@ export const RegistrationSidebar: React.FC = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.trustSection}>
-        <h3 className={styles.sectionTitle}>Why Choose MindWell?</h3>
+        <h3 className={styles.sectionTitle}>Why Choose Tailored Psychology?</h3>
         <div className={styles.trustItems}>
           <div className={styles.trustItem}>
             <div className={styles.trustIcon}>✓</div>
@@ -39,7 +39,7 @@ export const RegistrationSidebar: React.FC = () => {
           <div className={styles.helpItem}>
             <div className={styles.helpIcon}><PhoneIcon size="lg" /></div>
             <div className={styles.helpText}>
-              <strong>Call 1800 MINDWELL</strong>
+              <strong>Call 1300 646 393</strong>
               <span>Mon-Fri 9am-5pm AEST</span>
             </div>
           </div>
@@ -48,7 +48,7 @@ export const RegistrationSidebar: React.FC = () => {
             <div className={styles.helpIcon}><EmailIcon size="lg" /></div>
             <div className={styles.helpText}>
               <strong>Email Support</strong>
-              <span>support@mindwellclinic.com.au</span>
+              <span>support@tailoredpsychology.com.au</span>
             </div>
           </div>
         </div>

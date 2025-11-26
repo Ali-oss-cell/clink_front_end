@@ -98,7 +98,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
       <Route path="/contact" element={
         <div style={{ padding: '2rem', textAlign: 'center' }}>
           <h1>Contact Page Coming Soon</h1>
-          <p>Get in touch with MindWell Clinic.</p>
+          <p>Get in touch with Tailored Psychology.</p>
         </div>
       } />
 

@@ -43,7 +43,7 @@ You've added **40+ individual routes** in DigitalOcean dashboard. This is **WRON
 ```
 VITE_API_BASE_URL = https://api.tailoredpsychology.com.au/api
 VITE_ENV = production  ← Change from "development" to "production"
-VITE_APP_NAME = Clink Psychology Clinic
+VITE_APP_NAME = Tailored Psychology
 VITE_DEBUG = false
 ```
 

@@ -1,6 +1,6 @@
 # DigitalOcean Static Website Deployment Guide
 
-This guide will help you deploy the Clink Frontend as a **static website** on DigitalOcean.
+This guide will help you deploy the Tailored Psychology Frontend as a **static website** on DigitalOcean.
 
 ## 📋 Deployment Options
 
@@ -43,7 +43,7 @@ This is the easiest option with automatic deployments, SSL, and CDN.
 
 4. **Configure as Static Site**:
    - **Resource Type**: Select **"Static Site"**
-   - **Name**: `clink-frontend` (or your preferred name)
+   - **Name**: `tailored-psychology-frontend` (or your preferred name)
    - **Build Command**: `npm ci && npm run build`
    - **Output Directory**: `dist`
    - **HTTP Port**: Leave default (or 4173)
@@ -57,7 +57,7 @@ This is the easiest option with automatic deployments, SSL, and CDN.
    ```
    VITE_API_BASE_URL=https://your-backend-api.com/api
    VITE_ENV=production
-   VITE_APP_NAME=Clink Psychology Clinic
+   VITE_APP_NAME=Tailored Psychology
    VITE_DEBUG=false
    ```
 
@@ -115,7 +115,7 @@ This creates a `dist` folder with all static files.
 1. Go to **Spaces** in DigitalOcean dashboard
 2. Click **"Create a Space"**
 3. Configure:
-   - **Name**: `clink-frontend` (or your choice)
+   - **Name**: `tailored-psychology-frontend` (or your choice)
    - **Region**: Choose closest to your users
    - **CDN**: Enable CDN (recommended)
    - **File Listing**: Disable (for security)
@@ -217,7 +217,7 @@ npm run build
 
 Update `.do/app.yaml`:
 ```yaml
-name: clink-frontend
+name: tailored-psychology-frontend
 static_sites:
   - name: frontend
     github:

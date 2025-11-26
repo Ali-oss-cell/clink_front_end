@@ -1,6 +1,6 @@
 # Application Routes Documentation
 
-This document lists all routes available in the Clink Frontend application.
+This document lists all routes available in the Tailored Psychology Frontend application.
 
 ## 📋 Table of Contents
 - [Public Routes](#public-routes)

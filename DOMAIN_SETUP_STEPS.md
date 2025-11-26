@@ -25,7 +25,7 @@
 ```
 VITE_API_BASE_URL = https://your-backend-api-url.com/api
 VITE_ENV = production
-VITE_APP_NAME = Clink Psychology Clinic
+VITE_APP_NAME = Tailored Psychology
 VITE_DEBUG = false
 ```
 

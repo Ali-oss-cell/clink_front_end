@@ -200,7 +200,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.formHeader}>
           <h2 className={styles.title}>Create Your Account</h2>
-          <p className={styles.subtitle}>Join MindWell Clinic as a patient</p>
+          <p className={styles.subtitle}>Join Tailored Psychology as a patient</p>
           <div className={styles.stepIndicator}>
             <div className={styles.stepProgress}>
               <div className={`${styles.stepNumber} ${currentStep >= 1 ? styles.active : ''}`}>1</div>

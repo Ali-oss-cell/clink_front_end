@@ -1,6 +1,6 @@
 # DigitalOcean App Platform Deployment Guide
 
-This guide will help you deploy the Clink Frontend application to DigitalOcean App Platform.
+This guide will help you deploy the Tailored Psychology Frontend application to DigitalOcean App Platform.
 
 ## 📋 Prerequisites
 
@@ -45,7 +45,7 @@ This guide will help you deploy the Clink Frontend application to DigitalOcean A
    - Choose the branch (usually `main` or `master`)
 
 4. **Configure the app**:
-   - **Name**: `clink-frontend` (or your preferred name)
+   - **Name**: `tailored-psychology-frontend` (or your preferred name)
    - **Type**: Static Site
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
@@ -61,7 +61,7 @@ In the DigitalOcean App Platform dashboard:
    ```
    VITE_API_BASE_URL=https://your-backend-api.com/api
    VITE_ENV=production
-   VITE_APP_NAME=Clink Psychology Clinic
+   VITE_APP_NAME=Tailored Psychology
    VITE_DEBUG=false
    ```
 
@@ -107,7 +107,7 @@ Since this is a React SPA (Single Page Application), you need to configure routi
 Create a `.do/app.yaml` file in your repository:
 
 ```yaml
-name: clink-frontend
+name: tailored-psychology-frontend
 static_sites:
   - name: frontend
     github:
@@ -126,7 +126,7 @@ static_sites:
         value: production
         scope: RUN_TIME
       - key: VITE_APP_NAME
-        value: Clink Psychology Clinic
+        value: Tailored Psychology
         scope: RUN_TIME
       - key: VITE_DEBUG
         value: "false"
