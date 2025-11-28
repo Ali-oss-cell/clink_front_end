@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
@@ -26,12 +26,22 @@ export const DateTimeSelectionPage: React.FC = () => {
   // Get user from auth service
   const user = authService.getStoredUser();
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[DateTimeSelectionPage] Component mounted/updated');
+    console.log('[DateTimeSelectionPage] selectedService from URL:', selectedService);
+    console.log('[DateTimeSelectionPage] selectedPsychologist from URL:', selectedPsychologist);
+    console.log('[DateTimeSelectionPage] Current URL:', window.location.href);
+    console.log('[DateTimeSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
+  }, [selectedService, selectedPsychologist, searchParams]);
+
   // Convert service slug to ID on page load
   useEffect(() => {
     const loadServiceId = async () => {
       if (!selectedService || selectedService.trim() === '') {
+        console.warn('[DateTimeSelectionPage] No service selected, redirecting to service selection');
         // Automatically redirect back to service selection
-        navigate('/appointments/book-appointment');
+        navigate('/appointments/book-appointment', { replace: true });
         return;
       }
       
@@ -39,45 +49,34 @@ export const DateTimeSelectionPage: React.FC = () => {
         // Check if it's already a number
         const numericId = parseInt(selectedService);
         if (!isNaN(numericId)) {
+          console.log('[DateTimeSelectionPage] Service is numeric ID:', numericId);
           setServiceId(numericId);
         } else {
+          console.log('[DateTimeSelectionPage] Service is slug, converting to ID:', selectedService);
           // It's a slug, convert it to ID
           const id = await servicesService.getServiceIdFromSlug(selectedService);
           
           if (id) {
+            console.log('[DateTimeSelectionPage] Service ID found:', id);
             setServiceId(id);
           } else {
+            console.error('[DateTimeSelectionPage] Service not found, redirecting');
             // Service not found, redirect back
-            navigate('/appointments/book-appointment');
+            navigate('/appointments/book-appointment', { replace: true });
           }
         }
       } catch (err) {
+        console.error('[DateTimeSelectionPage] Error loading service:', err);
         // Error loading service, redirect back
-        navigate('/appointments/book-appointment');
+        navigate('/appointments/book-appointment', { replace: true });
       }
     };
     
     loadServiceId();
   }, [selectedService, navigate]);
 
-  // Fetch available slots on page load
-  useEffect(() => {
-    if (!selectedPsychologist) {
-      // Automatically redirect back to psychologist selection
-      if (selectedService) {
-        navigate(`/appointments/psychologist-selection?service=${selectedService}`);
-      }
-      return;
-    }
-
-    if (!serviceId) {
-      return;
-    }
-
-    fetchAvailableSlots();
-  }, [selectedPsychologist, sessionType, serviceId, selectedService, navigate]);
-
-  const fetchAvailableSlots = async () => {
+  // ✅ Use useCallback to prevent function recreation on every render
+  const fetchAvailableSlots = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -108,13 +107,41 @@ export const DateTimeSelectionPage: React.FC = () => {
         setSelectedDate(data.available_dates[0].date);
       }
     } catch (err) {
-      console.error('Failed to load available slots:', err);
+      console.error('[DateTimeSelectionPage] Failed to load available slots:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to load available time slots.';
       setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedPsychologist, sessionType, serviceId]); // ✅ Dependencies
+
+  // Fetch available slots on page load
+  useEffect(() => {
+    // Check if psychologist is missing - only redirect if truly missing
+    if (!selectedPsychologist || selectedPsychologist.trim() === '') {
+      console.warn('[DateTimeSelectionPage] No psychologist selected in URL params, redirecting');
+      // Redirect back to psychologist selection
+      if (selectedService) {
+        navigate(`/appointments/psychologist-selection?service=${selectedService}`, { replace: true });
+      } else {
+        navigate('/appointments/book-appointment', { replace: true });
+      }
+      return;
+    }
+
+    // Wait for serviceId to be loaded before fetching slots
+    if (!serviceId) {
+      console.log('[DateTimeSelectionPage] Waiting for serviceId to be loaded...');
+      return;
+    }
+
+    console.log('[DateTimeSelectionPage] All conditions met, fetching available slots:', {
+      psychologist: selectedPsychologist,
+      serviceId,
+      sessionType
+    });
+    fetchAvailableSlots();
+  }, [selectedPsychologist, sessionType, serviceId, selectedService, navigate, fetchAvailableSlots]); // ✅ Include fetchAvailableSlots in deps
 
   const handleBookAppointment = async () => {
     // Validation
@@ -198,7 +225,9 @@ export const DateTimeSelectionPage: React.FC = () => {
     );
   }
 
-  if (error || !availabilityData) {
+  // Only show error state if we have an error AND we're not loading
+  // Don't show error if availabilityData is null but we're still loading
+  if (error && !loading) {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
@@ -212,6 +241,58 @@ export const DateTimeSelectionPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Available Slots</h3>
               <p>{error}</p>
+              <button className={styles.retryButton} onClick={fetchAvailableSlots}>
+                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show error if we finished loading but have no data and no error (shouldn't happen, but handle gracefully)
+  if (!loading && !availabilityData && !error) {
+    return (
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.dateTimeSelectionContainer}>
+          <div className="container">
+            <div className={styles.pageHeader}>
+              <button className={styles.backButton} onClick={handleBack}>
+                ← Back to Psychologist Selection
+              </button>
+              <h1 className={styles.pageTitle}>Select Date & Time</h1>
+            </div>
+            <div className={styles.errorState}>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> No Data Available</h3>
+              <p>Unable to load appointment availability. Please try again.</p>
+              <button className={styles.retryButton} onClick={fetchAvailableSlots}>
+                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Final guard: if we reach here without availabilityData, something went wrong
+  if (!availabilityData) {
+    return (
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.dateTimeSelectionContainer}>
+          <div className="container">
+            <div className={styles.pageHeader}>
+              <button className={styles.backButton} onClick={handleBack}>
+                ← Back to Psychologist Selection
+              </button>
+              <h1 className={styles.pageTitle}>Select Date & Time</h1>
+            </div>
+            <div className={styles.errorState}>
+              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> No Data Available</h3>
+              <p>Unable to load appointment availability. Please try again.</p>
               <button className={styles.retryButton} onClick={fetchAvailableSlots}>
                 <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry

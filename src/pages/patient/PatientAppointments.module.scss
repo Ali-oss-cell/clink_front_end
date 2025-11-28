@@ -614,3 +614,63 @@
     flex-direction: column;
   }
 }
+
+// Pagination Controls
+.paginationControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-md;
+  margin-top: 3rem;
+  padding: $spacing-lg;
+  background: white;
+  border-radius: 12px;
+  box-shadow: $shadow-sm;
+}
+
+.paginationButton {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid $border-light;
+  border-radius: 8px;
+  background: white;
+  color: $text-dark;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    border-color: $patient-primary;
+    background: rgba($patient-primary, 0.05);
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: $shadow-xs;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.paginationInfo {
+  color: $text-dark;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0 $spacing-md;
+}
+
+@include mobile {
+  .paginationControls {
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  .paginationButton {
+    width: 100%;
+  }
+}

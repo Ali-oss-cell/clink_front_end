@@ -7,6 +7,7 @@ import type { PatientAppointment } from '../../services/api/appointments';
 import { videoCallService } from '../../services/api/videoCall';
 import { SessionTimer } from '../../components/patient/SessionTimer';
 import { AppointmentRecordingIndicator } from '../../components/recordings';
+import { usePatientAppointments } from '../../hooks/usePatientAppointments';
 import { 
   CalendarIcon,
   CalendarPlusIcon,
@@ -27,9 +28,6 @@ import styles from './PatientAppointments.module.scss';
 
 export const PatientAppointmentsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [appointments, setAppointments] = useState<PatientAppointment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all');
   const [selectedAppointment, setSelectedAppointment] = useState<PatientAppointment | null>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -51,51 +49,32 @@ export const PatientAppointmentsPage: React.FC = () => {
     created_at: '2024-01-01'
   };
 
-  // Fetch appointments from API
-  const fetchAppointments = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await appointmentsService.getPatientAppointments({
-        status: filter === 'all' ? undefined : filter,
-        page: 1,
-        page_size: 50
-      });
-      
-      setAppointments(response.results || []);
-    } catch (err: any) {
-      console.error('Failed to load appointments:', err);
-      // If 404, the endpoint might not exist yet - show empty state
-      if (err.response?.status === 404) {
-        setAppointments([]);
-        setError(null); // Don't show error, just empty state
-      } else {
-        setError('Failed to load appointments. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAppointments();
-  }, [filter]);
+  // ✅ Use the custom hook to prevent loops
+  const {
+    appointments,
+    loading,
+    error,
+    count,
+    currentPage,
+    hasNext,
+    hasPrevious,
+    refetch,
+    nextPage,
+    previousPage,
+  } = usePatientAppointments({
+    status: filter,
+    pageSize: 50, // Show more appointments per page
+    autoFetch: true,
+  });
 
   // Auto-refresh appointments every 30 seconds to update timer values
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchAppointments();
+      refetch();
     }, 30000); // 30 seconds
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
-
-  const filteredAppointments = appointments.filter(appointment => {
-    if (filter === 'all') return true;
-    return appointment.status === filter;
-  });
+  }, [refetch]); // ✅ Include refetch in dependencies
 
   // Helper function to format date
   const formatAppointmentDate = (appointment: PatientAppointment): string => {
@@ -169,14 +148,8 @@ export const PatientAppointmentsPage: React.FC = () => {
       try {
         await appointmentsService.cancelAppointment(selectedAppointment.id);
         
-        // Update local state
-        setAppointments(prev => 
-          prev.map(apt => 
-            apt.id === selectedAppointment.id 
-              ? { ...apt, status: 'cancelled' as const, can_cancel: false, can_reschedule: false }
-              : apt
-          )
-        );
+        // Refresh appointments to get updated data
+        refetch();
         
         setShowCancelModal(false);
         setSelectedAppointment(null);
@@ -220,10 +193,10 @@ export const PatientAppointmentsPage: React.FC = () => {
           <div className="container">
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Appointments</h3>
-              <p>{error}</p>
+              <p>{error.message || 'Failed to load appointments. Please try again.'}</p>
               <button 
                 className={styles.retryButton}
-                onClick={() => window.location.reload()}
+                onClick={refetch}
               >
                 <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry
@@ -242,7 +215,7 @@ export const PatientAppointmentsPage: React.FC = () => {
           <div className={styles.dashboardHeader}>
             <h1 className={styles.welcomeTitle}>Your Appointments</h1>
             <p className={styles.welcomeSubtitle}>
-              Manage your therapy sessions and view your appointment history.
+              Manage your therapy sessions and view your appointment history. ({count} total)
             </p>
           </div>
 
@@ -282,7 +255,7 @@ export const PatientAppointmentsPage: React.FC = () => {
 
           {/* Appointments List */}
           <div className={styles.appointmentsList}>
-            {filteredAppointments.length === 0 ? (
+            {appointments.length === 0 ? (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}><CalendarIcon size="2xl" /></div>
                 <h3>No appointments found</h3>
@@ -297,7 +270,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              filteredAppointments.map((appointment) => (
+              appointments.map((appointment) => (
                 <div key={appointment.id} className={styles.appointmentCard}>
                   {/* Status Badge - Top Right */}
                   <div className={styles.cardStatusBadge}>
@@ -486,6 +459,29 @@ export const PatientAppointmentsPage: React.FC = () => {
               ))
             )}
           </div>
+
+          {/* Pagination Controls */}
+          {(hasNext || hasPrevious) && (
+            <div className={styles.paginationControls}>
+              <button 
+                className={styles.paginationButton}
+                onClick={previousPage}
+                disabled={!hasPrevious}
+              >
+                Previous
+              </button>
+              <span className={styles.paginationInfo}>
+                Page {currentPage} of {Math.ceil(count / 50)}
+              </span>
+              <button 
+                className={styles.paginationButton}
+                onClick={nextPage}
+                disabled={!hasNext}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

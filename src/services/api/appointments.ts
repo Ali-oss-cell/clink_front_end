@@ -270,6 +270,11 @@ export class AppointmentsService {
 
   /**
    * Get patient appointments with pagination and filtering
+   * 
+   * @param status - Filter by status (all, upcoming, completed, cancelled, past)
+   * @param page - Page number (default: 1)
+   * @param pageSize - Results per page (default: 10, max: 50)
+   * @returns Promise with appointments data
    */
   async getPatientAppointments(params?: {
     status?: 'all' | 'upcoming' | 'completed' | 'cancelled' | 'past';
@@ -277,27 +282,44 @@ export class AppointmentsService {
     page_size?: number;
   }): Promise<PatientAppointmentsResponse> {
     try {
-      const queryParams: any = {};
+      const queryParams = new URLSearchParams();
       
-      if (params?.status && params.status !== 'all') {
-        queryParams.status = params.status;
+      const statusParam = params?.status || 'all';
+      if (statusParam !== 'all') {
+        queryParams.append('status', statusParam);
       }
+      
       if (params?.page) {
-        queryParams.page = params.page;
+        queryParams.append('page', params.page.toString());
       }
-      if (params?.page_size) {
-        queryParams.page_size = params.page_size;
-      }
+      
+      const pageSize = params?.page_size || 10;
+      // Enforce max page size of 50
+      queryParams.append('page_size', Math.min(pageSize, 50).toString());
 
       // Backend endpoint: /appointments/patient/appointments/
-      const response = await axiosInstance.get('/appointments/patient/appointments/', {
-        params: queryParams
-      });
+      const response = await axiosInstance.get<PatientAppointmentsResponse>(
+        `/appointments/patient/appointments/?${queryParams.toString()}`
+      );
       return response.data;
     } catch (error) {
       console.error('Failed to get patient appointments:', error);
-      throw new Error('Failed to load appointments');
+      throw error;
     }
+  }
+
+  /**
+   * Get upcoming appointments only
+   */
+  async getUpcomingAppointments(): Promise<PatientAppointmentsResponse> {
+    return this.getPatientAppointments({ status: 'upcoming', page: 1, page_size: 10 });
+  }
+
+  /**
+   * Get completed appointments
+   */
+  async getCompletedAppointments(page: number = 1): Promise<PatientAppointmentsResponse> {
+    return this.getPatientAppointments({ status: 'completed', page, page_size: 10 });
   }
 
   /**
