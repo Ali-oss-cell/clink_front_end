@@ -63,6 +63,14 @@ export const PsychologistSelectionPage: React.FC = () => {
   // Get user data from auth service
   const user = authService.getStoredUser();
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[PsychologistSelectionPage] Component mounted/updated');
+    console.log('[PsychologistSelectionPage] selectedService from URL:', selectedService);
+    console.log('[PsychologistSelectionPage] Current URL:', window.location.href);
+    console.log('[PsychologistSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
+  }, [selectedService, searchParams]);
+
   // Fetch psychologists from backend
   useEffect(() => {
     // Don't fetch if no service is selected (will redirect)
@@ -174,17 +182,30 @@ export const PsychologistSelectionPage: React.FC = () => {
   };
 
   const handleContinue = () => {
+    console.log('[PsychologistSelectionPage] handleContinue called');
+    console.log('[PsychologistSelectionPage] selectedPsychologist:', selectedPsychologist);
+    console.log('[PsychologistSelectionPage] selectedService:', selectedService);
+    
     if (!selectedPsychologist) {
       alert('Please select a psychologist to continue.');
       return;
     }
     
+    if (!selectedService) {
+      console.error('[PsychologistSelectionPage] No service selected! Redirecting to service selection.');
+      navigate('/appointments/book-appointment', { replace: true });
+      return;
+    }
+    
     // Store psychologist selection and navigate
-    navigate(`/appointments/date-time?service=${selectedService}&psychologist=${selectedPsychologist}`);
+    const targetUrl = `/appointments/date-time?service=${selectedService}&psychologist=${selectedPsychologist}`;
+    console.log('[PsychologistSelectionPage] Navigating to:', targetUrl);
+    navigate(targetUrl);
   };
 
   const handleBack = () => {
     // Navigate back without service param to allow fresh selection
+    console.log('[PsychologistSelectionPage] handleBack called, navigating to service selection');
     navigate('/appointments/book-appointment', { replace: true });
   };
 
@@ -197,6 +218,7 @@ export const PsychologistSelectionPage: React.FC = () => {
 
   // Show error and redirect button if no service is selected
   if (!selectedService) {
+    console.warn('[PsychologistSelectionPage] No service selected, showing error state');
     return (
       <Layout 
         user={user}
@@ -210,11 +232,20 @@ export const PsychologistSelectionPage: React.FC = () => {
               <p className={styles.pageSubtitle}>
                 Please select a service before choosing a psychologist.
               </p>
+              <div style={{ marginTop: '1rem', padding: '1rem', background: '#f3f4f6', borderRadius: '8px', fontSize: '0.9rem' }}>
+                <strong>Debug Info:</strong>
+                <br />Current URL: {window.location.href}
+                <br />Service param: {selectedService || 'MISSING'}
+                <br />All params: {JSON.stringify(Object.fromEntries(searchParams.entries()))}
+              </div>
             </div>
             <div style={{ textAlign: 'center', padding: '3rem 0' }}>
               <button 
                 className={styles.continueButton}
-                onClick={() => navigate('/appointments/book-appointment', { replace: true })}
+                onClick={() => {
+                  console.log('[PsychologistSelectionPage] Error state button clicked');
+                  navigate('/appointments/book-appointment', { replace: true });
+                }}
               >
                 Go to Service Selection
               </button>

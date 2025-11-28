@@ -31,10 +31,24 @@ export const ServiceSelectionPage: React.FC = () => {
   // Get user data from auth service
   const user = authService.getStoredUser();
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[ServiceSelectionPage] Component mounted/updated');
+    console.log('[ServiceSelectionPage] serviceFromUrl:', serviceFromUrl);
+    console.log('[ServiceSelectionPage] selectedService state:', selectedService);
+    console.log('[ServiceSelectionPage] Current URL:', window.location.href);
+    console.log('[ServiceSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
+  }, [serviceFromUrl, selectedService, searchParams]);
+
   // Restore service selection from URL params if present (but don't auto-navigate)
   useEffect(() => {
     if (serviceFromUrl && serviceFromUrl !== selectedService) {
+      console.log('[ServiceSelectionPage] Restoring service from URL:', serviceFromUrl);
       setSelectedService(serviceFromUrl);
+    } else if (!serviceFromUrl && selectedService) {
+      // Clear selection if service param is removed from URL
+      console.log('[ServiceSelectionPage] Clearing service selection (no param in URL)');
+      setSelectedService(null);
     }
   }, [serviceFromUrl, selectedService]);
 
@@ -114,6 +128,8 @@ export const ServiceSelectionPage: React.FC = () => {
   };
 
   const handleContinue = () => {
+    console.log('[ServiceSelectionPage] handleContinue called, selectedService:', selectedService);
+    
     if (!selectedService) {
       alert('Please select a service to continue.');
       return;
@@ -133,7 +149,9 @@ export const ServiceSelectionPage: React.FC = () => {
     // TODO: Store service selection in Redux store
     // TODO: Log service selection for analytics
     
-    navigate(`/appointments/psychologist-selection?service=${selectedService}`);
+    const targetUrl = `/appointments/psychologist-selection?service=${selectedService}`;
+    console.log('[ServiceSelectionPage] Navigating to:', targetUrl);
+    navigate(targetUrl);
   };
 
   const handleBack = () => {
