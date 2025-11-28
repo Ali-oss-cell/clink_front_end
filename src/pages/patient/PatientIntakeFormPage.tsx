@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
 import { validateIntakeForm } from '../../utils/validation';
@@ -34,7 +34,8 @@ export const PatientIntakeFormPage: React.FC = () => {
       date_of_birth: preFilledData.date_of_birth || '',
       address_line_1: preFilledData.address_line_1 || '',
       suburb: preFilledData.suburb || '',
-      state: preFilledData.state || '',
+      // State is required but may be empty initially - validation will catch it
+      state: (preFilledData.state as "NSW" | "VIC" | "QLD" | "WA" | "SA" | "TAS" | "ACT" | "NT") || ('NSW' as const),
       postcode: preFilledData.postcode || '',
       medicare_number: preFilledData.medicare_number || '',
       preferred_name: preFilledData.preferred_name || '',
@@ -141,7 +142,7 @@ export const PatientIntakeFormPage: React.FC = () => {
     return validateIntakeForm(data);
   };
 
-  const onSubmit = async (data: IntakeFormData) => {
+  const onSubmit: SubmitHandler<IntakeFormData> = async (data) => {
     setIsSubmitting(true);
     try {
       // Validate form before submission
