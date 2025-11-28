@@ -542,6 +542,9 @@
 }
 
 .actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 1.5rem;
   border: 2px solid $border-light;
   border-radius: 8px;
@@ -551,11 +554,29 @@
   transition: all 0.3s ease;
   text-decoration: none;
   color: $text-dark;
+  font-size: 0.95rem;
+  white-space: nowrap;
   
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: $patient-primary;
     background: rgba($patient-primary, 0.05);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($patient-primary, 0.15);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  // When used as a link
+  &[href] {
+    display: inline-flex;
   }
 }
 
