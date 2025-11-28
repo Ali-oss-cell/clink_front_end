@@ -60,13 +60,21 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
 
   // Main steps (counted in progress)
   const telehealthCompleted = Boolean(telehealthConsent?.consent_to_telehealth);
+  
+  // Check actual completion status from dashboard data
+  const intakeCompleted = Boolean(dashboardData?.intake_completed);
+  const hasAppointment = Boolean(dashboardData?.next_appointment) || (dashboardData?.total_sessions ?? 0) > 0;
+  
+  // Profile is considered complete if user has registered (they have dashboard data)
+  // This means they've completed registration which includes basic profile info
+  const profileCompleted = dashboardData !== null;
 
   const mainSteps: OnboardingStep[] = [
     {
       id: 'profile',
       title: 'Complete Your Profile',
       description: 'Add your personal information and preferences',
-      completed: true, // Mark as complete
+      completed: profileCompleted,
       actionText: 'Go to My Account',
       actionUrl: '/patient/account',
       priority: 'high'
@@ -75,7 +83,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
       id: 'intake',
       title: 'Fill Out Intake Form',
       description: 'Help us understand your needs and goals',
-      completed: true, // Mark as complete
+      completed: intakeCompleted,
       actionText: dashboardData?.intake_completed ? 'View Form' : 'Start Assessment',
       actionUrl: '/patient/intake-form',
       priority: 'high'
@@ -93,9 +101,9 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
       id: 'appointment',
       title: 'Book Your First Appointment',
       description: 'Schedule a session with your psychologist',
-      completed: true, // Mark as complete
-      actionText: 'Schedule Session',
-      actionUrl: '/appointments/book-appointment',
+      completed: hasAppointment,
+      actionText: hasAppointment ? 'View Appointments' : 'Schedule Session',
+      actionUrl: hasAppointment ? '/patient/appointments' : '/appointments/book-appointment',
       priority: 'medium'
     }
   ];
