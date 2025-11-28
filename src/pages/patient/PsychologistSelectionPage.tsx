@@ -63,14 +63,6 @@ export const PsychologistSelectionPage: React.FC = () => {
   // Get user data from auth service
   const user = authService.getStoredUser();
 
-  // Redirect to service selection if no service is selected
-  useEffect(() => {
-    if (!selectedService) {
-      navigate('/appointments/book-appointment');
-      return;
-    }
-  }, [selectedService, navigate]);
-
   // Fetch psychologists from backend
   useEffect(() => {
     // Don't fetch if no service is selected (will redirect)
@@ -192,7 +184,8 @@ export const PsychologistSelectionPage: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate('/appointments/book-appointment');
+    // Navigate back without service param to allow fresh selection
+    navigate('/appointments/book-appointment', { replace: true });
   };
 
   const handleFilterChange = (filterType: string, value: string) => {
@@ -201,6 +194,36 @@ export const PsychologistSelectionPage: React.FC = () => {
       [filterType]: value
     }));
   };
+
+  // Show error and redirect button if no service is selected
+  if (!selectedService) {
+    return (
+      <Layout 
+        user={user}
+        isAuthenticated={true}
+        className={styles.patientLayout}
+      >
+        <div className={styles.psychologistSelectionContainer}>
+          <div className="container">
+            <div className={styles.pageHeader}>
+              <h1 className={styles.pageTitle}>Service Selection Required</h1>
+              <p className={styles.pageSubtitle}>
+                Please select a service before choosing a psychologist.
+              </p>
+            </div>
+            <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+              <button 
+                className={styles.continueButton}
+                onClick={() => navigate('/appointments/book-appointment', { replace: true })}
+              >
+                Go to Service Selection
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout 

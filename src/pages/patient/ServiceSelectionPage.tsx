@@ -31,12 +31,12 @@ export const ServiceSelectionPage: React.FC = () => {
   // Get user data from auth service
   const user = authService.getStoredUser();
 
-  // Restore service selection from URL params if present
+  // Restore service selection from URL params if present (but don't auto-navigate)
   useEffect(() => {
-    if (serviceFromUrl) {
+    if (serviceFromUrl && serviceFromUrl !== selectedService) {
       setSelectedService(serviceFromUrl);
     }
-  }, [serviceFromUrl]);
+  }, [serviceFromUrl, selectedService]);
 
   useEffect(() => {
     const loadConsent = async () => {
