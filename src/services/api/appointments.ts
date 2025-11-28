@@ -25,13 +25,14 @@ export interface AvailableSlotsResponse {
   in_person_available: boolean;
   consultation_fee: string;
   medicare_rebate_amount: string;
-  patient_cost_after_rebate: number;
+  patient_cost_after_rebate: string | number; // Backend may return as string or number
   date_range: {
     start_date: string;
     end_date: string;
   };
   available_dates: AvailableDate[];
-  total_available_slots: number;
+  total_available_slots?: number; // Optional, may not always be present
+  message?: string; // Present if not accepting new patients
 }
 
 export interface CalendarViewResponse {
@@ -187,6 +188,10 @@ export class AppointmentsService {
 
   /**
    * Get available time slots for a psychologist
+   * 
+   * @param params - Query parameters
+   * @returns Promise with available slots data
+   * @throws Error if psychologist not found or invalid parameters
    */
   async getAvailableSlots(params: {
     psychologistId: number;
@@ -195,24 +200,74 @@ export class AppointmentsService {
     serviceId?: number;
     sessionType?: 'telehealth' | 'in_person';
   }): Promise<AvailableSlotsResponse> {
+    // ✅ Validate required parameters
+    if (!params.psychologistId || isNaN(params.psychologistId)) {
+      throw new Error('Valid psychologist_id is required');
+    }
+    
+    if (!params.startDate) {
+      throw new Error('start_date is required (format: YYYY-MM-DD)');
+    }
+
+    // ✅ Validate date format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(params.startDate)) {
+      throw new Error('start_date must be in YYYY-MM-DD format');
+    }
+
+    // ✅ Build query string using URLSearchParams
+    const queryParams = new URLSearchParams({
+      psychologist_id: params.psychologistId.toString(),
+      start_date: params.startDate,
+    });
+
+    if (params.endDate) {
+      if (!dateRegex.test(params.endDate)) {
+        throw new Error('end_date must be in YYYY-MM-DD format');
+      }
+      queryParams.append('end_date', params.endDate);
+    }
+    
+    if (params.serviceId) {
+      queryParams.append('service_id', params.serviceId.toString());
+    }
+    
+    if (params.sessionType) {
+      queryParams.append('session_type', params.sessionType);
+    }
+
     try {
-      const queryParams: any = {
-        psychologist_id: params.psychologistId,
-        start_date: params.startDate,
-      };
-      
-      if (params.endDate) queryParams.end_date = params.endDate;
-      if (params.serviceId) queryParams.service_id = params.serviceId;
-      if (params.sessionType) queryParams.session_type = params.sessionType;
-      
-      const response = await axiosInstance.get('/auth/appointments/available-slots/', {
-        params: queryParams
-      });
+      // ✅ CORRECT ENDPOINT: /appointments/available-slots/ (NOT /auth/appointments/...)
+      const response = await axiosInstance.get<AvailableSlotsResponse>(
+        `/appointments/available-slots/?${queryParams.toString()}`
+      );
       
       return response.data;
-    } catch (error) {
-      console.error('Failed to get available slots:', error);
-      throw new Error('Failed to load available slots');
+    } catch (error: any) {
+      // ✅ Handle specific errors
+      if (error.response?.status === 404) {
+        throw new Error(
+          `Psychologist with ID ${params.psychologistId} not found. ` +
+          `Please select a different psychologist.`
+        );
+      }
+      
+      if (error.response?.status === 400) {
+        const errorMsg = error.response.data?.error || 'Invalid request parameters';
+        throw new Error(errorMsg);
+      }
+      
+      if (error.response?.status === 403) {
+        throw new Error('Access denied');
+      }
+      
+      // ✅ Network errors
+      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+        throw new Error('Network error. Please check your connection.');
+      }
+      
+      console.error('[AppointmentsService] Failed to get available slots:', error);
+      throw new Error(error.message || 'Failed to load available slots');
     }
   }
 

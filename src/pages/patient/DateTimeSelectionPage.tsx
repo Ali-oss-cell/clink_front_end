@@ -122,17 +122,33 @@ export const DateTimeSelectionPage: React.FC = () => {
       setLoading(true);
       setError(null);
       
+      // ✅ Validate psychologist ID
       const psychologistId = parseInt(selectedPsychologist || '0');
-      if (!psychologistId) {
-        throw new Error('Invalid psychologist ID');
+      if (!psychologistId || isNaN(psychologistId)) {
+        throw new Error('Invalid psychologist ID. Please select a psychologist first.');
       }
 
+      // ✅ Validate service ID if provided
+      if (serviceId && (isNaN(serviceId) || serviceId <= 0)) {
+        throw new Error('Invalid service ID. Please select a service again.');
+      }
+
+      // ✅ Set start date to today
       const today = new Date();
       const startDate = today.toISOString().split('T')[0];
       
+      // ✅ Set end date to 30 days from today
       const endDate = new Date();
-      endDate.setDate(today.getDate() + 30); // Next 30 days
+      endDate.setDate(today.getDate() + 30);
       const endDateStr = endDate.toISOString().split('T')[0];
+      
+      console.log('[DateTimeSelectionPage] Fetching available slots with:', {
+        psychologistId,
+        startDate,
+        endDate: endDateStr,
+        serviceId: serviceId || undefined,
+        sessionType
+      });
       
       const data = await appointmentsService.getAvailableSlots({
         psychologistId,
@@ -141,16 +157,23 @@ export const DateTimeSelectionPage: React.FC = () => {
         serviceId: serviceId || undefined,
         sessionType
       });
+      
+      console.log('[DateTimeSelectionPage] Available slots loaded:', data);
+      
       setAvailabilityData(data);
       
       // Auto-select first available date
       if (data.available_dates.length > 0) {
         setSelectedDate(data.available_dates[0].date);
+      } else if (!data.is_accepting_new_patients) {
+        // Show message if psychologist is not accepting new patients
+        setError(data.message || 'This psychologist is not currently accepting new patients.');
       }
     } catch (err) {
       console.error('[DateTimeSelectionPage] Failed to load available slots:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to load available time slots.';
       setError(errorMessage);
+      setAvailabilityData(null);
     } finally {
       setLoading(false);
     }
@@ -379,7 +402,11 @@ export const DateTimeSelectionPage: React.FC = () => {
               <div className={styles.summaryItem}>
                 <span className={styles.summaryLabel}>Your Cost:</span>
                 <span className={styles.summaryValue}>
-                  <strong>${availabilityData.patient_cost_after_rebate.toFixed(2)}</strong>
+                  <strong>$
+                    {typeof availabilityData.patient_cost_after_rebate === 'string'
+                      ? parseFloat(availabilityData.patient_cost_after_rebate).toFixed(2)
+                      : availabilityData.patient_cost_after_rebate.toFixed(2)}
+                  </strong>
                 </span>
               </div>
             </div>
