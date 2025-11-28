@@ -35,32 +35,21 @@ export const DateTimeSelectionPage: React.FC = () => {
     console.log('[DateTimeSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
   }, [selectedService, selectedPsychologist, searchParams]);
 
-  // Frontend service ID to backend service ID mapping
-  // This maps the frontend service slugs to backend service IDs
-  // TODO: Replace with actual backend service IDs when available
-  const FRONTEND_TO_BACKEND_SERVICE_MAP: Record<string, number> = {
-    'individual-therapy': 1, // Individual Therapy Session
-    'couples-therapy': 2, // Couples Therapy Session
-    'psychological-assessment': 3, // Psychological Assessment
-    'telehealth-video-session': 4, // Telehealth Video Session
-  };
-
-  // Convert service slug to ID on page load
+  // ✅ Convert service slug to ID on page load - dynamically fetch from API
   useEffect(() => {
     let isMounted = true; // Prevent state updates after unmount
     
     const loadServiceId = async () => {
       if (!selectedService || selectedService.trim() === '') {
-        console.warn('[DateTimeSelectionPage] No service selected, redirecting to service selection');
-        // Only redirect if we're not already on the service selection page
-        if (window.location.pathname !== '/appointments/book-appointment') {
-          navigate('/appointments/book-appointment', { replace: true });
+        console.warn('[DateTimeSelectionPage] No service selected, showing error state');
+        if (isMounted) {
+          setError('No service selected. Please go back and select a service.');
         }
         return;
       }
       
       try {
-        // Check if it's already a number
+        // Check if it's already a numeric ID
         const numericId = parseInt(selectedService);
         if (!isNaN(numericId)) {
           console.log('[DateTimeSelectionPage] Service is numeric ID:', numericId);
@@ -70,40 +59,53 @@ export const DateTimeSelectionPage: React.FC = () => {
           return;
         }
         
-        // First, try the frontend-to-backend mapping
-        if (FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService]) {
-          const mappedId = FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService];
-          console.log('[DateTimeSelectionPage] Service ID found in mapping:', mappedId, 'for slug:', selectedService);
-          if (isMounted) {
-            setServiceId(mappedId);
-          }
-          return;
-        }
+        // ✅ Fetch services dynamically from API (uses cache after first call)
+        console.log('[DateTimeSelectionPage] Fetching services from API to resolve slug:', selectedService);
+        const services = await servicesService.getAllServices();
+        console.log('[DateTimeSelectionPage] Available services from API:', services.map(s => ({ id: s.id, name: s.name })));
         
-        // If not in mapping, try to convert from slug via API
-        console.log('[DateTimeSelectionPage] Service is slug, converting to ID via API:', selectedService);
-        const id = await servicesService.getServiceIdFromSlug(selectedService);
-        
-        if (id && isMounted) {
-          console.log('[DateTimeSelectionPage] Service ID found via API:', id);
-          setServiceId(id);
-        } else if (!id && isMounted) {
-          console.warn('[DateTimeSelectionPage] Service not found in API, using fallback mapping or showing error');
-          // Try to use a default service ID or show error instead of redirecting
-          // This prevents infinite redirect loops
-          if (FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService]) {
-            const fallbackId = FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService];
-            console.log('[DateTimeSelectionPage] Using fallback service ID:', fallbackId);
-            setServiceId(fallbackId);
-          } else {
-            console.error('[DateTimeSelectionPage] Service not found and no mapping available:', selectedService);
-            setError(`Service "${selectedService}" not found. Please select a service again.`);
+        // Try to find service by matching slug to service name
+        const matchedService = services.find(s => {
+          const serviceSlug = s.name.toLowerCase().replace(/\s+/g, '-');
+          const selectedSlug = selectedService.toLowerCase();
+          
+          // Exact match
+          if (serviceSlug === selectedSlug) {
+            console.log(`[DateTimeSelectionPage] Exact match found: "${s.name}" (ID: ${s.id})`);
+            return true;
           }
+          
+          // Partial match (e.g., "individual-therapy" matches "individual-therapy-session")
+          if (serviceSlug.includes(selectedSlug) || selectedSlug.includes(serviceSlug)) {
+            console.log(`[DateTimeSelectionPage] Partial match found: "${s.name}" (ID: ${s.id})`);
+            return true;
+          }
+          
+          // Remove "-session" suffix and try again
+          const serviceBase = serviceSlug.replace(/-session$/i, '');
+          const selectedBase = selectedSlug.replace(/-session$/i, '');
+          if (serviceBase === selectedBase) {
+            console.log(`[DateTimeSelectionPage] Base match found (without -session): "${s.name}" (ID: ${s.id})`);
+            return true;
+          }
+          
+          return false;
+        });
+        
+        if (matchedService && isMounted) {
+          console.log('[DateTimeSelectionPage] ✅ Service resolved successfully:');
+          console.log('  - Slug:', selectedService);
+          console.log('  - Service ID:', matchedService.id);
+          console.log('  - Service Name:', matchedService.name);
+          setServiceId(matchedService.id);
+        } else if (!matchedService && isMounted) {
+          console.error('[DateTimeSelectionPage] ❌ Service not found for slug:', selectedService);
+          console.error('[DateTimeSelectionPage] Available service names:', services.map(s => `"${s.name}"`).join(', '));
+          setError(`Service "${selectedService}" not found. Please select a service again.`);
         }
       } catch (err) {
         console.error('[DateTimeSelectionPage] Error loading service:', err);
         if (isMounted) {
-          // Instead of redirecting, show error to prevent loop
           setError('Failed to load service information. Please try selecting a service again.');
         }
       }
