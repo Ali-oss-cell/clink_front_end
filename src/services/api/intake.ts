@@ -3,46 +3,80 @@ import axiosInstance from './axiosInstance';
 
 // Intake form data interface matching backend serializer exactly
 export interface IntakeFormData {
-  // Pre-filled from login (10 fields)
+  // Required fields
   first_name: string;
   last_name: string;
-  email: string;
   phone_number: string;
-  date_of_birth: string;
+  date_of_birth: string; // YYYY-MM-DD
   address_line_1: string;
   suburb: string;
-  state: string;
-  postcode: string;
-  medicare_number: string;
+  state: "NSW" | "VIC" | "QLD" | "WA" | "SA" | "TAS" | "ACT" | "NT";
+  postcode: string; // 4 digits
   
-  // User must complete (26 fields)
+  // Optional personal details
   preferred_name?: string;
   gender_identity?: string;
   pronouns?: string;
   home_phone?: string;
-  emergency_contact_name: string;
-  emergency_contact_relationship: string;
-  emergency_contact_phone: string;
-  referral_source: string;
-  has_gp_referral: boolean;
+  medicare_number?: string;
+  email?: string; // Read-only from registration
+  
+  // Emergency contact
+  emergency_contact_name?: string;
+  emergency_contact_relationship?: string;
+  emergency_contact_phone?: string;
+  
+  // Referral information
+  referral_source?: string;
+  has_gp_referral?: boolean;
   gp_name?: string;
   gp_practice_name?: string;
   gp_provider_number?: string;
   gp_address?: string;
-  previous_therapy: boolean;
+  
+  // Medical history
+  previous_therapy?: boolean;
   previous_therapy_details?: string;
-  current_medications: boolean;
+  current_medications?: boolean;
   medication_list?: string;
-  other_health_professionals: boolean;
+  other_health_professionals?: boolean;
   other_health_details?: string;
-  medical_conditions: boolean;
+  medical_conditions?: boolean;
   medical_conditions_details?: string;
-  presenting_concerns: string;
-  therapy_goals: string;
+  
+  // Presenting concerns
+  presenting_concerns?: string;
+  therapy_goals?: string;
+  
+  // Consent fields (REQUIRED for treatment)
   consent_to_treatment: boolean;
-  consent_to_telehealth: boolean;
-  client_signature: string;
-  consent_date: string;
+  consent_to_telehealth?: boolean;
+  telehealth_emergency_protocol_acknowledged?: boolean;
+  telehealth_tech_requirements_acknowledged?: boolean;
+  telehealth_recording_consent?: boolean;
+  privacy_policy_accepted: boolean;
+  consent_to_data_sharing?: boolean;
+  consent_to_marketing?: boolean;
+  
+  // Communication preferences
+  email_notifications_enabled?: boolean;
+  sms_notifications_enabled?: boolean;
+  appointment_reminders_enabled?: boolean;
+  
+  // Privacy preferences
+  share_progress_with_emergency_contact?: boolean;
+  
+  // Parental consent (for minors under 18)
+  parental_consent?: boolean;
+  parental_consent_name?: string;
+  parental_consent_signature?: string;
+  
+  // Completion flag
+  intake_completed?: boolean;
+  
+  // Legacy fields (for backward compatibility)
+  client_signature?: string;
+  consent_date?: string;
 }
 
 // Intake form service with API integration
@@ -50,7 +84,18 @@ export const intakeService = {
   // Get intake form data (pre-filled from backend)
   getIntakeForm: async (): Promise<IntakeFormData> => {
     try {
-      const response = await axiosInstance.get('/users/intake-form/');
+      // Try /api/auth/intake-form/ first (preferred), fallback to /api/users/intake-form/
+      let response;
+      try {
+        response = await axiosInstance.get('/auth/intake-form/');
+      } catch (authError: any) {
+        if (authError.response?.status === 404) {
+          // Fallback to /users/intake-form/ if /auth/ doesn't exist
+          response = await axiosInstance.get('/users/intake-form/');
+        } else {
+          throw authError;
+        }
+      }
       return response.data;
     } catch (error) {
       console.error('Failed to get intake form:', error);
@@ -58,14 +103,59 @@ export const intakeService = {
     }
   },
 
-  // Submit intake form data
-  submitIntakeForm: async (data: IntakeFormData): Promise<void> => {
+  // Submit intake form data (PUT preferred, POST also supported)
+  submitIntakeForm: async (data: IntakeFormData): Promise<{ message: string; intake_completed: boolean }> => {
     try {
-      const response = await axiosInstance.post('/users/intake-form/', data);
+      // Mark as completed when submitting
+      const submitData = {
+        ...data,
+        intake_completed: true
+      };
+      
+      // Try PUT /api/auth/intake-form/ first (preferred)
+      let response;
+      try {
+        response = await axiosInstance.put('/auth/intake-form/', submitData);
+      } catch (putError: any) {
+        if (putError.response?.status === 404 || putError.response?.status === 405) {
+          // Fallback to POST /api/users/intake-form/ if PUT doesn't work
+          response = await axiosInstance.post('/users/intake-form/', submitData);
+        } else {
+          throw putError;
+        }
+      }
+      
       console.log('Intake form submitted:', response.data);
+      return response.data;
     } catch (error: any) {
       console.error('Failed to submit intake form:', error);
-      throw new Error(error.response?.data?.message || 'Failed to submit intake form data');
+      const errorMessage = error.response?.data?.message 
+        || (error.response?.data && typeof error.response.data === 'object' 
+          ? JSON.stringify(error.response.data) 
+          : 'Failed to submit intake form data');
+      throw new Error(errorMessage);
+    }
+  },
+
+  // Save draft (partial update without marking as completed)
+  saveDraft: async (data: Partial<IntakeFormData>): Promise<IntakeFormData> => {
+    try {
+      // Try PUT /api/auth/intake-form/ first (preferred)
+      let response;
+      try {
+        response = await axiosInstance.put('/auth/intake-form/', data);
+      } catch (putError: any) {
+        if (putError.response?.status === 404 || putError.response?.status === 405) {
+          // Fallback to POST /api/users/intake-form/ if PUT doesn't work
+          response = await axiosInstance.post('/users/intake-form/', data);
+        } else {
+          throw putError;
+        }
+      }
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to save draft:', error);
+      throw new Error(error.response?.data?.message || 'Failed to save draft');
     }
   },
 
@@ -133,33 +223,45 @@ export const intakeService = {
     const user = authService.getStoredUser();
     if (!user) return {};
 
+    // Calculate age for parental consent check
+    const age = user.date_of_birth ? 
+      Math.floor((new Date().getTime() - new Date(user.date_of_birth).getTime()) / (365.25 * 24 * 60 * 60 * 1000)) : 
+      null;
+    const isMinor = age !== null && age < 18;
+
     return {
-      // Pre-filled from login (10 fields)
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      phone_number: user.phone_number,
-      date_of_birth: user.date_of_birth,
+      // Required fields - pre-filled from registration
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
+      phone_number: user.phone_number || '',
+      date_of_birth: user.date_of_birth || '',
       address_line_1: user.address_line_1 || '',
       suburb: user.suburb || '',
-      state: user.state || '',
+      state: (user.state as any) || '',
       postcode: user.postcode || '',
-      medicare_number: user.medicare_number || '',
       
-      // Default values for user-completed fields
+      // Optional personal details
+      email: user.email,
       preferred_name: '',
       gender_identity: '',
       pronouns: '',
       home_phone: '',
+      medicare_number: user.medicare_number || '',
+      
+      // Emergency contact
       emergency_contact_name: '',
       emergency_contact_relationship: '',
       emergency_contact_phone: '',
+      
+      // Referral information
       referral_source: '',
       has_gp_referral: false,
       gp_name: '',
       gp_practice_name: '',
       gp_provider_number: '',
       gp_address: '',
+      
+      // Medical history
       previous_therapy: false,
       previous_therapy_details: '',
       current_medications: false,
@@ -168,12 +270,36 @@ export const intakeService = {
       other_health_details: '',
       medical_conditions: false,
       medical_conditions_details: '',
+      
+      // Presenting concerns
       presenting_concerns: '',
       therapy_goals: '',
+      
+      // Consent fields (defaults)
       consent_to_treatment: false,
       consent_to_telehealth: false,
-      client_signature: '',
-      consent_date: ''
+      telehealth_emergency_protocol_acknowledged: false,
+      telehealth_tech_requirements_acknowledged: false,
+      telehealth_recording_consent: false,
+      privacy_policy_accepted: false,
+      consent_to_data_sharing: false,
+      consent_to_marketing: false,
+      
+      // Communication preferences (defaults)
+      email_notifications_enabled: true,
+      sms_notifications_enabled: false,
+      appointment_reminders_enabled: true,
+      
+      // Privacy preferences
+      share_progress_with_emergency_contact: false,
+      
+      // Parental consent (if minor)
+      parental_consent: isMinor ? false : undefined,
+      parental_consent_name: '',
+      parental_consent_signature: '',
+      
+      // Completion flag
+      intake_completed: false
     };
   }
 };

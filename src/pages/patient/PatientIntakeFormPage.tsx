@@ -62,6 +62,20 @@ export const PatientIntakeFormPage: React.FC = () => {
       therapy_goals: preFilledData.therapy_goals || '',
       consent_to_treatment: preFilledData.consent_to_treatment || false,
       consent_to_telehealth: preFilledData.consent_to_telehealth || false,
+      telehealth_emergency_protocol_acknowledged: preFilledData.telehealth_emergency_protocol_acknowledged || false,
+      telehealth_tech_requirements_acknowledged: preFilledData.telehealth_tech_requirements_acknowledged || false,
+      telehealth_recording_consent: preFilledData.telehealth_recording_consent || false,
+      privacy_policy_accepted: preFilledData.privacy_policy_accepted || false,
+      consent_to_data_sharing: preFilledData.consent_to_data_sharing || false,
+      consent_to_marketing: preFilledData.consent_to_marketing || false,
+      email_notifications_enabled: preFilledData.email_notifications_enabled ?? true,
+      sms_notifications_enabled: preFilledData.sms_notifications_enabled || false,
+      appointment_reminders_enabled: preFilledData.appointment_reminders_enabled ?? true,
+      share_progress_with_emergency_contact: preFilledData.share_progress_with_emergency_contact || false,
+      parental_consent: preFilledData.parental_consent || false,
+      parental_consent_name: preFilledData.parental_consent_name || '',
+      parental_consent_signature: preFilledData.parental_consent_signature || '',
+      intake_completed: preFilledData.intake_completed || false,
       client_signature: preFilledData.client_signature || '',
       consent_date: preFilledData.consent_date || ''
     }
@@ -72,6 +86,14 @@ export const PatientIntakeFormPage: React.FC = () => {
   const watchedCurrentMedications = watch('current_medications');
   const watchedOtherHealthProfessionals = watch('other_health_professionals');
   const watchedMedicalConditions = watch('medical_conditions');
+  const watchedConsentToTelehealth = watch('consent_to_telehealth');
+  
+  // Calculate age for parental consent (if date_of_birth is available)
+  const dateOfBirth = watch('date_of_birth');
+  const age = dateOfBirth ? 
+    Math.floor((new Date().getTime() - new Date(dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000)) : 
+    null;
+  const isMinor = age !== null && age < 18;
 
   // Helper function to check if a value is truthy (handles both boolean and string)
   const isTruthy = (value: boolean | string | undefined): boolean => {
@@ -683,7 +705,7 @@ export const PatientIntakeFormPage: React.FC = () => {
       case 6:
         return (
           <div className={styles.formSection}>
-            <h3 className={styles.sectionTitle}>6. Consent to Treatment</h3>
+            <h3 className={styles.sectionTitle}>6. Consent & Preferences</h3>
             <div className={styles.consentSection}>
               <p className={styles.consentText}>
                 By signing below, you acknowledge that you have read and understood the information provided 
@@ -691,53 +713,262 @@ export const PatientIntakeFormPage: React.FC = () => {
                 will be used solely for the purpose of providing you with appropriate psychological care.
               </p>
               
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Client Signature *</label>
-                  <input
-                    {...register('client_signature', { required: 'Signature is required' })}
-                    className={`${styles.input} ${errors.client_signature ? styles.inputError : ''}`}
-                    placeholder="Type your full name to sign"
-                  />
-                  {errors.client_signature && <span className={styles.fieldError}>{errors.client_signature.message}</span>}
+              {/* Required Consents */}
+              <div className={styles.consentSubsection}>
+                <h4 className={styles.subsectionTitle}>Required Consents *</h4>
+                
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('consent_to_treatment', { required: 'Consent to treatment is required' })}
+                      type="checkbox"
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      I consent to treatment and have read the above information *
+                    </span>
+                  </label>
+                  {errors.consent_to_treatment && <span className={styles.fieldError}>Consent is required</span>}
                 </div>
 
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Date *</label>
-                  <input
-                    {...register('consent_date', { required: 'Date is required' })}
-                    type="date"
-                    className={`${styles.input} ${errors.consent_date ? styles.inputError : ''}`}
-                  />
-                  {errors.consent_date && <span className={styles.fieldError}>{errors.consent_date.message}</span>}
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('privacy_policy_accepted', { required: 'Privacy policy acceptance is required' })}
+                      type="checkbox"
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      I have read and accept the Privacy Policy (Privacy Act 1988 compliance) *
+                    </span>
+                  </label>
+                  {errors.privacy_policy_accepted && <span className={styles.fieldError}>Privacy policy acceptance is required</span>}
                 </div>
               </div>
 
-              <div className={styles.checkboxGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    {...register('consent_to_treatment', { required: 'Consent is required' })}
-                    type="checkbox"
-                    className={styles.checkbox}
-                  />
-                  <span className={styles.checkboxText}>
-                    I consent to treatment and have read the above information *
-                  </span>
-                </label>
-                {errors.consent_to_treatment && <span className={styles.fieldError}>Consent is required</span>}
+              {/* Telehealth Consent */}
+              <div className={styles.consentSubsection}>
+                <h4 className={styles.subsectionTitle}>Telehealth Consent</h4>
+                
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('consent_to_telehealth')}
+                      type="checkbox"
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      I consent to telehealth sessions <span className={styles.optionalLabel}>(Optional)</span>
+                    </span>
+                  </label>
+                </div>
+
+                {watchedConsentToTelehealth && (
+                  <>
+                    <div className={styles.checkboxGroup}>
+                      <label className={styles.checkboxLabel}>
+                        <input
+                          {...register('telehealth_emergency_protocol_acknowledged')}
+                          type="checkbox"
+                          className={styles.checkbox}
+                        />
+                        <span className={styles.checkboxText}>
+                          I acknowledge the telehealth emergency protocol *
+                        </span>
+                      </label>
+                    </div>
+
+                    <div className={styles.checkboxGroup}>
+                      <label className={styles.checkboxLabel}>
+                        <input
+                          {...register('telehealth_tech_requirements_acknowledged')}
+                          type="checkbox"
+                          className={styles.checkbox}
+                        />
+                        <span className={styles.checkboxText}>
+                          I acknowledge the telehealth technical requirements *
+                        </span>
+                      </label>
+                    </div>
+
+                    <div className={styles.checkboxGroup}>
+                      <label className={styles.checkboxLabel}>
+                        <input
+                          {...register('telehealth_recording_consent')}
+                          type="checkbox"
+                          className={styles.checkbox}
+                        />
+                        <span className={styles.checkboxText}>
+                          I consent to session recording (if applicable) <span className={styles.optionalLabel}>(Optional)</span>
+                        </span>
+                      </label>
+                    </div>
+                  </>
+                )}
               </div>
 
-              <div className={styles.checkboxGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    {...register('consent_to_telehealth')}
-                    type="checkbox"
-                    className={styles.checkbox}
-                  />
-                  <span className={styles.checkboxText}>
-                    I consent to telehealth sessions <span className={styles.optionalLabel}>(Optional)</span>
-                  </span>
-                </label>
+              {/* Data Sharing & Marketing */}
+              <div className={styles.consentSubsection}>
+                <h4 className={styles.subsectionTitle}>Data Sharing & Communication</h4>
+                
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('consent_to_data_sharing')}
+                      type="checkbox"
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      I consent to data sharing with third-party services (Twilio, Stripe) for appointment and payment processing <span className={styles.optionalLabel}>(Recommended)</span>
+                    </span>
+                  </label>
+                </div>
+
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('consent_to_marketing')}
+                      type="checkbox"
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      I consent to receive marketing communications <span className={styles.optionalLabel}>(Optional)</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Communication Preferences */}
+              <div className={styles.consentSubsection}>
+                <h4 className={styles.subsectionTitle}>Communication Preferences</h4>
+                
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('email_notifications_enabled')}
+                      type="checkbox"
+                      className={styles.checkbox}
+                      defaultChecked={true}
+                    />
+                    <span className={styles.checkboxText}>
+                      Email notifications enabled
+                    </span>
+                  </label>
+                </div>
+
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('sms_notifications_enabled')}
+                      type="checkbox"
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      SMS notifications enabled
+                    </span>
+                  </label>
+                </div>
+
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('appointment_reminders_enabled')}
+                      type="checkbox"
+                      className={styles.checkbox}
+                      defaultChecked={true}
+                    />
+                    <span className={styles.checkboxText}>
+                      Appointment reminders enabled
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Privacy Preferences */}
+              <div className={styles.consentSubsection}>
+                <h4 className={styles.subsectionTitle}>Privacy Preferences</h4>
+                
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      {...register('share_progress_with_emergency_contact')}
+                      type="checkbox"
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      Share progress updates with emergency contact <span className={styles.optionalLabel}>(Optional)</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Parental Consent (if minor) */}
+              {isMinor && (
+                <div className={styles.consentSubsection}>
+                  <h4 className={styles.subsectionTitle}>Parental Consent (Required for patients under 18)</h4>
+                  
+                  <div className={styles.checkboxGroup}>
+                    <label className={styles.checkboxLabel}>
+                      <input
+                        {...register('parental_consent', { required: 'Parental consent is required for patients under 18' })}
+                        type="checkbox"
+                        className={styles.checkbox}
+                      />
+                      <span className={styles.checkboxText}>
+                        Parent/Guardian consent provided *
+                      </span>
+                    </label>
+                    {errors.parental_consent && <span className={styles.fieldError}>{errors.parental_consent.message}</span>}
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Parent/Guardian Name *</label>
+                    <input
+                      {...register('parental_consent_name', { required: isMinor ? 'Parent/guardian name is required' : false })}
+                      className={`${styles.input} ${errors.parental_consent_name ? styles.inputError : ''}`}
+                      placeholder="Full name of parent/guardian"
+                    />
+                    {errors.parental_consent_name && <span className={styles.fieldError}>{errors.parental_consent_name.message}</span>}
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Parent/Guardian Signature *</label>
+                    <input
+                      {...register('parental_consent_signature', { required: isMinor ? 'Parent/guardian signature is required' : false })}
+                      className={`${styles.input} ${errors.parental_consent_signature ? styles.inputError : ''}`}
+                      placeholder="Type full name to sign"
+                    />
+                    {errors.parental_consent_signature && <span className={styles.fieldError}>{errors.parental_consent_signature.message}</span>}
+                  </div>
+                </div>
+              )}
+
+              {/* Signature Section */}
+              <div className={styles.consentSubsection}>
+                <h4 className={styles.subsectionTitle}>Client Signature</h4>
+                
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Client Signature *</label>
+                    <input
+                      {...register('client_signature', { required: 'Signature is required' })}
+                      className={`${styles.input} ${errors.client_signature ? styles.inputError : ''}`}
+                      placeholder="Type your full name to sign"
+                    />
+                    {errors.client_signature && <span className={styles.fieldError}>{errors.client_signature.message}</span>}
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Date *</label>
+                    <input
+                      {...register('consent_date', { required: 'Date is required' })}
+                      type="date"
+                      className={`${styles.input} ${errors.consent_date ? styles.inputError : ''}`}
+                      defaultValue={new Date().toISOString().split('T')[0]}
+                    />
+                    {errors.consent_date && <span className={styles.fieldError}>{errors.consent_date.message}</span>}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
