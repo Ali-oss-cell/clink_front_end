@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
+import { servicesService, type Service as APIService } from '../../services/api/services';
 import { InfoIcon, VideoIcon, PhoneIcon } from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
@@ -27,6 +28,9 @@ export const ServiceSelectionPage: React.FC = () => {
   const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
   const [consentLoading, setConsentLoading] = useState(true);
   const [consentError, setConsentError] = useState<string | null>(null);
+  const [apiServices, setApiServices] = useState<APIService[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState<string | null>(null);
   
   // Get user data from auth service
   const user = authService.getStoredUser();
@@ -40,15 +44,59 @@ export const ServiceSelectionPage: React.FC = () => {
     console.log('[ServiceSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
   }, [serviceFromUrl, selectedService, searchParams]);
 
+  // ✅ Fetch services from backend API
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        setServicesLoading(true);
+        setServicesError(null);
+        
+        console.log('[ServiceSelectionPage] Fetching services from API...');
+        const services = await servicesService.getAllServices();
+        console.log('[ServiceSelectionPage] Services from API:', services);
+        console.log('[ServiceSelectionPage] Service IDs:', services.map(s => s.id));
+        
+        // Only show active services
+        const activeServices = services.filter(s => s.is_active);
+        console.log('[ServiceSelectionPage] Active services:', activeServices.length);
+        
+        setApiServices(activeServices);
+        
+        // If URL has a service ID, validate it exists
+        if (serviceFromUrl) {
+          const serviceId = parseInt(serviceFromUrl);
+          if (!isNaN(serviceId)) {
+            const foundService = activeServices.find(s => s.id === serviceId);
+            if (foundService) {
+              console.log('[ServiceSelectionPage] Valid service ID from URL:', serviceId);
+              setSelectedService(serviceId.toString());
+            } else {
+              console.warn('[ServiceSelectionPage] Service ID from URL not found:', serviceId);
+              console.warn('[ServiceSelectionPage] Available service IDs:', activeServices.map(s => s.id));
+            }
+          }
+        }
+      } catch (err: any) {
+        console.error('[ServiceSelectionPage] Failed to load services:', err);
+        setServicesError(err.message || 'Failed to load services. Please try again.');
+      } finally {
+        setServicesLoading(false);
+      }
+    };
+
+    loadServices();
+  }, []); // Only run once on mount
+
   // Restore service selection from URL params if present (but don't auto-navigate)
   useEffect(() => {
     if (serviceFromUrl && serviceFromUrl !== selectedService) {
-      console.log('[ServiceSelectionPage] Restoring service from URL:', serviceFromUrl);
-      setSelectedService(serviceFromUrl);
+      const serviceId = parseInt(serviceFromUrl);
+      if (!isNaN(serviceId) && apiServices.find(s => s.id === serviceId)) {
+        console.log('[ServiceSelectionPage] Restoring service ID from URL:', serviceId);
+        setSelectedService(serviceId.toString());
+      }
     }
-    // Don't clear selection if no URL param - allow user to select manually
-    // Only restore from URL if present, but don't interfere with manual selection
-  }, [serviceFromUrl]); // Only depend on serviceFromUrl, not selectedService to avoid clearing
+  }, [serviceFromUrl, apiServices]); // Depend on apiServices to ensure they're loaded
 
   useEffect(() => {
     const loadConsent = async () => {
@@ -68,64 +116,33 @@ export const ServiceSelectionPage: React.FC = () => {
     loadConsent();
   }, []);
 
-  // TODO: Fetch services from Django backend API
-  // TODO: Implement service filtering by user preferences
-  // TODO: Add service availability checking
-  // TODO: Implement dynamic pricing based on user location/insurance
+  // Transform API services to display format
+  const services: Service[] = apiServices.map(apiService => {
+    const standardFee = parseFloat(apiService.standard_fee) || 0;
+    // TODO: Get actual Medicare rebate from backend when available
+    const medicareRebate = standardFee > 0 ? 87.45 : 0; // Default Medicare rebate
+    const yourCost = Math.max(0, standardFee - medicareRebate);
+    
+    return {
+      id: apiService.id.toString(), // Convert to string for comparison with selectedService
+      name: apiService.name,
+      duration: apiService.duration_minutes,
+      standardFee: standardFee,
+      medicareRebate: medicareRebate,
+      yourCost: yourCost,
+      medicareApplicable: medicareRebate > 0,
+      specializations: [], // TODO: Get from backend when available
+      description: apiService.description || 'Professional psychological service',
+      requiresTelehealthConsent: apiService.name.toLowerCase().includes('telehealth') || 
+                                apiService.name.toLowerCase().includes('video')
+    };
+  });
 
-  const services: Service[] = [
-    {
-      id: 'individual-therapy',
-      name: 'Individual Therapy Session',
-      duration: 50,
-      standardFee: 180.00,
-      medicareRebate: 87.45,
-      yourCost: 92.55,
-      medicareApplicable: true,
-      specializations: ['Anxiety & Depression', 'Stress Management', 'Life Transitions'],
-      description: 'One-on-one therapy session with a registered psychologist'
-    },
-    {
-      id: 'couples-therapy',
-      name: 'Couples Therapy Session',
-      duration: 60,
-      standardFee: 220.00,
-      medicareRebate: 0,
-      yourCost: 220.00,
-      medicareApplicable: false,
-      specializations: ['Relationship Issues', 'Communication Skills', 'Conflict Resolution'],
-      description: 'Joint therapy session for couples working on relationship issues'
-    },
-    {
-      id: 'psychological-assessment',
-      name: 'Psychological Assessment',
-      duration: 90,
-      standardFee: 280.00,
-      medicareRebate: 126.55,
-      yourCost: 153.45,
-      medicareApplicable: true,
-      specializations: ['ADHD Assessment', 'Autism Spectrum Assessment', 'Cognitive Assessment'],
-      description: 'Comprehensive psychological evaluation and assessment'
-    },
-    {
-      id: 'telehealth-video-session',
-      name: 'Telehealth Video Session',
-      duration: 50,
-      standardFee: 180.0,
-      medicareRebate: 87.45,
-      yourCost: 92.55,
-      medicareApplicable: true,
-      specializations: ['Remote Therapy', 'Follow-up Care', 'Medication Reviews'],
-      description: 'Secure video consultation with your clinician from home.',
-      requiresTelehealthConsent: true
-    }
-  ];
-
-  const handleServiceSelect = (serviceId: string) => {
-    console.log('[ServiceSelectionPage] handleServiceSelect called with:', serviceId);
+  const handleServiceSelect = (serviceId: number) => {
+    console.log('[ServiceSelectionPage] handleServiceSelect called with service ID:', serviceId);
     console.log('[ServiceSelectionPage] Previous selectedService:', selectedService);
-    setSelectedService(serviceId);
-    console.log('[ServiceSelectionPage] New selectedService will be:', serviceId);
+    setSelectedService(serviceId.toString());
+    console.log('[ServiceSelectionPage] New selectedService will be:', serviceId.toString());
   };
 
   const handleContinue = () => {
@@ -136,22 +153,38 @@ export const ServiceSelectionPage: React.FC = () => {
       return;
     }
 
-    const selectedServiceMeta = services.find((service) => service.id === selectedService);
+    // ✅ Find service by ID (numeric)
+    const serviceId = parseInt(selectedService);
+    if (isNaN(serviceId)) {
+      console.error('[ServiceSelectionPage] Invalid service ID:', selectedService);
+      alert('Invalid service selection. Please select a service again.');
+      return;
+    }
+
+    const selectedServiceMeta = apiServices.find((service) => service.id === serviceId);
+    if (!selectedServiceMeta) {
+      console.error('[ServiceSelectionPage] Service not found for ID:', serviceId);
+      console.error('[ServiceSelectionPage] Available service IDs:', apiServices.map(s => s.id));
+      alert('Service not found. Please select a service again.');
+      return;
+    }
+
+    // Check if telehealth consent is required
+    const requiresTelehealth = selectedServiceMeta.name.toLowerCase().includes('telehealth') || 
+                               selectedServiceMeta.name.toLowerCase().includes('video');
+    
     if (
-      selectedServiceMeta?.requiresTelehealthConsent &&
+      requiresTelehealth &&
       (!telehealthConsent || !telehealthConsent.consent_to_telehealth)
     ) {
       alert('Telehealth consent is required before booking a video session. Please update your consent first.');
       return;
     }
     
-    // TODO: Validate service selection with backend
-    // TODO: Check service availability for selected date range
-    // TODO: Store service selection in Redux store
-    // TODO: Log service selection for analytics
-    
-    const targetUrl = `/appointments/psychologist-selection?service=${selectedService}`;
-    console.log('[ServiceSelectionPage] Navigating to:', targetUrl);
+    // ✅ Navigate with service ID (number) not slug
+    const targetUrl = `/appointments/psychologist-selection?service=${serviceId}`;
+    console.log('[ServiceSelectionPage] Navigating with service ID:', serviceId);
+    console.log('[ServiceSelectionPage] Target URL:', targetUrl);
     navigate(targetUrl);
   };
 
@@ -196,16 +229,36 @@ export const ServiceSelectionPage: React.FC = () => {
             </div>
           )}
 
-          <div className={styles.servicesGrid}>
-            {services.map((service) => (
-              <div 
-                key={service.id}
-                className={`${styles.serviceCard} ${selectedService === service.id ? styles.serviceCardSelected : ''}`}
-                onClick={() => {
-                  console.log('[ServiceSelectionPage] Service card clicked:', service.id);
-                  handleServiceSelect(service.id);
-                }}
-              >
+          {servicesLoading ? (
+            <div className={styles.loadingState}>
+              <p>Loading services...</p>
+            </div>
+          ) : servicesError ? (
+            <div className={styles.errorState}>
+              <h3>Unable to Load Services</h3>
+              <p>{servicesError}</p>
+              <button className={styles.actionButton} onClick={() => window.location.reload()}>
+                Retry
+              </button>
+            </div>
+          ) : services.length === 0 ? (
+            <div className={styles.errorState}>
+              <h3>No Services Available</h3>
+              <p>There are currently no services available for booking. Please check back later.</p>
+            </div>
+          ) : (
+            <div className={styles.servicesGrid}>
+              {services.map((service) => {
+                const serviceId = parseInt(service.id);
+                return (
+                  <div 
+                    key={service.id}
+                    className={`${styles.serviceCard} ${selectedService === service.id ? styles.serviceCardSelected : ''}`}
+                    onClick={() => {
+                      console.log('[ServiceSelectionPage] Service card clicked, ID:', serviceId);
+                      handleServiceSelect(serviceId);
+                    }}
+                  >
                 <div className={styles.serviceHeader}>
                   <h3 className={styles.serviceName}>{service.name}</h3>
                   <div className={styles.serviceDuration}>{service.duration} minutes</div>
@@ -245,19 +298,21 @@ export const ServiceSelectionPage: React.FC = () => {
                   {service.description}
                 </div>
 
-                <button 
-                  className={`${styles.selectButton} ${selectedService === service.id ? styles.selectButtonSelected : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent card click from firing
-                    console.log('[ServiceSelectionPage] Select button clicked:', service.id);
-                    handleServiceSelect(service.id);
-                  }}
-                >
-                  {selectedService === service.id ? 'SELECTED' : 'SELECT'}
-                </button>
-              </div>
-            ))}
-          </div>
+                    <button 
+                      className={`${styles.selectButton} ${selectedService === service.id ? styles.selectButtonSelected : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card click from firing
+                        console.log('[ServiceSelectionPage] Select button clicked, ID:', serviceId);
+                        handleServiceSelect(serviceId);
+                      }}
+                    >
+                      {selectedService === service.id ? 'SELECTED' : 'SELECT'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           <div className={styles.infoBoxes}>
             <div className={styles.infoBox}>

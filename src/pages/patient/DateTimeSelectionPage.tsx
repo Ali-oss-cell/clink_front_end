@@ -246,6 +246,15 @@ export const DateTimeSelectionPage: React.FC = () => {
         notes: ''
       };
       
+      // ✅ Log booking data to verify service_id
+      console.log('[DateTimeSelectionPage] Booking appointment with data:', {
+        psychologist_id: bookingData.psychologist_id,
+        service_id: bookingData.service_id,
+        service_id_type: typeof bookingData.service_id,
+        time_slot_id: bookingData.time_slot_id,
+        session_type: bookingData.session_type
+      });
+      
       const response = await appointmentsService.bookAppointment(bookingData);
       
       // Navigate to appointment details page
