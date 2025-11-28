@@ -52,9 +52,9 @@ export const PsychologistProfilePage: React.FC = () => {
         // Communication & Languages
         languages_spoken: profile.languages_spoken,
         session_types: profile.session_types,
-        // Insurance & Billing (medicare_rebate_amount is admin only - removed)
+        // Insurance & Billing
         insurance_providers: profile.insurance_providers,
-        billing_methods: profile.billing_methods,
+        medicare_rebate_amount: profile.medicare_rebate_amount,
         // Availability & Scheduling
         working_hours: profile.working_hours,
         working_days: profile.working_days || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -80,7 +80,8 @@ export const PsychologistProfilePage: React.FC = () => {
       setSaving(true);
       
       // Prepare update data - only include editable fields
-      // Note: medicare_rebate_amount, consultation_fee, ahpra fields are admin-only and not included
+      // Note: consultation_fee and ahpra fields are admin-only and not included
+      // medicare_rebate_amount is now editable by psychologists
       const updateData: any = { ...editForm };
       
       // Convert working_days array to comma-separated string if backend expects string format
@@ -500,13 +501,15 @@ export const PsychologistProfilePage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label>Billing Methods:</label>
+                      <label>Medicare Rebate Amount ($):</label>
                       <input
-                        type="text"
-                        value={editForm.billing_methods || ''}
-                        onChange={(e) => handleInputChange('billing_methods', e.target.value)}
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={editForm.medicare_rebate_amount || ''}
+                        onChange={(e) => handleInputChange('medicare_rebate_amount', parseFloat(e.target.value) || 0)}
                         className={styles.editableInput}
-                        placeholder="Medicare, Private Pay, Insurance, etc."
+                        placeholder="75.00"
                       />
                     </div>
                   </div>
@@ -529,9 +532,9 @@ export const PsychologistProfilePage: React.FC = () => {
                       )}
                     </div>
                     <div>
-                      <strong>Billing Methods:</strong>
-                      {profile.billing_methods ? (
-                        <span>{profile.billing_methods}</span>
+                      <strong>Medicare Rebate Amount:</strong>
+                      {profile.medicare_rebate_amount ? (
+                        <span>${profile.medicare_rebate_amount}</span>
                       ) : (
                         <span>Not specified</span>
                       )}
