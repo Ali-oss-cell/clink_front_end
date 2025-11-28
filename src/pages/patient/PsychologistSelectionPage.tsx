@@ -86,8 +86,25 @@ export const PsychologistSelectionPage: React.FC = () => {
         // Fetch all psychologists - API service handles response format automatically
         const psychologistsData = await psychologistService.getAllPsychologists();
         
+        console.log('[PsychologistSelectionPage] Raw psychologists from API:', psychologistsData);
+        console.log('[PsychologistSelectionPage] Psychologist IDs:', psychologistsData.map((p: PsychologistProfile) => p.id));
+        
+        // ✅ Filter out psychologists without profiles (no AHPRA number = no profile)
+        const psychologistsWithProfiles = psychologistsData.filter((psych: PsychologistProfile) => {
+          const hasProfile = psych.ahpra_registration_number && 
+                            psych.ahpra_registration_number.trim() !== '' &&
+                            psych.is_active_practitioner !== false;
+          if (!hasProfile) {
+            console.warn(`[PsychologistSelectionPage] Filtering out psychologist ID ${psych.id} - no profile`);
+          }
+          return hasProfile;
+        });
+        
+        console.log('[PsychologistSelectionPage] Psychologists with profiles:', psychologistsWithProfiles.length);
+        console.log('[PsychologistSelectionPage] Valid psychologist IDs:', psychologistsWithProfiles.map((p: PsychologistProfile) => p.id));
+        
         // Transform backend data to frontend format
-        const transformedData: Psychologist[] = psychologistsData.map((psych: PsychologistProfile) => ({
+        const transformedData: Psychologist[] = psychologistsWithProfiles.map((psych: PsychologistProfile) => ({
           id: psych.id,
           name: psych.display_name,
           title: psych.title,
@@ -112,7 +129,8 @@ export const PsychologistSelectionPage: React.FC = () => {
         }));
         
         setPsychologists(transformedData);
-        console.log('Transformed psychologists:', transformedData);
+        console.log('[PsychologistSelectionPage] Transformed psychologists (with profiles only):', transformedData);
+        console.log('[PsychologistSelectionPage] Available psychologist IDs for selection:', transformedData.map(p => p.id));
       } catch (err) {
         console.error('Failed to load psychologists:', err);
         const errorMessage = err instanceof Error ? err.message : 'Failed to load psychologists. Please try again.';
@@ -178,7 +196,10 @@ export const PsychologistSelectionPage: React.FC = () => {
   });
 
   const handlePsychologistSelect = (psychologistId: number) => {
+    console.log('[PsychologistSelectionPage] handlePsychologistSelect called with ID:', psychologistId);
+    console.log('[PsychologistSelectionPage] Psychologist ID type:', typeof psychologistId);
     setSelectedPsychologist(psychologistId);
+    console.log('[PsychologistSelectionPage] selectedPsychologist state updated to:', psychologistId);
   };
 
   const handleContinue = () => {
@@ -198,8 +219,13 @@ export const PsychologistSelectionPage: React.FC = () => {
     }
     
     // Store psychologist selection and navigate
+    console.log('[PsychologistSelectionPage] About to navigate with psychologist ID:', selectedPsychologist);
+    console.log('[PsychologistSelectionPage] Psychologist ID type:', typeof selectedPsychologist);
+    console.log('[PsychologistSelectionPage] Service:', selectedService);
+    
     const targetUrl = `/appointments/date-time?service=${selectedService}&psychologist=${selectedPsychologist}`;
     console.log('[PsychologistSelectionPage] Navigating to:', targetUrl);
+    console.log('[PsychologistSelectionPage] Full URL will be:', window.location.origin + targetUrl);
     navigate(targetUrl);
   };
 

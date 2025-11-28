@@ -193,6 +193,14 @@ export const DateTimeSelectionPage: React.FC = () => {
       return;
     }
 
+    // Validate psychologist ID is a valid number
+    const psychologistIdNum = parseInt(selectedPsychologist);
+    if (isNaN(psychologistIdNum) || psychologistIdNum <= 0) {
+      console.error('[DateTimeSelectionPage] Invalid psychologist ID:', selectedPsychologist);
+      setError(`Invalid psychologist ID: ${selectedPsychologist}. Please select a psychologist again.`);
+      return;
+    }
+
     // Wait for serviceId to be loaded before fetching slots
     if (!serviceId) {
       console.log('[DateTimeSelectionPage] Waiting for serviceId to be loaded...');
@@ -201,6 +209,7 @@ export const DateTimeSelectionPage: React.FC = () => {
 
     console.log('[DateTimeSelectionPage] All conditions met, fetching available slots:', {
       psychologist: selectedPsychologist,
+      psychologistIdNum,
       serviceId,
       sessionType
     });
@@ -292,6 +301,10 @@ export const DateTimeSelectionPage: React.FC = () => {
   // Only show error state if we have an error AND we're not loading
   // Don't show error if availabilityData is null but we're still loading
   if (error && !loading) {
+    // Check if error is about psychologist not found
+    const isPsychologistNotFound = error.toLowerCase().includes('psychologist') && 
+                                   error.toLowerCase().includes('not found');
+    
     return (
       <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
@@ -303,12 +316,27 @@ export const DateTimeSelectionPage: React.FC = () => {
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Available Slots</h3>
+              <h3>
+                <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 
+                {isPsychologistNotFound ? 'Psychologist Not Found' : 'Unable to Load Available Slots'}
+              </h3>
               <p>{error}</p>
-              <button className={styles.retryButton} onClick={fetchAvailableSlots}>
-                <EditIcon size="sm" style={{ marginRight: '6px' }} />
-                Retry
-              </button>
+              {isPsychologistNotFound ? (
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem' }}>
+                  <button 
+                    className={styles.retryButton} 
+                    onClick={handleBack}
+                    style={{ backgroundColor: '#4A90E2', color: 'white' }}
+                  >
+                    ← Select Different Psychologist
+                  </button>
+                </div>
+              ) : (
+                <button className={styles.retryButton} onClick={fetchAvailableSlots}>
+                  <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                  Retry
+                </button>
+              )}
             </div>
           </div>
         </div>

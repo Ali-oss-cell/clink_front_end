@@ -57,6 +57,7 @@ export interface CreateUserRequest {
   qualifications?: string;
   years_experience?: number; // Default: 0
   consultation_fee?: string; // Decimal as string, default: "180.00"
+  medicare_rebate_amount?: string; // Decimal as string, default: "87.45"
   medicare_provider_number?: string;
   bio?: string;
   is_accepting_new_patients?: boolean; // Default: true
@@ -315,6 +316,9 @@ export class AdminService {
         }
         if (userData.consultation_fee) {
           cleanedData.consultation_fee = userData.consultation_fee;
+        }
+        if (userData.medicare_rebate_amount) {
+          cleanedData.medicare_rebate_amount = userData.medicare_rebate_amount;
         }
         if (userData.medicare_provider_number && userData.medicare_provider_number.trim()) {
           cleanedData.medicare_provider_number = userData.medicare_provider_number.trim();

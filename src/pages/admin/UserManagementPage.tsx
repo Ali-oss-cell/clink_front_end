@@ -33,6 +33,7 @@ export const UserManagementPage: React.FC = () => {
     qualifications: '',
     years_experience: 0,
     consultation_fee: '180.00',
+    medicare_rebate_amount: '87.45',
     medicare_provider_number: '',
     bio: '',
     is_accepting_new_patients: true
@@ -153,6 +154,7 @@ export const UserManagementPage: React.FC = () => {
         qualifications: '',
         years_experience: 0,
         consultation_fee: '180.00',
+        medicare_rebate_amount: '87.45',
         medicare_provider_number: '',
         bio: '',
         is_accepting_new_patients: true
@@ -689,6 +691,22 @@ export const UserManagementPage: React.FC = () => {
                           value={createForm.consultation_fee || '180.00'}
                           onChange={(e) => setCreateForm({ ...createForm, consultation_fee: e.target.value })}
                         />
+                        <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                          Default: $180.00 (full fee before Medicare rebate)
+                        </small>
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label>Medicare Rebate Amount (AUD) (Optional)</label>
+                        <input
+                          type="text"
+                          placeholder="87.45"
+                          value={createForm.medicare_rebate_amount || '87.45'}
+                          onChange={(e) => setCreateForm({ ...createForm, medicare_rebate_amount: e.target.value })}
+                        />
+                        <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                          Default: $87.45 (standard Medicare rebate for clinical psychology)
+                        </small>
                       </div>
 
                       <div className={styles.formGroup}>
