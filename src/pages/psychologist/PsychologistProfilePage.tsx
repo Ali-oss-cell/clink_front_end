@@ -38,20 +38,24 @@ export const PsychologistProfilePage: React.FC = () => {
   const handleEditClick = () => {
     if (profile) {
       setEditForm({
+        // Professional Information
         title: profile.title,
         qualifications: profile.qualifications,
         years_experience: profile.years_experience,
         bio: profile.bio,
+        // Practice Details
         practice_name: profile.practice_name,
         practice_address: profile.practice_address,
         practice_phone: profile.practice_phone,
         practice_email: profile.practice_email,
         personal_website: profile.personal_website,
+        // Communication & Languages
         languages_spoken: profile.languages_spoken,
         session_types: profile.session_types,
+        // Insurance & Billing (medicare_rebate_amount is admin only - removed)
         insurance_providers: profile.insurance_providers,
         billing_methods: profile.billing_methods,
-        medicare_rebate_amount: profile.medicare_rebate_amount,
+        // Availability & Scheduling
         working_hours: profile.working_hours,
         working_days: profile.working_days || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         start_time: profile.start_time || '09:00',
@@ -60,9 +64,10 @@ export const PsychologistProfilePage: React.FC = () => {
         break_between_sessions_minutes: profile.break_between_sessions_minutes,
         telehealth_available: profile.telehealth_available,
         in_person_available: profile.in_person_available,
+        // Profile & Settings
         is_accepting_new_patients: profile.is_accepting_new_patients,
         max_patients_per_day: profile.max_patients_per_day || 10,
-        is_active_practitioner: profile.is_active_practitioner || true
+        is_active_practitioner: profile.is_active_practitioner ?? true
       });
       setIsEditing(true);
     }
@@ -73,7 +78,18 @@ export const PsychologistProfilePage: React.FC = () => {
     
     try {
       setSaving(true);
-      const updatedProfile = await psychologistService.updateProfile(profile.id, editForm);
+      
+      // Prepare update data - only include editable fields
+      // Note: medicare_rebate_amount, consultation_fee, ahpra fields are admin-only and not included
+      const updateData: any = { ...editForm };
+      
+      // Convert working_days array to comma-separated string if backend expects string format
+      // Backend may accept either format, but comma-separated string is more common
+      if (updateData.working_days && Array.isArray(updateData.working_days)) {
+        updateData.working_days = updateData.working_days.join(',');
+      }
+      
+      const updatedProfile = await psychologistService.updateProfile(profile.id, updateData);
       setProfile(updatedProfile);
       setIsEditing(false);
       setEditForm({});
@@ -434,6 +450,139 @@ export const PsychologistProfilePage: React.FC = () => {
                         <span className={styles.languageTag}>No languages listed</span>
                       )
                     }
+                  </div>
+                )}
+              </div>
+
+              {/* Session Types */}
+              <div className={styles.detailSection}>
+                <h4 className={styles.sectionTitle}>Session Types</h4>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editForm.session_types || ''}
+                    onChange={(e) => handleInputChange('session_types', e.target.value)}
+                    className={styles.editableInput}
+                    placeholder="Individual, Couples, Group"
+                  />
+                ) : (
+                  <div className={styles.languagesList}>
+                    {profile.session_types_list && Array.isArray(profile.session_types_list) ? 
+                      profile.session_types_list.map((type: any, index) => (
+                        <span key={index} className={styles.languageTag}>
+                          {typeof type === 'object' ? (type as any).name || (type as any).title || JSON.stringify(type) : type}
+                        </span>
+                      )) : (
+                        profile.session_types ? (
+                          <span className={styles.languageTag}>{profile.session_types}</span>
+                        ) : (
+                          <span className={styles.languageTag}>No session types listed</span>
+                        )
+                      )
+                    }
+                  </div>
+                )}
+              </div>
+
+              {/* Insurance & Billing */}
+              <div className={styles.detailSection}>
+                <h4 className={styles.sectionTitle}>Insurance & Billing</h4>
+                {isEditing ? (
+                  <div className={styles.editableFields}>
+                    <div>
+                      <label>Insurance Providers:</label>
+                      <input
+                        type="text"
+                        value={editForm.insurance_providers || ''}
+                        onChange={(e) => handleInputChange('insurance_providers', e.target.value)}
+                        className={styles.editableInput}
+                        placeholder="Medicare, Private Health, etc."
+                      />
+                    </div>
+                    <div>
+                      <label>Billing Methods:</label>
+                      <input
+                        type="text"
+                        value={editForm.billing_methods || ''}
+                        onChange={(e) => handleInputChange('billing_methods', e.target.value)}
+                        className={styles.editableInput}
+                        placeholder="Medicare, Private Pay, Insurance, etc."
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.contactInfo}>
+                    <div>
+                      <strong>Insurance Providers:</strong>
+                      {profile.insurance_providers_list && Array.isArray(profile.insurance_providers_list) && profile.insurance_providers_list.length > 0 ? (
+                        <div className={styles.languagesList}>
+                          {profile.insurance_providers_list.map((provider: any, index) => (
+                            <span key={index} className={styles.languageTag}>
+                              {typeof provider === 'object' ? (provider as any).name || JSON.stringify(provider) : provider}
+                            </span>
+                          ))}
+                        </div>
+                      ) : profile.insurance_providers ? (
+                        <span>{profile.insurance_providers}</span>
+                      ) : (
+                        <span>Not specified</span>
+                      )}
+                    </div>
+                    <div>
+                      <strong>Billing Methods:</strong>
+                      {profile.billing_methods ? (
+                        <span>{profile.billing_methods}</span>
+                      ) : (
+                        <span>Not specified</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Availability Settings */}
+              <div className={styles.detailSection}>
+                <h4 className={styles.sectionTitle}>Availability Settings</h4>
+                {isEditing ? (
+                  <div className={styles.simpleFields}>
+                    <div>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={editForm.is_accepting_new_patients ?? false}
+                          onChange={(e) => handleInputChange('is_accepting_new_patients', e.target.checked)}
+                        />
+                        Accepting New Patients
+                      </label>
+                    </div>
+                    <div>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={editForm.is_active_practitioner ?? true}
+                          onChange={(e) => handleInputChange('is_active_practitioner', e.target.checked)}
+                        />
+                        Active Practitioner
+                      </label>
+                    </div>
+                    <div>
+                      <label>Max Patients Per Day:</label>
+                      <input
+                        type="number"
+                        value={editForm.max_patients_per_day || ''}
+                        onChange={(e) => handleInputChange('max_patients_per_day', parseInt(e.target.value) || 0)}
+                        className={styles.editableInput}
+                        placeholder="10"
+                        min="1"
+                        max="20"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.contactInfo}>
+                    <p><strong>Accepting New Patients:</strong> {profile.is_accepting_new_patients ? 'Yes' : 'No'}</p>
+                    <p><strong>Active Practitioner:</strong> {profile.is_active_practitioner ? 'Yes' : 'No'}</p>
+                    <p><strong>Max Patients Per Day:</strong> {profile.max_patients_per_day || 'Not set'}</p>
                   </div>
                 )}
               </div>
