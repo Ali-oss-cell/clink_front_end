@@ -45,12 +45,10 @@ export const ServiceSelectionPage: React.FC = () => {
     if (serviceFromUrl && serviceFromUrl !== selectedService) {
       console.log('[ServiceSelectionPage] Restoring service from URL:', serviceFromUrl);
       setSelectedService(serviceFromUrl);
-    } else if (!serviceFromUrl && selectedService) {
-      // Clear selection if service param is removed from URL
-      console.log('[ServiceSelectionPage] Clearing service selection (no param in URL)');
-      setSelectedService(null);
     }
-  }, [serviceFromUrl, selectedService]);
+    // Don't clear selection if no URL param - allow user to select manually
+    // Only restore from URL if present, but don't interfere with manual selection
+  }, [serviceFromUrl]); // Only depend on serviceFromUrl, not selectedService to avoid clearing
 
   useEffect(() => {
     const loadConsent = async () => {
@@ -124,7 +122,10 @@ export const ServiceSelectionPage: React.FC = () => {
   ];
 
   const handleServiceSelect = (serviceId: string) => {
+    console.log('[ServiceSelectionPage] handleServiceSelect called with:', serviceId);
+    console.log('[ServiceSelectionPage] Previous selectedService:', selectedService);
     setSelectedService(serviceId);
+    console.log('[ServiceSelectionPage] New selectedService will be:', serviceId);
   };
 
   const handleContinue = () => {
@@ -200,7 +201,10 @@ export const ServiceSelectionPage: React.FC = () => {
               <div 
                 key={service.id}
                 className={`${styles.serviceCard} ${selectedService === service.id ? styles.serviceCardSelected : ''}`}
-                onClick={() => handleServiceSelect(service.id)}
+                onClick={() => {
+                  console.log('[ServiceSelectionPage] Service card clicked:', service.id);
+                  handleServiceSelect(service.id);
+                }}
               >
                 <div className={styles.serviceHeader}>
                   <h3 className={styles.serviceName}>{service.name}</h3>
@@ -243,6 +247,11 @@ export const ServiceSelectionPage: React.FC = () => {
 
                 <button 
                   className={`${styles.selectButton} ${selectedService === service.id ? styles.selectButtonSelected : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card click from firing
+                    console.log('[ServiceSelectionPage] Select button clicked:', service.id);
+                    handleServiceSelect(service.id);
+                  }}
                 >
                   {selectedService === service.id ? 'SELECTED' : 'SELECT'}
                 </button>
