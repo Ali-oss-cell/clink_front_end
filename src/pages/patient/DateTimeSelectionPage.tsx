@@ -35,13 +35,27 @@ export const DateTimeSelectionPage: React.FC = () => {
     console.log('[DateTimeSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
   }, [selectedService, selectedPsychologist, searchParams]);
 
+  // Frontend service ID to backend service ID mapping
+  // This maps the frontend service slugs to backend service IDs
+  // TODO: Replace with actual backend service IDs when available
+  const FRONTEND_TO_BACKEND_SERVICE_MAP: Record<string, number> = {
+    'individual-therapy': 1, // Individual Therapy Session
+    'couples-therapy': 2, // Couples Therapy Session
+    'psychological-assessment': 3, // Psychological Assessment
+    'telehealth-video-session': 4, // Telehealth Video Session
+  };
+
   // Convert service slug to ID on page load
   useEffect(() => {
+    let isMounted = true; // Prevent state updates after unmount
+    
     const loadServiceId = async () => {
       if (!selectedService || selectedService.trim() === '') {
         console.warn('[DateTimeSelectionPage] No service selected, redirecting to service selection');
-        // Automatically redirect back to service selection
-        navigate('/appointments/book-appointment', { replace: true });
+        // Only redirect if we're not already on the service selection page
+        if (window.location.pathname !== '/appointments/book-appointment') {
+          navigate('/appointments/book-appointment', { replace: true });
+        }
         return;
       }
       
@@ -50,30 +64,57 @@ export const DateTimeSelectionPage: React.FC = () => {
         const numericId = parseInt(selectedService);
         if (!isNaN(numericId)) {
           console.log('[DateTimeSelectionPage] Service is numeric ID:', numericId);
-          setServiceId(numericId);
-        } else {
-          console.log('[DateTimeSelectionPage] Service is slug, converting to ID:', selectedService);
-          // It's a slug, convert it to ID
-          const id = await servicesService.getServiceIdFromSlug(selectedService);
-          
-          if (id) {
-            console.log('[DateTimeSelectionPage] Service ID found:', id);
-            setServiceId(id);
+          if (isMounted) {
+            setServiceId(numericId);
+          }
+          return;
+        }
+        
+        // First, try the frontend-to-backend mapping
+        if (FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService]) {
+          const mappedId = FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService];
+          console.log('[DateTimeSelectionPage] Service ID found in mapping:', mappedId, 'for slug:', selectedService);
+          if (isMounted) {
+            setServiceId(mappedId);
+          }
+          return;
+        }
+        
+        // If not in mapping, try to convert from slug via API
+        console.log('[DateTimeSelectionPage] Service is slug, converting to ID via API:', selectedService);
+        const id = await servicesService.getServiceIdFromSlug(selectedService);
+        
+        if (id && isMounted) {
+          console.log('[DateTimeSelectionPage] Service ID found via API:', id);
+          setServiceId(id);
+        } else if (!id && isMounted) {
+          console.warn('[DateTimeSelectionPage] Service not found in API, using fallback mapping or showing error');
+          // Try to use a default service ID or show error instead of redirecting
+          // This prevents infinite redirect loops
+          if (FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService]) {
+            const fallbackId = FRONTEND_TO_BACKEND_SERVICE_MAP[selectedService];
+            console.log('[DateTimeSelectionPage] Using fallback service ID:', fallbackId);
+            setServiceId(fallbackId);
           } else {
-            console.error('[DateTimeSelectionPage] Service not found, redirecting');
-            // Service not found, redirect back
-            navigate('/appointments/book-appointment', { replace: true });
+            console.error('[DateTimeSelectionPage] Service not found and no mapping available:', selectedService);
+            setError(`Service "${selectedService}" not found. Please select a service again.`);
           }
         }
       } catch (err) {
         console.error('[DateTimeSelectionPage] Error loading service:', err);
-        // Error loading service, redirect back
-        navigate('/appointments/book-appointment', { replace: true });
+        if (isMounted) {
+          // Instead of redirecting, show error to prevent loop
+          setError('Failed to load service information. Please try selecting a service again.');
+        }
       }
     };
     
     loadServiceId();
-  }, [selectedService, navigate]);
+    
+    return () => {
+      isMounted = false; // Cleanup to prevent state updates after unmount
+    };
+  }, [selectedService]); // Removed navigate from dependencies to prevent loop
 
   // ✅ Use useCallback to prevent function recreation on every render
   const fetchAvailableSlots = useCallback(async () => {
