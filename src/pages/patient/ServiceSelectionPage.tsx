@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
@@ -21,13 +21,22 @@ interface Service {
 
 export const ServiceSelectionPage: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const serviceFromUrl = searchParams.get('service');
+  const [selectedService, setSelectedService] = useState<string | null>(serviceFromUrl);
   const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
   const [consentLoading, setConsentLoading] = useState(true);
   const [consentError, setConsentError] = useState<string | null>(null);
   
   // Get user data from auth service
   const user = authService.getStoredUser();
+
+  // Restore service selection from URL params if present
+  useEffect(() => {
+    if (serviceFromUrl) {
+      setSelectedService(serviceFromUrl);
+    }
+  }, [serviceFromUrl]);
 
   useEffect(() => {
     const loadConsent = async () => {

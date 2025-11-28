@@ -63,8 +63,21 @@ export const PsychologistSelectionPage: React.FC = () => {
   // Get user data from auth service
   const user = authService.getStoredUser();
 
+  // Redirect to service selection if no service is selected
+  useEffect(() => {
+    if (!selectedService) {
+      navigate('/appointments/book-appointment');
+      return;
+    }
+  }, [selectedService, navigate]);
+
   // Fetch psychologists from backend
   useEffect(() => {
+    // Don't fetch if no service is selected (will redirect)
+    if (!selectedService) {
+      return;
+    }
+
     const fetchPsychologists = async () => {
       try {
         setLoading(true);
@@ -110,7 +123,7 @@ export const PsychologistSelectionPage: React.FC = () => {
     };
 
     fetchPsychologists();
-  }, []);
+  }, [selectedService]);
 
   // Format next available slot for display
   const formatNextAvailable = (isoDate: string | null): string => {
