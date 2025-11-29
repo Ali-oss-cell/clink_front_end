@@ -60,40 +60,89 @@
 
 .filtersGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
+  
+  @media (max-width: $tablet) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .filterGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  min-width: 0; // Prevent grid overflow
 }
 
 .filterLabel {
   font-size: 1rem;
   font-weight: 600;
   color: $text-dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .filterSelect {
-  padding: 0.875rem 1rem;
+  width: 100%;
+  min-width: 0; // Prevent overflow
+  min-height: 3.5rem; // Ensure enough height for text
+  padding: 1rem 2.75rem 1rem 1.25rem; // Extra right padding for arrow
   border: 2px solid $border-light;
   border-radius: 12px;
   background: white;
   color: $text-dark;
   font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
   cursor: pointer;
   transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2364748b' d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+  
+  // Ensure text is fully visible - no clipping
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  word-wrap: break-word;
+  
+  // Fix for option text display in dropdown
+  option {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    white-space: normal;
+    word-wrap: break-word;
+    min-height: 2.75rem;
+    display: block;
+  }
   
   &:focus {
     outline: none;
     border-color: $patient-primary;
     box-shadow: 0 0 0 4px rgba($patient-primary, 0.1);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%232563eb' d='M8 11L3 6h10z'/%3E%3C/svg%3E");
   }
 
   &:hover {
     border-color: $patient-light;
+  }
+  
+  // Ensure selected text is visible on all browsers
+  &::-ms-expand {
+    display: block;
+  }
+  
+  // Firefox specific fixes
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 $text-dark;
   }
 }
 
