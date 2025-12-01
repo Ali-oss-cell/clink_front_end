@@ -502,13 +502,41 @@
   background: white;
   border-radius: $border-radius-lg;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
   margin-top: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  
+  // Smooth scrolling
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+  }
 }
 
 .dataTable {
   width: 100%;
+  min-width: 800px; // Ensure minimum width to prevent data hiding
   border-collapse: collapse;
+  table-layout: auto; // Allow flexible column widths
   
   thead {
     background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
@@ -521,6 +549,12 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      white-space: nowrap; // Prevent header text wrapping
+      min-width: 120px; // Minimum width for columns
+      
+      &:first-child {
+        min-width: 150px;
+      }
     }
   }
   
@@ -542,6 +576,14 @@
       padding: 1rem;
       color: $text-dark;
       font-size: 0.9rem;
+      word-wrap: break-word;
+      word-break: break-word;
+      max-width: 300px; // Prevent extremely wide cells
+      overflow-wrap: break-word;
+      
+      // Allow text to wrap but maintain readability
+      white-space: normal;
+      line-height: 1.5;
       
       &.emptyState {
         text-align: center;
