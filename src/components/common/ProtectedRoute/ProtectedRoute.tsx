@@ -88,7 +88,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             alignItems: 'center', 
             height: '100vh',
             fontSize: '18px',
-            color: '#2c5aa0'
+            color: '#5a8cb8'
           }}>
             Loading...
           </div>
@@ -106,7 +106,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         alignItems: 'center', 
         height: '100vh',
         fontSize: '18px',
-        color: '#2c5aa0'
+        color: '#5a8cb8'
       }}>
         Loading...
       </div>

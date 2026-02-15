@@ -1,40 +1,41 @@
 // Design Tokens for Psychology Clinic
-// Soft teal, sage green, warm gray, soft beige palette
+// Brand palette: soft teal, sage green, warm gray, soft beige
+// Brand colors used as accents; functional colors kept strong for readability
 
 // Primary Brand Colors (soft teal)
-$primary-color: #9fbce1;        // Soft teal
-$primary-dark: #7a9fc9;         // Darker teal for hover states
-$primary-light: #b8cde8;        // Lighter teal for accents
+$primary-color: #5a8cb8;        // Deeper teal – readable on white
+$primary-dark: #3d6d96;         // Dark teal for hover states
+$primary-light: #9fbce1;        // Soft teal (brand color) for accents/backgrounds
 $secondary-color: #616362;      // Warm gray
-$accent-color: #aebfb2;         // Sage green for success states
+$accent-color: #aebfb2;         // Sage green
 
 // Role-Specific Colors
-// Patient Theme (soft teal)
-$patient-primary: #9fbce1;      // Soft teal for patients
-$patient-dark: #7a9fc9;         // Darker teal
-$patient-light: #b8cde8;        // Lighter teal
-$patient-bg-gradient-start: #e8eef6;  // Light teal tint background
-$patient-bg-gradient-end: #d4dfed;    // Teal background end
+// Patient Theme (teal)
+$patient-primary: #5a8cb8;      // Deeper teal for patients
+$patient-dark: #3d6d96;         // Dark teal
+$patient-light: #9fbce1;        // Soft teal (brand)
+$patient-bg-gradient-start: #edf2f7;  // Very light teal tint
+$patient-bg-gradient-end: #dce6f0;    // Teal background end
 $patient-accent: #9fbce1;       // Accent soft teal
 
 // Psychologist Theme (sage green)
-$psychologist-primary: #aebfb2;  // Sage green for healthcare providers
-$psychologist-dark: #8fa392;     // Darker sage
-$psychologist-light: #c5d4c8;    // Lighter sage
-$psychologist-bg-gradient-start: #e8ede9;  // Light sage background
-$psychologist-bg-gradient-end: #d4ddd6;    // Sage background end
+$psychologist-primary: #7a9a80;  // Deeper sage – readable
+$psychologist-dark: #5e7d64;     // Dark sage
+$psychologist-light: #aebfb2;    // Sage green (brand color)
+$psychologist-bg-gradient-start: #edf0ed;  // Very light sage
+$psychologist-bg-gradient-end: #dce2dd;    // Sage background end
 $psychologist-accent: #aebfb2;   // Accent sage green
 
-// Background Colors (soft beige)
-$background-light: #f6efe7;      // Soft beige
-$background-gray: #e8e4df;       // Light warm gray for cards
+// Background Colors
+$background-light: #f6efe7;      // Soft beige (brand)
+$background-gray: #ebe8e3;       // Light warm gray for cards
 $background-white: #ffffff;      // Pure white
-$background-dark: #616362;       // Warm gray (dark)
+$background-dark: #2c2d2c;       // True dark for dark sections (footer etc.)
 
-// Text Colors (warm gray)
-$text-dark: #616362;            // Main text color - warm gray
-$text-light: #7a7b7a;           // Secondary text
-$text-muted: #8e8f8e;           // Muted text
+// Text Colors – dark enough for readability
+$text-dark: #1e1f1e;            // Near-black warm – main text
+$text-light: #4a4b4a;           // Dark gray – secondary text
+$text-muted: #7a7b7a;           // Medium gray – muted/helper text
 $text-white: #ffffff;           // White text
 
 // Australian Healthcare Specific Colors
@@ -42,19 +43,19 @@ $medicare-green: #00a651;        // Official Medicare green
 $ahpra-blue: #0052cc;           // AHPRA registration blue
 $pbs-orange: #ff6b35;           // PBS scheme orange
 
-// Status Colors
-$success-green: #aebfb2;        // Sage green - success states
-$success-color: #aebfb2;        // Alias for success states
-$error-red: #c45c5c;            // Muted error (warm)
-$error-color: #c45c5c;          // Alias for error states
-$warning-orange: #d4a574;       // Warm warning
-$warning-color: #d4a574;        // Alias for warning states
-$info-blue: #9fbce1;            // Soft teal - information states
-$info-color: #9fbce1;           // Alias for information states
+// Status Colors – strong enough to be clearly visible
+$success-green: #2e7d42;        // Clear green for success
+$success-color: #2e7d42;        // Alias
+$error-red: #c0392b;            // Clear red for errors
+$error-color: #c0392b;          // Alias
+$warning-orange: #d4841a;       // Clear amber/orange for warnings
+$warning-color: #d4841a;        // Alias
+$info-blue: #5a8cb8;            // Teal for info
+$info-color: #5a8cb8;           // Alias
 
-// Border Colors (warm gray family)
-$border-light: #e8e4df;         // Light borders
-$border-medium: #d1cec9;        // Medium borders
+// Border Colors
+$border-light: #e2dfd9;         // Light borders
+$border-medium: #c8c5c0;        // Medium borders
 $border-dark: #616362;          // Warm gray borders
 
 // Border Radius
