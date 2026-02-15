@@ -76,18 +76,18 @@
   font-weight: 500;
   
   &.connecting {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fbbf24;
+    background: rgba(212, 165, 116, 0.2);
+    color: #d4a574;
   }
   
   &.connected {
-    background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+    background: rgba(174, 191, 178, 0.2);
+    color: #aebfb2;
   }
   
   &.disconnected {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    background: rgba(196, 92, 92, 0.2);
+    color: #c45c5c;
   }
 }
 
@@ -206,16 +206,16 @@
   }
 
   &.active {
-    background: rgba(239, 68, 68, 0.3);
-    border-color: #ef4444;
+    background: rgba(196, 92, 92, 0.3);
+    border-color: #c45c5c;
   }
 
   &.leaveButton {
-    background: #ef4444;
-    border-color: #dc2626;
+    background: #c45c5c;
+    border-color: #a84a4a;
 
     &:hover {
-      background: #dc2626;
+      background: #a84a4a;
     }
   }
 }

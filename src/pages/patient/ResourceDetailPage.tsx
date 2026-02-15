@@ -429,7 +429,7 @@ export const ResourceDetailPage: React.FC = () => {
                           {star <= userRating ? (
                             <StarIcon size="lg" />
                           ) : (
-                            <StarIcon size="lg" style={{ color: '#d1d5db' }} />
+                            <StarIcon size="lg" style={{ color: '#d1cec9' }} />
                           )}
                         </button>
                       ))}

@@ -456,7 +456,7 @@ export const PsychologistPatientsPage: React.FC = () => {
                       {selectedPatient.avatarInitials}
                     </div>
                     <h2 style={{ textAlign: 'center', margin: '0 0 0.5rem 0' }}>{selectedPatient.name}</h2>
-                    <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '2rem' }}>
+                    <p style={{ textAlign: 'center', color: '#7a7b7a', marginBottom: '2rem' }}>
                       {selectedPatient.age} years • {selectedPatient.gender}
                     </p>
                   </div>

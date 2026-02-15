@@ -10,7 +10,9 @@ export const Footer: React.FC = () => {
         <div className={styles.content}>
           {/* Company Info */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Tailored Psychology</h3>
+            <Link to="/" className={styles.logoLink}>
+              <img src="/logo-tailored-png.png" alt="Tailored Psychology" className={styles.logoImage} />
+            </Link>
             <p className={styles.description}>
               Professional psychological services providing compassionate care 
               and evidence-based treatments for mental health and wellbeing.

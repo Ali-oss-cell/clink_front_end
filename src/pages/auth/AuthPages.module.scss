@@ -82,7 +82,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
+  background: linear-gradient(135deg, $background-light 0%, $patient-bg-gradient-end 100%);
   padding: 3rem $spacing-lg;
   min-height: calc(100vh - #{$header-height});
 
@@ -141,7 +141,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: linear-gradient(135deg, $background-light 0%, #e0f2fe 100%);
+  background: linear-gradient(135deg, $background-light 0%, $patient-bg-gradient-end 100%);
   padding: 3rem $spacing-lg;
   min-height: calc(100vh - #{$header-height});
   overflow-y: auto;

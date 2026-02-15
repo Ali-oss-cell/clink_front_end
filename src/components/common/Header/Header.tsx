@@ -56,8 +56,8 @@ export const Header: React.FC<HeaderProps> = ({
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <Link to="/" className={styles.logoLink}>
-            <span className={styles.logoText}>Tailored Psychology</span>
+          <Link to="/" className={styles.logoLink} aria-label="Tailored Psychology - Home">
+            <img src="/logo-tailored-png.png" alt="Tailored Psychology" className={styles.logoImage} />
           </Link>
         </div>
 

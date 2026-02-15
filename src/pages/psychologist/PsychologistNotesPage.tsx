@@ -205,7 +205,7 @@ export const PsychologistNotesPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Notes</h3>
               <p>{error}</p>
-              <p style={{ fontSize: '0.9rem', color: '#6b7280', marginTop: '1rem' }}>
+              <p style={{ fontSize: '0.9rem', color: '#7a7b7a', marginTop: '1rem' }}>
                 Make sure your Django backend is running on port 8000
               </p>
               <button className={styles.retryButton} onClick={fetchNotes}>

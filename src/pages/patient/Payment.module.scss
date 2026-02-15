@@ -49,7 +49,7 @@
   align-items: flex-start;
   margin-bottom: $spacing-sm;
   padding-bottom: $spacing-sm;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid $border-light;
   
   &:last-child {
     margin-bottom: 0;
@@ -74,10 +74,10 @@
 }
 
 .pricingBreakdown {
-  background: #f8fafc;
+  background: $background-light;
   border-radius: $border-radius;
   padding: $spacing-md;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $border-light;
 }
 
 .pricingRow {
@@ -102,7 +102,7 @@
   font-size: 1.1rem;
   color: $text-dark;
   padding-top: $spacing-sm;
-  border-top: 2px solid #e2e8f0;
+  border-top: 2px solid $border-light;
   margin-top: $spacing-sm;
 }
 
@@ -139,7 +139,7 @@
 }
 
 .paymentMethodCard {
-  border: 2px solid #e2e8f0;
+  border: 2px solid $border-light;
   border-radius: $border-radius-lg;
   padding: $spacing-lg;
   cursor: pointer;
@@ -227,10 +227,10 @@
 }
 
 .cardForm {
-  background: #f8fafc;
+  background: $background-light;
   border-radius: $border-radius;
   padding: $spacing-lg;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $border-light;
 }
 
 .formGroup {
@@ -252,7 +252,7 @@
 .cardInput {
   width: 100%;
   padding: $spacing-md;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $border-light;
   border-radius: $border-radius;
   font-size: 0.9rem;
   transition: border-color 0.2s ease;
@@ -314,7 +314,7 @@
 .checkboxCustom {
   width: 18px;
   height: 18px;
-  border: 2px solid #cbd5e1;
+  border: 2px solid $border-medium;
   border-radius: 3px;
   background: white;
   position: relative;
@@ -349,12 +349,12 @@
   justify-content: center;
   margin-top: $spacing-xl;
   padding-top: $spacing-lg;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid $border-light;
 }
 
 .cancelButton {
   padding: $spacing-md $spacing-lg;
-  border: 2px solid #e2e8f0;
+  border: 2px solid $border-light;
   background: white;
   color: $text-light;
   border-radius: $border-radius;
@@ -363,7 +363,7 @@
   transition: all 0.2s ease;
   
   &:hover:not(:disabled) {
-    border-color: #cbd5e1;
+    border-color: $border-medium;
     color: $text-dark;
   }
   

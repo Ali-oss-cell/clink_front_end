@@ -31,6 +31,24 @@
 }
 
 .section {
+  .logoLink {
+    display: inline-block;
+    margin-bottom: $spacing-lg;
+    transition: opacity $transition-fast ease;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .logoImage {
+    height: 44px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+    display: block;
+  }
+
   .sectionTitle {
     color: $text-white;
     font-size: $font-size-lg;

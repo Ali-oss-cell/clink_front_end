@@ -258,7 +258,7 @@ export const PsychologistSelectionPage: React.FC = () => {
               <p className={styles.pageSubtitle}>
                 Please select a service before choosing a psychologist.
               </p>
-              <div style={{ marginTop: '1rem', padding: '1rem', background: '#f3f4f6', borderRadius: '8px', fontSize: '0.9rem' }}>
+              <div style={{ marginTop: '1rem', padding: '1rem', background: '#f6efe7', borderRadius: '8px', fontSize: '0.9rem' }}>
                 <strong>Debug Info:</strong>
                 <br />Current URL: {window.location.href}
                 <br />Service param: {selectedService || 'MISSING'}

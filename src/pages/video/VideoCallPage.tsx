@@ -429,7 +429,7 @@ export const VideoCallPage: React.FC = () => {
                 window.location.reload();
               }} 
               className={styles.backButton}
-              style={{ backgroundColor: '#3b82f6', color: 'white' }}
+              style={{ backgroundColor: '#9fbce1', color: 'white' }}
             >
               Retry Connection
             </button>
@@ -451,12 +451,12 @@ export const VideoCallPage: React.FC = () => {
           <span className={`${styles.statusBadge} ${styles[connectionStatus]}`}>
             {connectionStatus === 'connected' ? (
               <>
-                <CircleIcon size="xs" color="#10b981" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                <CircleIcon size="xs" color="#aebfb2" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                 Connected
               </>
             ) : (
               <>
-                <CircleIcon size="xs" color="#ef4444" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                <CircleIcon size="xs" color="#c45c5c" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                 Disconnected
               </>
             )}
