@@ -115,7 +115,7 @@
 
     .registerButton {
       @include button-base;
-      background: $primary-color;
+      background: $button-primary-bg;
       color: $text-white;
       padding: 0.45rem 1.5rem;
       margin-left: 0.5rem;
@@ -125,7 +125,7 @@
       transition: all 0.2s ease;
 
       &:hover {
-        background: $primary-dark;
+        background: $button-primary-hover;
         text-decoration: none;
       }
 

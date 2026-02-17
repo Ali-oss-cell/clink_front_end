@@ -175,7 +175,7 @@ export const PatientInvoicesPage: React.FC = () => {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#5a8cb8' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#9fbce1' }}>
                 {formatCurrency(totals.total)}
               </div>
               <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Invoiced</div>
@@ -324,7 +324,7 @@ export const PatientInvoicesPage: React.FC = () => {
                             disabled={downloadingId === invoice.id}
                             style={{
                               padding: '0.5rem 1rem',
-                              background: downloadingId === invoice.id ? '#7a7b7a' : '#5a8cb8',
+                              background: downloadingId === invoice.id ? '#7a7b7a' : '#1e1f1e',
                               color: 'white',
                               border: 'none',
                               borderRadius: '6px',

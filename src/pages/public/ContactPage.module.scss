@@ -3,7 +3,7 @@
 
 // Hero
 .hero {
-  background: $primary-color;
+  background: $hero-bg;
   color: $text-white;
   padding: 4rem 0;
   text-align: center;
@@ -179,8 +179,8 @@
 
     &:focus {
       outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 3px rgba($primary-color, 0.08);
+      border-color: $secondary-color;
+      box-shadow: 0 0 0 3px rgba($secondary-color, 0.15);
     }
 
     &::placeholder {
@@ -205,7 +205,7 @@
 
 .submitButton {
   @include button-base;
-  background: $primary-color;
+  background: $button-primary-bg;
   color: $text-white;
   width: 100%;
   padding: 0.85rem 2rem;
@@ -216,7 +216,7 @@
   margin-top: 0.5rem;
 
   &:hover {
-    background: $primary-dark;
+    background: $button-primary-hover;
   }
 
   &:focus { outline: none; }

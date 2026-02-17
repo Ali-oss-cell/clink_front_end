@@ -368,13 +368,13 @@
     height: 48px;
     border-radius: 50%;
     background: $primary-color;
-    color: $text-white;
+    color: $text-dark;
     font-size: 1.2rem;
     font-weight: 700;
     margin-bottom: 1.25rem;
     position: relative;
     z-index: 2;
-    box-shadow: 0 2px 8px rgba($primary-color, 0.25);
+    box-shadow: 0 2px 8px rgba($primary-color, 0.3);
   }
 
   .stepIcon {
@@ -411,7 +411,7 @@
 
   .ctaButton {
     @include button-base;
-    background: $primary-color;
+    background: $button-primary-bg;
     color: $text-white;
     padding: 0.85rem 2.5rem;
     font-size: 1.05rem;
@@ -422,7 +422,7 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background: $primary-dark;
+      background: $button-primary-hover;
       text-decoration: none;
       color: $text-white;
     }

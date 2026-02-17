@@ -429,7 +429,7 @@ export const VideoCallPage: React.FC = () => {
                 window.location.reload();
               }} 
               className={styles.backButton}
-              style={{ backgroundColor: '#5a8cb8', color: 'white' }}
+              style={{ backgroundColor: '#1e1f1e', color: 'white' }}
             >
               Retry Connection
             </button>

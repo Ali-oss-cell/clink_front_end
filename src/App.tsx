@@ -75,7 +75,7 @@ function App() {
         alignItems: 'center', 
         height: '100vh',
         fontSize: '18px',
-        color: '#5a8cb8'
+        color: '#9fbce1'
       }}>
         Loading...
       </div>

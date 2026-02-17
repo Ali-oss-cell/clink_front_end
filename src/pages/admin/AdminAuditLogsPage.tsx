@@ -102,7 +102,7 @@ export const AdminAuditLogsPage: React.FC = () => {
       case 'create':
         return '#2e7d42';
       case 'update':
-        return '#5a8cb8';
+        return '#9fbce1';
       case 'delete':
         return '#c0392b';
       case 'login':
@@ -161,7 +161,7 @@ export const AdminAuditLogsPage: React.FC = () => {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#5a8cb8' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#9fbce1' }}>
                   {stats.total_logs.toLocaleString()}
                 </div>
                 <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Logs</div>

@@ -1,30 +1,34 @@
 // Design Tokens for Psychology Clinic
-// Brand palette: soft teal, sage green, warm gray, soft beige
-// Brand colors used as accents; functional colors kept strong for readability
+// Brand palette: soft teal #9fbce1, sage green #aebfb2, warm gray #616362, soft beige #f6efe7, black
 
-// Primary Brand Colors (soft teal)
-$primary-color: #5a8cb8;        // Deeper teal – readable on white
-$primary-dark: #3d6d96;         // Dark teal for hover states
-$primary-light: #9fbce1;        // Soft teal (brand color) for accents/backgrounds
+// Primary Brand Colors – soft teal as main accent (no blue)
+$primary-color: #9fbce1;        // Soft teal (brand)
+$primary-dark: #7a9fc9;         // Darker soft teal for hover
+$primary-light: #b8cde8;        // Lighter soft teal for tints
 $secondary-color: #616362;      // Warm gray
 $accent-color: #aebfb2;         // Sage green
 
+// Primary CTA buttons & hero sections – black/warm gray (no blue)
+$button-primary-bg: #1e1f1e;    // Near-black for main buttons
+$button-primary-hover: #616362; // Warm gray on hover
+$hero-bg: #1e1f1e;              // Dark hero banners (About, Services, Contact)
+
 // Role-Specific Colors
-// Patient Theme (teal)
-$patient-primary: #5a8cb8;      // Deeper teal for patients
-$patient-dark: #3d6d96;         // Dark teal
-$patient-light: #9fbce1;        // Soft teal (brand)
-$patient-bg-gradient-start: #edf2f7;  // Very light teal tint
-$patient-bg-gradient-end: #dce6f0;    // Teal background end
-$patient-accent: #9fbce1;       // Accent soft teal
+// Patient Theme (soft teal)
+$patient-primary: #9fbce1;
+$patient-dark: #7a9fc9;
+$patient-light: #b8cde8;
+$patient-bg-gradient-start: #f0f5fa;
+$patient-bg-gradient-end: #e4ecf4;
+$patient-accent: #9fbce1;
 
 // Psychologist Theme (sage green)
-$psychologist-primary: #7a9a80;  // Deeper sage – readable
-$psychologist-dark: #5e7d64;     // Dark sage
-$psychologist-light: #aebfb2;    // Sage green (brand color)
-$psychologist-bg-gradient-start: #edf0ed;  // Very light sage
-$psychologist-bg-gradient-end: #dce2dd;    // Sage background end
-$psychologist-accent: #aebfb2;   // Accent sage green
+$psychologist-primary: #8fa88a;
+$psychologist-dark: #6e8c6a;
+$psychologist-light: #aebfb2;
+$psychologist-bg-gradient-start: #f2f5f1;
+$psychologist-bg-gradient-end: #e4e9e2;
+$psychologist-accent: #aebfb2;
 
 // Background Colors
 $background-light: #f6efe7;      // Soft beige (brand)
@@ -50,8 +54,8 @@ $error-red: #c0392b;            // Clear red for errors
 $error-color: #c0392b;          // Alias
 $warning-orange: #d4841a;       // Clear amber/orange for warnings
 $warning-color: #d4841a;        // Alias
-$info-blue: #5a8cb8;            // Teal for info
-$info-color: #5a8cb8;           // Alias
+$info-blue: #9fbce1;            // Soft teal for info
+$info-color: #9fbce1;           // Alias
 
 // Border Colors
 $border-light: #e2dfd9;         // Light borders

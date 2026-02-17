@@ -1015,7 +1015,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             href={existingPdfUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: '#5a8cb8', fontSize: '0.875rem', textDecoration: 'none' }}
+                            style={{ color: '#9fbce1', fontSize: '0.875rem', textDecoration: 'none' }}
                           >
                             <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                             View current PDF
