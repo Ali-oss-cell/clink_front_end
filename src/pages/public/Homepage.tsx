@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
-import { VideoIcon, HospitalIcon, UsersIcon, CheckCircleIcon, CalendarIcon, ClipboardIcon, ChartIcon } from '../../utils/icons';
+import { VideoIcon, CalendarIcon, ClipboardIcon, ChartIcon } from '../../utils/icons';
 import heroImage from '../../assets/imges/petr-magera-HuWm7malJ18-unsplash.jpg';
 import heroImage2 from '../../assets/imges/pexels-shvets-production-7176319.jpg';
 import heroImage3 from '../../assets/imges/pexels-shkrabaanthony-5217852.jpg';
@@ -16,10 +16,8 @@ interface Slide {
   primaryLink: string;
   secondaryAction?: string;
   secondaryLink?: string;
-  gradient?: string; // Optional - use if no backgroundImage
-  backgroundImage?: string; // Optional - path to image file
-  backgroundImageMobile?: string; // Optional - smaller image for mobile
-  icon?: React.ReactNode;
+  gradient?: string;
+  backgroundImage?: string;
 }
 
 const slides: Slide[] = [
@@ -31,8 +29,7 @@ const slides: Slide[] = [
     primaryLink: '/register',
     secondaryAction: 'Learn More About Us',
     secondaryLink: '/about',
-    backgroundImage: heroImage,
-    icon: <UsersIcon size="xl" />
+    backgroundImage: heroImage
   },
   {
     id: 2,
@@ -42,8 +39,7 @@ const slides: Slide[] = [
     primaryLink: '/register',
     secondaryAction: 'View Services',
     secondaryLink: '/services',
-    backgroundImage: heroImage2,
-    icon: <VideoIcon size="xl" />
+    backgroundImage: heroImage2
   },
   {
     id: 3,
@@ -53,8 +49,7 @@ const slides: Slide[] = [
     primaryLink: '/register',
     secondaryAction: 'Find Our Location',
     secondaryLink: '/contact',
-    backgroundImage: heroImage3,
-    icon: <HospitalIcon size="xl" />
+    backgroundImage: heroImage3
   },
   {
     id: 4,
@@ -64,8 +59,7 @@ const slides: Slide[] = [
     primaryLink: '/register',
     secondaryAction: 'Learn About Medicare',
     secondaryLink: '/about',
-    backgroundImage: heroImage4,
-    icon: <CheckCircleIcon size="xl" />
+    backgroundImage: heroImage4
   }
 ];
 
@@ -161,18 +155,6 @@ export const Homepage: React.FC = () => {
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  };
-
   return (
     <Layout className={styles.homepage}>
       <section className={styles.hero}>
@@ -191,29 +173,8 @@ export const Homepage: React.FC = () => {
                 backgroundRepeat: slide.backgroundImage ? 'no-repeat' : undefined
               }}
             >
-              {/* Floating decorative elements */}
-              <div className={styles.floatingElements}>
-                <div className={`${styles.floatingShape} ${styles.shape1}`}></div>
-                <div className={`${styles.floatingShape} ${styles.shape2}`}></div>
-                <div className={`${styles.floatingShape} ${styles.shape3}`}></div>
-                <div className={`${styles.floatingShape} ${styles.shape4}`}></div>
-                <div className={`${styles.floatingShape} ${styles.shape5}`}></div>
-              </div>
-
-              {/* Drifting particles */}
-              <div className={styles.driftingParticles}>
-                <div className={`${styles.particle} ${styles.particle1}`}></div>
-                <div className={`${styles.particle} ${styles.particle2}`}></div>
-                <div className={`${styles.particle} ${styles.particle3}`}></div>
-              </div>
-
               <div className="container">
                 <div className={styles.heroContent}>
-                  {slide.icon && (
-                    <div className={styles.slideIcon}>
-                      {slide.icon}
-                    </div>
-                  )}
                   <h1 className={styles.heroTitle}>
                     {slide.title}
                   </h1>
@@ -234,22 +195,6 @@ export const Homepage: React.FC = () => {
               </div>
             </div>
           ))}
-
-          {/* Navigation Arrows */}
-          <button 
-            className={styles.sliderArrow} 
-            onClick={prevSlide}
-            aria-label="Previous slide"
-          >
-            <span>‹</span>
-          </button>
-          <button 
-            className={`${styles.sliderArrow} ${styles.arrowRight}`} 
-            onClick={nextSlide}
-            aria-label="Next slide"
-          >
-            <span>›</span>
-          </button>
 
           {/* Slide Indicators */}
           <div className={styles.sliderIndicators}>
@@ -310,11 +255,6 @@ export const Homepage: React.FC = () => {
               </p>
             </div>
 
-            <div className={`${styles.stepConnector} ${visibleSteps.includes(0) ? styles.visible : ''}`}>
-              <div className={styles.connectorLine}></div>
-              <div className={styles.connectorArrow}>→</div>
-            </div>
-
             <div 
               className={`${styles.stepCard} ${visibleSteps.includes(1) ? styles.visible : ''}`}
               data-step-index="1"
@@ -329,11 +269,6 @@ export const Homepage: React.FC = () => {
               </p>
             </div>
 
-            <div className={`${styles.stepConnector} ${visibleSteps.includes(1) ? styles.visible : ''}`}>
-              <div className={styles.connectorLine}></div>
-              <div className={styles.connectorArrow}>→</div>
-            </div>
-
             <div 
               className={`${styles.stepCard} ${visibleSteps.includes(2) ? styles.visible : ''}`}
               data-step-index="2"
@@ -346,11 +281,6 @@ export const Homepage: React.FC = () => {
               <p className={styles.stepDescription}>
                 Join your session via secure video call or visit our clinic. Your psychologist will guide you through evidence-based therapy.
               </p>
-            </div>
-
-            <div className={`${styles.stepConnector} ${visibleSteps.includes(2) ? styles.visible : ''}`}>
-              <div className={styles.connectorLine}></div>
-              <div className={styles.connectorArrow}>→</div>
             </div>
 
             <div 

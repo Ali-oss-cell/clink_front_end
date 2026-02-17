@@ -8,6 +8,7 @@ import { ServicesPage } from '../pages/public/ServicesPage';
 import { TelehealthRequirementsPage } from '../pages/public/TelehealthRequirementsPage';
 import { PrivacyPolicyPage } from '../pages/public/PrivacyPolicyPage';
 import { ResourcesPage } from '../pages/public/ResourcesPage';
+import { ContactPage } from '../pages/public/ContactPage';
 
 // Auth pages
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -94,13 +95,8 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
       {/* Resources page */}
       <Route path="/resources" element={<ResourcesPage />} />
       
-      {/* Contact page - TODO */}
-      <Route path="/contact" element={
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h1>Contact Page Coming Soon</h1>
-          <p>Get in touch with Tailored Psychology.</p>
-        </div>
-      } />
+      {/* Contact page */}
+      <Route path="/contact" element={<ContactPage />} />
 
       {/* Auth Routes - redirect to dashboard if already authenticated */}
       <Route path="/login" element={

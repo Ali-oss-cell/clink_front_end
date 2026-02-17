@@ -1,4 +1,5 @@
 // SOAP Note Form Styles
+@use '../../../assets/styles/variables' as *;
 
 .modalContainer,
 .pageContainer {
@@ -25,12 +26,12 @@
   h2 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #1a202c;
+    color: $text-dark;
     margin-bottom: 0.5rem;
   }
 
   .subtitle {
-    color: #6b7280;
+    color: $text-muted;
     font-size: 0.95rem;
   }
 }
@@ -38,16 +39,16 @@
 .loadingState {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: $text-muted;
 }
 
 .errorAlert {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  background-color: rgba($error-red, 0.08);
+  border: 1px solid rgba($error-red, 0.2);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  color: #dc2626;
+  color: $error-red;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -81,11 +82,11 @@
 
 .label {
   font-weight: 600;
-  color: #374151;
+  color: $text-dark;
   font-size: 0.95rem;
 
   .required {
-    color: #dc2626;
+    color: $error-red;
     margin-left: 0.25rem;
   }
 }
@@ -93,19 +94,19 @@
 .input,
 .select {
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid $border-medium;
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s;
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
   }
 
   &:disabled {
-    background-color: #f3f4f6;
+    background-color: $background-gray;
     cursor: not-allowed;
   }
 }
@@ -116,7 +117,7 @@
 
 .textarea {
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid $border-medium;
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
@@ -125,19 +126,19 @@
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
   }
 
   &::placeholder {
-    color: #9ca3af;
+    color: $text-muted;
     font-size: 0.9rem;
   }
 }
 
 .soapSection {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: $background-light;
+  border: 1px solid $border-light;
   border-radius: 10px;
   padding: 1.5rem;
   transition: all 0.2s;
@@ -165,34 +166,34 @@
   .soapLabel {
     font-weight: 700;
     font-size: 1.1rem;
-    color: #1a202c;
+    color: $text-dark;
     display: block;
     margin-bottom: 0.25rem;
 
     .required {
-      color: #dc2626;
-      margin-left: 0.25rem;
+    color: $error-red;
+    margin-left: 0.25rem;
     }
   }
 
   .soapHint {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: $text-muted;
     line-height: 1.4;
     margin: 0;
   }
 
   .charCount {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: $text-muted;
     white-space: nowrap;
     align-self: center;
   }
 }
 
 .ratingSection {
-  background: #f0f9ff;
-  border: 1px solid #bfdbfe;
+  background: rgba($primary-color, 0.05);
+  border: 1px solid rgba($primary-color, 0.2);
   border-radius: 10px;
   padding: 1.5rem;
 }
@@ -205,7 +206,7 @@
   margin-bottom: 1rem;
 
   .required {
-    color: #dc2626;
+    color: $error-red;
     margin-left: 0.25rem;
   }
 }
@@ -222,7 +223,7 @@
   height: 8px;
   -webkit-appearance: none;
   appearance: none;
-  background: linear-gradient(to right, #ef4444, #f59e0b, #10b981);
+  background: linear-gradient(to right, $error-red, $warning-color, $success-green);
   border-radius: 10px;
   outline: none;
 
@@ -233,7 +234,7 @@
     height: 24px;
     border-radius: 50%;
     background: white;
-    border: 3px solid #3b82f6;
+    border: 3px solid $primary-color;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
@@ -249,7 +250,7 @@
     height: 24px;
     border-radius: 50%;
     background: white;
-    border: 3px solid #3b82f6;
+    border: 3px solid $primary-color;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
@@ -264,7 +265,7 @@
 .ratingValue {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #3b82f6;
+  color: $primary-color;
   min-width: 60px;
   text-align: center;
 }
@@ -273,7 +274,7 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: $text-muted;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -287,7 +288,7 @@
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid $border-light;
 
   @media (max-width: 768px) {
     flex-direction: column-reverse;
@@ -316,23 +317,23 @@
 
 .cancelButton {
   background: white;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
+  color: $text-muted;
+  border: 1px solid $border-medium;
 
   &:hover:not(:disabled) {
-    background: #f9fafb;
-    border-color: #9ca3af;
+    background: $background-light;
+    border-color: $text-muted;
   }
 }
 
 .saveButton {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   color: white;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 2px 4px rgba($primary-color, 0.2);
 
   &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, $primary-dark 0%, $primary-dark 100%);
+    box-shadow: 0 4px 8px rgba($primary-color, 0.3);
     transform: translateY(-1px);
   }
 

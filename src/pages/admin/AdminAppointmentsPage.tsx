@@ -77,16 +77,16 @@ export const AdminAppointmentsPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
-        return '#10b981';
+        return '#2e7d42';
       case 'scheduled':
       case 'confirmed':
-        return '#2563eb';
+        return '#3d6d96';
       case 'cancelled':
-        return '#ef4444';
+        return '#c0392b';
       case 'pending':
-        return '#f59e0b';
+        return '#d4841a';
       default:
-        return '#6b7280';
+        return '#7a7b7a';
     }
   };
 

@@ -6,8 +6,8 @@
   padding: 2rem;
   background: white;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-  border: 1px solid rgba(15, 23, 42, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .sectionHeader {
@@ -27,9 +27,9 @@
 
 .note {
   padding: 1rem;
-  background: rgba($info-blue, 0.1);
-  border: 1px solid rgba($info-blue, 0.3);
-  color: $info-blue;
+  background: $background-light;
+  border: 1px solid $border-medium;
+  color: $text-dark;
   border-radius: 10px;
   margin-bottom: 1.5rem;
 }
@@ -41,7 +41,7 @@
 }
 
 .serviceCard {
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   padding: 1.25rem;
   background: #fdfdfd;

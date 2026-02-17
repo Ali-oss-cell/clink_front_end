@@ -202,7 +202,7 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <h3>User Growth Over Time</h3>
                 <div style={{ 
                   padding: '16px', 
-                  backgroundColor: '#f9fafb', 
+                  backgroundColor: '#f6efe7', 
                   borderRadius: '8px',
                   maxHeight: '300px',
                   overflowY: 'auto'
@@ -227,7 +227,7 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <p style={{ 
                   marginTop: '8px', 
                   fontSize: '0.875rem', 
-                  color: '#6b7280',
+                  color: '#7a7b7a',
                   fontStyle: 'italic'
                 }}>
                   Total growth: {analytics.users.growth.reduce((sum, item) => sum + item.count, 0)} users
@@ -304,7 +304,7 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <h3>Appointment Trends Over Time</h3>
                 <div style={{ 
                   padding: '16px', 
-                  backgroundColor: '#f9fafb', 
+                  backgroundColor: '#f6efe7', 
                   borderRadius: '8px',
                   maxHeight: '300px',
                   overflowY: 'auto'
@@ -329,7 +329,7 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <p style={{ 
                   marginTop: '8px', 
                   fontSize: '0.875rem', 
-                  color: '#6b7280',
+                  color: '#7a7b7a',
                   fontStyle: 'italic'
                 }}>
                   Average per day: {analytics.appointments.trends.length > 0

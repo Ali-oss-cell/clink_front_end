@@ -99,15 +99,15 @@ export const PatientInvoicesPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'paid':
-        return '#10b981';
+        return '#2e7d42';
       case 'pending':
-        return '#f59e0b';
+        return '#d4841a';
       case 'overdue':
-        return '#ef4444';
+        return '#c0392b';
       case 'cancelled':
-        return '#6b7280';
+        return '#7a7b7a';
       default:
-        return '#6b7280';
+        return '#7a7b7a';
     }
   };
 
@@ -151,7 +151,7 @@ export const PatientInvoicesPage: React.FC = () => {
           {error && (
             <div style={{
               background: '#fee2e2',
-              border: '1px solid #ef4444',
+              border: '1px solid #c0392b',
               borderRadius: '8px',
               padding: '1rem',
               marginBottom: '2rem',
@@ -175,10 +175,10 @@ export const PatientInvoicesPage: React.FC = () => {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#3b82f6' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#5a8cb8' }}>
                 {formatCurrency(totals.total)}
               </div>
-              <div style={{ color: '#6b7280', marginTop: '0.5rem' }}>Total Invoiced</div>
+              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Invoiced</div>
             </div>
             <div style={{
               background: 'white',
@@ -187,10 +187,10 @@ export const PatientInvoicesPage: React.FC = () => {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d42' }}>
                 {formatCurrency(totals.paid)}
               </div>
-              <div style={{ color: '#6b7280', marginTop: '0.5rem' }}>Paid</div>
+              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Paid</div>
             </div>
             <div style={{
               background: 'white',
@@ -199,10 +199,10 @@ export const PatientInvoicesPage: React.FC = () => {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d4841a' }}>
                 {formatCurrency(totals.pending)}
               </div>
-              <div style={{ color: '#6b7280', marginTop: '0.5rem' }}>Pending</div>
+              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Pending</div>
             </div>
             <div style={{
               background: 'white',
@@ -214,7 +214,7 @@ export const PatientInvoicesPage: React.FC = () => {
               <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>
                 {invoices.length}
               </div>
-              <div style={{ color: '#6b7280', marginTop: '0.5rem' }}>Total Invoices</div>
+              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Invoices</div>
             </div>
           </div>
 
@@ -226,7 +226,7 @@ export const PatientInvoicesPage: React.FC = () => {
               style={{
                 padding: '0.75rem 1rem',
                 borderRadius: '8px',
-                border: '1px solid #d1d5db',
+                border: '1px solid #c8c5c0',
                 fontSize: '1rem',
                 background: 'white',
                 cursor: 'pointer'
@@ -248,33 +248,33 @@ export const PatientInvoicesPage: React.FC = () => {
             overflow: 'hidden'
           }}>
             {invoices.length === 0 ? (
-              <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
+              <div style={{ padding: '3rem', textAlign: 'center', color: '#7a7b7a' }}>
                 <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>No invoices found</p>
                 <p>You don't have any invoices yet.</p>
               </div>
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#374151' }}>
+                  <tr style={{ background: '#f6efe7', borderBottom: '2px solid #e2dfd9' }}>
+                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
                       Invoice #
                     </th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#374151' }}>
+                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
                       Date
                     </th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#374151' }}>
+                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
                       Psychologist
                     </th>
-                    <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', color: '#374151' }}>
+                    <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', color: '#1e1f1e' }}>
                       Amount
                     </th>
-                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: '#374151' }}>
+                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: '#1e1f1e' }}>
                       Status
                     </th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#374151' }}>
+                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
                       Due Date
                     </th>
-                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: '#374151' }}>
+                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: '#1e1f1e' }}>
                       Actions
                     </th>
                   </tr>
@@ -284,13 +284,13 @@ export const PatientInvoicesPage: React.FC = () => {
                     <tr
                       key={invoice.id}
                       style={{
-                        borderBottom: index < invoices.length - 1 ? '1px solid #e5e7eb' : 'none'
+                        borderBottom: index < invoices.length - 1 ? '1px solid #e2dfd9' : 'none'
                       }}
                     >
                       <td style={{ padding: '1rem', color: '#111827' }}>
                         #{invoice.id}
                       </td>
-                      <td style={{ padding: '1rem', color: '#6b7280' }}>
+                      <td style={{ padding: '1rem', color: '#7a7b7a' }}>
                         {formatDate(invoice.created_at)}
                       </td>
                       <td style={{ padding: '1rem', color: '#111827' }}>
@@ -314,7 +314,7 @@ export const PatientInvoicesPage: React.FC = () => {
                           {invoice.status?.toUpperCase() || 'N/A'}
                         </span>
                       </td>
-                      <td style={{ padding: '1rem', color: '#6b7280' }}>
+                      <td style={{ padding: '1rem', color: '#7a7b7a' }}>
                         {formatDate(invoice.due_date)}
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'center' }}>
@@ -324,7 +324,7 @@ export const PatientInvoicesPage: React.FC = () => {
                             disabled={downloadingId === invoice.id}
                             style={{
                               padding: '0.5rem 1rem',
-                              background: downloadingId === invoice.id ? '#9ca3af' : '#3b82f6',
+                              background: downloadingId === invoice.id ? '#7a7b7a' : '#5a8cb8',
                               color: 'white',
                               border: 'none',
                               borderRadius: '6px',
@@ -352,7 +352,7 @@ export const PatientInvoicesPage: React.FC = () => {
                               onClick={() => navigate(`/appointments/payment?invoice=${invoice.id}`)}
                               style={{
                                 padding: '0.5rem 1rem',
-                                background: '#10b981',
+                                background: '#2e7d42',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '6px',

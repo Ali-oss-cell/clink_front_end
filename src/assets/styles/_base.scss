@@ -93,19 +93,25 @@ p {
   line-height: $line-height-relaxed;
 }
 
-// Links
+// Links – default dark text; blue only on hover for consistency
 a {
-  color: $primary-color;
+  color: $text-dark;
   text-decoration: none;
   transition: color $transition-fast ease;
 
   &:hover {
-    color: $primary-dark;
+    color: $primary-color;
     text-decoration: underline;
   }
 
   &:focus {
-    @include focus-ring;
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 }
 
@@ -141,6 +147,15 @@ select {
 
 button {
   @include button-primary;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
 }
 
 // Form validation styles

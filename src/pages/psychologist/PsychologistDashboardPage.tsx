@@ -416,7 +416,7 @@ export const PsychologistDashboardPage: React.FC = () => {
             <div className={styles.dashboardCard}>
               <h3><HospitalIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Practice Overview</h3>
               <div style={{ marginTop: '1rem' }}>
-                <p style={{ fontSize: '0.9rem', color: '#6b7280', lineHeight: '1.6' }}>
+                <p style={{ fontSize: '0.9rem', color: '#7a7b7a', lineHeight: '1.6' }}>
                   You have <strong>{dashboardData.today_appointments_count}</strong> appointment{dashboardData.today_appointments_count !== 1 ? 's' : ''} today
                   {dashboardData.pending_notes_count > 0 && (
                     <> and <strong>{dashboardData.pending_notes_count}</strong> note{dashboardData.pending_notes_count !== 1 ? 's' : ''} pending.</>

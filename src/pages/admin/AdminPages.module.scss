@@ -4,7 +4,7 @@
 // Admin Layout
 .adminLayout {
   min-height: 100vh;
-  background: linear-gradient(135deg, $background-light 0%, #fef3c7 100%);
+  background: linear-gradient(135deg, $background-light 0%, rgba($warning-color, 0.2) 100%);
 }
 
 // Dashboard Container
@@ -32,7 +32,7 @@
   font-weight: 700;
   color: $text-dark;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, $error-red 0%, $warning-color 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -46,7 +46,7 @@
 
 // System Health Card
 .systemHealthCard {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -98,7 +98,7 @@
 }
 
 .statCard {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -106,7 +106,7 @@
   align-items: center;
   gap: 1.5rem;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(#dc2626, 0.1);
+  border: 1px solid rgba($error-red, 0.1);
   position: relative;
   overflow: hidden;
   opacity: 0;
@@ -124,15 +124,15 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, #dc2626 0%, #f59e0b 100%);
+    background: linear-gradient(180deg, $error-red 0%, $warning-color 100%);
     transform: scaleY(0);
     transition: transform 0.4s ease;
   }
   
   &:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 40px rgba(#dc2626, 0.2);
-    border-color: #dc2626;
+    box-shadow: 0 12px 40px rgba($error-red, 0.2);
+    border-color: $error-red;
     
     &::before {
       transform: scaleY(1);
@@ -155,10 +155,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(#dc2626, 0.1) 0%, rgba(#f59e0b, 0.1) 100%);
+  background: linear-gradient(135deg, rgba($error-red, 0.1) 0%, rgba($warning-color, 0.1) 100%);
   border-radius: $border-radius-lg;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(#dc2626, 0.1);
+  box-shadow: 0 4px 12px rgba($error-red, 0.1);
 }
 
 .statContent {
@@ -168,7 +168,7 @@
 .statValue {
   font-size: 2.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, $error-red 0%, $warning-color 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -193,7 +193,7 @@
 }
 
 .secondaryStatCard {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius;
   padding: 1.25rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -229,7 +229,7 @@
 }
 
 .dashboardCard {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -245,7 +245,7 @@
 
   &:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 12px 32px rgba(#dc2626, 0.2);
+    box-shadow: 0 12px 32px rgba($error-red, 0.2);
   }
   
   &.isVisible:hover {
@@ -334,12 +334,12 @@
 
 .userItem {
   padding: 1rem;
-  background: #f9fafb;
+  background: $background-light;
   border-radius: 8px;
   transition: all 0.3s ease;
 
   &:hover {
-    background: #f3f4f6;
+    background: $background-gray;
     transform: translateX(4px);
   }
 }
@@ -363,8 +363,8 @@
   border-radius: 12px;
   font-weight: 600;
   text-transform: capitalize;
-  background: #e5e7eb;
-  color: #374151;
+  background: $border-light;
+  color: $text-dark;
 }
 
 .userMeta {
@@ -377,12 +377,12 @@
 }
 
 .verified {
-  color: #10b981;
+  color: $success-green;
   font-weight: 600;
 }
 
 .unverified {
-  color: #f59e0b;
+  color: $warning-color;
   font-weight: 600;
 }
 
@@ -408,7 +408,7 @@
 
 .errorState {
   h3 {
-    color: #ef4444;
+    color: $error-red;
   }
 }
 
@@ -468,7 +468,7 @@
     font-weight: 700;
     color: $text-dark;
     margin: 0;
-    background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, $error-red 0%, $warning-color 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -483,7 +483,7 @@
   
   span {
     padding: 0.5rem 1rem;
-    background: white;
+    background: $background-white;
     border-radius: $border-radius;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
@@ -503,7 +503,7 @@
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -522,8 +522,8 @@
   
   &:focus {
     outline: none;
-    border-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    border-color: $error-red;
+    box-shadow: 0 0 0 3px rgba($error-red, 0.1);
   }
 }
 
@@ -532,13 +532,13 @@
   border: 1px solid $border-light;
   border-radius: $border-radius;
   font-size: 0.95rem;
-  background: white;
+  background: $background-white;
   cursor: pointer;
   
   &:focus {
     outline: none;
-    border-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    border-color: $error-red;
+    box-shadow: 0 0 0 3px rgba($error-red, 0.1);
   }
 }
 
@@ -550,7 +550,7 @@
 
 .searchButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, $error-red 0%, $warning-color 100%);
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -560,14 +560,14 @@
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 4px 12px rgba($error-red, 0.3);
   }
 }
 
 // Buttons
 .primaryButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, $error-red 0%, $warning-color 100%);
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -577,14 +577,14 @@
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 4px 12px rgba($error-red, 0.3);
   }
 }
 
 // Error Banner
 .errorBanner {
   background: #fee2e2;
-  border: 1px solid #ef4444;
+  border: 1px solid $error-red;
   border-radius: $border-radius;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -594,7 +594,7 @@
   
   p {
     margin: 0;
-    color: #dc2626;
+    color: $error-red;
     font-weight: 500;
   }
   
@@ -602,7 +602,7 @@
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #dc2626;
+    color: $error-red;
     cursor: pointer;
     padding: 0;
     width: 24px;
@@ -612,7 +612,7 @@
 
 // Table Container
 .tableContainer {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
@@ -651,7 +651,7 @@
   table-layout: auto; // Allow flexible column widths
   
   thead {
-    background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, $error-red 0%, $warning-color 100%);
     color: white;
     
     th {
@@ -676,7 +676,7 @@
       transition: background-color 0.2s;
       
       &:hover {
-        background-color: #f9fafb;
+        background-color: $background-light;
       }
       
       &:last-child {
@@ -731,8 +731,8 @@
   display: inline-block;
   padding: 0.25rem 0.75rem;
   border-radius: $border-radius;
-  background: #eff6ff;
-  color: #2563eb;
+  background: rgba($primary-color, 0.08);
+  color: $primary-dark;
   font-size: 0.85rem;
   font-weight: 500;
 }
@@ -744,24 +744,24 @@
 }
 
 .verified {
-  color: #10b981;
+  color: $success-green;
   font-weight: 600;
   font-size: 0.85rem;
 }
 
 .unverified {
-  color: #f59e0b;
+  color: $warning-color;
   font-weight: 600;
   font-size: 0.85rem;
 }
 
 .active {
-  color: #10b981;
+  color: $success-green;
   font-size: 0.85rem;
 }
 
 .inactive {
-  color: #ef4444;
+  color: $error-red;
   font-size: 0.85rem;
 }
 
@@ -795,8 +795,8 @@
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: capitalize;
-  background: #e5e7eb;
-  color: #374151;
+  background: $border-light;
+  color: $text-dark;
 }
 
 .badgeSuccess {
@@ -805,8 +805,8 @@
 }
 
 .badgeWarning {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba($warning-color, 0.2);
+  color: $text-dark;
 }
 
 // Action Buttons
@@ -839,7 +839,7 @@
 
 .editButton {
   padding: 0.5rem 1rem;
-  background: #2563eb;
+  background: $primary-dark;
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -849,13 +849,13 @@
   transition: background-color 0.2s;
   
   &:hover {
-    background: #1d4ed8;
+    background: $primary-dark;
   }
 }
 
 .deleteButton {
   padding: 0.5rem 1rem;
-  background: #ef4444;
+  background: $error-red;
   color: white;
   border: none;
   border-radius: $border-radius;
@@ -865,7 +865,7 @@
   transition: background-color 0.2s;
   
   &:hover {
-    background: #dc2626;
+    background: $error-red;
   }
 }
 
@@ -891,12 +891,12 @@
   
   &:hover {
     color: $text-dark;
-    background: #f9fafb;
+    background: $background-light;
   }
   
   &.activeTab {
-    color: #dc2626;
-    border-bottom-color: #dc2626;
+    color: $error-red;
+    border-bottom-color: $error-red;
     font-weight: 600;
   }
 }
@@ -917,7 +917,7 @@
 }
 
 .modal {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   max-width: 600px;
@@ -927,7 +927,7 @@
 }
 
 .modalContent {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   max-width: 800px;
@@ -973,7 +973,7 @@
     transition: background-color 0.2s;
     
     &:hover {
-      background: #f3f4f6;
+      background: $background-gray;
     }
   }
 }
@@ -1003,8 +1003,8 @@
     
     &:focus {
       outline: none;
-      border-color: #dc2626;
-      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      border-color: $error-red;
+      box-shadow: 0 0 0 3px rgba($error-red, 0.1);
     }
   }
   
@@ -1030,8 +1030,8 @@
     
     &:focus {
       outline: none;
-      border-color: #dc2626;
-      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      border-color: $error-red;
+      box-shadow: 0 0 0 3px rgba($error-red, 0.1);
     }
   }
 }
@@ -1063,12 +1063,12 @@
     transition: all 0.2s;
     
     &[type="button"] {
-      background: #f3f4f6;
+      background: $background-gray;
       color: $text-dark;
       border: 1px solid $border-light;
       
       &:hover {
-        background: #e5e7eb;
+        background: $border-light;
       }
     }
   }
@@ -1110,7 +1110,7 @@
 }
 
 .quickActionCard {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -1123,8 +1123,8 @@
   
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.15);
-    border-color: #dc2626;
+    box-shadow: 0 8px 24px rgba($error-red, 0.15);
+    border-color: $error-red;
   }
 }
 
@@ -1135,7 +1135,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, $error-red 0%, $warning-color 100%);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -1160,7 +1160,7 @@
 
 .quickActionArrow {
   font-size: 1.5rem;
-  color: #dc2626;
+  color: $error-red;
   font-weight: bold;
   transition: transform 0.3s ease;
   
@@ -1230,7 +1230,7 @@
 
 // Settings Form
 .settingsForm {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 2rem;
@@ -1266,7 +1266,7 @@
 
 .secondaryButton {
   padding: 0.75rem 1.5rem;
-  background: white;
+  background: $background-white;
   color: $text-dark;
   border: 1px solid $border-light;
   border-radius: $border-radius;
@@ -1275,14 +1275,14 @@
   transition: all 0.2s;
   
   &:hover {
-    background: #f9fafb;
-    border-color: #dc2626;
+    background: $background-light;
+    border-color: $error-red;
   }
 }
 
 .successBanner {
   background: #d1fae5;
-  border: 1px solid #10b981;
+  border: 1px solid $success-green;
   border-radius: $border-radius;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -1292,7 +1292,7 @@
   
   p {
     margin: 0;
-    color: #059669;
+    color: $success-green;
     font-weight: 500;
   }
   
@@ -1300,7 +1300,7 @@
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #059669;
+    color: $success-green;
     cursor: pointer;
     padding: 0;
     width: 24px;
@@ -1315,7 +1315,7 @@
   align-items: center;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -1357,14 +1357,14 @@
   
   &:focus {
     outline: none;
-    border-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    border-color: $error-red;
+    box-shadow: 0 0 0 3px rgba($error-red, 0.1);
   }
 }
 
 .periodInfo {
   padding: 1rem;
-  background: #eff6ff;
+  background: rgba($primary-color, 0.08);
   border-radius: $border-radius;
   margin-bottom: 2rem;
   
@@ -1394,7 +1394,7 @@
 }
 
 .analyticsCard {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -1405,7 +1405,7 @@
 .analyticsValue {
   font-size: 2rem;
   font-weight: 700;
-  color: #dc2626;
+  color: $error-red;
   margin-bottom: 0.5rem;
 }
 
@@ -1416,7 +1416,7 @@
 }
 
 .analyticsTable {
-  background: white;
+  background: $background-white;
   border-radius: $border-radius-lg;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -1434,7 +1434,7 @@
     border-collapse: collapse;
     
     thead {
-      background: #f9fafb;
+      background: $background-light;
       
       th {
         padding: 0.75rem;
@@ -1451,7 +1451,7 @@
         border-bottom: 1px solid $border-light;
         
         &:hover {
-          background: #f9fafb;
+          background: $background-light;
         }
       }
       
@@ -1513,7 +1513,7 @@
   border: 2px solid $border-light;
   border-radius: 8px;
   font-size: 1rem;
-  background: white;
+  background: $background-white;
   cursor: pointer;
   transition: border-color 0.3s ease;
 

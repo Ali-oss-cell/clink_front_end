@@ -129,13 +129,13 @@ export const AdminDashboardPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'good':
-        return '#10b981';
+        return '#2e7d42';
       case 'warning':
-        return '#f59e0b';
+        return '#d4841a';
       case 'error':
-        return '#ef4444';
+        return '#c0392b';
       default:
-        return '#6b7280';
+        return '#7a7b7a';
     }
   };
 

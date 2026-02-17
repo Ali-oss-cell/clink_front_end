@@ -73,14 +73,14 @@ export const AdminBillingPage: React.FC = () => {
     switch (status.toLowerCase()) {
       case 'paid':
       case 'completed':
-        return '#10b981';
+        return '#2e7d42';
       case 'pending':
-        return '#f59e0b';
+        return '#d4841a';
       case 'cancelled':
       case 'failed':
-        return '#ef4444';
+        return '#c0392b';
       default:
-        return '#6b7280';
+        return '#7a7b7a';
     }
   };
 

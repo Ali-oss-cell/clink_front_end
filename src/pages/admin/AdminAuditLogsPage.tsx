@@ -80,7 +80,7 @@ export const AdminAuditLogsPage: React.FC = () => {
 
   const formatChanges = (changes: AuditLog['changes']) => {
     if (!changes || Object.keys(changes).length === 0) {
-      return <span style={{ color: '#6b7280', fontStyle: 'italic' }}>No changes</span>;
+      return <span style={{ color: '#7a7b7a', fontStyle: 'italic' }}>No changes</span>;
     }
     
     return (
@@ -88,9 +88,9 @@ export const AdminAuditLogsPage: React.FC = () => {
         {Object.entries(changes).map(([key, value]) => (
           <div key={key} style={{ marginBottom: '0.25rem' }}>
             <strong>{key}:</strong>{' '}
-            <span style={{ color: '#ef4444' }}>{JSON.stringify(value.old)}</span>
+            <span style={{ color: '#c0392b' }}>{JSON.stringify(value.old)}</span>
             {' → '}
-            <span style={{ color: '#10b981' }}>{JSON.stringify(value.new)}</span>
+            <span style={{ color: '#2e7d42' }}>{JSON.stringify(value.new)}</span>
           </div>
         ))}
       </div>
@@ -100,17 +100,17 @@ export const AdminAuditLogsPage: React.FC = () => {
   const getActionColor = (action: string) => {
     switch (action.toLowerCase()) {
       case 'create':
-        return '#10b981';
+        return '#2e7d42';
       case 'update':
-        return '#3b82f6';
+        return '#5a8cb8';
       case 'delete':
-        return '#ef4444';
+        return '#c0392b';
       case 'login':
         return '#8b5cf6';
       case 'logout':
-        return '#6b7280';
+        return '#7a7b7a';
       default:
-        return '#6b7280';
+        return '#7a7b7a';
     }
   };
 
@@ -161,10 +161,10 @@ export const AdminAuditLogsPage: React.FC = () => {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#3b82f6' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#5a8cb8' }}>
                   {stats.total_logs.toLocaleString()}
                 </div>
-                <div style={{ color: '#6b7280', marginTop: '0.5rem' }}>Total Logs</div>
+                <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Logs</div>
               </div>
               <div style={{
                 background: 'white',
@@ -173,10 +173,10 @@ export const AdminAuditLogsPage: React.FC = () => {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d42' }}>
                   {stats.recent_logs_30_days.toLocaleString()}
                 </div>
-                <div style={{ color: '#6b7280', marginTop: '0.5rem' }}>Last 30 Days</div>
+                <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Last 30 Days</div>
               </div>
               <div style={{
                 background: 'white',
@@ -188,7 +188,7 @@ export const AdminAuditLogsPage: React.FC = () => {
                 <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>
                   {Object.keys(stats.actions_by_type).length}
                 </div>
-                <div style={{ color: '#6b7280', marginTop: '0.5rem' }}>Action Types</div>
+                <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Action Types</div>
               </div>
             </div>
           )}
@@ -286,7 +286,7 @@ export const AdminAuditLogsPage: React.FC = () => {
 
           {/* Logs Table */}
           <div className={styles.tableContainer}>
-            <div style={{ marginBottom: '1rem', color: '#6b7280' }}>
+            <div style={{ marginBottom: '1rem', color: '#7a7b7a' }}>
               Showing {logs.length} of {totalCount.toLocaleString()} logs
             </div>
             <table className={styles.dataTable}>
@@ -315,7 +315,7 @@ export const AdminAuditLogsPage: React.FC = () => {
                         {formatDate(log.timestamp)}
                       </td>
                       <td>
-                        {log.user_email || <span style={{ color: '#6b7280', fontStyle: 'italic' }}>Anonymous</span>}
+                        {log.user_email || <span style={{ color: '#7a7b7a', fontStyle: 'italic' }}>Anonymous</span>}
                       </td>
                       <td>
                         {log.user_role ? (
@@ -323,7 +323,7 @@ export const AdminAuditLogsPage: React.FC = () => {
                             {log.user_role.replace('_', ' ')}
                           </span>
                         ) : (
-                          <span style={{ color: '#6b7280' }}>—</span>
+                          <span style={{ color: '#7a7b7a' }}>—</span>
                         )}
                       </td>
                       <td>
@@ -338,13 +338,13 @@ export const AdminAuditLogsPage: React.FC = () => {
                         </span>
                       </td>
                       <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {log.object_repr || <span style={{ color: '#6b7280' }}>—</span>}
+                        {log.object_repr || <span style={{ color: '#7a7b7a' }}>—</span>}
                       </td>
                       <td style={{ maxWidth: '300px', fontSize: '0.875rem' }}>
                         {formatChanges(log.changes)}
                       </td>
                       <td style={{ fontSize: '0.875rem', fontFamily: 'monospace' }}>
-                        {log.ip_address || <span style={{ color: '#6b7280' }}>—</span>}
+                        {log.ip_address || <span style={{ color: '#7a7b7a' }}>—</span>}
                       </td>
                     </tr>
                   ))
@@ -371,7 +371,7 @@ export const AdminAuditLogsPage: React.FC = () => {
                 Previous
               </button>
               
-              <span style={{ color: '#6b7280' }}>
+              <span style={{ color: '#7a7b7a' }}>
                 Page {currentPage} of {totalPages}
               </span>
               

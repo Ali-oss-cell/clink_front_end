@@ -228,12 +228,12 @@
 
 .appointmentItem {
   padding: 1rem;
-  background: #f9fafb;
+  background: $background-light;
   border-radius: 8px;
   transition: all 0.3s ease;
 
   &:hover {
-    background: #f3f4f6;
+    background: $background-gray;
     transform: translateX(4px);
   }
 }
@@ -257,8 +257,8 @@
   border-radius: 12px;
   font-weight: 600;
   text-transform: uppercase;
-  background: #e5e7eb;
-  color: #374151;
+  background: $border-light;
+  color: $text-dark;
 }
 
 .appointmentMeta {
@@ -278,12 +278,12 @@
 
 .psychologistItem {
   padding: 1rem;
-  background: #f9fafb;
+  background: $background-light;
   border-radius: 8px;
   transition: all 0.3s ease;
 
   &:hover {
-    background: #f3f4f6;
+    background: $background-gray;
     transform: translateX(4px);
   }
 }
@@ -355,7 +355,7 @@
 
 .errorState {
   h3 {
-    color: #ef4444;
+    color: $error-red;
   }
 }
 
@@ -422,7 +422,7 @@
 
 .errorBanner {
   background: #fee2e2;
-  border: 1px solid #ef4444;
+  border: 1px solid $error-red;
   border-radius: $border-radius;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -564,7 +564,7 @@
       transition: background 0.2s ease;
       
       &:hover {
-        background: #f9fafb;
+        background: $background-light;
       }
       
       &:last-child {
@@ -602,24 +602,24 @@
 
 // Status badges
 .statusActive {
-  color: #059669;
+  color: $success-green;
   font-weight: 600;
 }
 
 .statusInactive {
-  color: #dc2626;
+  color: $error-red;
   font-weight: 600;
 }
 
 .verifiedBadge {
   display: inline-block;
   margin-left: 0.5rem;
-  color: #059669;
+  color: $success-green;
   font-weight: 600;
 }
 
 .statusScheduled {
-  background: #dbeafe;
+  background: rgba($primary-color, 0.15);
   color: #1e40af;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -649,8 +649,8 @@
 }
 
 .statusNoShow {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba($warning-color, 0.2);
+  color: $text-dark;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -669,8 +669,8 @@
 }
 
 .statusPending {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba($warning-color, 0.2);
+  color: $text-dark;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -784,11 +784,11 @@
     transition: all 0.3s ease;
     
     &[type="button"] {
-      background: #e5e7eb;
+      background: $border-light;
       color: $text-dark;
       
       &:hover {
-        background: #d1d5db;
+        background: $border-medium;
       }
     }
   }

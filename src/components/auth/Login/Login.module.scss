@@ -18,7 +18,7 @@
   margin-bottom: $spacing-xl;
 
   .title {
-    color: $primary-color;
+    color: $text-dark;
     font-size: $font-size-2xl;
     font-weight: $font-weight-semibold;
     margin-bottom: $spacing-sm;
@@ -137,13 +137,13 @@
   }
 
   .forgotLink {
-    color: $primary-color;
+    color: $text-dark;
     font-size: $font-size-sm;
     text-decoration: none;
     transition: color $transition-fast ease;
 
     &:hover {
-      color: $primary-dark;
+      color: $primary-color;
       text-decoration: underline;
     }
   }
@@ -198,8 +198,8 @@
     line-height: $line-height-normal;
 
     code {
-      background-color: rgba($primary-color, 0.1);
-      color: $primary-color;
+      background-color: $background-gray;
+      color: $text-dark;
       padding: 2px 4px;
       border-radius: 3px;
       font-family: 'Courier New', monospace;
@@ -226,13 +226,13 @@
   }
 
   .footerLink {
-    color: $primary-color;
+    color: $text-dark;
     font-weight: $font-weight-medium;
     text-decoration: none;
     transition: color $transition-fast ease;
 
     &:hover {
-      color: $primary-dark;
+      color: $primary-color;
       text-decoration: underline;
     }
   }

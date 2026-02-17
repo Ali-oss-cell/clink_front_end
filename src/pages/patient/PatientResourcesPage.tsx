@@ -106,7 +106,7 @@ export const PatientResourcesPage: React.FC = () => {
 
           {/* Emergency Contacts */}
           <div className={styles.emergencySection}>
-            <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle', color: '#dc2626' }} /> Need Immediate Help?</h2>
+            <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle', color: '#c0392b' }} /> Need Immediate Help?</h2>
             <div className={styles.emergencyGrid}>
               {emergencyContacts.map((contact, index) => (
                 <div key={index} className={styles.emergencyCard}>

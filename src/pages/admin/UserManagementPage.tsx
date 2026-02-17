@@ -392,11 +392,11 @@ export const UserManagementPage: React.FC = () => {
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case 'admin': return '#dc2626';
-      case 'psychologist': return '#2563eb';
-      case 'practice_manager': return '#059669';
-      case 'patient': return '#7c3aed';
-      default: return '#6b7280';
+      case 'admin': return '#c0392b';
+      case 'psychologist': return '#3d6d96';
+      case 'practice_manager': return '#2e7d42';
+      case 'patient': return '#7a9a80';
+      default: return '#7a7b7a';
     }
   };
 
@@ -602,7 +602,7 @@ export const UserManagementPage: React.FC = () => {
                       value={createForm.phone_number || ''}
                       onChange={(e) => setCreateForm({ ...createForm, phone_number: e.target.value })}
                     />
-                    <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                    <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
                       Australian format: +61XXXXXXXXX or 0XXXXXXXXX
                     </small>
                   </div>
@@ -613,8 +613,8 @@ export const UserManagementPage: React.FC = () => {
                       <div style={{ 
                         padding: '12px', 
                         marginBottom: '16px',
-                        backgroundColor: '#dbeafe', 
-                        border: '1px solid #3b82f6', 
+                        backgroundColor: 'rgba(90, 140, 184, 0.15)', 
+                        border: '1px solid #5a8cb8', 
                         borderRadius: '4px',
                         fontSize: '0.875rem',
                         color: '#1e40af'
@@ -623,7 +623,7 @@ export const UserManagementPage: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label>AHPRA Registration Number <span style={{ color: '#ef4444' }}>*</span></label>
+                        <label>AHPRA Registration Number <span style={{ color: '#c0392b' }}>*</span></label>
                         <AHPRAInput
                           value={createForm.ahpra_registration_number || ''}
                           onChange={(value, validation) => {
@@ -641,7 +641,7 @@ export const UserManagementPage: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label>AHPRA Expiry Date <span style={{ color: '#ef4444' }}>*</span></label>
+                        <label>AHPRA Expiry Date <span style={{ color: '#c0392b' }}>*</span></label>
                         <input
                           type="date"
                           value={createForm.ahpra_expiry_date || ''}
@@ -691,7 +691,7 @@ export const UserManagementPage: React.FC = () => {
                           value={createForm.consultation_fee || '180.00'}
                           onChange={(e) => setCreateForm({ ...createForm, consultation_fee: e.target.value })}
                         />
-                        <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                        <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
                           Default: $180.00 (full fee before Medicare rebate)
                         </small>
                       </div>
@@ -704,7 +704,7 @@ export const UserManagementPage: React.FC = () => {
                           value={createForm.medicare_rebate_amount || '87.45'}
                           onChange={(e) => setCreateForm({ ...createForm, medicare_rebate_amount: e.target.value })}
                         />
-                        <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                        <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
                           Default: $87.45 (standard Medicare rebate for clinical psychology)
                         </small>
                       </div>
@@ -802,7 +802,7 @@ export const UserManagementPage: React.FC = () => {
                       value={editForm.phone_number || ''}
                       onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
                     />
-                    <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                    <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
                       Australian format: +61XXXXXXXXX or 0XXXXXXXXX
                     </small>
                   </div>
@@ -842,8 +842,8 @@ export const UserManagementPage: React.FC = () => {
                         padding: '12px', 
                         marginTop: '16px',
                         marginBottom: '16px',
-                        backgroundColor: '#dbeafe', 
-                        border: '1px solid #3b82f6', 
+                        backgroundColor: 'rgba(90, 140, 184, 0.15)', 
+                        border: '1px solid #5a8cb8', 
                         borderRadius: '4px',
                         fontSize: '0.875rem',
                         color: '#1e40af'

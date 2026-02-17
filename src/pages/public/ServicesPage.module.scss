@@ -9,185 +9,129 @@
 
 // Hero Section
 .hero {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  background: $primary-color;
   color: $text-white;
-  padding: 5rem 0;
+  padding: 4rem 0;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="30" cy="70" r="1" fill="rgba(255,255,255,0.12)"/><circle cx="70" cy="80" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
-    opacity: 0.3;
-    pointer-events: none;
-  }
 
   .heroContent {
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
+    max-width: 680px;
     margin: 0 auto;
-    animation: fadeInUp 1s ease-out;
   }
 
   .heroTitle {
-    font-size: 4rem;
-    font-weight: 900;
-    margin-bottom: 1.5rem;
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
     color: $text-white;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    letter-spacing: -1px;
 
     @include mobile {
-      font-size: 2.5rem;
+      font-size: 2rem;
     }
   }
 
   .heroSubtitle {
-    font-size: 1.5rem;
-    line-height: 1.8;
-    color: rgba($text-white, 0.95);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: rgba($text-white, 0.9);
     margin: 0;
 
     @include mobile {
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
   }
 }
 
 // Services Section
 .servicesSection {
-  padding: 5rem 0;
-  background: linear-gradient(135deg, $background-light 0%, #ffffff 100%);
+  padding: 4rem 0;
 
   @include mobile {
-    padding: 3rem 0;
+    padding: 2.5rem 0;
   }
 }
 
 .servicesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2.5rem;
-  max-width: 1400px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
   margin: 0 auto;
 
   @include mobile {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   @include tablet {
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
   }
 }
 
 .serviceCard {
-  background: white;
-  border-radius: 24px;
-  padding: 2.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s ease;
-  border: 2px solid transparent;
-  position: relative;
-  overflow: hidden;
-  animation: fadeInUp 0.8s ease-out;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, $primary-color, $primary-light);
-    transform: scaleX(0);
-    transition: transform 0.4s ease;
-  }
+  background: $background-white;
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid $border-light;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba($primary-color, 0.15);
-    border-color: rgba($primary-color, 0.2);
-
-    &::before {
-      transform: scaleX(1);
-    }
-
-    .serviceIcon {
-      transform: scale(1.1) rotate(5deg);
-      color: $primary-color;
-    }
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-color: rgba($primary-color, 0.15);
   }
 
   @include mobile {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 }
 
 .serviceIcon {
-  width: 80px;
-  height: 80px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($primary-dark, 0.1) 100%);
-  border-radius: 20px;
-  margin: 0 auto 1.5rem;
+  background: rgba($primary-color, 0.08);
+  border-radius: 12px;
+  margin: 0 auto 1.25rem;
   color: $primary-color;
-  transition: all 0.3s ease;
-
-  svg {
-    filter: drop-shadow(0 2px 8px rgba($primary-color, 0.2));
-  }
 }
 
 .serviceName {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: $text-dark;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   text-align: center;
-  transition: color 0.3s ease;
-
-  .serviceCard:hover & {
-    color: $primary-dark;
-  }
 }
 
 .serviceDescription {
   color: $text-light;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .serviceDetails {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  padding: 1.25rem;
-  background: rgba($primary-color, 0.05);
-  border-radius: 12px;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background: $background-light;
+  border-radius: 8px;
 }
 
 .detailItem {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   color: $text-dark;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 
   svg {
     color: $primary-color;
@@ -198,14 +142,14 @@
 .medicareBadge {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   color: $success-green;
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 0.5rem;
-  background: rgba($success-green, 0.1);
-  border-radius: 8px;
-  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba($success-green, 0.08);
+  border-radius: 6px;
+  margin-top: 0.25rem;
 
   svg {
     color: $success-green;
@@ -214,35 +158,36 @@
 }
 
 .availability {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   text-align: center;
 }
 
 .availabilityBadge {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba($primary-color, 0.1);
-  color: $primary-dark;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: $background-gray;
+  color: $text-dark;
+  border-radius: 6px;
+  font-size: 0.8rem;
   font-weight: 600;
 
   svg {
-    color: $primary-color;
+    color: $text-muted;
   }
 }
 
 .serviceFeatures {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  flex: 1;
 }
 
 .featuresTitle {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: $text-dark;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   text-align: center;
 }
 
@@ -252,160 +197,132 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 
   li {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     color: $text-light;
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.875rem;
+    line-height: 1.5;
 
     svg {
       color: $success-green;
       flex-shrink: 0;
-      margin-top: 2px;
     }
   }
 }
 
 .bookButton {
-  @include button-primary;
+  @include button-base;
+  background: $primary-color;
+  color: $text-white;
   width: 100%;
-  padding: 1rem 2rem;
-  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  border-radius: 12px;
+  border-radius: 8px;
   text-align: center;
   text-decoration: none;
   display: block;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  margin-top: auto;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba($primary-color, 0.3);
+    background: $primary-dark;
     text-decoration: none;
   }
+
+  &:focus { outline: none; }
+  &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; }
 }
 
 // CTA Section
 .ctaSection {
-  padding: 5rem 0;
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
-  color: $text-white;
+  padding: 4rem 0;
+  background: $background-light;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="15" cy="15" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="85" cy="25" r="2" fill="rgba(255,255,255,0.08)"/><circle cx="25" cy="75" r="1.5" fill="rgba(255,255,255,0.12)"/></svg>');
-    opacity: 0.3;
-    pointer-events: none;
-  }
 
   .ctaContent {
-    position: relative;
-    z-index: 1;
-    max-width: 700px;
+    max-width: 600px;
     margin: 0 auto;
-    animation: fadeInUp 1s ease-out;
   }
 
   .ctaTitle {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    color: $text-white;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: $text-dark;
 
     @include mobile {
-      font-size: 2rem;
+      font-size: 1.75rem;
     }
   }
 
   .ctaSubtitle {
-    font-size: 1.25rem;
-    line-height: 1.8;
-    color: rgba($text-white, 0.95);
-    margin-bottom: 2.5rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: $text-light;
+    margin-bottom: 2rem;
 
     @include mobile {
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
   }
 
   .ctaButtons {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
 
     @include mobile {
       flex-direction: column;
-      gap: 1rem;
+      align-items: center;
     }
   }
 
   .primaryCTA {
     @include button-base;
-    background-color: $text-white;
-    color: $primary-color;
-    padding: 1.25rem 3rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: 50px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    background: $primary-color;
+    color: $text-white;
+    padding: 0.85rem 2.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 8px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 
     &:hover {
-      background-color: $background-light;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+      background: $primary-dark;
       text-decoration: none;
     }
+
+    &:focus { outline: none; }
+    &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; }
   }
 
   .secondaryCTA {
     @include button-base;
-    background-color: transparent;
-    color: $text-white;
-    border: 3px solid $text-white;
-    padding: 1.25rem 3rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: 50px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: transparent;
+    color: $text-dark;
+    border: 1.5px solid $border-medium;
+    padding: 0.85rem 2.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 8px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 
     &:hover {
-      background-color: $text-white;
-      color: $primary-color;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+      background: $background-gray;
+      border-color: $text-muted;
+      color: $text-dark;
       text-decoration: none;
     }
+
+    &:focus { outline: none; }
+    &:focus-visible { outline: 2px solid $primary-color; outline-offset: 2px; }
   }
 }
-
-// Animations
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-

@@ -315,7 +315,7 @@ export const PatientDashboardPage: React.FC = () => {
                         className={styles.progressFill} 
                         style={{ 
                           width: `${(medicareInfo.sessions_used / medicareInfo.max_sessions) * 100}%`,
-                          backgroundColor: medicareInfo.sessions_remaining <= 2 ? '#f59e0b' : '#10b981'
+                          backgroundColor: medicareInfo.sessions_remaining <= 2 ? '#d4841a' : '#2e7d42'
                         }}
                       />
                     </div>
@@ -412,7 +412,7 @@ export const PatientDashboardPage: React.FC = () => {
                             <span><StarIcon size="sm" style={{ marginRight: '4px' }} /> {progress.progress_rating}/10</span>
                           )}
                         </div>
-                        <p style={{ fontSize: '0.9rem', color: '#6b7280', margin: 0 }}>
+                        <p style={{ fontSize: '0.9rem', color: '#7a7b7a', margin: 0 }}>
                           {progress.psychologist_name && `Dr. ${progress.psychologist_name} • `}
                           {progress.session_date && new Date(progress.session_date).toLocaleDateString('en-AU', {
                             day: 'numeric',

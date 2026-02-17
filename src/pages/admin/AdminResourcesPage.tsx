@@ -481,7 +481,7 @@ export const AdminResourcesPage: React.FC = () => {
                       background: 'none',
                       border: 'none',
                       fontSize: '1.5rem',
-                      color: '#6b7280',
+                      color: '#7a7b7a',
                       cursor: 'pointer',
                       padding: '0.25rem',
                       width: '32px',
@@ -492,7 +492,7 @@ export const AdminResourcesPage: React.FC = () => {
                       borderRadius: '50%',
                       transition: 'background-color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ebe8e3'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <CloseIcon size="sm" />
@@ -621,7 +621,7 @@ export const AdminResourcesPage: React.FC = () => {
                               maxWidth: '200px',
                               maxHeight: '200px',
                               borderRadius: '8px',
-                              border: '1px solid #d1d5db'
+                              border: '1px solid #c8c5c0'
                             }}
                           />
                           <button
@@ -631,7 +631,7 @@ export const AdminResourcesPage: React.FC = () => {
                               position: 'absolute',
                               top: '-8px',
                               right: '-8px',
-                              background: '#ef4444',
+                              background: '#c0392b',
                               color: 'white',
                               border: 'none',
                               borderRadius: '50%',
@@ -645,7 +645,7 @@ export const AdminResourcesPage: React.FC = () => {
                           </button>
                         </div>
                       )}
-                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                         Upload an image file (JPEG, PNG, GIF, WebP)
                       </small>
                     </div>
@@ -660,7 +660,7 @@ export const AdminResourcesPage: React.FC = () => {
                       />
                       {pdfFile && (
                         <div style={{ marginTop: '0.5rem' }}>
-                          <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
+                          <span style={{ color: '#2e7d42', fontSize: '0.875rem' }}>
                             <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                             {pdfFile.name}
                           </span>
@@ -669,7 +669,7 @@ export const AdminResourcesPage: React.FC = () => {
                             onClick={() => removePdf(false)}
                             style={{
                               marginLeft: '0.5rem',
-                              background: '#ef4444',
+                              background: '#c0392b',
                               color: 'white',
                               border: 'none',
                               borderRadius: '4px',
@@ -682,7 +682,7 @@ export const AdminResourcesPage: React.FC = () => {
                           </button>
                         </div>
                       )}
-                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                         Upload a PDF file
                       </small>
                     </div>
@@ -697,7 +697,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setCreateForm({ ...createForm, thumbnail_url: e.target.value || undefined })}
                       placeholder="https://example.com/image.jpg"
                     />
-                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                       Use this if you want to use an external image URL instead of uploading a file
                     </small>
                   </div>
@@ -710,7 +710,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setCreateForm({ ...createForm, media_url: e.target.value || undefined })}
                       placeholder="https://www.youtube.com/watch?v=... or https://soundcloud.com/..."
                     />
-                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                       For video/audio resources: YouTube, Vimeo, SoundCloud, or direct media links
                     </small>
                   </div>
@@ -723,7 +723,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setCreateForm({ ...createForm, download_url: e.target.value || undefined })}
                       placeholder="https://example.com/document.pdf"
                     />
-                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                       Use this if you want to use an external download URL instead of uploading a PDF file
                     </small>
                   </div>
@@ -778,7 +778,7 @@ export const AdminResourcesPage: React.FC = () => {
                       background: 'none',
                       border: 'none',
                       fontSize: '1.5rem',
-                      color: '#6b7280',
+                      color: '#7a7b7a',
                       cursor: 'pointer',
                       padding: '0.25rem',
                       width: '32px',
@@ -789,7 +789,7 @@ export const AdminResourcesPage: React.FC = () => {
                       borderRadius: '50%',
                       transition: 'background-color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ebe8e3'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <CloseIcon size="sm" />
@@ -915,7 +915,7 @@ export const AdminResourcesPage: React.FC = () => {
                               maxWidth: '200px',
                               maxHeight: '200px',
                               borderRadius: '8px',
-                              border: '1px solid #d1d5db'
+                              border: '1px solid #c8c5c0'
                             }}
                           />
                           <button
@@ -925,7 +925,7 @@ export const AdminResourcesPage: React.FC = () => {
                               position: 'absolute',
                               top: '-8px',
                               right: '-8px',
-                              background: '#ef4444',
+                              background: '#c0392b',
                               color: 'white',
                               border: 'none',
                               borderRadius: '50%',
@@ -948,7 +948,7 @@ export const AdminResourcesPage: React.FC = () => {
                               maxWidth: '200px',
                               maxHeight: '200px',
                               borderRadius: '8px',
-                              border: '1px solid #d1d5db'
+                              border: '1px solid #c8c5c0'
                             }}
                           />
                           <button
@@ -958,7 +958,7 @@ export const AdminResourcesPage: React.FC = () => {
                               position: 'absolute',
                               top: '-8px',
                               right: '-8px',
-                              background: '#ef4444',
+                              background: '#c0392b',
                               color: 'white',
                               border: 'none',
                               borderRadius: '50%',
@@ -970,12 +970,12 @@ export const AdminResourcesPage: React.FC = () => {
                           >
                             <CloseIcon size="sm" />
                           </button>
-                          <small style={{ display: 'block', marginTop: '0.25rem', color: '#6b7280' }}>
+                          <small style={{ display: 'block', marginTop: '0.25rem', color: '#7a7b7a' }}>
                             Current image
                           </small>
                         </div>
                       )}
-                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                         Upload a new image or remove existing one
                       </small>
                     </div>
@@ -990,7 +990,7 @@ export const AdminResourcesPage: React.FC = () => {
                       />
                       {editPdfFile && (
                         <div style={{ marginTop: '0.5rem' }}>
-                          <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
+                          <span style={{ color: '#2e7d42', fontSize: '0.875rem' }}>
                             <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                             {editPdfFile.name}
                           </span>
@@ -999,7 +999,7 @@ export const AdminResourcesPage: React.FC = () => {
                             onClick={() => removePdf(true)}
                             style={{
                               marginLeft: '0.5rem',
-                              background: '#ef4444',
+                              background: '#c0392b',
                               color: 'white',
                               border: 'none',
                               borderRadius: '4px',
@@ -1018,7 +1018,7 @@ export const AdminResourcesPage: React.FC = () => {
                             href={existingPdfUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: '#3b82f6', fontSize: '0.875rem', textDecoration: 'none' }}
+                            style={{ color: '#5a8cb8', fontSize: '0.875rem', textDecoration: 'none' }}
                           >
                             <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                             View current PDF
@@ -1028,7 +1028,7 @@ export const AdminResourcesPage: React.FC = () => {
                             onClick={() => removePdf(true)}
                             style={{
                               marginLeft: '0.5rem',
-                              background: '#ef4444',
+                              background: '#c0392b',
                               color: 'white',
                               border: 'none',
                               borderRadius: '4px',
@@ -1041,7 +1041,7 @@ export const AdminResourcesPage: React.FC = () => {
                           </button>
                         </div>
                       )}
-                      <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                         Upload a new PDF or remove existing one
                       </small>
                     </div>
@@ -1056,7 +1056,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setEditForm({ ...editForm, thumbnail_url: e.target.value || undefined })}
                       placeholder="https://example.com/image.jpg"
                     />
-                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                       Use this if you want to use an external image URL instead of uploading a file
                     </small>
                   </div>
@@ -1069,7 +1069,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setEditForm({ ...editForm, media_url: e.target.value || undefined })}
                       placeholder="https://www.youtube.com/watch?v=... or https://soundcloud.com/..."
                     />
-                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                       For video/audio resources: YouTube, Vimeo, SoundCloud, or direct media links
                     </small>
                   </div>
@@ -1082,7 +1082,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setEditForm({ ...editForm, download_url: e.target.value || undefined })}
                       placeholder="https://example.com/document.pdf"
                     />
-                    <small style={{ color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
                       Use this if you want to use an external download URL instead of uploading a PDF file
                     </small>
                   </div>
