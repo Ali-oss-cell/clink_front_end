@@ -324,7 +324,7 @@ export const PatientInvoicesPage: React.FC = () => {
                             disabled={downloadingId === invoice.id}
                             style={{
                               padding: '0.5rem 1rem',
-                              background: downloadingId === invoice.id ? '#7a7b7a' : '#1e1f1e',
+                              background: downloadingId === invoice.id ? '#7a7b7a' : '#364539',
                               color: 'white',
                               border: 'none',
                               borderRadius: '6px',
