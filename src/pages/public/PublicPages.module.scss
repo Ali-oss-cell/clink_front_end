@@ -3,7 +3,7 @@
 
 .publicLayout {
   .main {
-    background-color: $background-white;
+    background-color: $background-light;
   }
 }
 
@@ -240,7 +240,7 @@
 }
 
 .calloutCard {
-  background: $primary-color;
+  background: $hero-bg;
   color: $background-white;
   border-radius: $border-radius-lg;
   padding: $spacing-2xl;
