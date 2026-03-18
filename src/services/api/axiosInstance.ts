@@ -91,6 +91,19 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       
+      // If the user is logging out, do NOT attempt refresh.
+      // This prevents race conditions where an in-flight request triggers refresh after logout.
+      const isLoggingOut = sessionStorage.getItem('auth_logging_out') === 'true';
+      if (isLoggingOut) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+      
       // Try to refresh token
       const refreshToken = localStorage.getItem('refresh_token');
       if (refreshToken) {

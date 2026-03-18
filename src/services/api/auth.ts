@@ -169,6 +169,10 @@ export interface DataAccessRequestResponse {
 export const authService = {
   // Login user
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
+    // Allow token refresh again after a previous logout.
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('auth_logging_out');
+    }
     try {
       // Use explicit headers for login (no auth required)
       const headers = createHeaders(false, false);
@@ -201,6 +205,9 @@ export const authService = {
 
   // Logout user
   logout: async (): Promise<void> => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('auth_logging_out', 'true');
+    }
     try {
       // Call logout endpoint if token exists
       const token = localStorage.getItem('access_token');
@@ -215,6 +222,11 @@ export const authService = {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
+
+      // Notify the app to clear auth state immediately.
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth:logout'));
+      }
     }
   },
 

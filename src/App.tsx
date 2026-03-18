@@ -66,6 +66,17 @@ function App() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
+  // Listen for explicit auth events (logout) so UI updates immediately in the same tab.
+  useEffect(() => {
+    const handleAuthLogoutEvent = () => {
+      setUser(null);
+      setIsAuthenticated(false);
+    };
+
+    window.addEventListener('auth:logout', handleAuthLogoutEvent);
+    return () => window.removeEventListener('auth:logout', handleAuthLogoutEvent);
+  }, []);
+
   // Show loading spinner while checking auth
   if (isLoading) {
     return (

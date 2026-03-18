@@ -16,18 +16,10 @@ export const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    try {
-      await authService.logout();
-      // Redirect to homepage after logout
-      navigate('/');
-      // Reload the page to reset the app state
-      window.location.reload();
-    } catch (error) {
-      console.error('Logout failed:', error);
-      // Still redirect even if logout API fails
-      navigate('/');
-      window.location.reload();
-    }
+    // authService.logout clears storage and dispatches a global `auth:logout` event.
+    // The app listens to that event to clear UI auth state immediately.
+    await authService.logout();
+    navigate('/');
   };
 
   const handleLoginClick = () => {
