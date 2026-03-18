@@ -55,8 +55,9 @@
   align-items: center;
   opacity: 0;
   visibility: hidden;
-  transform: translateX(100%);
-  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  transform: translateX(40px);
+  transition: none;
+  pointer-events: none;
   z-index: 1;
 
   // Dark overlay on background images for text readability
@@ -71,13 +72,6 @@
     );
     z-index: 0;
     pointer-events: none;
-  }
-
-  &.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-    z-index: 2;
   }
 
   .heroContent {
@@ -171,37 +165,6 @@
     }
   }
 
-  // Slide Indicators
-  .sliderIndicators {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 0.75rem;
-    z-index: 10;
-  }
-
-  .indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    padding: 0;
-
-    &:hover {
-      border-color: $text-white;
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    &.active {
-      border-color: $text-white;
-      background: $text-white;
-    }
-  }
 }
 
 // ── Features ────────────────────────────────────────────────────────────

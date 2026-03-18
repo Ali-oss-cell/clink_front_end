@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { VideoIcon, CalendarIcon, ClipboardIcon, ChartIcon } from '../../utils/icons';
@@ -7,6 +7,7 @@ import heroImage2 from '../../assets/imges/pexels-shvets-production-7176319.jpg'
 import heroImage3 from '../../assets/imges/pexels-shkrabaanthony-5217852.jpg';
 import heroImage4 from '../../assets/imges/sigmund-YUuSAJkS3U4-unsplash.jpg';
 import styles from './Homepage.module.scss';
+import gsap from 'gsap';
 
 interface Slide {
   id: number;
@@ -65,19 +66,99 @@ const slides: Slide[] = [
 
 export const Homepage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const prevSlideRef = useRef(0);
+  const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
 
   // Auto-play slider
   useEffect(() => {
-    if (!isAutoPlaying) return;
-
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000); // Change slide every 6 seconds
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, []);
+
+  // Initial GSAP state for the first slide
+  useEffect(() => {
+    const first = slideRefs.current[0];
+    if (first) {
+      gsap.set(first, {
+        opacity: 1,
+        visibility: 'visible',
+        x: 0,
+        zIndex: 2,
+        pointerEvents: 'auto',
+      });
+    }
+  }, []);
+
+  // Animate slide transitions with GSAP
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const prev = prevSlideRef.current;
+    if (prev === currentSlide) return;
+
+    const fromEl = slideRefs.current[prev];
+    const toEl = slideRefs.current[currentSlide];
+    if (!fromEl || !toEl) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const fromSlide = slides[prev];
+    const toSlide = slides[currentSlide];
+
+    // Ensure outgoing slide keeps its background during the animation.
+    if (fromSlide.backgroundImage) {
+      fromEl.style.backgroundImage = `url(${fromSlide.backgroundImage})`;
+      fromEl.style.backgroundSize = 'cover';
+      fromEl.style.backgroundPosition = 'center';
+      fromEl.style.backgroundRepeat = 'no-repeat';
+      fromEl.classList.add(styles.hasImage);
+    }
+
+    // Ensure incoming slide has its background (usually already true from render).
+    if (toSlide.backgroundImage) {
+      toEl.style.backgroundImage = `url(${toSlide.backgroundImage})`;
+      toEl.style.backgroundSize = 'cover';
+      toEl.style.backgroundPosition = 'center';
+      toEl.style.backgroundRepeat = 'no-repeat';
+      toEl.classList.add(styles.hasImage);
+    }
+
+    if (prefersReducedMotion) {
+      gsap.set(fromEl, { opacity: 0, visibility: 'hidden', x: 0, pointerEvents: 'none', zIndex: 1 });
+      gsap.set(toEl, { opacity: 1, visibility: 'visible', x: 0, pointerEvents: 'auto', zIndex: 2 });
+      prevSlideRef.current = currentSlide;
+      if (fromSlide.backgroundImage) {
+        fromEl.style.backgroundImage = 'none';
+        fromEl.classList.remove(styles.hasImage);
+      }
+      return;
+    }
+
+    gsap.set(toEl, { opacity: 0, visibility: 'visible', x: 40, pointerEvents: 'auto', zIndex: 2 });
+    gsap.set(fromEl, { opacity: 1, visibility: 'visible', x: 0, pointerEvents: 'auto', zIndex: 1 });
+
+    const duration = 0.8;
+    gsap
+      .timeline({
+        defaults: { ease: 'power3.out', duration },
+        onComplete: () => {
+          // Hide outgoing slide after animation.
+          gsap.set(fromEl, { visibility: 'hidden', pointerEvents: 'none' });
+
+          if (fromSlide.backgroundImage) {
+            fromEl.style.backgroundImage = 'none';
+            fromEl.classList.remove(styles.hasImage);
+          }
+
+          prevSlideRef.current = currentSlide;
+        },
+      })
+      .to(fromEl, { opacity: 0, x: -40 }, 0)
+      .to(toEl, { opacity: 1, x: 0 }, 0);
+  }, [currentSlide]);
 
   // Scroll-triggered animation for steps
   useEffect(() => {
@@ -148,13 +229,6 @@ export const Homepage: React.FC = () => {
     };
   }, []);
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false); // Pause auto-play when user manually navigates
-    // Resume auto-play after 10 seconds
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  };
-
   return (
     <Layout className={styles.homepage}>
       <section className={styles.hero}>
@@ -163,14 +237,18 @@ export const Homepage: React.FC = () => {
           {slides.map((slide, index) => (
             <div
               key={slide.id}
-              className={`${styles.slide} ${index === currentSlide ? styles.active : ''} ${slide.backgroundImage ? styles.hasImage : ''}`}
+              ref={(el) => {
+                slideRefs.current[index] = el;
+              }}
+              className={`${styles.slide} ${index === currentSlide && slide.backgroundImage ? styles.hasImage : ''}`}
               style={{
-                background: slide.backgroundImage 
-                  ? `url(${slide.backgroundImage})`
-                  : slide.gradient,
+                backgroundImage:
+                  index === currentSlide && slide.backgroundImage
+                    ? `url(${slide.backgroundImage})`
+                    : 'none',
                 backgroundSize: slide.backgroundImage ? 'cover' : undefined,
                 backgroundPosition: slide.backgroundImage ? 'center' : undefined,
-                backgroundRepeat: slide.backgroundImage ? 'no-repeat' : undefined
+                backgroundRepeat: slide.backgroundImage ? 'no-repeat' : undefined,
               }}
             >
               <div className="container">
@@ -195,18 +273,6 @@ export const Homepage: React.FC = () => {
               </div>
             </div>
           ))}
-
-          {/* Slide Indicators */}
-          <div className={styles.sliderIndicators}>
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
-                onClick={() => goToSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
         </div>
       </section>
 
