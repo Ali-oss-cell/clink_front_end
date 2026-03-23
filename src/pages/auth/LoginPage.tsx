@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { Login } from '../../components/auth/Login/Login';
 import { authService } from '../../services/api/auth';
-import loginImage from '../../assets/imges/optimized/auth-wellness.webp';
+import loginImage from '../../assets/imges/optimized/login-therapy.webp';
 import styles from './AuthPages.module.scss';
 
 interface LoginPageProps {
