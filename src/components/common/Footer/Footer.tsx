@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
           {/* Company Info */}
           <div className={styles.section}>
             <Link to="/" className={styles.logoLink}>
-              <img src="/logo-tailored-png.png" alt="Tailored Psychology" className={styles.logoImage} />
+              <img src="/logo-icon.png" alt="Tailored Psychology" className={styles.logoImage} />
             </Link>
             <p className={styles.description}>
               Professional psychological services providing compassionate care 
