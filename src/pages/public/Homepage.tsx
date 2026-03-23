@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { VideoIcon, CalendarIcon, ClipboardIcon, ChartIcon } from '../../utils/icons';
-import heroImage from '../../assets/imges/petr-magera-HuWm7malJ18-unsplash.jpg';
-import heroImage2 from '../../assets/imges/pexels-shvets-production-7176319.jpg';
-import heroImage3 from '../../assets/imges/pexels-shkrabaanthony-5217852.jpg';
-import heroImage4 from '../../assets/imges/sigmund-YUuSAJkS3U4-unsplash.jpg';
+import heroImage from '../../assets/imges/optimized/hero-therapy.webp';
+import heroImage2 from '../../assets/imges/optimized/hero-telehealth.webp';
+import heroImage3 from '../../assets/imges/optimized/hero-consultation.webp';
+import heroImage4 from '../../assets/imges/optimized/hero-support.webp';
 import styles from './Homepage.module.scss';
 import gsap from 'gsap';
 

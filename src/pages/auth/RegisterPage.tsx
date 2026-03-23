@@ -1,6 +1,6 @@
 import { Layout } from '../../components/common/Layout/Layout';
 import { Register } from '../../components/auth/Register/Register';
-import registerImage from '../../assets/imges/ben-kolde-6lzIdGOoqfg-unsplash.jpg';
+import registerImage from '../../assets/imges/optimized/auth-wellness.webp';
 import styles from './AuthPages.module.scss';
 
 export const RegisterPage: React.FC = () => {
