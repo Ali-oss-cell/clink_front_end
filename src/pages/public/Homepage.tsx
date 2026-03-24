@@ -20,6 +20,7 @@ import homeResourcesReading from '../../assets/imges/optimized/home-resources-re
 import homeTrustConnection from '../../assets/imges/optimized/home-trust-connection.webp';
 import styles from './Homepage.module.scss';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface Slide {
   id: number;
@@ -80,7 +81,6 @@ export const Homepage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const prevSlideRef = useRef(0);
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
 
   // Auto-play slider
   useEffect(() => {
@@ -172,72 +172,104 @@ export const Homepage: React.FC = () => {
       .to(toEl, { opacity: 1, x: 0 }, 0);
   }, [currentSlide]);
 
-  // Scroll-triggered animation for steps
+  // Scroll-triggered section reveals (ScrollTrigger)
   useEffect(() => {
-    let observer: IntersectionObserver | null = null;
-    let stepCards: NodeListOf<Element> | null = null;
+    if (typeof window === 'undefined') return;
 
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const stepIndex = parseInt(entry.target.getAttribute('data-step-index') || '0');
-              setTimeout(() => {
-                setVisibleSteps((prev) => {
-                  if (!prev.includes(stepIndex)) {
-                    return [...prev, stepIndex].sort((a, b) => a - b);
-                  }
-                  return prev;
-                });
-              }, stepIndex * 400); // 400ms delay between each card - slower reveal
-            }
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      document.querySelectorAll<HTMLElement>('[data-home-reveal]').forEach((section) => {
+        const animateChildren = section.querySelectorAll<HTMLElement>('[data-home-stagger-item]');
+
+        if (animateChildren.length > 0) {
+          gsap.from(animateChildren, {
+            y: 40,
+            autoAlpha: 0,
+            duration: 0.65,
+            ease: 'power3.out',
+            stagger: 0.09,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 86%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
           });
-        },
-        {
-          threshold: 0.1, // Lower threshold - trigger when 10% is visible
-          rootMargin: '0px 0px -50px 0px' // Less margin for earlier trigger
+          return;
         }
-      );
 
-      stepCards = document.querySelectorAll('[data-step-index]');
-      if (stepCards.length > 0) {
-        stepCards.forEach((card) => {
-          observer?.observe(card);
-          // Check if card is already visible on load
-          const rect = card.getBoundingClientRect();
-          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-          if (isVisible) {
-            const stepIndex = parseInt(card.getAttribute('data-step-index') || '0');
-            setTimeout(() => {
-              setVisibleSteps((prev) => {
-                if (!prev.includes(stepIndex)) {
-                  return [...prev, stepIndex].sort((a, b) => a - b);
-                }
-                return prev;
-              });
-            }, stepIndex * 400);
-          }
+        gsap.from(section, {
+          y: 52,
+          autoAlpha: 0,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+            once: true,
+          },
         });
-      } else {
-        // Fallback: if no cards found, show all after a delay
-        console.warn('Step cards not found, showing all steps');
-        setTimeout(() => {
-          setVisibleSteps([0, 1, 2, 3]);
-        }, 500);
+      });
+
+      const hiw = document.querySelector<HTMLElement>('[data-home-how]');
+      if (hiw) {
+        const title = hiw.querySelector<HTMLElement>('[data-home-how-title]');
+        const sub = hiw.querySelector<HTMLElement>('[data-home-how-sub]');
+        const stepEls = hiw.querySelectorAll<HTMLElement>('[data-home-step-card]');
+        const cta = hiw.querySelector<HTMLElement>('[data-home-how-cta]');
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: hiw,
+            start: 'top 82%',
+            toggleActions: 'play none none none',
+            once: true,
+          },
+        });
+
+        if (title) {
+          tl.from(title, { y: 28, autoAlpha: 0, duration: 0.55, ease: 'power3.out' }, 0);
+        }
+        if (sub) {
+          tl.from(sub, { y: 22, autoAlpha: 0, duration: 0.5, ease: 'power3.out' }, 0.06);
+        }
+        if (stepEls.length) {
+          tl.from(
+            stepEls,
+            {
+              y: 32,
+              autoAlpha: 0,
+              duration: 0.58,
+              ease: 'power2.out',
+              stagger: 0.12,
+            },
+            0.12
+          );
+        }
+        if (cta) {
+          tl.from(cta, { y: 18, autoAlpha: 0, duration: 0.48, ease: 'power2.out' }, '-=0.15');
+        }
       }
-    }, 100);
+    });
+
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+
+    const onResize = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('resize', onResize);
 
     return () => {
-      clearTimeout(timer);
-      if (observer && stepCards) {
-        stepCards.forEach((card) => {
-          if (observer) {
-            observer.unobserve(card);
-          }
-        });
-      }
+      window.removeEventListener('resize', onResize);
+      ctx.revert();
+      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 
@@ -288,22 +320,22 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.benefitsStrip} aria-label="Key benefits">
+      <section className={styles.benefitsStrip} aria-label="Key benefits" data-home-reveal>
         <div className="container">
           <ul className={styles.benefitsStripList}>
-            <li>
+            <li data-home-stagger-item>
               <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>Flexible appointment times, including before and after standard hours where available</span>
             </li>
-            <li>
+            <li data-home-stagger-item>
               <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>Telehealth across Australia and in-person care where offered</span>
             </li>
-            <li>
+            <li data-home-stagger-item>
               <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>AHPRA-registered psychologists and evidence-based approaches</span>
             </li>
-            <li>
+            <li data-home-stagger-item>
               <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>Medicare rebates for eligible clients with a mental health care plan</span>
             </li>
@@ -311,23 +343,25 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.features}>
+      <section className={styles.features} data-home-reveal>
         <div className="container">
-          <h2 className={styles.sectionTitle}>Why Choose Tailored Psychology?</h2>
+          <h2 className={styles.sectionTitle} data-home-stagger-item>
+            Why Choose Tailored Psychology?
+          </h2>
           <div className={styles.featureGrid}>
-            <div className={styles.featureCard}>
+            <div className={styles.featureCard} data-home-stagger-item>
               <h3>AHPRA Registered</h3>
               <p>All our psychologists are fully registered with the Australian Health Practitioner Regulation Agency.</p>
             </div>
-            <div className={styles.featureCard}>
+            <div className={styles.featureCard} data-home-stagger-item>
               <h3>Medicare Rebates</h3>
               <p>We're approved Medicare providers, making psychology services more affordable for you.</p>
             </div>
-            <div className={styles.featureCard}>
+            <div className={styles.featureCard} data-home-stagger-item>
               <h3>Telehealth Available</h3>
               <p>Access professional psychology services from the comfort of your home via secure video sessions.</p>
             </div>
-            <div className={styles.featureCard}>
+            <div className={styles.featureCard} data-home-stagger-item>
               <h3>Evidence-Based Care</h3>
               <p>We use proven therapeutic approaches tailored to your individual needs and goals.</p>
             </div>
@@ -335,7 +369,7 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.resourcesTeaser}>
+      <section className={styles.resourcesTeaser} data-home-reveal>
         <div className="container">
           <div className={styles.resourcesTeaserInner}>
             <div className={styles.resourcesTeaserCopy}>
@@ -362,17 +396,16 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.howItWorks}>
+      <section className={styles.howItWorks} data-home-how>
         <div className="container">
-          <h2 className={styles.sectionTitle}>How It Works</h2>
-          <p className={styles.sectionSubtitle}>
+          <h2 className={styles.sectionTitle} data-home-how-title>
+            How It Works
+          </h2>
+          <p className={styles.sectionSubtitle} data-home-how-sub>
             Getting started with professional psychology care is simple. Follow these easy steps to begin your journey to better mental health.
           </p>
           <div className={styles.stepsContainer}>
-            <div 
-              className={`${styles.stepCard} ${visibleSteps.includes(0) ? styles.visible : ''}`}
-              data-step-index="0"
-            >
+            <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>1</div>
               <div className={styles.stepIcon}>
                 <CalendarIcon size="xl" />
@@ -383,10 +416,7 @@ export const Homepage: React.FC = () => {
               </p>
             </div>
 
-            <div 
-              className={`${styles.stepCard} ${visibleSteps.includes(1) ? styles.visible : ''}`}
-              data-step-index="1"
-            >
+            <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>2</div>
               <div className={styles.stepIcon}>
                 <ClipboardIcon size="xl" />
@@ -397,10 +427,7 @@ export const Homepage: React.FC = () => {
               </p>
             </div>
 
-            <div 
-              className={`${styles.stepCard} ${visibleSteps.includes(2) ? styles.visible : ''}`}
-              data-step-index="2"
-            >
+            <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>3</div>
               <div className={styles.stepIcon}>
                 <VideoIcon size="xl" />
@@ -411,10 +438,7 @@ export const Homepage: React.FC = () => {
               </p>
             </div>
 
-            <div 
-              className={`${styles.stepCard} ${visibleSteps.includes(3) ? styles.visible : ''}`}
-              data-step-index="3"
-            >
+            <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>4</div>
               <div className={styles.stepIcon}>
                 <ChartIcon size="xl" />
@@ -426,7 +450,7 @@ export const Homepage: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.ctaContainer}>
+          <div className={styles.ctaContainer} data-home-how-cta>
             <Link to="/register" className={styles.ctaButton}>
               Get Started Today
             </Link>
@@ -435,7 +459,7 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.spotlight}>
+      <section className={styles.spotlight} data-home-reveal>
         <div className="container">
           <div className={styles.spotlightGrid}>
             <div className={styles.spotlightMedia}>
@@ -481,7 +505,7 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.trustBand}>
+      <section className={styles.trustBand} data-home-reveal>
         <div className="container">
           <div className={styles.trustBandLayout}>
             <div className={styles.trustBandMedia}>
@@ -524,10 +548,10 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.accessFunding}>
+      <section className={styles.accessFunding} data-home-reveal>
         <div className="container">
           <div className={styles.accessFundingGrid}>
-            <div className={styles.accessCard}>
+            <div className={styles.accessCard} data-home-stagger-item>
               <h2 className={styles.accessHeading}>Medicare &amp; care plans</h2>
               <p>
                 With a valid Mental Health Treatment Plan from your GP, you may be entitled to Medicare rebates for a
@@ -543,7 +567,7 @@ export const Homepage: React.FC = () => {
                 Learn more about our practice
               </Link>
             </div>
-            <div className={styles.accessCardMuted}>
+            <div className={styles.accessCardMuted} data-home-stagger-item>
               <h2 className={styles.accessHeading}>Making care accessible</h2>
               <p>
                 Session costs vary by clinician and appointment type. Private health extras may cover part of
@@ -560,23 +584,25 @@ export const Homepage: React.FC = () => {
 
       <section className={styles.testimonials}>
         <div className="container">
-          <h2 className={styles.testimonialsTitle}>What clients often value</h2>
-          <p className={styles.testimonialsIntro}>
-            Everyone&apos;s experience is different; these are common themes people share about working with us.
-          </p>
-          <div className={styles.testimonialsGrid}>
-            <blockquote className={styles.testimonialCard}>
+          <div className={styles.testimonialsIntroBlock} data-home-reveal>
+            <h2 className={styles.testimonialsTitle}>What clients often value</h2>
+            <p className={styles.testimonialsIntro}>
+              Everyone&apos;s experience is different; these are common themes people share about working with us.
+            </p>
+          </div>
+          <div className={styles.testimonialsGrid} data-home-reveal>
+            <blockquote className={styles.testimonialCard} data-home-stagger-item>
               <p>
                 &ldquo;Straightforward booking and clear communication before the first appointment made it easier to
                 take the first step.&rdquo;
               </p>
             </blockquote>
-            <blockquote className={styles.testimonialCard}>
+            <blockquote className={styles.testimonialCard} data-home-stagger-item>
               <p>
                 &ldquo;I felt listened to and the telehealth format actually suited my work hours really well.&rdquo;
               </p>
             </blockquote>
-            <blockquote className={styles.testimonialCard}>
+            <blockquote className={styles.testimonialCard} data-home-stagger-item>
               <p>
                 &ldquo;Having Medicare rebates explained upfront helped me plan sessions without surprises.&rdquo;
               </p>
@@ -585,7 +611,7 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.bottomCta}>
+      <section className={styles.bottomCta} data-home-reveal>
         <div className="container">
           <h2 className={styles.bottomCtaTitle}>Ready to connect with a psychologist?</h2>
           <p className={styles.bottomCtaText}>
