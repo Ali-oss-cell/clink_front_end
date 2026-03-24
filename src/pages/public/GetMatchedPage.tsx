@@ -88,28 +88,30 @@ export const GetMatchedPage: React.FC = () => {
       <div className={styles.page}>
         <section className={styles.hero}>
           <div className="container">
-            <h1 className={styles.heroTitle}>Get matched with a psychologist</h1>
-            <p className={styles.heroSubtitle}>
-              A few quick questions help narrow who may fit your goals and schedule (like other telehealth psychology
-              platforms such as{' '}
-              <a
-                href="https://www.mymirror.com.au/get-matched"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'inherit', textDecoration: 'underline' }}
-              >
-                My Mirror
-              </a>
-              ). Your answers stay private and secure.
-            </p>
-          </div>
-          <div className={styles.progress}>
-            <div className={styles.progressBar}>
-              <div className={styles.progressFill} style={{ width: `${progressPct}%` }} />
+            <div className={styles.heroInner}>
+              <h1 className={styles.heroTitle}>Get matched with a psychologist</h1>
+              <p className={styles.heroSubtitle}>
+                A few quick questions help narrow who may fit your goals and schedule (like other telehealth psychology
+                platforms such as{' '}
+                <a
+                  href="https://www.mymirror.com.au/get-matched"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.heroLink}
+                >
+                  My Mirror
+                </a>
+                ). Your answers stay private and secure.
+              </p>
+              <div className={styles.progress}>
+                <div className={styles.progressBar}>
+                  <div className={styles.progressFill} style={{ width: `${progressPct}%` }} />
+                </div>
+                <p className={styles.progressLabel}>
+                  Step {step} of {TOTAL_STEPS}
+                </p>
+              </div>
             </div>
-            <p className={styles.progressLabel}>
-              Step {step} of {TOTAL_STEPS}
-            </p>
           </div>
         </section>
 

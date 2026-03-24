@@ -175,7 +175,7 @@ export const PatientInvoicesPage: React.FC = () => {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#9fbce1' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4d5a48' }}>
                 {formatCurrency(totals.total)}
               </div>
               <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Invoiced</div>

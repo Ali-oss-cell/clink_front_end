@@ -2,15 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import {
-  VideoIcon,
-  CalendarIcon,
-  ClipboardIcon,
-  ChartIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  LockIcon,
-  UsersIcon,
-  BuildingIcon,
+  OutlineTelehealthIcon,
+  OutlineClinicIcon,
+  OutlineIndividualCareIcon,
+  OutlineCredentialIcon,
+  OutlinePrivacyShieldIcon,
+  OutlineScheduleIcon,
+  OutlineCircleCheckIcon,
+  OutlineCalendarDaysIcon,
+  OutlineClipboardIcon,
+  OutlineChartLineIcon,
 } from '../../utils/icons';
 import heroImage from '../../assets/imges/optimized/hero-therapy.webp';
 import heroImage2 from '../../assets/imges/optimized/hero-telehealth.webp';
@@ -79,8 +80,10 @@ const slides: Slide[] = [
 
 export const Homepage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const prevSlideRef = useRef(0);
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const heroTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  /** Last fully settled hero slide; updated when a transition finishes (or instant switch). Not bumped early, so overlapping transitions still animate from the correct slide. */
+  const settledSlideRef = useRef(0);
 
   // Auto-play slider
   useEffect(() => {
@@ -91,85 +94,116 @@ export const Homepage: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Initial GSAP state for the first slide
-  useEffect(() => {
-    const first = slideRefs.current[0];
-    if (first) {
-      gsap.set(first, {
-        opacity: 1,
-        visibility: 'visible',
-        x: 0,
-        zIndex: 2,
-        pointerEvents: 'auto',
-      });
-    }
-  }, []);
-
-  // Animate slide transitions with GSAP
+  // Hero slider: always kill in-flight tween before starting another; keep settled index in ref only when a transition completes
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const prev = prevSlideRef.current;
-    if (prev === currentSlide) return;
 
-    const fromEl = slideRefs.current[prev];
-    const toEl = slideRefs.current[currentSlide];
-    if (!fromEl || !toEl) return;
+    heroTimelineRef.current?.kill();
+    heroTimelineRef.current = null;
+
+    const fromIdx = settledSlideRef.current;
+    const toIdx = currentSlide;
+
+    const hideOtherSlides = () => {
+      slideRefs.current.forEach((el, i) => {
+        if (!el || i === toIdx) return;
+        if (i === fromIdx && fromIdx !== toIdx) return;
+        gsap.set(el, {
+          autoAlpha: 0,
+          x: 40,
+          visibility: 'hidden',
+          pointerEvents: 'none',
+          zIndex: 0,
+        });
+      });
+    };
+
+    if (fromIdx === toIdx) {
+      hideOtherSlides();
+      const el = slideRefs.current[toIdx];
+      if (el) {
+        gsap.set(el, {
+          autoAlpha: 1,
+          x: 0,
+          visibility: 'visible',
+          pointerEvents: 'auto',
+          zIndex: 2,
+        });
+      }
+      return () => {
+        heroTimelineRef.current?.kill();
+        heroTimelineRef.current = null;
+      };
+    }
+
+    const fromEl = slideRefs.current[fromIdx];
+    const toEl = slideRefs.current[toIdx];
+    if (!fromEl || !toEl) {
+      settledSlideRef.current = toIdx;
+      return () => {
+        heroTimelineRef.current?.kill();
+        heroTimelineRef.current = null;
+      };
+    }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const fromSlide = slides[prev];
-    const toSlide = slides[currentSlide];
-
-    // Ensure outgoing slide keeps its background during the animation.
-    if (fromSlide.backgroundImage) {
-      fromEl.style.backgroundImage = `url(${fromSlide.backgroundImage})`;
-      fromEl.style.backgroundSize = 'cover';
-      fromEl.style.backgroundPosition = 'center';
-      fromEl.style.backgroundRepeat = 'no-repeat';
-      fromEl.classList.add(styles.hasImage);
-    }
-
-    // Ensure incoming slide has its background (usually already true from render).
-    if (toSlide.backgroundImage) {
-      toEl.style.backgroundImage = `url(${toSlide.backgroundImage})`;
-      toEl.style.backgroundSize = 'cover';
-      toEl.style.backgroundPosition = 'center';
-      toEl.style.backgroundRepeat = 'no-repeat';
-      toEl.classList.add(styles.hasImage);
-    }
+    slideRefs.current.forEach((el, i) => {
+      if (!el || i === fromIdx || i === toIdx) return;
+      gsap.set(el, {
+        autoAlpha: 0,
+        visibility: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 0,
+        x: 40,
+      });
+    });
 
     if (prefersReducedMotion) {
-      gsap.set(fromEl, { opacity: 0, visibility: 'hidden', x: 0, pointerEvents: 'none', zIndex: 1 });
-      gsap.set(toEl, { opacity: 1, visibility: 'visible', x: 0, pointerEvents: 'auto', zIndex: 2 });
-      prevSlideRef.current = currentSlide;
-      if (fromSlide.backgroundImage) {
-        fromEl.style.backgroundImage = 'none';
-        fromEl.classList.remove(styles.hasImage);
-      }
-      return;
+      gsap.set(fromEl, { autoAlpha: 0, x: 0, visibility: 'hidden', pointerEvents: 'none', zIndex: 1 });
+      gsap.set(toEl, { autoAlpha: 1, x: 0, visibility: 'visible', pointerEvents: 'auto', zIndex: 2 });
+      settledSlideRef.current = toIdx;
+      return () => {
+        heroTimelineRef.current?.kill();
+        heroTimelineRef.current = null;
+      };
     }
 
-    gsap.set(toEl, { opacity: 0, visibility: 'visible', x: 40, pointerEvents: 'auto', zIndex: 2 });
-    gsap.set(fromEl, { opacity: 1, visibility: 'visible', x: 0, pointerEvents: 'auto', zIndex: 1 });
+    gsap.set(toEl, {
+      autoAlpha: 0,
+      visibility: 'visible',
+      x: 40,
+      pointerEvents: 'auto',
+      zIndex: 2,
+    });
+    gsap.set(fromEl, { autoAlpha: 1, visibility: 'visible', x: 0, pointerEvents: 'auto', zIndex: 1 });
 
     const duration = 0.8;
-    gsap
-      .timeline({
-        defaults: { ease: 'power3.out', duration },
-        onComplete: () => {
-          // Hide outgoing slide after animation.
-          gsap.set(fromEl, { visibility: 'hidden', pointerEvents: 'none' });
+    const tl = gsap.timeline({
+      defaults: { ease: 'power3.out', duration },
+      onComplete: () => {
+        gsap.set(fromEl, {
+          autoAlpha: 0,
+          visibility: 'hidden',
+          pointerEvents: 'none',
+          x: -40,
+          zIndex: 1,
+        });
+        settledSlideRef.current = toIdx;
+        heroTimelineRef.current = null;
+      },
+    });
 
-          if (fromSlide.backgroundImage) {
-            fromEl.style.backgroundImage = 'none';
-            fromEl.classList.remove(styles.hasImage);
-          }
+    tl.to(fromEl, { autoAlpha: 0, x: -40 }, 0).to(toEl, { autoAlpha: 1, x: 0 }, 0);
 
-          prevSlideRef.current = currentSlide;
-        },
-      })
-      .to(fromEl, { opacity: 0, x: -40 }, 0)
-      .to(toEl, { opacity: 1, x: 0 }, 0);
+    heroTimelineRef.current = tl;
+
+    return () => {
+      tl.kill();
+      if (heroTimelineRef.current === tl) {
+        heroTimelineRef.current = null;
+      }
+    };
   }, [currentSlide]);
 
   // Scroll-triggered section reveals (ScrollTrigger)
@@ -284,12 +318,9 @@ export const Homepage: React.FC = () => {
               ref={(el) => {
                 slideRefs.current[index] = el;
               }}
-              className={`${styles.slide} ${index === currentSlide && slide.backgroundImage ? styles.hasImage : ''}`}
+              className={`${styles.slide} ${slide.backgroundImage ? styles.hasImage : ''}`}
               style={{
-                backgroundImage:
-                  index === currentSlide && slide.backgroundImage
-                    ? `url(${slide.backgroundImage})`
-                    : 'none',
+                backgroundImage: slide.backgroundImage ? `url(${slide.backgroundImage})` : 'none',
                 backgroundSize: slide.backgroundImage ? 'cover' : undefined,
                 backgroundPosition: slide.backgroundImage ? 'center' : undefined,
                 backgroundRepeat: slide.backgroundImage ? 'no-repeat' : undefined,
@@ -324,19 +355,19 @@ export const Homepage: React.FC = () => {
         <div className="container">
           <ul className={styles.benefitsStripList}>
             <li data-home-stagger-item>
-              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>Flexible appointment times, including before and after standard hours where available</span>
             </li>
             <li data-home-stagger-item>
-              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>Telehealth across Australia and in-person care where offered</span>
             </li>
             <li data-home-stagger-item>
-              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>AHPRA-registered psychologists and evidence-based approaches</span>
             </li>
             <li data-home-stagger-item>
-              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
               <span>Medicare rebates for eligible clients with a mental health care plan</span>
             </li>
           </ul>
@@ -408,7 +439,7 @@ export const Homepage: React.FC = () => {
             <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>1</div>
               <div className={styles.stepIcon}>
-                <CalendarIcon size="xl" />
+                <OutlineCalendarDaysIcon size="xl" />
               </div>
               <h3 className={styles.stepTitle}>Book Your Appointment</h3>
               <p className={styles.stepDescription}>
@@ -419,7 +450,7 @@ export const Homepage: React.FC = () => {
             <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>2</div>
               <div className={styles.stepIcon}>
-                <ClipboardIcon size="xl" />
+                <OutlineClipboardIcon size="xl" />
               </div>
               <h3 className={styles.stepTitle}>Complete Intake Form</h3>
               <p className={styles.stepDescription}>
@@ -430,7 +461,7 @@ export const Homepage: React.FC = () => {
             <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>3</div>
               <div className={styles.stepIcon}>
-                <VideoIcon size="xl" />
+                <OutlineTelehealthIcon size="xl" />
               </div>
               <h3 className={styles.stepTitle}>Attend Your Session</h3>
               <p className={styles.stepDescription}>
@@ -441,7 +472,7 @@ export const Homepage: React.FC = () => {
             <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepNumber}>4</div>
               <div className={styles.stepIcon}>
-                <ChartIcon size="xl" />
+                <OutlineChartLineIcon size="xl" />
               </div>
               <h3 className={styles.stepTitle}>Track Your Progress</h3>
               <p className={styles.stepDescription}>
@@ -480,15 +511,15 @@ export const Homepage: React.FC = () => {
               </p>
               <ul className={styles.spotlightList}>
                 <li>
-                  <VideoIcon size="md" className={styles.spotlightListIcon} aria-hidden />
+                  <OutlineTelehealthIcon size="md" className={styles.spotlightListIcon} aria-hidden />
                   Secure telehealth with clear session guidance
                 </li>
                 <li>
-                  <BuildingIcon size="md" className={styles.spotlightListIcon} aria-hidden />
+                  <OutlineClinicIcon size="md" className={styles.spotlightListIcon} aria-hidden />
                   In-person consultations where available
                 </li>
                 <li>
-                  <UsersIcon size="md" className={styles.spotlightListIcon} aria-hidden />
+                  <OutlineIndividualCareIcon size="md" className={styles.spotlightListIcon} aria-hidden />
                   Individual support tailored to your goals
                 </li>
               </ul>
@@ -519,28 +550,30 @@ export const Homepage: React.FC = () => {
               />
             </div>
             <div className={styles.trustBandContent}>
-              <h2 className={styles.trustBandTitle}>Built for safe, accountable care</h2>
-              <div className={styles.trustGrid}>
-                <div className={styles.trustCard}>
-                  <div className={styles.trustIconWrap}>
-                    <UsersIcon size="lg" aria-hidden />
+              <div className={styles.trustBandColumn}>
+                <h2 className={styles.trustBandTitle}>Built for safe, accountable care</h2>
+                <div className={styles.trustGrid}>
+                  <div className={styles.trustCard}>
+                    <div className={styles.trustIconWrap}>
+                      <OutlineCredentialIcon size="lg" aria-hidden />
+                    </div>
+                    <h3>Registered clinicians</h3>
+                    <p>Psychology services delivered by professionals who meet Australian registration standards.</p>
                   </div>
-                  <h3>Registered clinicians</h3>
-                  <p>Psychology services delivered by professionals who meet Australian registration standards.</p>
-                </div>
-                <div className={styles.trustCard}>
-                  <div className={styles.trustIconWrap}>
-                    <LockIcon size="lg" aria-hidden />
+                  <div className={styles.trustCard}>
+                    <div className={styles.trustIconWrap}>
+                      <OutlinePrivacyShieldIcon size="lg" aria-hidden />
+                    </div>
+                    <h3>Privacy-conscious platform</h3>
+                    <p>Designed with healthcare privacy in mind for booking, records, and video sessions.</p>
                   </div>
-                  <h3>Privacy-conscious platform</h3>
-                  <p>Designed with healthcare privacy in mind for booking, records, and video sessions.</p>
-                </div>
-                <div className={styles.trustCard}>
-                  <div className={styles.trustIconWrap}>
-                    <ClockIcon size="lg" aria-hidden />
+                  <div className={styles.trustCard}>
+                    <div className={styles.trustIconWrap}>
+                      <OutlineScheduleIcon size="lg" aria-hidden />
+                    </div>
+                    <h3>Booking that respects your schedule</h3>
+                    <p>See available times online and choose a session that works across telehealth or clinic visits.</p>
                   </div>
-                  <h3>Booking that respects your schedule</h3>
-                  <p>See available times online and choose a session that works across telehealth or clinic visits.</p>
                 </div>
               </div>
             </div>

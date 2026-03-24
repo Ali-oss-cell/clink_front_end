@@ -80,7 +80,7 @@ export const AdminAppointmentsPage: React.FC = () => {
         return '#2e7d42';
       case 'scheduled':
       case 'confirmed':
-        return '#7a9fc9';
+        return '#5f7260';
       case 'cancelled':
         return '#c0392b';
       case 'pending':

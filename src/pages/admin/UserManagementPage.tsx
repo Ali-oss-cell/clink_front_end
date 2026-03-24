@@ -393,7 +393,7 @@ export const UserManagementPage: React.FC = () => {
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'admin': return '#c0392b';
-      case 'psychologist': return '#7a9fc9';
+      case 'psychologist': return '#6e8c6a';
       case 'practice_manager': return '#2e7d42';
       case 'patient': return '#7a9a80';
       default: return '#7a7b7a';
@@ -614,10 +614,10 @@ export const UserManagementPage: React.FC = () => {
                         padding: '12px', 
                         marginBottom: '16px',
                         backgroundColor: 'rgba(90, 140, 184, 0.15)', 
-                        border: '1px solid #9fbce1', 
+                        border: '1px solid #aeb8aa', 
                         borderRadius: '4px',
                         fontSize: '0.875rem',
-                        color: '#1e40af'
+                        color: '#4d5a48'
                       }}>
                         <strong><InfoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Psychologist Profile:</strong> The psychologist profile will be created automatically with the information below.
                       </div>
@@ -843,10 +843,10 @@ export const UserManagementPage: React.FC = () => {
                         marginTop: '16px',
                         marginBottom: '16px',
                         backgroundColor: 'rgba(90, 140, 184, 0.15)', 
-                        border: '1px solid #9fbce1', 
+                        border: '1px solid #aeb8aa', 
                         borderRadius: '4px',
                         fontSize: '0.875rem',
-                        color: '#1e40af'
+                        color: '#4d5a48'
                       }}>
                         <strong><InfoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Psychologist Profile:</strong> Update psychologist profile information below.
                       </div>

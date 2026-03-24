@@ -93,6 +93,23 @@ import {
   FaLightbulb,
 } from 'react-icons/fa';
 
+// Lucide outline icons — softer stroke, better fit for wellness / public marketing than solid Font Awesome
+import {
+  LuVideo,
+  LuBuilding2,
+  LuUserRound,
+  LuBadgeCheck,
+  LuShieldCheck,
+  LuCalendarClock,
+  LuCircleCheck,
+  LuCalendarDays,
+  LuClipboardList,
+  LuChartLine,
+} from 'react-icons/lu';
+
+/** Default stroke for Lucide icons in this app (slightly open, friendly weight). */
+const LU_STROKE = 1.6;
+
 // Icon size configurations
 export const IconSizes = {
   xs: 12,
@@ -181,6 +198,47 @@ export const GraduationIcon = ({ size = 'md', ...props }: IconProps) => (
 
 export const BuildingIcon = ({ size = 'md', ...props }: IconProps) => (
   <FaBuilding size={getIconSize(size)} {...props} />
+);
+
+// ── Lucide outline (marketing / homepage) ─────────────────────────────────
+export const OutlineTelehealthIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuVideo size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineClinicIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuBuilding2 size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineIndividualCareIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuUserRound size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineCredentialIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuBadgeCheck size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlinePrivacyShieldIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuShieldCheck size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineScheduleIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuCalendarClock size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineCircleCheckIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuCircleCheck size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineCalendarDaysIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuCalendarDays size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineClipboardIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuClipboardList size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
+);
+
+export const OutlineChartLineIcon = ({ size = 'md', ...props }: IconProps) => (
+  <LuChartLine size={getIconSize(size)} strokeWidth={LU_STROKE} {...props} />
 );
 
 export const MobileIcon = ({ size = 'md', ...props }: IconProps) => (
@@ -520,6 +578,18 @@ export default {
   GraduationIcon,
   BuildingIcon,
   MobileIcon,
+
+  // Lucide outline (marketing)
+  OutlineTelehealthIcon,
+  OutlineClinicIcon,
+  OutlineIndividualCareIcon,
+  OutlineCredentialIcon,
+  OutlinePrivacyShieldIcon,
+  OutlineScheduleIcon,
+  OutlineCircleCheckIcon,
+  OutlineCalendarDaysIcon,
+  OutlineClipboardIcon,
+  OutlineChartLineIcon,
   
   // Documents
   DocumentIcon,
