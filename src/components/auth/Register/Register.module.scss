@@ -154,6 +154,68 @@
     }
   }
 
+  .phoneFieldHint {
+    font-size: $font-size-xs;
+    color: $text-light;
+    margin: 0 0 $spacing-sm;
+    line-height: 1.45;
+  }
+
+  .phoneField {
+    width: 100%;
+    flex: 1;
+    --PhoneInput-color--focus: #{$primary-color};
+
+    :global(.PhoneInput) {
+      width: 100%;
+      align-items: stretch;
+    }
+
+    :global(.PhoneInputCountry) {
+      margin-right: $spacing-xs;
+    }
+
+    :global(.PhoneInputCountrySelect) {
+      padding: 0 $spacing-xs;
+      border-radius: $border-radius;
+      border: 2px solid $border-light;
+      background: $background-white;
+    }
+
+    :global(.PhoneInputInput) {
+      @include input-base;
+      padding: $spacing-md;
+      padding-right: 40px;
+      font-size: $font-size-base;
+      transition: all $transition-fast ease;
+
+      &:focus {
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+    }
+  }
+
+  .phoneFieldError :global(.PhoneInputInput),
+  .phoneFieldError :global(.PhoneInputCountrySelect) {
+    border-color: $error-red;
+
+    &:focus {
+      border-color: $error-red;
+      box-shadow: 0 0 0 3px rgba($error-red, 0.1);
+    }
+  }
+
+  .phoneFieldSuccess :global(.PhoneInputInput),
+  .phoneFieldSuccess :global(.PhoneInputCountrySelect) {
+    border-color: $success-green;
+
+    &:focus {
+      border-color: $success-green;
+      box-shadow: 0 0 0 3px rgba($success-green, 0.1);
+    }
+  }
+
   .successIcon {
     position: absolute;
     right: 12px;

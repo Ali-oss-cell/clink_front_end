@@ -21,7 +21,7 @@ export const PatientAccountPage: React.FC = () => {
     username: 'john.smith',
     role: 'patient' as const,
     email: 'john.smith@example.com',
-    phone_number: '+61 4XX XXX XXX',
+    phone_number: '+61400123456',
     date_of_birth: '1990-01-01',
     age: 34,
     is_verified: true,

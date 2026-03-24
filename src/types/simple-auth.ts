@@ -47,6 +47,7 @@ export interface RegisterRequest {
   first_name: string;
   last_name: string;
   email: string;
+  /** E.164 international (e.g. +61412345678) */
   phone_number: string;
   password: string;
   confirm_password: string;

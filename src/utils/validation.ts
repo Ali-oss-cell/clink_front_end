@@ -1,4 +1,6 @@
-// Australian validation utilities for intake form
+import { isValidPhoneNumber } from 'libphonenumber-js';
+
+// Australian / clinical validation utilities for intake form (phone is international E.164)
 export const australianValidation = {
   // Australian states
   validStates: ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'],
@@ -8,11 +10,11 @@ export const australianValidation = {
     return /^\d{4}$/.test(postcode);
   },
   
-  // Validate Australian phone number
+  /** E.164 international mobile/phone (e.g. +61412345678, +963...) */
   validatePhoneNumber: (phone: string): boolean => {
-    // Accepts formats: +61XXXXXXXXX or 0XXXXXXXXX
-    const phoneRegex = /^(\+61|0)[2-9]\d{8}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ''));
+    const digits = phone.replace(/\s/g, '').trim();
+    if (!digits) return false;
+    return isValidPhoneNumber(digits);
   },
   
   // Validate Australian state
@@ -29,10 +31,14 @@ export const australianValidation = {
     return null;
   },
   
+  /**
+   * Format validation only (non-empty). Use when "required" is already enforced elsewhere.
+   */
   getPhoneError: (phone: string): string | null => {
-    if (!phone) return 'Phone number is required';
-    if (!australianValidation.validatePhoneNumber(phone)) {
-      return 'Phone number must be in Australian format (+61XXXXXXXXX or 0XXXXXXXXX)';
+    if (!phone || !String(phone).trim()) return null;
+    const normalized = String(phone).replace(/\s/g, '');
+    if (!isValidPhoneNumber(normalized)) {
+      return 'Use a valid international number in E.164 format (starts with +, e.g. +61412345678)';
     }
     return null;
   },
@@ -139,7 +145,15 @@ export const validateIntakeForm = (data: any): string[] => {
   
   const phoneError = australianValidation.getPhoneError(data.phone_number);
   if (phoneError) errors.push(phoneError);
-  
+
+  const emergencyPhoneError = australianValidation.getPhoneError(data.emergency_contact_phone);
+  if (emergencyPhoneError) errors.push(emergencyPhoneError);
+
+  if (data.home_phone && String(data.home_phone).trim()) {
+    const homeErr = australianValidation.getPhoneError(data.home_phone);
+    if (homeErr) errors.push(`Home phone: ${homeErr}`);
+  }
+
   const stateError = australianValidation.getStateError(data.state);
   if (stateError) errors.push(stateError);
   

@@ -17,13 +17,13 @@ const mockIntakeData = {
   suburb: 'Melbourne',
   postcode: '3000',
   homePhone: '03 1234 5678',
-  mobilePhone: '+61 412 345 678',
+  mobilePhone: '+61412345678',
   emailAddress: 'john.smith@example.com',
   
   // Emergency Contact
   emergencyName: 'Jane Smith',
   emergencyRelationship: 'Spouse',
-  emergencyPhone: '+61 412 345 679',
+  emergencyPhone: '+61412345679',
   
   // Referral Information
   referralSource: 'GP Referral',

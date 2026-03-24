@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
+import PhoneInput from 'react-phone-number-input';
+import { isValidPhoneNumber } from 'libphonenumber-js';
+import 'react-phone-number-input/style.css';
 import { authService } from '../../../services/api/auth';
 import { getPrivacyPolicyStatus, acceptPrivacyPolicy } from '../../../services/api/privacy';
 import { WarningIcon } from '../../../utils/icons';
@@ -36,6 +39,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     formState: { errors, isValid, touchedFields }
@@ -101,7 +105,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
       first_name && first_name.length >= 2,
       last_name && last_name.length >= 2,
       email && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email),
-      phone_number && /^(\+61|0)[2-9]\d{8}$/.test(phone_number),
+      phone_number && isValidPhoneNumber(phone_number),
       date_of_birth && date_of_birth.length > 0,
       address_line_1 && address_line_1.length >= 5,
       suburb && suburb.length >= 2,
@@ -314,22 +318,50 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
 
           <div className={styles.formGroup}>
             <label htmlFor="phone_number" className={styles.label}>
-              Phone Number *
+              Mobile number *
             </label>
+            <p className={styles.phoneFieldHint}>
+              Choose your country (flag), then enter your number. We store it in international format (e.g. +61…, +963…).
+            </p>
             <div className={styles.inputWrapper}>
-              <input
-                {...register('phone_number', {
-                  required: 'Phone number is required',
-                  pattern: {
-                    value: /^(\+61|0)[2-9]\d{8}$/,
-                    message: 'Please enter a valid Australian phone number'
+              <Controller
+                name="phone_number"
+                control={control}
+                rules={{
+                  validate: (value) => {
+                    if (!value || String(value).trim() === '') {
+                      return 'Phone number is required';
+                    }
+                    return (
+                      isValidPhoneNumber(String(value)) ||
+                      'Enter a valid number for the selected country'
+                    );
                   }
-                })}
-                type="tel"
-                id="phone_number"
-                className={`${styles.input} ${errors.phone_number ? styles.inputError : touchedFields.phone_number && phone_number && !errors.phone_number ? styles.inputSuccess : ''}`}
-                placeholder="+61 4XX XXX XXX or 04XX XXX XXX"
-                disabled={isLoading}
+                }}
+                render={({ field }) => (
+                  <div
+                    className={`${styles.phoneField} ${
+                      errors.phone_number
+                        ? styles.phoneFieldError
+                        : touchedFields.phone_number && phone_number && !errors.phone_number
+                          ? styles.phoneFieldSuccess
+                          : ''
+                    }`}
+                  >
+                    <PhoneInput
+                      international
+                      defaultCountry="AU"
+                      countryCallingCodeEditable={false}
+                      placeholder="Phone number"
+                      value={field.value || undefined}
+                      onChange={(v) => field.onChange(v ?? '')}
+                      onBlur={field.onBlur}
+                      id="phone_number"
+                      name={field.name}
+                      disabled={isLoading}
+                    />
+                  </div>
+                )}
               />
             </div>
             {errors.phone_number && (
@@ -371,7 +403,14 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 type="button"
                 className={styles.nextButton}
                 onClick={nextStep}
-                disabled={!first_name || !last_name || !email || !phone_number || !date_of_birth}
+                disabled={
+                  !first_name ||
+                  !last_name ||
+                  !email ||
+                  !phone_number ||
+                  !isValidPhoneNumber(phone_number) ||
+                  !date_of_birth
+                }
               >
                 Continue to Step 2 →
               </button>

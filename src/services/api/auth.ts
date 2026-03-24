@@ -7,6 +7,7 @@ interface PatientRegistrationData {
   password_confirm: string;
   first_name: string;
   last_name: string;
+  /** E.164 international (e.g. +61412345678) */
   phone_number: string;
   date_of_birth: string;
   address_line_1: string;

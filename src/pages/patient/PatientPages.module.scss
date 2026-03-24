@@ -1542,6 +1542,56 @@
   flex-direction: column;
 }
 
+.intakePhoneField {
+  width: 100%;
+  --PhoneInput-color--focus: #{$patient-primary};
+
+  :global(.PhoneInput) {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  :global(.PhoneInputCountry) {
+    margin-right: 0.35rem;
+  }
+
+  :global(.PhoneInputCountrySelect) {
+    padding: 0.35rem 0.5rem;
+    border-radius: 12px;
+    border: 2px solid $border-light;
+    background: $background-white;
+  }
+
+  :global(.PhoneInputInput) {
+    flex: 1;
+    min-width: 0;
+    padding: 0.875rem;
+    border: 2px solid $border-light;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $patient-primary;
+      box-shadow: 0 0 0 4px rgba($patient-primary, 0.1);
+    }
+  }
+}
+
+.intakePhoneFieldError :global(.PhoneInputInput),
+.intakePhoneFieldError :global(.PhoneInputCountrySelect) {
+  border-color: $error-red;
+}
+
+.intakePhoneHint {
+  font-size: 0.85rem;
+  color: $text-muted;
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+}
+
 .label {
   color: $text-dark;
   font-weight: 600;

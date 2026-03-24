@@ -28,8 +28,8 @@ const slides: Slide[] = [
     subtitle: 'Compassionate care and evidence-based treatments for mental health and wellbeing. Our AHPRA-registered psychologists are here to support your journey.',
     primaryAction: 'Book Your Appointment',
     primaryLink: '/register',
-    secondaryAction: 'Learn More About Us',
-    secondaryLink: '/about',
+    secondaryAction: 'Get matched',
+    secondaryLink: '/get-matched',
     backgroundImage: heroImage
   },
   {

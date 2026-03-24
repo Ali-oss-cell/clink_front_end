@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
+import PhoneInput from 'react-phone-number-input';
+import { isValidPhoneNumber } from 'libphonenumber-js';
+import 'react-phone-number-input/style.css';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
 import { validateIntakeForm } from '../../utils/validation';
@@ -20,6 +23,7 @@ export const PatientIntakeFormPage: React.FC = () => {
   
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     watch,
@@ -313,24 +317,93 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Home Phone <span className={styles.optionalLabel}>(Optional)</span></label>
-                <input
-                  {...register('home_phone')}
-                  className={styles.input}
-                  placeholder="Enter home phone number"
+                <p className={styles.intakePhoneHint}>International format (E.164). Leave blank if none.</p>
+                <Controller
+                  name="home_phone"
+                  control={control}
+                  rules={{
+                    validate: (value) => {
+                      if (!value || !String(value).trim()) return true;
+                      return (
+                        isValidPhoneNumber(String(value).replace(/\s/g, '')) ||
+                        'Use a valid international number (starts with +)'
+                      );
+                    }
+                  }}
+                  render={({ field }) => (
+                    <div
+                      className={`${styles.intakePhoneField} ${
+                        errors.home_phone ? styles.intakePhoneFieldError : ''
+                      }`}
+                    >
+                      <PhoneInput
+                        international
+                        defaultCountry="AU"
+                        countryCallingCodeEditable={false}
+                        placeholder="Home phone (optional)"
+                        value={field.value || undefined}
+                        onChange={(v) => field.onChange(v ?? '')}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        disabled={false}
+                      />
+                    </div>
+                  )}
                 />
+                {errors.home_phone && (
+                  <span className={styles.fieldError}>{errors.home_phone.message}</span>
+                )}
               </div>
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Mobile Phone *</label>
-                <input
-                  {...register('phone_number', { required: 'Mobile phone is required' })}
-                  className={`${styles.input} ${errors.phone_number ? styles.inputError : ''} ${preFilledData.phone_number ? styles.preFilled : ''}`}
-                  placeholder="Enter mobile phone number"
+                <p className={styles.intakePhoneHint}>
+                  Choose your country, then enter your number. Stored as E.164 (e.g. +61…, +963…).
+                </p>
+                <Controller
+                  name="phone_number"
+                  control={control}
+                  rules={{
+                    validate: (value) => {
+                      if (!value || String(value).trim() === '') {
+                        return 'Mobile phone is required';
+                      }
+                      return (
+                        isValidPhoneNumber(String(value).replace(/\s/g, '')) ||
+                        'Enter a valid number for the selected country'
+                      );
+                    }
+                  }}
+                  render={({ field }) => (
+                    <div
+                      className={`${styles.intakePhoneField} ${
+                        errors.phone_number ? styles.intakePhoneFieldError : ''
+                      }`}
+                    >
+                      <PhoneInput
+                        international
+                        defaultCountry="AU"
+                        countryCallingCodeEditable={false}
+                        placeholder="Mobile number"
+                        value={field.value || undefined}
+                        onChange={(v) => field.onChange(v ?? '')}
+                        onBlur={field.onBlur}
+                        id="phone_number"
+                        name={field.name}
+                        disabled={false}
+                      />
+                    </div>
+                  )}
                 />
                 {preFilledData.phone_number && (
-                  <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
+                  <span className={styles.preFilledLabel}>
+                    <CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />{' '}
+                    Pre-filled from your account
+                  </span>
                 )}
-                {errors.phone_number && <span className={styles.fieldError}>{errors.phone_number.message}</span>}
+                {errors.phone_number && (
+                  <span className={styles.fieldError}>{errors.phone_number.message}</span>
+                )}
               </div>
 
               <div className={styles.formGroup}>
@@ -386,12 +459,44 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Emergency Contact Phone *</label>
-                <input
-                  {...register('emergency_contact_phone', { required: 'Emergency contact phone is required' })}
-                  className={`${styles.input} ${errors.emergency_contact_phone ? styles.inputError : ''}`}
-                  placeholder="Enter emergency contact phone number"
+                <p className={styles.intakePhoneHint}>International format (E.164) with country selector.</p>
+                <Controller
+                  name="emergency_contact_phone"
+                  control={control}
+                  rules={{
+                    validate: (value) => {
+                      if (!value || String(value).trim() === '') {
+                        return 'Emergency contact phone is required';
+                      }
+                      return (
+                        isValidPhoneNumber(String(value).replace(/\s/g, '')) ||
+                        'Enter a valid number for the selected country'
+                      );
+                    }
+                  }}
+                  render={({ field }) => (
+                    <div
+                      className={`${styles.intakePhoneField} ${
+                        errors.emergency_contact_phone ? styles.intakePhoneFieldError : ''
+                      }`}
+                    >
+                      <PhoneInput
+                        international
+                        defaultCountry="AU"
+                        countryCallingCodeEditable={false}
+                        placeholder="Emergency contact number"
+                        value={field.value || undefined}
+                        onChange={(v) => field.onChange(v ?? '')}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        disabled={false}
+                      />
+                    </div>
+                  )}
                 />
-                {errors.emergency_contact_phone && <span className={styles.fieldError}>{errors.emergency_contact_phone.message}</span>}
+                {errors.emergency_contact_phone && (
+                  <span className={styles.fieldError}>{errors.emergency_contact_phone.message}</span>
+                )}
               </div>
             </div>
           </div>
@@ -990,7 +1095,7 @@ export const PatientIntakeFormPage: React.FC = () => {
         username: 'john.smith',
         role: 'patient' as const,
         email: 'john@example.com',
-        phone_number: '+61 4XX XXX XXX',
+        phone_number: '+61400123456',
         date_of_birth: '1990-01-01',
         age: 34,
         is_verified: true,

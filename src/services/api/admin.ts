@@ -48,7 +48,7 @@ export interface CreateUserRequest {
   password: string;
   full_name: string; // Required - will be split into first_name/last_name
   role: 'psychologist' | 'practice_manager' | 'admin'; // Note: patient role not supported by this endpoint
-  phone_number?: string; // Australian format (+61XXXXXXXXX or 0XXXXXXXXX)
+  phone_number?: string; // E.164 international (+country and number)
   
   // Psychologist-specific fields (required when role is 'psychologist')
   ahpra_registration_number?: string; // Required for psychologists
@@ -79,7 +79,7 @@ export interface UpdateUserRequest {
   role?: 'patient' | 'psychologist' | 'practice_manager' | 'admin';
   is_verified?: boolean;
   is_active?: boolean;
-  phone_number?: string; // API expects phone_number, not phone
+  phone_number?: string; // E.164; API field name phone_number (not phone)
   date_of_birth?: string;
   
   // Psychologist profile fields (when role is psychologist)

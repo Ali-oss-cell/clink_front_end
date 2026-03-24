@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { psychologistService } from '../../services/api/psychologist';
@@ -18,6 +18,10 @@ import {
   EditIcon,
   GraduationIcon
 } from '../../utils/icons';
+import {
+  MATCH_PREFERENCES_STORAGE_KEY,
+  parseMatchPreferences,
+} from '../../constants/matchPreferences';
 import styles from './PsychologistSelection.module.scss';
 
 interface Psychologist {
@@ -59,9 +63,31 @@ export const PsychologistSelectionPage: React.FC = () => {
     availability: 'any',
     sessionType: 'both'
   });
-  
+  const appliedMatchPrefs = useRef(false);
+
   // Get user data from auth service
   const user = authService.getStoredUser();
+
+  // Apply one-time filters from public "Get matched" wizard
+  useEffect(() => {
+    if (appliedMatchPrefs.current || typeof window === 'undefined') return;
+    try {
+      const raw = sessionStorage.getItem(MATCH_PREFERENCES_STORAGE_KEY);
+      const prefs = parseMatchPreferences(raw);
+      if (!prefs) return;
+      appliedMatchPrefs.current = true;
+      sessionStorage.removeItem(MATCH_PREFERENCES_STORAGE_KEY);
+      setFilters((prev) => ({
+        ...prev,
+        specialization: prefs.specialization,
+        sessionType: prefs.sessionType,
+        gender: prefs.gender,
+        availability: prefs.availability,
+      }));
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   // Debug logging
   useEffect(() => {

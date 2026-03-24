@@ -598,12 +598,12 @@ export const UserManagementPage: React.FC = () => {
                     <label>Phone Number (Optional)</label>
                     <input
                       type="tel"
-                      placeholder="+61400123456 or 0400123456"
+                      placeholder="+61400123456 (E.164 international)"
                       value={createForm.phone_number || ''}
                       onChange={(e) => setCreateForm({ ...createForm, phone_number: e.target.value })}
                     />
                     <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
-                      Australian format: +61XXXXXXXXX or 0XXXXXXXXX
+                      Use international E.164 format (starts with +)
                     </small>
                   </div>
 
@@ -798,12 +798,12 @@ export const UserManagementPage: React.FC = () => {
                     <label>Phone Number</label>
                     <input
                       type="tel"
-                      placeholder="+61400123456 or 0400123456"
+                      placeholder="+61400123456 (E.164 international)"
                       value={editForm.phone_number || ''}
                       onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
                     />
                     <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
-                      Australian format: +61XXXXXXXXX or 0XXXXXXXXX
+                      Use international E.164 format (starts with +)
                     </small>
                   </div>
                   <div className={styles.formGroup}>

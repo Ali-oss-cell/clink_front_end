@@ -58,6 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
             // Public navigation
             <div className={styles.publicNav}>
               <Link to="/about">About</Link>
+              <Link to="/get-matched">Get matched</Link>
               <Link to="/services">Services</Link>
               <Link to="/resources">Resources</Link>
               <Link to="/contact">Contact</Link>

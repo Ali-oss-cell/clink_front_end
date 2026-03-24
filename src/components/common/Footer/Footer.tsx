@@ -30,6 +30,7 @@ export const Footer: React.FC = () => {
             <ul className={styles.linkList}>
               <li><Link to="/about" className={styles.link}>About Us</Link></li>
               <li><Link to="/services" className={styles.link}>Our Services</Link></li>
+              <li><Link to="/get-matched" className={styles.link}>Get matched</Link></li>
               <li><Link to="/resources" className={styles.link}>Resources</Link></li>
               <li><Link to="/faqs" className={styles.link}>FAQs</Link></li>
               <li><Link to="/contact" className={styles.link}>Contact</Link></li>

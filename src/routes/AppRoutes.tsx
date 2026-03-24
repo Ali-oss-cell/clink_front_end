@@ -9,6 +9,7 @@ import { TelehealthRequirementsPage } from '../pages/public/TelehealthRequiremen
 import { PrivacyPolicyPage } from '../pages/public/PrivacyPolicyPage';
 import { ResourcesPage } from '../pages/public/ResourcesPage';
 import { ContactPage } from '../pages/public/ContactPage';
+import { GetMatchedPage } from '../pages/public/GetMatchedPage';
 
 // Auth pages
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -97,6 +98,8 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
       
       {/* Contact page */}
       <Route path="/contact" element={<ContactPage />} />
+
+      <Route path="/get-matched" element={<GetMatchedPage />} />
 
       {/* Auth Routes - redirect to dashboard if already authenticated */}
       <Route path="/login" element={

@@ -211,7 +211,7 @@ export const ManagerStaffPage: React.FC = () => {
                       type="text"
                       value={editForm.phone_number}
                       onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
-                      placeholder="+61XXXXXXXXX"
+                      placeholder="+61400123456 (E.164)"
                     />
                   </div>
                   <div className={styles.formGroup}>
