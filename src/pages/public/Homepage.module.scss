@@ -167,6 +167,42 @@
 
 }
 
+// ── Benefits strip ───────────────────────────────────────────────────────
+.benefitsStrip {
+  padding: 2.25rem 0;
+  background: linear-gradient(180deg, rgba($accent-color, 0.22) 0%, $background-light 100%);
+  border-top: 1px solid $border-light;
+  border-bottom: 1px solid $border-light;
+
+  .benefitsStripList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 2.5rem;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: $text-dark;
+    }
+  }
+
+  .benefitsStripIcon {
+    flex-shrink: 0;
+    color: $button-primary-bg;
+    margin-top: 2px;
+  }
+}
+
 // ── Features ────────────────────────────────────────────────────────────
 .features {
   padding: 5rem 0;
@@ -226,6 +262,98 @@
       font-size: 1rem;
       margin: 0;
     }
+  }
+}
+
+// ── Resources teaser ────────────────────────────────────────────────────
+.resourcesTeaser {
+  padding: 4rem 0;
+  background: $background-white;
+  border-top: 1px solid $border-light;
+
+  .resourcesTeaserInner {
+    display: grid;
+    grid-template-columns: 1fr minmax(260px, 420px);
+    align-items: center;
+    gap: 2.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+  }
+
+  .resourcesTeaserCopy {
+    min-width: 0;
+  }
+
+  .resourcesTeaserTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0 0 1rem;
+    letter-spacing: -0.3px;
+
+    @include mobile {
+      font-size: 1.65rem;
+    }
+  }
+
+  .resourcesTeaserText {
+    color: $text-light;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin: 0 0 1.5rem;
+  }
+
+  .resourcesTeaserLink {
+    @include button-base;
+    display: inline-block;
+    background: $button-primary-bg;
+    color: $text-white;
+    padding: 0.75rem 1.75rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: $button-primary-hover;
+      color: $text-white;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+  }
+
+  .resourcesTeaserMedia {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: $shadow-lg;
+    border: 1px solid $border-light;
+    margin: 0 auto;
+    max-width: 420px;
+
+    @include tablet {
+      order: -1;
+      max-width: 100%;
+    }
+  }
+
+  .resourcesTeaserImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: middle;
   }
 }
 
@@ -395,5 +523,508 @@
     margin-top: 0.5rem;
     color: $text-muted;
     font-size: 0.85rem;
+  }
+}
+
+// ── Spotlight (split) ───────────────────────────────────────────────────
+.spotlight {
+  padding: 5rem 0;
+  background: $background-light;
+
+  .spotlightGrid {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.1fr);
+    gap: 3rem;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .spotlightMedia {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: $shadow-lg;
+    border: 1px solid $border-light;
+  }
+
+  .spotlightImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  .spotlightTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0 0 1rem;
+    letter-spacing: -0.3px;
+
+    @include mobile {
+      font-size: 1.65rem;
+    }
+  }
+
+  .spotlightLead {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: $text-light;
+    margin: 0 0 1.5rem;
+  }
+
+  .spotlightList {
+    list-style: none;
+    margin: 0 0 2rem;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: 0.98rem;
+      color: $text-dark;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .spotlightListIcon {
+    flex-shrink: 0;
+    color: $primary-dark;
+    margin-top: 2px;
+  }
+
+  .spotlightActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+  }
+
+  .spotlightPrimary {
+    @include button-base;
+    background: $button-primary-bg;
+    color: $text-white;
+    padding: 0.8rem 1.75rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+
+    &:hover {
+      background: $button-primary-hover;
+      color: $text-white;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+  }
+
+  .spotlightSecondary {
+    @include button-base;
+    color: $text-dark;
+    padding: 0.8rem 1.75rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 2px solid $border-medium;
+    text-decoration: none;
+    background: $background-white;
+
+    &:hover {
+      border-color: $primary-dark;
+      color: $primary-dark;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+  }
+}
+
+// ── Trust band ──────────────────────────────────────────────────────────
+.trustBand {
+  padding: 4.5rem 0;
+  background: $background-white;
+
+  .trustBandLayout {
+    display: grid;
+    grid-template-columns: minmax(260px, 440px) 1fr;
+    gap: 2.5rem 3rem;
+    align-items: start;
+    max-width: 1100px;
+    margin: 0 auto;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .trustBandMedia {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: $shadow-lg;
+    border: 1px solid $border-light;
+
+    @include tablet {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+  }
+
+  .trustBandImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  .trustBandContent {
+    min-width: 0;
+  }
+
+  .trustBandTitle {
+    text-align: left;
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0 0 2rem;
+    max-width: none;
+    letter-spacing: -0.3px;
+
+    @include tablet {
+      text-align: center;
+      font-size: 1.65rem;
+    }
+  }
+
+  .trustGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+    margin: 0;
+
+    @media (min-width: #{$large-desktop}) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .trustCard {
+    text-align: center;
+    padding: 1.75rem 1.25rem;
+    border-radius: 16px;
+    border: 1px solid $border-light;
+    background: linear-gradient(180deg, $background-white 0%, rgba($background-light, 0.85) 100%);
+    box-shadow: $shadow-sm;
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: $text-dark;
+      margin: 0 0 0.5rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: $text-light;
+    }
+  }
+
+  .trustIconWrap {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1.25rem;
+    border-radius: 16px;
+    background: rgba($primary-color, 0.15);
+    color: $primary-dark;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// ── Access & funding ────────────────────────────────────────────────────
+.accessFunding {
+  padding: 4.5rem 0;
+  background: $hero-bg;
+  color: $text-white;
+
+  .accessFundingGrid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .accessCard,
+  .accessCardMuted {
+    border-radius: 18px;
+    padding: 2rem 2.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .accessCard {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .accessCardMuted {
+    background: rgba(0, 0, 0, 0.12);
+  }
+
+  .accessHeading {
+    font-size: 1.45rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: $text-white;
+  }
+
+  .accessCard p,
+  .accessCardMuted p {
+    margin: 0 0 1.25rem;
+    line-height: 1.65;
+    color: rgba($text-white, 0.92);
+    font-size: 1rem;
+  }
+
+  .accessList {
+    margin: 0 0 1.5rem;
+    padding-left: 1.25rem;
+    color: rgba($text-white, 0.92);
+    line-height: 1.6;
+    font-size: 0.95rem;
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+  }
+
+  .accessLink {
+    @include button-base;
+    display: inline-block;
+    color: $hero-bg;
+    background: $text-white;
+    font-weight: 600;
+    padding: 0.65rem 1.35rem;
+    border-radius: 8px;
+    text-decoration: none;
+
+    &:hover {
+      background: $background-light;
+      color: $hero-bg;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-light;
+      outline-offset: 2px;
+    }
+  }
+}
+
+// ── Testimonials ─────────────────────────────────────────────────────────
+.testimonials {
+  padding: 4.5rem 0;
+  background: $background-white;
+
+  .testimonialsTitle {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.3px;
+
+    @include mobile {
+      font-size: 1.65rem;
+    }
+  }
+
+  .testimonialsIntro {
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+    color: $text-light;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .testimonialsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-lg;
+    max-width: 1100px;
+    margin: 0 auto;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .testimonialCard {
+    margin: 0;
+    padding: 1.75rem;
+    border-radius: 16px;
+    border: 1px solid $border-light;
+    background: $background-light;
+    box-shadow: $shadow-sm;
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: $text-dark;
+      font-style: normal;
+    }
+
+    &::before {
+      content: '';
+      display: block;
+      width: 36px;
+      height: 3px;
+      border-radius: 2px;
+      background: $primary-color;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+// ── Bottom CTA ──────────────────────────────────────────────────────────
+.bottomCta {
+  padding: 4rem 0 5.5rem;
+  background: linear-gradient(180deg, $background-light 0%, $background-white 45%);
+  text-align: center;
+  border-top: 1px solid $border-light;
+
+  .bottomCtaTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.3px;
+
+    @include mobile {
+      font-size: 1.65rem;
+    }
+  }
+
+  .bottomCtaText {
+    max-width: 520px;
+    margin: 0 auto 1.75rem;
+    color: $text-light;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .bottomCtaActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-md;
+  }
+
+  .bottomCtaPrimary {
+    @include button-base;
+    background: $button-primary-bg;
+    color: $text-white;
+    padding: 0.85rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+
+    &:hover {
+      background: $button-primary-hover;
+      color: $text-white;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+  }
+
+  .bottomCtaSecondary {
+    @include button-base;
+    background: $primary-color;
+    color: $text-dark;
+    padding: 0.85rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+
+    &:hover {
+      background: $primary-dark;
+      color: $text-white;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $text-dark;
+      outline-offset: 2px;
+    }
+  }
+
+  .bottomCtaGhost {
+    @include button-base;
+    background: transparent;
+    color: $text-dark;
+    padding: 0.85rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 2px solid $border-medium;
+    text-decoration: none;
+
+    &:hover {
+      border-color: $primary-dark;
+      color: $primary-dark;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
   }
 }

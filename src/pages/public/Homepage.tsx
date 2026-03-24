@@ -1,11 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
-import { VideoIcon, CalendarIcon, ClipboardIcon, ChartIcon } from '../../utils/icons';
+import {
+  VideoIcon,
+  CalendarIcon,
+  ClipboardIcon,
+  ChartIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  LockIcon,
+  UsersIcon,
+  BuildingIcon,
+} from '../../utils/icons';
 import heroImage from '../../assets/imges/optimized/hero-therapy.webp';
 import heroImage2 from '../../assets/imges/optimized/hero-telehealth.webp';
 import heroImage3 from '../../assets/imges/optimized/hero-consultation.webp';
 import heroImage4 from '../../assets/imges/optimized/hero-support.webp';
+import homeResourcesReading from '../../assets/imges/optimized/home-resources-reading.webp';
+import homeTrustConnection from '../../assets/imges/optimized/home-trust-connection.webp';
 import styles from './Homepage.module.scss';
 import gsap from 'gsap';
 
@@ -276,6 +288,29 @@ export const Homepage: React.FC = () => {
         </div>
       </section>
 
+      <section className={styles.benefitsStrip} aria-label="Key benefits">
+        <div className="container">
+          <ul className={styles.benefitsStripList}>
+            <li>
+              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <span>Flexible appointment times, including before and after standard hours where available</span>
+            </li>
+            <li>
+              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <span>Telehealth across Australia and in-person care where offered</span>
+            </li>
+            <li>
+              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <span>AHPRA-registered psychologists and evidence-based approaches</span>
+            </li>
+            <li>
+              <CheckCircleIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
+              <span>Medicare rebates for eligible clients with a mental health care plan</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <section className={styles.features}>
         <div className="container">
           <h2 className={styles.sectionTitle}>Why Choose Tailored Psychology?</h2>
@@ -295,6 +330,33 @@ export const Homepage: React.FC = () => {
             <div className={styles.featureCard}>
               <h3>Evidence-Based Care</h3>
               <p>We use proven therapeutic approaches tailored to your individual needs and goals.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.resourcesTeaser}>
+        <div className="container">
+          <div className={styles.resourcesTeaserInner}>
+            <div className={styles.resourcesTeaserCopy}>
+              <h2 className={styles.resourcesTeaserTitle}>Support beyond the session</h2>
+              <p className={styles.resourcesTeaserText}>
+                Browse articles, worksheets, and mental health resources to complement your care. They are educational
+                only and not a substitute for professional support in a crisis.
+              </p>
+              <Link to="/resources" className={styles.resourcesTeaserLink}>
+                Explore resources
+              </Link>
+            </div>
+            <div className={styles.resourcesTeaserMedia}>
+              <img
+                src={homeResourcesReading}
+                alt=""
+                className={styles.resourcesTeaserImage}
+                width={600}
+                height={400}
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
@@ -369,6 +431,177 @@ export const Homepage: React.FC = () => {
               Get Started Today
             </Link>
             <p className={styles.ctaSubtext}>No credit card required • Free consultation available</p>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.spotlight}>
+        <div className="container">
+          <div className={styles.spotlightGrid}>
+            <div className={styles.spotlightMedia}>
+              <img
+                src={heroImage2}
+                alt=""
+                className={styles.spotlightImage}
+                width={640}
+                height={420}
+                loading="lazy"
+              />
+            </div>
+            <div className={styles.spotlightContent}>
+              <h2 className={styles.spotlightTitle}>Therapy that fits how you live</h2>
+              <p className={styles.spotlightLead}>
+                Whether you prefer video sessions or visiting the clinic, you get the same thoughtful, professional
+                care. We help you prepare for technical checks and privacy so telehealth feels straightforward.
+              </p>
+              <ul className={styles.spotlightList}>
+                <li>
+                  <VideoIcon size="md" className={styles.spotlightListIcon} aria-hidden />
+                  Secure telehealth with clear session guidance
+                </li>
+                <li>
+                  <BuildingIcon size="md" className={styles.spotlightListIcon} aria-hidden />
+                  In-person consultations where available
+                </li>
+                <li>
+                  <UsersIcon size="md" className={styles.spotlightListIcon} aria-hidden />
+                  Individual support tailored to your goals
+                </li>
+              </ul>
+              <div className={styles.spotlightActions}>
+                <Link to="/telehealth-requirements" className={styles.spotlightSecondary}>
+                  Telehealth setup &amp; requirements
+                </Link>
+                <Link to="/services" className={styles.spotlightPrimary}>
+                  View services
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.trustBand}>
+        <div className="container">
+          <div className={styles.trustBandLayout}>
+            <div className={styles.trustBandMedia}>
+              <img
+                src={homeTrustConnection}
+                alt=""
+                className={styles.trustBandImage}
+                width={600}
+                height={400}
+                loading="lazy"
+              />
+            </div>
+            <div className={styles.trustBandContent}>
+              <h2 className={styles.trustBandTitle}>Built for safe, accountable care</h2>
+              <div className={styles.trustGrid}>
+                <div className={styles.trustCard}>
+                  <div className={styles.trustIconWrap}>
+                    <UsersIcon size="lg" aria-hidden />
+                  </div>
+                  <h3>Registered clinicians</h3>
+                  <p>Psychology services delivered by professionals who meet Australian registration standards.</p>
+                </div>
+                <div className={styles.trustCard}>
+                  <div className={styles.trustIconWrap}>
+                    <LockIcon size="lg" aria-hidden />
+                  </div>
+                  <h3>Privacy-conscious platform</h3>
+                  <p>Designed with healthcare privacy in mind for booking, records, and video sessions.</p>
+                </div>
+                <div className={styles.trustCard}>
+                  <div className={styles.trustIconWrap}>
+                    <ClockIcon size="lg" aria-hidden />
+                  </div>
+                  <h3>Booking that respects your schedule</h3>
+                  <p>See available times online and choose a session that works across telehealth or clinic visits.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.accessFunding}>
+        <div className="container">
+          <div className={styles.accessFundingGrid}>
+            <div className={styles.accessCard}>
+              <h2 className={styles.accessHeading}>Medicare &amp; care plans</h2>
+              <p>
+                With a valid Mental Health Treatment Plan from your GP, you may be entitled to Medicare rebates for a
+                limited number of sessions per calendar year. We can outline how claiming works once you are booked
+                in.
+              </p>
+              <ul className={styles.accessList}>
+                <li>Rebates claimed through Medicare after eligible sessions</li>
+                <li>Your GP helps determine eligibility and referral documentation</li>
+                <li>We are happy to answer practical questions when you contact us</li>
+              </ul>
+              <Link to="/about" className={styles.accessLink}>
+                Learn more about our practice
+              </Link>
+            </div>
+            <div className={styles.accessCardMuted}>
+              <h2 className={styles.accessHeading}>Making care accessible</h2>
+              <p>
+                Session costs vary by clinician and appointment type. Private health extras may cover part of
+                psychology in some cases—check with your fund. If cost is a barrier, talk to us about options when you
+                reach out.
+              </p>
+              <Link to="/contact" className={styles.accessLink}>
+                Contact us with questions
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.testimonials}>
+        <div className="container">
+          <h2 className={styles.testimonialsTitle}>What clients often value</h2>
+          <p className={styles.testimonialsIntro}>
+            Everyone&apos;s experience is different; these are common themes people share about working with us.
+          </p>
+          <div className={styles.testimonialsGrid}>
+            <blockquote className={styles.testimonialCard}>
+              <p>
+                &ldquo;Straightforward booking and clear communication before the first appointment made it easier to
+                take the first step.&rdquo;
+              </p>
+            </blockquote>
+            <blockquote className={styles.testimonialCard}>
+              <p>
+                &ldquo;I felt listened to and the telehealth format actually suited my work hours really well.&rdquo;
+              </p>
+            </blockquote>
+            <blockquote className={styles.testimonialCard}>
+              <p>
+                &ldquo;Having Medicare rebates explained upfront helped me plan sessions without surprises.&rdquo;
+              </p>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.bottomCta}>
+        <div className="container">
+          <h2 className={styles.bottomCtaTitle}>Ready to connect with a psychologist?</h2>
+          <p className={styles.bottomCtaText}>
+            Create an account to book, or use our matching flow to narrow your preferences before you choose a
+            clinician.
+          </p>
+          <div className={styles.bottomCtaActions}>
+            <Link to="/register" className={styles.bottomCtaPrimary}>
+              Get started
+            </Link>
+            <Link to="/get-matched" className={styles.bottomCtaSecondary}>
+              Get matched
+            </Link>
+            <Link to="/services" className={styles.bottomCtaGhost}>
+              Browse services
+            </Link>
           </div>
         </div>
       </section>
