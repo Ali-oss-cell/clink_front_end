@@ -38,8 +38,9 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    title: 'Professional Psychology Services in Australia',
-    subtitle: 'Compassionate care and evidence-based treatments for mental health and wellbeing. Our AHPRA-registered psychologists are here to support your journey.',
+    title: 'Psychology that meets you where you are',
+    subtitle:
+      'AHPRA-registered clinicians across Australia—telehealth or in person. Evidence-based support when you are ready.',
     primaryAction: 'Book Your Appointment',
     primaryLink: '/register',
     secondaryAction: 'Get matched',
@@ -48,8 +49,8 @@ const slides: Slide[] = [
   },
   {
     id: 2,
-    title: 'Telehealth Sessions Available',
-    subtitle: 'Access professional psychology services from the comfort of your home via secure video sessions. Same quality care, more convenience.',
+    title: 'Therapy from home, without compromise',
+    subtitle: 'Secure video sessions with the same standards of care as in clinic—private, structured, and easy to join.',
     primaryAction: 'Book Telehealth Session',
     primaryLink: '/register',
     secondaryAction: 'View Services',
@@ -58,8 +59,8 @@ const slides: Slide[] = [
   },
   {
     id: 3,
-    title: 'In-Person & Telehealth Options',
-    subtitle: 'Choose the format that works best for you. We offer both in-person consultations at our clinic and secure telehealth video sessions.',
+    title: 'Your format, your pace',
+    subtitle: 'In-person at our clinic or telehealth—choose what fits your week, without sacrificing quality of care.',
     primaryAction: 'Book Appointment',
     primaryLink: '/register',
     secondaryAction: 'Find Our Location',
@@ -68,8 +69,9 @@ const slides: Slide[] = [
   },
   {
     id: 4,
-    title: 'Medicare Rebates Available',
-    subtitle: 'We\'re approved Medicare providers, making psychology services more affordable. Get the support you need with Medicare rebates.',
+    title: 'Medicare support when you are eligible',
+    subtitle:
+      'We are registered providers. With a GP mental health care plan, you may receive rebates—ask us if you are unsure.',
     primaryAction: 'Check Eligibility',
     primaryLink: '/register',
     secondaryAction: 'Learn About Medicare',
@@ -376,9 +378,15 @@ export const Homepage: React.FC = () => {
 
       <section className={styles.features} data-home-reveal>
         <div className="container">
-          <h2 className={styles.sectionTitle} data-home-stagger-item>
-            Why Choose Tailored Psychology?
-          </h2>
+          <div className="tp-brand-headingBlock" data-home-stagger-item>
+            <p className="tp-brand-kicker">Why choose us</p>
+            <h2 className={`${styles.sectionTitle} ${styles.sectionTitleInStack}`}>
+              Why Choose Tailored Psychology?
+            </h2>
+            <p className="tp-brand-lead">
+              Evidence-based care from registered psychologists—clear, respectful, and shaped to your goals.
+            </p>
+          </div>
           <div className={styles.featureGrid}>
             <div className={styles.featureCard} data-home-stagger-item>
               <h3>AHPRA Registered</h3>
@@ -404,10 +412,11 @@ export const Homepage: React.FC = () => {
         <div className="container">
           <div className={styles.resourcesTeaserInner}>
             <div className={styles.resourcesTeaserCopy}>
+              <p className="tp-brand-kicker">Between sessions</p>
               <h2 className={styles.resourcesTeaserTitle}>Support beyond the session</h2>
               <p className={styles.resourcesTeaserText}>
-                Browse articles, worksheets, and mental health resources to complement your care. They are educational
-                only and not a substitute for professional support in a crisis.
+                Articles, worksheets, and tools to complement your care—educational only, and not a substitute for
+                crisis support or one-to-one therapy.
               </p>
               <Link to="/resources" className={styles.resourcesTeaserLink}>
                 Explore resources
@@ -429,12 +438,15 @@ export const Homepage: React.FC = () => {
 
       <section className={styles.howItWorks} data-home-how>
         <div className="container">
-          <h2 className={styles.sectionTitle} data-home-how-title>
-            How It Works
-          </h2>
-          <p className={styles.sectionSubtitle} data-home-how-sub>
-            Getting started with professional psychology care is simple. Follow these easy steps to begin your journey to better mental health.
-          </p>
+          <div className="tp-brand-headingBlock">
+            <p className="tp-brand-kicker">Getting started</p>
+            <h2 className={`${styles.sectionTitle} ${styles.sectionTitleInStack}`} data-home-how-title>
+              How It Works
+            </h2>
+            <p className="tp-brand-lead" data-home-how-sub>
+              From booking to your first session—telehealth or in person—with a path that stays simple and transparent.
+            </p>
+          </div>
           <div className={styles.stepsContainer}>
             <div className={styles.stepCard} data-home-step-card>
               <div className={styles.stepIcon}>
@@ -500,10 +512,11 @@ export const Homepage: React.FC = () => {
               />
             </div>
             <div className={styles.spotlightContent}>
+              <p className="tp-brand-kicker">How you access care</p>
               <h2 className={styles.spotlightTitle}>Therapy that fits how you live</h2>
               <p className={styles.spotlightLead}>
-                Whether you prefer video sessions or visiting the clinic, you get the same thoughtful, professional
-                care. We help you prepare for technical checks and privacy so telehealth feels straightforward.
+                Video or clinic—you get the same considered, professional care. We help with tech checks and privacy so
+                telehealth feels straightforward, not stressful.
               </p>
               <ul className={styles.spotlightList}>
                 <li>
@@ -547,7 +560,11 @@ export const Homepage: React.FC = () => {
             </div>
             <div className={styles.trustBandContent}>
               <div className={styles.trustBandColumn}>
+                <p className="tp-brand-kicker">Trust &amp; standards</p>
                 <h2 className={styles.trustBandTitle}>Built for safe, accountable care</h2>
+                <p className={styles.trustBandLead}>
+                  Registration, privacy, and booking—designed around how real healthcare works in Australia.
+                </p>
                 <div className={styles.trustGrid}>
                   <div className={styles.trustCard}>
                     <div className={styles.trustIconWrap}>

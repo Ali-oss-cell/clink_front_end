@@ -8,6 +8,7 @@ import { authService } from '../../../services/api/auth';
 import { getPrivacyPolicyStatus, acceptPrivacyPolicy } from '../../../services/api/privacy';
 import { WarningIcon } from '../../../utils/icons';
 import { normalizeToE164 } from '../../../utils/phoneE164';
+import { RegisterDobFields, validateRegisterDob } from './RegisterDobFields';
 import styles from './Register.module.scss';
 
 interface RegisterProps {
@@ -360,28 +361,27 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="date_of_birth" className={styles.label}>
-              Date of birth *
-            </label>
-            <div className={styles.inputWrapper}>
-              <input
-                {...register('date_of_birth', {
-                  required: 'Date of birth is required',
-                  validate: (value) => {
-                    const today = new Date();
-                    const birthDate = new Date(value);
-                    const age = today.getFullYear() - birthDate.getFullYear();
-                    if (age < 18) return 'You must be at least 18 years old';
-                    if (age > 120) return 'Please enter a valid date of birth';
-                    return true;
+            <Controller
+              name="date_of_birth"
+              control={control}
+              rules={{
+                validate: validateRegisterDob,
+              }}
+              render={({ field }) => (
+                <RegisterDobFields
+                  value={field.value || ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  disabled={isLoading}
+                  hasError={!!errors.date_of_birth}
+                  hasSuccess={
+                    !!touchedFields.date_of_birth &&
+                    !!date_of_birth &&
+                    !errors.date_of_birth
                   }
-                })}
-                type="date"
-                id="date_of_birth"
-                className={`${styles.input} ${errors.date_of_birth ? styles.inputError : touchedFields.date_of_birth && date_of_birth && !errors.date_of_birth ? styles.inputSuccess : ''}`}
-                disabled={isLoading}
-              />
-            </div>
+                />
+              )}
+            />
             {errors.date_of_birth && (
               <span className={styles.fieldError}>{errors.date_of_birth.message}</span>
             )}

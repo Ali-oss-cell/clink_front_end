@@ -38,23 +38,6 @@
     color: rgba($text-white, 0.92);
   }
 
-  .heroLink {
-    color: rgba($text-white, 0.98);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-
-    &:hover {
-      color: $text-white;
-    }
-
-    &:focus-visible {
-      outline: 2px solid rgba($text-white, 0.9);
-      outline-offset: 3px;
-      border-radius: 2px;
-    }
-  }
-
   .progress {
     width: 100%;
     max-width: 22rem;

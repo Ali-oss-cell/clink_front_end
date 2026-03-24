@@ -817,7 +817,99 @@ select.input {
   }
 }
 
-// Date input styles
+// Date of birth — day / month / year dropdowns (no native calendar popup)
+.dobFieldGroup {
+  margin-bottom: 0;
+
+  .label {
+    margin-bottom: 0.35rem;
+  }
+}
+
+.dobHint {
+  font-size: 0.8125rem;
+  color: $text-light;
+  margin: 0 0 $spacing-sm;
+  line-height: 1.45;
+}
+
+.dobRow {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 0.5rem;
+  align-items: end;
+  padding: 0.65rem;
+  border-radius: 12px;
+  border: 1px solid rgba($border-medium, 0.85);
+  background: $background-white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color: rgba($primary-dark, 0.35);
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.15);
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.dobRowError {
+  border-color: rgba($error-red, 0.45);
+  box-shadow: 0 0 0 3px rgba($error-red, 0.08);
+}
+
+.dobRowSuccess {
+  border-color: rgba($success-green, 0.38);
+}
+
+.dobCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.dobCellLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $text-muted;
+}
+
+.dobSelect {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.55rem 1.75rem 0.55rem 0.65rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: $text-dark;
+  border: 1px solid rgba($border-medium, 0.95);
+  border-radius: 10px;
+  background-color: rgba($background-light, 0.75);
+  cursor: pointer;
+  font-family: inherit;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23616362' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.15rem;
+
+  &:focus {
+    outline: none;
+    border-color: rgba($primary-dark, 0.45);
+    background-color: $background-white;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+// Date input styles (other forms may still use native date)
 input[type="date"] {
   &::-webkit-calendar-picker-indicator {
     cursor: pointer;

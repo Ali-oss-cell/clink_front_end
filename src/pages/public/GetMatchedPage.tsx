@@ -91,17 +91,8 @@ export const GetMatchedPage: React.FC = () => {
             <div className={styles.heroInner}>
               <h1 className={styles.heroTitle}>Get matched with a psychologist</h1>
               <p className={styles.heroSubtitle}>
-                A few quick questions help narrow who may fit your goals and schedule (like other telehealth psychology
-                platforms such as{' '}
-                <a
-                  href="https://www.mymirror.com.au/get-matched"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.heroLink}
-                >
-                  My Mirror
-                </a>
-                ). Your answers stay private and secure.
+                A few quick questions help narrow who may fit your goals and schedule. Your answers stay private and
+                secure.
               </p>
               <div className={styles.progress}>
                 <div className={styles.progressBar}>

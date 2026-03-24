@@ -8,39 +8,40 @@ export const AboutPage: React.FC = () => {
       {/* Hero */}
       <section className={styles.hero}>
         <div className="container">
-          <h1 className={styles.heroTitle}>About Tailored Psychology</h1>
+          <p className="tp-brand-kicker tp-brand-kicker--inverse">About us</p>
+          <h1 className={styles.heroTitle}>Psychology with intention</h1>
           <p className={styles.heroSubtitle}>
-            Professional, compassionate psychology services across Australia
+            Clinical rigour in a calm, respectful space—so getting help feels clear, not overwhelming.
           </p>
         </div>
       </section>
 
-      <section className={styles.content}>
+      <section className={`${styles.content} tp-brand-softBg`}>
         <div className="container">
-          <div className={styles.contentInner}>
+          <div className={`${styles.contentInner} tp-brand-card`}>
             <div className={styles.section}>
-              <h2>Our Mission</h2>
+              <p className="tp-brand-kicker">Our approach</p>
+              <h2>Our mission</h2>
               <p>
-                At Tailored Psychology, we're committed to providing accessible, evidence-based 
-                psychological services to help Australians achieve better mental health and wellbeing. 
-                Our team of qualified psychologists work with you to develop personalized treatment 
-                plans that address your unique needs and goals.
+                We offer accessible, evidence-based psychological care to support mental health and wellbeing across
+                Australia. Our psychologists work with you on clear, personalised plans that reflect your goals—not a
+                one-size template.
               </p>
             </div>
 
             <div className={styles.section}>
-              <h2>Our Team</h2>
+              <p className="tp-brand-kicker">Who you will see</p>
+              <h2>Our team</h2>
               <p>
-                All our psychologists are fully registered with AHPRA (Australian Health 
-                Practitioner Regulation Agency) and are members of the Australian Psychological 
-                Society (APS). We specialize in a range of therapeutic approaches including 
-                Cognitive Behavioral Therapy (CBT), Acceptance and Commitment Therapy (ACT), 
-                and mindfulness-based interventions.
+                Our psychologists are registered with AHPRA and align with professional standards including APS
+                membership where applicable. We draw on approaches such as CBT, ACT, and mindfulness-based therapies,
+                matched to what suits you.
               </p>
             </div>
 
             <div className={styles.section}>
-              <h2>Why Choose Us?</h2>
+              <p className="tp-brand-kicker">What you can expect</p>
+              <h2>Why choose us</h2>
               <div className={styles.featureGrid}>
                 {[
                   'AHPRA registered and APS member psychologists',
@@ -62,9 +63,9 @@ export const AboutPage: React.FC = () => {
               </div>
             </div>
 
-            <div className={styles.ctaBlock}>
-              <h2>Ready to Get Started?</h2>
-              <p>Book your first appointment today and take the first step towards better mental health.</p>
+            <div className={`${styles.ctaBlock} tp-brand-card tp-brand-card--accent`}>
+              <h2>Ready when you are</h2>
+              <p>Book online in minutes, or browse services first—no pressure, just a clear next step.</p>
               <div className={styles.ctaButtons}>
                 <Link to="/register" className={styles.primaryCTA}>Book Appointment</Link>
                 <Link to="/services" className={styles.secondaryCTA}>View Our Services</Link>

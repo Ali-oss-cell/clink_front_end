@@ -26,21 +26,22 @@ export const ContactPage: React.FC = () => {
       {/* Hero */}
       <section className={styles.hero}>
         <div className="container">
-          <h1 className={styles.heroTitle}>Get in Touch</h1>
+          <p className="tp-brand-kicker tp-brand-kicker--inverse">We are here to help</p>
+          <h1 className={styles.heroTitle}>Get in touch</h1>
           <p className={styles.heroSubtitle}>
-            We'd love to hear from you. Reach out with any questions about our services or to book an appointment.
+            Questions about services, Medicare, or booking—send a message and we will get back to you as soon as we can.
           </p>
         </div>
       </section>
 
-      <section className={styles.contactSection}>
+      <section className={`${styles.contactSection} tp-brand-softBg`}>
         <div className="container">
           <div className={styles.contactGrid}>
             {/* Contact Info */}
-            <div className={styles.contactInfo}>
-              <h2 className={styles.infoTitle}>Contact Information</h2>
+            <div className={`${styles.contactInfo} tp-brand-card`}>
+              <h2 className={styles.infoTitle}>Contact information</h2>
               <p className={styles.infoSubtitle}>
-                Feel free to reach out through any of the following channels. We aim to respond within 24 hours.
+                Reach us by phone or email, or use the form—we usually reply within one business day.
               </p>
 
               <div className={styles.infoItems}>

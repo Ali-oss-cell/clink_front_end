@@ -176,7 +176,7 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
 // ── Benefits strip ───────────────────────────────────────────────────────
 .benefitsStrip {
   padding: $home-section-y 0;
-  background: linear-gradient(180deg, rgba($accent-color, 0.22) 0%, $background-light 100%);
+  background: linear-gradient(135deg, $background-light 0%, $patient-bg-gradient-end 100%);
   border-top: 1px solid $border-light;
   border-bottom: 1px solid $border-light;
 
@@ -236,6 +236,11 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
     }
   }
 
+  .sectionTitleInStack {
+    margin-bottom: 0;
+    max-width: none;
+  }
+
   .featureGrid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -260,11 +265,11 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
     flex-direction: column;
     justify-content: flex-start;
     background: $background-white;
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 2rem 1.75rem;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
     border: 1px solid $border-light;
     height: 100%;
 
@@ -332,6 +337,10 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
     @include mobile {
       font-size: 1.65rem;
     }
+  }
+
+  .resourcesTeaserCopy :global(.tp-brand-kicker) {
+    margin-bottom: 0.5rem;
   }
 
   .resourcesTeaserText {
@@ -407,6 +416,10 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
     @include mobile {
       font-size: 1.75rem;
     }
+  }
+
+  .sectionTitleInStack {
+    margin-bottom: 0;
   }
 
   .sectionSubtitle {
@@ -588,6 +601,10 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
       align-items: center;
       text-align: center;
     }
+  }
+
+  .spotlightContent :global(.tp-brand-kicker) {
+    margin-bottom: 0.5rem;
   }
 
   .spotlightTitle {
@@ -784,6 +801,30 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
       text-align: center;
       border-bottom: none;
       padding-bottom: 0;
+    }
+  }
+
+  .trustBandColumn :global(.tp-brand-kicker) {
+    margin-bottom: 0.5rem;
+    align-self: flex-start;
+
+    @include tablet {
+      align-self: center;
+    }
+  }
+
+  .trustBandLead {
+    margin: 0 0 1.25rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: $text-light;
+    max-width: 36rem;
+    text-align: left;
+
+    @include tablet {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
