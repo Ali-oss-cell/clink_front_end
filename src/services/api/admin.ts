@@ -209,6 +209,11 @@ export interface Invoice {
   status: string;
   created_at: string;
   due_date?: string;
+  /** When true, invoice is GST-free (gst_amount = 0; total = subtotal). */
+  is_gst_free?: boolean;
+  subtotal_amount?: string;
+  gst_amount?: string;
+  total_amount?: string;
 }
 
 export interface Payment {
@@ -605,6 +610,26 @@ export class AdminService {
       const errorMessage = error.response?.data?.detail || 
                           error.response?.data?.message || 
                           'Failed to load invoice';
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Partial update (e.g. GST-free flag). Requires staff permissions on the backend.
+   */
+  async updateInvoice(
+    invoiceId: number,
+    payload: Partial<{ is_gst_free: boolean }>
+  ): Promise<Invoice> {
+    try {
+      const response = await axiosInstance.patch(`/billing/invoices/${invoiceId}/`, payload);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to update invoice:', error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to update invoice';
       throw new Error(errorMessage);
     }
   }

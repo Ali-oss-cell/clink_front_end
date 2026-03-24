@@ -437,7 +437,6 @@ export const Homepage: React.FC = () => {
           </p>
           <div className={styles.stepsContainer}>
             <div className={styles.stepCard} data-home-step-card>
-              <div className={styles.stepNumber}>1</div>
               <div className={styles.stepIcon}>
                 <OutlineCalendarDaysIcon size="xl" />
               </div>
@@ -448,7 +447,6 @@ export const Homepage: React.FC = () => {
             </div>
 
             <div className={styles.stepCard} data-home-step-card>
-              <div className={styles.stepNumber}>2</div>
               <div className={styles.stepIcon}>
                 <OutlineClipboardIcon size="xl" />
               </div>
@@ -459,7 +457,6 @@ export const Homepage: React.FC = () => {
             </div>
 
             <div className={styles.stepCard} data-home-step-card>
-              <div className={styles.stepNumber}>3</div>
               <div className={styles.stepIcon}>
                 <OutlineTelehealthIcon size="xl" />
               </div>
@@ -470,7 +467,6 @@ export const Homepage: React.FC = () => {
             </div>
 
             <div className={styles.stepCard} data-home-step-card>
-              <div className={styles.stepNumber}>4</div>
               <div className={styles.stepIcon}>
                 <OutlineChartLineIcon size="xl" />
               </div>

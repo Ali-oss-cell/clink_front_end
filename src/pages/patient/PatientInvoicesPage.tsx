@@ -111,14 +111,17 @@ export const PatientInvoicesPage: React.FC = () => {
     }
   };
 
+  const invoiceTotal = (inv: Invoice) =>
+    parseFloat(String(inv.total_amount ?? inv.amount ?? '0'));
+
   const calculateTotals = () => {
-    const total = invoices.reduce((sum, inv) => sum + parseFloat(inv.amount || '0'), 0);
+    const total = invoices.reduce((sum, inv) => sum + invoiceTotal(inv), 0);
     const paid = invoices
       .filter((inv) => inv.status === 'paid')
-      .reduce((sum, inv) => sum + parseFloat(inv.amount || '0'), 0);
+      .reduce((sum, inv) => sum + invoiceTotal(inv), 0);
     const pending = invoices
       .filter((inv) => inv.status === 'pending' || inv.status === 'overdue')
-      .reduce((sum, inv) => sum + parseFloat(inv.amount || '0'), 0);
+      .reduce((sum, inv) => sum + invoiceTotal(inv), 0);
     
     return { total, paid, pending };
   };
@@ -268,6 +271,9 @@ export const PatientInvoicesPage: React.FC = () => {
                     <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', color: '#1e1f1e' }}>
                       Amount
                     </th>
+                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
+                      GST
+                    </th>
                     <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: '#1e1f1e' }}>
                       Status
                     </th>
@@ -297,7 +303,10 @@ export const PatientInvoicesPage: React.FC = () => {
                         {invoice.psychologist_name || 'N/A'}
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', color: '#111827' }}>
-                        {formatCurrency(invoice.amount)}
+                        {formatCurrency(invoice.total_amount ?? invoice.amount)}
+                      </td>
+                      <td style={{ padding: '1rem', color: '#4a4b4a', fontSize: '0.9rem' }}>
+                        {invoice.is_gst_free ? 'GST-free' : 'Inc. GST'}
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'center' }}>
                         <span

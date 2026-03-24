@@ -119,8 +119,8 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
     <div className={styles.loginForm}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.formHeader}>
-          <h2 className={styles.title}>Welcome Back</h2>
-          <p className={styles.subtitle}>Sign in to access your patient portal</p>
+          <h2 className={styles.title}>Welcome back</h2>
+          <p className={styles.subtitle}>Sign in to your patient portal to manage appointments and care.</p>
         </div>
 
         {error && (
@@ -137,50 +137,55 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
           </div>
         )}
 
-        <div className={styles.formGroup}>
-          <label htmlFor="email" className={styles.label}>
-            Email Address
-          </label>
-          <input
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Please enter a valid email address'
-              }
-            })}
-            type="email"
-            id="email"
-            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-            placeholder="your.email@example.com"
-            disabled={isLoading}
-          />
-          {errors.email && (
-            <span className={styles.fieldError}>{errors.email.message}</span>
-          )}
-        </div>
+        <div className={styles.credentialCluster}>
+          <p className={styles.clusterLabel}>Your credentials</p>
+          <div className={styles.formGroup}>
+            <label htmlFor="email" className={styles.label}>
+              Email
+            </label>
+            <input
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Please enter a valid email address'
+                }
+              })}
+              type="email"
+              id="email"
+              autoComplete="email"
+              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+              placeholder="you@example.com"
+              disabled={isLoading}
+            />
+            {errors.email && (
+              <span className={styles.fieldError}>{errors.email.message}</span>
+            )}
+          </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="password" className={styles.label}>
-            Password
-          </label>
-          <input
-            {...register('password', {
-              required: 'Password is required',
-              minLength: {
-                value: 6,
-                message: 'Password must be at least 6 characters'
-              }
-            })}
-            type="password"
-            id="password"
-            className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-            placeholder="Enter your password"
-            disabled={isLoading}
-          />
-          {errors.password && (
-            <span className={styles.fieldError}>{errors.password.message}</span>
-          )}
+          <div className={styles.formGroup}>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
+            <input
+              {...register('password', {
+                required: 'Password is required',
+                minLength: {
+                  value: 6,
+                  message: 'Password must be at least 6 characters'
+                }
+              })}
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+              placeholder="••••••••"
+              disabled={isLoading}
+            />
+            {errors.password && (
+              <span className={styles.fieldError}>{errors.password.message}</span>
+            )}
+          </div>
         </div>
 
         <div className={styles.formOptions}>

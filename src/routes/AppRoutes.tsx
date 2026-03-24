@@ -14,6 +14,8 @@ import { GetMatchedPage } from '../pages/public/GetMatchedPage';
 // Auth pages
 import { LoginPage } from '../pages/auth/LoginPage';
 import { RegisterPage } from '../pages/auth/RegisterPage';
+import { ForgotPasswordPage } from '../pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '../pages/auth/ResetPasswordPage';
 
 // Patient pages
 import { PatientDashboardPage } from '../pages/patient/PatientDashboardPage';
@@ -119,6 +121,26 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           user={user}
         >
           <RegisterPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/forgot-password" element={
+        <ProtectedRoute 
+          requireAuth={false} 
+          isAuthenticated={isAuthenticated} 
+          user={user}
+        >
+          <ForgotPasswordPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/reset-password" element={
+        <ProtectedRoute 
+          requireAuth={false} 
+          isAuthenticated={isAuthenticated} 
+          user={user}
+        >
+          <ResetPasswordPage />
         </ProtectedRoute>
       } />
 

@@ -469,23 +469,6 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
     }
   }
 
-  .stepNumber {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: $primary-color;
-    color: $text-dark;
-    font-size: 1.15rem;
-    font-weight: 800;
-    margin-bottom: 1.25rem;
-    position: relative;
-    z-index: 2;
-    box-shadow: 0 10px 22px rgba($primary-color, 0.22);
-  }
-
   .stepIcon {
     margin: 0 auto 1rem;
     color: $button-primary-bg;

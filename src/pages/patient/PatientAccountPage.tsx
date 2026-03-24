@@ -386,7 +386,7 @@ export const PatientAccountPage: React.FC = () => {
                       </div>
                       
                       <div className={styles.infoSection}>
-                        <label className={styles.label}>GP Contact</label>
+                        <label className={styles.label}>GP contact</label>
                         <div className={styles.infoDisplay}>
                           <div className={styles.infoValue}>
                             {medicalInfo?.gpContact || 'Not provided'}
@@ -398,6 +398,51 @@ export const PatientAccountPage: React.FC = () => {
                           </button>
                         </div>
                       </div>
+
+                      {medicalInfo?.gpProviderNumber && (
+                        <div className={styles.infoSection}>
+                          <label className={styles.label}>GP provider number</label>
+                          <div className={styles.infoDisplay}>
+                            <div className={styles.infoValue}>{medicalInfo.gpProviderNumber}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {medicalInfo?.gpReferralDate && (
+                        <div className={styles.infoSection}>
+                          <label className={styles.label}>GP referral date</label>
+                          <div className={styles.infoDisplay}>
+                            <div className={styles.infoValue}>{medicalInfo.gpReferralDate}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {medicalInfo?.gpReferralExpiry && (
+                        <div className={styles.infoSection}>
+                          <label className={styles.label}>Referral expiry</label>
+                          <div className={styles.infoDisplay}>
+                            <div className={styles.infoValue}>{medicalInfo.gpReferralExpiry}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {medicalInfo?.gpMhcpReference && (
+                        <div className={styles.infoSection}>
+                          <label className={styles.label}>MHCP / plan reference</label>
+                          <div className={styles.infoDisplay}>
+                            <div className={styles.infoValue}>{medicalInfo.gpMhcpReference}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {medicalInfo?.gpMbsItems && (
+                        <div className={styles.infoSection}>
+                          <label className={styles.label}>Related MBS items</label>
+                          <div className={styles.infoDisplay}>
+                            <div className={styles.infoValue}>{medicalInfo.gpMbsItems}</div>
+                          </div>
+                        </div>
+                      )}
                       
                       <div className={styles.infoSection}>
                         <label className={styles.label}>Presenting Concerns</label>

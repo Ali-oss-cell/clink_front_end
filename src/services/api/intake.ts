@@ -32,6 +32,11 @@ export interface IntakeFormData {
   gp_name?: string;
   gp_practice_name?: string;
   gp_provider_number?: string;
+  /** ISO YYYY-MM-DD — required when has_gp_referral */
+  gp_referral_date?: string;
+  gp_referral_expiry_date?: string;
+  gp_mhcp_reference?: string;
+  gp_mhtp_related_mbs_items?: string;
   gp_address?: string;
   
   // Medical history
@@ -181,16 +186,34 @@ export const intakeService = {
     const data = intakeService.getIntakeFormData();
     if (!data) return null;
 
+    const fmtDate = (d?: string) => {
+      if (!d) return null;
+      try {
+        return new Date(d.includes('T') ? d : `${d}T00:00:00`).toLocaleDateString('en-AU', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+      } catch {
+        return d;
+      }
+    };
+
     return {
       currentMedications: data.medication_list || 'Not provided',
       medicalConditions: data.medical_conditions_details || 'Not provided',
       previousTherapy: data.previous_therapy_details || 'Not provided',
       otherHealthProfessionals: data.other_health_details || 'Not provided',
-      gpContact: data.gp_name && data.gp_practice_name 
-        ? `${data.gp_name} - ${data.gp_practice_name}` 
+      gpContact: data.gp_name && data.gp_practice_name
+        ? `${data.gp_name} — ${data.gp_practice_name}`
         : 'Not provided',
+      gpProviderNumber: data.gp_provider_number || null,
+      gpReferralDate: fmtDate(data.gp_referral_date),
+      gpReferralExpiry: fmtDate(data.gp_referral_expiry_date),
+      gpMhcpReference: data.gp_mhcp_reference || null,
+      gpMbsItems: data.gp_mhtp_related_mbs_items || null,
       presentingConcerns: data.presenting_concerns || 'Not provided',
-      therapyGoals: data.therapy_goals || 'Not provided'
+      therapyGoals: data.therapy_goals || 'Not provided',
     };
   },
 
@@ -259,6 +282,10 @@ export const intakeService = {
       gp_name: '',
       gp_practice_name: '',
       gp_provider_number: '',
+      gp_referral_date: '',
+      gp_referral_expiry_date: '',
+      gp_mhcp_reference: '',
+      gp_mhtp_related_mbs_items: '',
       gp_address: '',
       
       // Medical history

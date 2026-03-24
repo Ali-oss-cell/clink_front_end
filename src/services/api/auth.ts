@@ -42,8 +42,12 @@ authAPI.interceptors.request.use((config) => {
     config.headers['Content-Type'] = 'application/json';
   }
   
-  // NEVER add Authorization header for login/register endpoints
-  const isAuthEndpoint = config.url?.includes('/login/') || config.url?.includes('/register/');
+  // NEVER add Authorization header for login/register/password-reset endpoints
+  const isAuthEndpoint =
+    config.url?.includes('/login/') ||
+    config.url?.includes('/register/') ||
+    config.url?.includes('/forgot-password/') ||
+    config.url?.includes('/reset-password/');
   
   if (!isAuthEndpoint) {
     // Only add Authorization for protected endpoints
@@ -257,6 +261,65 @@ export const authService = {
   getStoredUser: (): User | null => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
+  },
+
+  /** POST /api/auth/forgot-password/ — response is generic (no email enumeration). */
+  forgotPassword: async (email: string): Promise<{ message?: string }> => {
+    try {
+      const headers = createHeaders(false, false);
+      const response = await authAPI.post('/forgot-password/', { email }, { headers });
+      return response.data;
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status === 429) {
+        throw new Error(
+          error.response?.data?.detail ||
+            'Too many reset requests. Please try again later.'
+        );
+      }
+      throw new Error(
+        error.response?.data?.detail ||
+          error.response?.data?.message ||
+          error.message ||
+          'Could not process password reset request.'
+      );
+    }
+  },
+
+  /** POST /api/auth/reset-password/ — token from email link query string. */
+  resetPassword: async (token: string, new_password: string): Promise<{ message?: string }> => {
+    try {
+      const headers = createHeaders(false, false);
+      const response = await authAPI.post(
+        '/reset-password/',
+        { token, new_password },
+        { headers }
+      );
+      return response.data;
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status === 429) {
+        throw new Error(
+          error.response?.data?.detail ||
+            'Too many attempts. Please try again later.'
+        );
+      }
+      if (status === 400) {
+        const d = error.response?.data;
+        const msg =
+          (typeof d === 'object' && d?.new_password?.[0]) ||
+          d?.detail ||
+          d?.error ||
+          'Invalid token or password.';
+        throw new Error(typeof msg === 'string' ? msg : 'Invalid token or password.');
+      }
+      throw new Error(
+        error.response?.data?.detail ||
+          error.response?.data?.message ||
+          error.message ||
+          'Could not reset password.'
+      );
+    }
   },
 
   // Register new user

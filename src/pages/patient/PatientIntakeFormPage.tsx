@@ -7,6 +7,7 @@ import 'react-phone-number-input/style.css';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
 import { validateIntakeForm } from '../../utils/validation';
+import { normalizeToE164 } from '../../utils/phoneE164';
 import { CheckCircleIcon, ClipboardIcon } from '../../utils/icons';
 import styles from './PatientPages.module.scss';
 
@@ -54,6 +55,10 @@ export const PatientIntakeFormPage: React.FC = () => {
       gp_name: preFilledData.gp_name || '',
       gp_practice_name: preFilledData.gp_practice_name || '',
       gp_provider_number: preFilledData.gp_provider_number || '',
+      gp_referral_date: preFilledData.gp_referral_date || '',
+      gp_referral_expiry_date: preFilledData.gp_referral_expiry_date || '',
+      gp_mhcp_reference: preFilledData.gp_mhcp_reference || '',
+      gp_mhtp_related_mbs_items: preFilledData.gp_mhtp_related_mbs_items || '',
       gp_address: preFilledData.gp_address || '',
       previous_therapy: preFilledData.previous_therapy || false,
       previous_therapy_details: preFilledData.previous_therapy_details || '',
@@ -117,6 +122,10 @@ export const PatientIntakeFormPage: React.FC = () => {
           setValue('gp_name', '');
           setValue('gp_practice_name', '');
           setValue('gp_provider_number', '');
+          setValue('gp_referral_date', '');
+          setValue('gp_referral_expiry_date', '');
+          setValue('gp_mhcp_reference', '');
+          setValue('gp_mhtp_related_mbs_items', '');
           setValue('gp_address', '');
           break;
         case 'previous_therapy':
@@ -149,15 +158,28 @@ export const PatientIntakeFormPage: React.FC = () => {
   const onSubmit: SubmitHandler<IntakeFormData> = async (data) => {
     setIsSubmitting(true);
     try {
-      // Validate form before submission
-      const validationErrors = validateForm(data);
+      const mobileNorm =
+        normalizeToE164(data.phone_number) || (data.phone_number?.trim() ?? '');
+      const homeNorm = data.home_phone?.trim()
+        ? normalizeToE164(data.home_phone) || data.home_phone.trim()
+        : '';
+      const emergencyNorm =
+        normalizeToE164(data.emergency_contact_phone) ||
+        (data.emergency_contact_phone?.trim() ?? '');
+      const payload: IntakeFormData = {
+        ...data,
+        phone_number: mobileNorm,
+        home_phone: homeNorm,
+        emergency_contact_phone: emergencyNorm,
+      };
+
+      const validationErrors = validateForm(payload);
       if (validationErrors.length > 0) {
         alert('Please fix the following issues:\n\n' + validationErrors.join('\n'));
         return;
       }
-      
-      // Submit to Django backend API
-      await intakeService.submitIntakeForm(data);
+
+      await intakeService.submitIntakeForm(payload);
       
       alert('Intake form submitted successfully!');
       navigate('/patient/dashboard');
@@ -557,8 +579,12 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               {isTruthy(watchedHasGpReferral) && (
                 <>
+                  <p className={styles.intakePhoneHint} style={{ gridColumn: '1 / -1', marginBottom: 0 }}>
+                    Medicare mental health care plan (MHCP): use the same details as on your referral. Referrals are
+                    usually valid for 12 months from the referral date unless your GP recorded a different expiry.
+                  </p>
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>GP's Name <span className={styles.recommendedLabel}>(Recommended)</span></label>
+                    <label className={styles.label}>GP&apos;s name *</label>
                     <input
                       {...register('gp_name')}
                       className={styles.input}
@@ -567,7 +593,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Practice Name <span className={styles.recommendedLabel}>(Recommended)</span></label>
+                    <label className={styles.label}>Practice name *</label>
                     <input
                       {...register('gp_practice_name')}
                       className={styles.input}
@@ -576,16 +602,63 @@ export const PatientIntakeFormPage: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Provider Number <span className={styles.optionalLabel}>(Optional)</span></label>
+                    <label className={styles.label}>GP referral date *</label>
+                    <input
+                      {...register('gp_referral_date')}
+                      type="date"
+                      className={styles.input}
+                    />
+                    <span className={styles.optionalLabel}>On the plan or referral letter</span>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      Referral expiry <span className={styles.optionalLabel}>(Optional)</span>
+                    </label>
+                    <input
+                      {...register('gp_referral_expiry_date')}
+                      type="date"
+                      className={styles.input}
+                    />
+                    <span className={styles.optionalLabel}>
+                      If left blank, validity defaults from the referral date (typically 12 months).
+                    </span>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>GP provider number *</label>
                     <input
                       {...register('gp_provider_number')}
                       className={styles.input}
-                      placeholder="Enter provider number"
+                      placeholder="Medicare provider number"
+                    />
+                    <span className={styles.optionalLabel}>Required for Medicare-rebated appointments.</span>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      MHCP / plan reference <span className={styles.optionalLabel}>(Optional)</span>
+                    </label>
+                    <input
+                      {...register('gp_mhcp_reference')}
+                      className={styles.input}
+                      placeholder="As shown on your document"
                     />
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Practice Address <span className={styles.optionalLabel}>(Optional)</span></label>
+                    <label className={styles.label}>
+                      Related MBS items <span className={styles.optionalLabel}>(Optional)</span>
+                    </label>
+                    <input
+                      {...register('gp_mhtp_related_mbs_items')}
+                      className={styles.input}
+                      placeholder="e.g. 2710, 2712"
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Practice address <span className={styles.optionalLabel}>(Optional)</span></label>
                     <textarea
                       {...register('gp_address')}
                       className={styles.textarea}

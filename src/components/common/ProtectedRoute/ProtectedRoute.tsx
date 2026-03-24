@@ -132,7 +132,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // If user is authenticated but trying to access auth pages, redirect to dashboard
   // Only redirect if we have both authentication flag AND valid user data
-  if (isAuthenticated && user && user.role && (location.pathname === '/login' || location.pathname === '/register')) {
+  // Keep /reset-password reachable when logged in (user may have opened the email link in same browser).
+  if (
+    isAuthenticated &&
+    user &&
+    user.role &&
+    (location.pathname === '/login' ||
+      location.pathname === '/register' ||
+      location.pathname === '/forgot-password')
+  ) {
     switch (user.role) {
       case 'patient':
         return <Navigate to="/patient/dashboard" replace />;

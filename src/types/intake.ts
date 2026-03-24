@@ -24,6 +24,14 @@ export interface IntakeFormData {
   has_gp_referral: boolean;
   gp_name?: string;
   gp_practice_name?: string;
+  gp_provider_number?: string;
+  /** ISO date YYYY-MM-DD — required when has_gp_referral (Medicare MHCP) */
+  gp_referral_date?: string;
+  /** Optional; if set, overrides default 12-month validity from referral date */
+  gp_referral_expiry_date?: string;
+  gp_mhcp_reference?: string;
+  /** Office use, e.g. 2710,2712 */
+  gp_mhtp_related_mbs_items?: string;
 
   // Medical History
   previous_therapy: boolean;

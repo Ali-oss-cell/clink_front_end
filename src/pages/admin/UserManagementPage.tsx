@@ -5,6 +5,7 @@ import { adminService, type User, type CreateUserRequest, type UpdateUserRequest
 import { CheckCircleIcon, WarningIcon, InfoIcon, CloseIcon } from '../../utils/icons';
 import { AHPRAInput } from '../../components/common/AHPRAInput';
 import { validateAHPRA } from '../../utils/validation';
+import { normalizeToE164 } from '../../utils/phoneE164';
 import styles from './AdminPages.module.scss';
 
 export const UserManagementPage: React.FC = () => {
@@ -601,6 +602,12 @@ export const UserManagementPage: React.FC = () => {
                       placeholder="+61400123456 (E.164 international)"
                       value={createForm.phone_number || ''}
                       onChange={(e) => setCreateForm({ ...createForm, phone_number: e.target.value })}
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (!v) return;
+                        const out = normalizeToE164(v);
+                        if (out) setCreateForm((f) => ({ ...f, phone_number: out }));
+                      }}
                     />
                     <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
                       Use international E.164 format (starts with +)
@@ -801,6 +808,12 @@ export const UserManagementPage: React.FC = () => {
                       placeholder="+61400123456 (E.164 international)"
                       value={editForm.phone_number || ''}
                       onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (!v) return;
+                        const out = normalizeToE164(v);
+                        if (out) setEditForm((f) => ({ ...f, phone_number: out }));
+                      }}
                     />
                     <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
                       Use international E.164 format (starts with +)

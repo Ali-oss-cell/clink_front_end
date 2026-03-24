@@ -302,9 +302,27 @@ export class AppointmentsService {
     try {
       const response = await axiosInstance.post('/auth/appointments/book-enhanced/', data);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to book appointment:', error);
-      throw error;
+      const d = error.response?.data;
+      let msg =
+        (typeof d === 'string' && d) ||
+        d?.detail ||
+        d?.error ||
+        d?.message;
+      if (msg && typeof msg !== 'string') {
+        msg = Array.isArray(msg) ? msg.join(' ') : JSON.stringify(msg);
+      }
+      if (d && typeof d === 'object' && !msg) {
+        const first = Object.entries(d).find(
+          ([, v]) => Array.isArray(v) && v.length
+        );
+        if (first) msg = `${first[0]}: ${(first[1] as string[]).join(' ')}`;
+      }
+      throw new Error(
+        msg ||
+          'Could not complete booking. If this is a Medicare service, check your GP referral, provider number, and referral dates in your profile or intake form.'
+      );
     }
   }
 

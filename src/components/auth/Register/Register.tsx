@@ -7,6 +7,7 @@ import 'react-phone-number-input/style.css';
 import { authService } from '../../../services/api/auth';
 import { getPrivacyPolicyStatus, acceptPrivacyPolicy } from '../../../services/api/privacy';
 import { WarningIcon } from '../../../utils/icons';
+import { normalizeToE164 } from '../../../utils/phoneE164';
 import styles from './Register.module.scss';
 
 interface RegisterProps {
@@ -44,7 +45,8 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
     watch,
     formState: { errors, isValid, touchedFields }
   } = useForm<PatientRegistrationData>({
-    mode: 'onChange',
+    mode: 'onTouched',
+    reValidateMode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
@@ -99,30 +101,6 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
     loadPrivacyPolicy();
   }, []);
 
-  // Helper function to calculate completed fields
-  const getCompletedFields = () => {
-    const completedFields = [
-      first_name && first_name.length >= 2,
-      last_name && last_name.length >= 2,
-      email && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email),
-      phone_number && isValidPhoneNumber(phone_number),
-      date_of_birth && date_of_birth.length > 0,
-      address_line_1 && address_line_1.length >= 5,
-      suburb && suburb.length >= 2,
-      state && state.length > 0,
-      postcode && /^\d{4}$/.test(postcode),
-      medicare_number && medicare_number.length >= 10,
-      password && password.length >= 8,
-      watch('password_confirm') && watch('password_confirm') === password,
-      watch('terms_accepted')
-    ].filter(Boolean).length;
-    
-    return {
-      count: completedFields,
-      percentage: (completedFields / 13) * 100
-    };
-  };
-
   const nextStep = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
@@ -141,11 +119,13 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
     setSuccess(null);
 
     try {
+      const phoneNorm = normalizeToE164(data.phone_number) || data.phone_number?.trim() || '';
+      const payload = { ...data, phone_number: phoneNorm };
+
       if (onRegister) {
-        await onRegister(data);
+        await onRegister(payload);
       } else {
-        // Use authentication service
-        const response = await authService.registerPatient(data);
+        const response = await authService.registerPatient(payload);
         setSuccess(response.message);
         
         // Store tokens and user data (if provided)
@@ -203,20 +183,27 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
     <div className={styles.registerForm}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.formHeader}>
-          <h2 className={styles.title}>Create Your Account</h2>
-          <p className={styles.subtitle}>Join Tailored Psychology as a patient</p>
-          <div className={styles.stepIndicator}>
-            <div className={styles.stepProgress}>
-              <div className={`${styles.stepNumber} ${currentStep >= 1 ? styles.active : ''}`}>1</div>
-              <div className={`${styles.stepLine} ${currentStep >= 2 ? styles.completed : ''}`}></div>
-              <div className={`${styles.stepNumber} ${currentStep >= 2 ? styles.active : ''}`}>2</div>
-              <div className={`${styles.stepLine} ${currentStep >= 3 ? styles.completed : ''}`}></div>
-              <div className={`${styles.stepNumber} ${currentStep >= 3 ? styles.active : ''}`}>3</div>
+          <h2 className={styles.title}>Create your account</h2>
+          <p className={styles.subtitle}>Join Tailored Psychology as a patient — it only takes a minute.</p>
+
+          <div className={styles.registrationStepper} aria-label="Registration progress">
+            <div className={styles.stepperTrack}>
+              {[1, 2, 3].map((step) => (
+                <div
+                  key={step}
+                  className={`${styles.stepperSegment} ${currentStep >= step ? styles.stepperSegmentFilled : ''}`}
+                />
+              ))}
             </div>
-            <div className={styles.stepLabels}>
-              <span className={`${styles.stepLabel} ${currentStep === 1 ? styles.current : ''}`}>Personal Info</span>
-              <span className={`${styles.stepLabel} ${currentStep === 2 ? styles.current : ''}`}>Address</span>
-              <span className={`${styles.stepLabel} ${currentStep === 3 ? styles.current : ''}`}>Account & Healthcare</span>
+            <div className={styles.stepperMeta}>
+              <span className={styles.stepperCount}>
+                Step {currentStep} of 3
+              </span>
+              <span className={styles.stepperTitle}>
+                {currentStep === 1 && 'About you'}
+                {currentStep === 2 && 'Where you live'}
+                {currentStep === 3 && 'Healthcare & sign in'}
+              </span>
             </div>
           </div>
         </div>
@@ -236,13 +223,12 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
 
         {currentStep === 1 && (
           <div className={styles.stepContainer}>
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Personal Information</h3>
-          
+            <div className={styles.fieldCluster}>
+              <h3 className={styles.clusterHeading}>Your name</h3>
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label htmlFor="first_name" className={styles.label}>
-                First Name *
+                First name *
               </label>
               <div className={styles.inputWrapper}>
                 <input
@@ -290,10 +276,13 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               )}
             </div>
           </div>
+            </div>
 
+            <div className={styles.fieldCluster}>
+              <h3 className={styles.clusterHeading}>Contact</h3>
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.label}>
-              Email Address *
+              Email *
             </label>
             <div className={styles.inputWrapper}>
               <input
@@ -321,7 +310,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               Mobile number *
             </label>
             <p className={styles.phoneFieldHint}>
-              Choose your country (flag), then enter your number. We store it in international format (e.g. +61…, +963…).
+              Australian numbers: enter your mobile without the leading 0 (e.g. 412 345 678). We save it as +61 for Medicare and records.
             </p>
             <div className={styles.inputWrapper}>
               <Controller
@@ -334,7 +323,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                     }
                     return (
                       isValidPhoneNumber(String(value)) ||
-                      'Enter a valid number for the selected country'
+                      'Enter a valid Australian mobile number'
                     );
                   }
                 }}
@@ -351,8 +340,9 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                     <PhoneInput
                       international
                       defaultCountry="AU"
+                      countries={['AU']}
                       countryCallingCodeEditable={false}
-                      placeholder="Phone number"
+                      placeholder="412 345 678"
                       value={field.value || undefined}
                       onChange={(v) => field.onChange(v ?? '')}
                       onBlur={field.onBlur}
@@ -371,7 +361,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
 
           <div className={styles.formGroup}>
             <label htmlFor="date_of_birth" className={styles.label}>
-              Date of Birth *
+              Date of birth *
             </label>
             <div className={styles.inputWrapper}>
               <input
@@ -396,9 +386,9 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               <span className={styles.fieldError}>{errors.date_of_birth.message}</span>
             )}
           </div>
-        </div>
+            </div>
 
-            <div className={styles.stepActions}>
+            <div className={`${styles.stepActions} ${styles.stepActionsEnd}`}>
               <button
                 type="button"
                 className={styles.nextButton}
@@ -412,7 +402,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                   !date_of_birth
                 }
               >
-                Continue to Step 2 →
+                Continue
               </button>
             </div>
           </div>
@@ -420,9 +410,9 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
 
         {currentStep === 2 && (
           <div className={styles.stepContainer}>
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Address Information</h3>
-          
+            <div className={styles.fieldCluster}>
+              <h3 className={styles.clusterHeading}>Australian address</h3>
+              <p className={styles.clusterIntro}>Used for appointments and correspondence.</p>
           <div className={styles.formGroup}>
             <label htmlFor="address_line_1" className={styles.label}>
               Street Address *
@@ -529,7 +519,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               <span className={styles.fieldError}>{errors.postcode.message}</span>
             )}
           </div>
-        </div>
+            </div>
 
             <div className={styles.stepActions}>
               <button
@@ -537,7 +527,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 className={styles.backButton}
                 onClick={prevStep}
               >
-                ← Back
+                Back
               </button>
               <button
                 type="button"
@@ -545,7 +535,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 onClick={nextStep}
                 disabled={!address_line_1 || !suburb || !state || !postcode}
               >
-                Continue to Step 3 →
+                Continue
               </button>
             </div>
           </div>
@@ -553,8 +543,8 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
 
         {currentStep === 3 && (
           <div className={styles.stepContainer}>
-            <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Healthcare Information</h3>
+            <div className={styles.fieldCluster}>
+              <h3 className={styles.clusterHeading}>Medicare</h3>
           
           <div className={styles.formGroup}>
             <label htmlFor="medicare_number" className={styles.label}>
@@ -587,10 +577,10 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               Required for Medicare rebates. Your Medicare number is 10-11 digits long.
             </p>
           </div>
-        </div>
+            </div>
 
-        <div className={styles.formSection}>
-          <h3 className={styles.sectionTitle}>Account Details</h3>
+        <div className={styles.fieldCluster}>
+          <h3 className={styles.clusterHeading}>Account security</h3>
           
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
@@ -676,7 +666,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
           </div>
         </div>
 
-        <div className={styles.formSection}>
+        <div className={`${styles.fieldCluster} ${styles.termsCluster}`}>
           <div className={styles.formGroup}>
             <label className={styles.checkboxLabel}>
               <input
@@ -706,43 +696,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
           </div>
         </div>
 
-        <div className={styles.formProgress}>
-          <div className={styles.progressHeader}>
-            <h4 className={styles.progressTitle}>Registration Progress</h4>
-            <span className={styles.progressPercentage}>
-              {Math.round(getCompletedFields().percentage)}%
-            </span>
-          </div>
-          <div className={styles.progressBar}>
-            <div 
-              className={styles.progressFill}
-              style={{ 
-                width: `${getCompletedFields().percentage}%` 
-              }}
-            ></div>
-          </div>
-          <div className={styles.progressText}>
-            {getCompletedFields().count} of 13 fields completed
-          </div>
-          <div className={styles.progressSteps}>
-            <div className={styles.stepIndicator}>
-              <div className={`${styles.stepDot} ${getCompletedFields().count >= 1 ? styles.completed : ''}`}></div>
-              <span className={styles.stepLabel}>Personal</span>
-            </div>
-            <div className={styles.stepIndicator}>
-              <div className={`${styles.stepDot} ${getCompletedFields().count >= 7 ? styles.completed : getCompletedFields().count >= 4 ? styles.active : ''}`}></div>
-              <span className={styles.stepLabel}>Address</span>
-            </div>
-            <div className={styles.stepIndicator}>
-              <div className={`${styles.stepDot} ${getCompletedFields().count >= 10 ? styles.completed : getCompletedFields().count >= 8 ? styles.active : ''}`}></div>
-              <span className={styles.stepLabel}>Healthcare</span>
-            </div>
-            <div className={styles.stepIndicator}>
-              <div className={`${styles.stepDot} ${getCompletedFields().count >= 13 ? styles.completed : getCompletedFields().count >= 11 ? styles.active : ''}`}></div>
-              <span className={styles.stepLabel}>Account</span>
-            </div>
-          </div>
-        </div>
+            <p className={styles.lastStepHint}>Review your details, then create your account.</p>
 
             <div className={styles.stepActions}>
               <button
@@ -750,7 +704,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 className={styles.backButton}
                 onClick={prevStep}
               >
-                ← Back
+                Back
               </button>
               <button
                 type="submit"
@@ -763,9 +717,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                     Creating Account...
                   </>
                 ) : (
-                  <>
-                    {isValid ? '✓ ' : ''}Create Account
-                  </>
+                  'Create account'
                 )}
               </button>
             </div>

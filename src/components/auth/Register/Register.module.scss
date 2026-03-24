@@ -3,32 +3,134 @@
 
 .registerForm {
   width: 100%;
-  max-width: 500px;
-  margin: 20px auto 0;
+  max-width: 32rem;
+  margin: 1rem auto 0;
 }
 
 .form {
-  @include card;
-  padding: $spacing-lg;
+  background: $background-white;
+  border-radius: 18px;
+  border: 1px solid rgba($border-medium, 0.55);
+  box-shadow:
+    0 1px 2px rgba(30, 31, 30, 0.04),
+    0 20px 50px -24px rgba(30, 31, 30, 0.18);
+  padding: $spacing-xl $spacing-xl $spacing-lg;
   animation: fadeInUp 0.6s ease-out;
+
+  @include mobile {
+    padding: $spacing-lg;
+    border-radius: 14px;
+  }
 }
 
 .formHeader {
-  text-align: center;
-  margin-bottom: $spacing-lg;
+  text-align: left;
+  margin-bottom: $spacing-xl;
 
   .title {
     color: $text-dark;
-    font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
-    margin-bottom: $spacing-xs;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 $spacing-xs;
+    line-height: 1.2;
   }
 
   .subtitle {
     color: $text-light;
     font-size: $font-size-sm;
-    margin: 0;
+    line-height: 1.55;
+    margin: 0 0 $spacing-lg;
+    max-width: 28rem;
   }
+}
+
+// Top stepper — single progress bar + copy (no numbered circles)
+.registrationStepper {
+  margin-top: $spacing-sm;
+}
+
+.stepperTrack {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: $spacing-sm;
+}
+
+.stepperSegment {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba($border-medium, 0.65);
+  transition: background 0.35s ease, transform 0.2s ease;
+}
+
+.stepperSegmentFilled {
+  background: linear-gradient(90deg, $primary-dark 0%, $patient-primary 100%);
+  box-shadow: 0 0 0 1px rgba($primary-dark, 0.12);
+}
+
+.stepperMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+  justify-content: space-between;
+}
+
+.stepperCount {
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stepperTitle {
+  font-size: $font-size-base;
+  font-weight: 600;
+  color: $text-dark;
+}
+
+.fieldCluster {
+  background: rgba($background-light, 0.85);
+  border: 1px solid rgba($border-light, 0.9);
+  border-radius: 14px;
+  padding: $spacing-lg $spacing-md;
+  margin-bottom: $spacing-lg;
+
+  .formGroup:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.clusterHeading {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $text-muted;
+  margin: 0 0 $spacing-sm;
+}
+
+.clusterIntro {
+  font-size: $font-size-xs;
+  color: $text-light;
+  margin: 0 0 $spacing-md;
+  line-height: 1.5;
+}
+
+.termsCluster {
+  background: transparent;
+  border-style: dashed;
+  padding-top: $spacing-md;
+  padding-bottom: $spacing-md;
+}
+
+.lastStepHint {
+  font-size: $font-size-xs;
+  color: $text-light;
+  text-align: center;
+  margin: 0 0 $spacing-md;
 }
 
 .formSection {
@@ -90,14 +192,14 @@
 }
 
 .formGroup {
-  margin-bottom: $spacing-sm;
+  margin-bottom: $spacing-md;
 
   .label {
     display: block;
     color: $text-dark;
-    font-weight: $font-weight-medium;
-    margin-bottom: $spacing-xs;
-    font-size: $font-size-xs;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    font-size: $font-size-sm;
   }
 
   .inputWrapper {
@@ -155,65 +257,75 @@
   }
 
   .phoneFieldHint {
-    font-size: $font-size-xs;
+    font-size: 0.8125rem;
     color: $text-light;
     margin: 0 0 $spacing-sm;
-    line-height: 1.45;
+    line-height: 1.5;
   }
 
   .phoneField {
     width: 100%;
     flex: 1;
     --PhoneInput-color--focus: #{$primary-color};
+    padding: 2px;
+    border-radius: 12px;
+    background: $background-white;
+    border: 1px solid rgba($border-medium, 0.8);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus-within {
+      border-color: rgba($primary-dark, 0.35);
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.18);
+    }
 
     :global(.PhoneInput) {
       width: 100%;
       align-items: stretch;
+      gap: 0.5rem;
+      padding: 0.15rem 0.35rem 0.15rem 0.5rem;
     }
 
     :global(.PhoneInputCountry) {
-      margin-right: $spacing-xs;
+      margin-right: 0;
+    }
+
+    :global(.PhoneInputCountryIcon) {
+      box-shadow: none;
+      border-radius: 4px;
     }
 
     :global(.PhoneInputCountrySelect) {
-      padding: 0 $spacing-xs;
-      border-radius: $border-radius;
-      border: 2px solid $border-light;
-      background: $background-white;
+      padding: 0.35rem 0.5rem;
+      border-radius: 8px;
+      border: none;
+      background: rgba($background-light, 0.9);
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: $text-dark;
     }
 
     :global(.PhoneInputInput) {
-      @include input-base;
-      padding: $spacing-md;
-      padding-right: 40px;
-      font-size: $font-size-base;
-      transition: all $transition-fast ease;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem !important;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      background: transparent;
 
       &:focus {
-        border-color: $primary-color;
-        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        outline: none;
       }
     }
   }
 
-  .phoneFieldError :global(.PhoneInputInput),
-  .phoneFieldError :global(.PhoneInputCountrySelect) {
-    border-color: $error-red;
-
-    &:focus {
-      border-color: $error-red;
-      box-shadow: 0 0 0 3px rgba($error-red, 0.1);
-    }
+  .phoneFieldError {
+    border-color: rgba($error-red, 0.55);
+    box-shadow: 0 0 0 3px rgba($error-red, 0.1);
   }
 
-  .phoneFieldSuccess :global(.PhoneInputInput),
-  .phoneFieldSuccess :global(.PhoneInputCountrySelect) {
-    border-color: $success-green;
-
-    &:focus {
-      border-color: $success-green;
-      box-shadow: 0 0 0 3px rgba($success-green, 0.1);
-    }
+  .phoneFieldSuccess {
+    border-color: rgba($success-green, 0.45);
   }
 
   .successIcon {
@@ -594,34 +706,64 @@
 
 .stepActions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: $spacing-md;
   margin-top: $spacing-xl;
   padding-top: $spacing-lg;
-  border-top: 1px solid $border-light;
+  border-top: 1px solid rgba($border-light, 0.85);
+  flex-wrap: wrap;
+
+  @include mobile {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}
+
+.stepActionsEnd {
+  justify-content: flex-end;
+
+  .nextButton {
+    margin-left: 0;
+    max-width: 100%;
+  }
 }
 
 .nextButton {
   @include button-primary;
-  padding: $spacing-sm $spacing-lg;
-  font-weight: $font-weight-semibold;
-  height: 40px;
-  min-width: 120px;
-  
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  min-height: 48px;
+  min-width: 8rem;
+  border-radius: 12px;
+  flex: 1;
+  max-width: 16rem;
+  margin-left: auto;
+
+  @include mobile {
+    max-width: none;
+    margin-left: 0;
+  }
+
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
   }
 }
 
 .backButton {
   @include button-secondary;
-  padding: $spacing-sm $spacing-lg;
-  font-weight: $font-weight-semibold;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
   font-size: $font-size-base;
-  height: 40px;
-  min-width: 120px;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba($border-medium, 0.9);
+  background: $background-white;
+
+  @include mobile {
+    width: 100%;
+  }
 }
 
 // Additional styles for new fields

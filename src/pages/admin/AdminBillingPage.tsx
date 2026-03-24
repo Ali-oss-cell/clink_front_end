@@ -15,6 +15,7 @@ export const AdminBillingPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'invoices' | 'payments' | 'claims'>('invoices');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
+  const [gstUpdatingId, setGstUpdatingId] = useState<number | null>(null);
 
   const user = authService.getStoredUser();
 
@@ -81,6 +82,22 @@ export const AdminBillingPage: React.FC = () => {
         return '#c0392b';
       default:
         return '#7a7b7a';
+    }
+  };
+
+  const handleToggleGstFree = async (invoice: Invoice) => {
+    const next = !invoice.is_gst_free;
+    try {
+      setGstUpdatingId(invoice.id);
+      const updated = await adminService.updateInvoice(invoice.id, { is_gst_free: next });
+      setInvoices((rows) =>
+        rows.map((r) => (r.id === invoice.id ? { ...r, ...updated } : r))
+      );
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Could not update GST setting. Check permissions and API support.');
+    } finally {
+      setGstUpdatingId(null);
     }
   };
 
@@ -179,6 +196,7 @@ export const AdminBillingPage: React.FC = () => {
                     <th>Patient</th>
                     <th>Psychologist</th>
                     <th>Amount</th>
+                    <th>GST</th>
                     <th>Status</th>
                     <th>Due Date</th>
                     <th>Created</th>
@@ -188,7 +206,7 @@ export const AdminBillingPage: React.FC = () => {
                 <tbody>
                   {invoices.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className={styles.emptyCell}>
+                      <td colSpan={9} className={styles.emptyCell}>
                         No invoices found
                       </td>
                     </tr>
@@ -198,7 +216,27 @@ export const AdminBillingPage: React.FC = () => {
                         <td>#{invoice.id}</td>
                         <td>{invoice.patient_name}</td>
                         <td>{invoice.psychologist_name}</td>
-                        <td>{formatCurrency(invoice.amount)}</td>
+                        <td>{formatCurrency(invoice.total_amount ?? invoice.amount)}</td>
+                        <td>
+                          <label
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              fontSize: '0.875rem',
+                              cursor: gstUpdatingId === invoice.id ? 'wait' : 'pointer',
+                            }}
+                            title="GST-free: no 10% GST on subtotal (accounting rules apply)"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={!!invoice.is_gst_free}
+                              disabled={gstUpdatingId === invoice.id}
+                              onChange={() => handleToggleGstFree(invoice)}
+                            />
+                            {invoice.is_gst_free ? 'GST-free' : '10% GST'}
+                          </label>
+                        </td>
                         <td>
                           <span 
                             className={styles.statusBadge}

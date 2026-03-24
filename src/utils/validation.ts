@@ -95,15 +95,26 @@ export const validateAHPRA = (
 
 // Cross-field validation
 export const crossFieldValidation = {
-  // Validate GP referral fields
-  validateGPReferral: (hasGPReferral: boolean, gpName: string, gpPracticeName: string): string | null => {
-    if (hasGPReferral) {
-      if (!gpName || !gpName.trim()) {
-        return 'GP name is required when GP referral is selected';
-      }
-      if (!gpPracticeName || !gpPracticeName.trim()) {
-        return 'GP practice name is required when GP referral is selected';
-      }
+  // Validate GP / MHCP referral fields (align with backend intake + Medicare booking rules)
+  validateGPReferral: (
+    hasGPReferral: boolean,
+    gpName: string,
+    gpPracticeName: string,
+    gpReferralDate?: string,
+    gpProviderNumber?: string
+  ): string | null => {
+    if (!hasGPReferral) return null;
+    if (!gpName?.trim()) {
+      return 'GP name is required when GP referral is selected';
+    }
+    if (!gpPracticeName?.trim()) {
+      return 'GP practice name is required when GP referral is selected';
+    }
+    if (!gpReferralDate?.trim()) {
+      return 'GP referral date is required when GP referral is selected (Medicare mental health care plan)';
+    }
+    if (!gpProviderNumber?.trim()) {
+      return 'GP provider number is required for Medicare-rebated bookings';
     }
     return null;
   },
@@ -157,11 +168,27 @@ export const validateIntakeForm = (data: any): string[] => {
   const stateError = australianValidation.getStateError(data.state);
   if (stateError) errors.push(stateError);
   
+  const hasGp =
+    data.has_gp_referral === true ||
+    data.has_gp_referral === 'true';
+
+  if (data.gp_referral_expiry_date && String(data.gp_referral_expiry_date).trim()) {
+    const d = String(data.gp_referral_expiry_date).trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) {
+      errors.push('GP referral expiry must be a valid date (YYYY-MM-DD)');
+    }
+  }
+  if (hasGp && data.gp_referral_date && !/^\d{4}-\d{2}-\d{2}$/.test(String(data.gp_referral_date).trim())) {
+    errors.push('GP referral date must be a valid date (YYYY-MM-DD)');
+  }
+
   // Cross-field validation
   const gpError = crossFieldValidation.validateGPReferral(
-    data.has_gp_referral, 
-    data.gp_name, 
-    data.gp_practice_name
+    hasGp,
+    data.gp_name,
+    data.gp_practice_name,
+    data.gp_referral_date,
+    data.gp_provider_number
   );
   if (gpError) errors.push(gpError);
   
