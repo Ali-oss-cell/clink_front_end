@@ -5,6 +5,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import type { BookingSummaryResponse } from '../../services/api/appointments';
+import { extractApiErrorMessage } from '../../utils/apiError';
 import { WarningIcon, CalendarIcon, BuildingIcon, VideoIcon } from '../../utils/icons';
 import styles from './AppointmentDetails.module.scss';
 
@@ -52,9 +53,9 @@ export const AppointmentDetailsPage: React.FC = () => {
         setLoading(true);
         const data = await appointmentsService.getBookingSummary(parseInt(appointmentId));
         setBookingData(data);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Failed to load booking data:', err);
-        setError('Failed to load appointment details');
+        setError(extractApiErrorMessage(err, 'Failed to load appointment details'));
       } finally {
         setLoading(false);
       }
@@ -68,12 +69,15 @@ export const AppointmentDetailsPage: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      // TODO: Update appointment with additional notes via API
-      // For now, just navigate to payment with the appointment ID
+      await appointmentsService.updateAppointmentDetails(parseInt(appointmentId), {
+        therapy_focus: data.therapyFocus?.trim() || '',
+        special_requests: data.specialRequests?.trim() || '',
+        additional_notes: data.additionalNotes?.trim() || '',
+      });
       navigate(`/appointments/payment?appointment_id=${appointmentId}`);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error submitting appointment details:', error);
-      alert('Failed to save details. Please try again.');
+      alert(extractApiErrorMessage(error, 'Failed to save details. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }

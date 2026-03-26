@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { recordingService } from '../services/api/recordings';
+import { extractApiErrorMessage } from '../utils/apiError';
 import type {
   SessionRecording,
   SessionRecordingListItem,
@@ -30,7 +31,7 @@ export function useAppointmentRecording(appointmentId: number | null) {
         if (err.response?.status === 404) {
           setError('No recording found for this appointment');
         } else {
-          setError(err.response?.data?.error || 'Failed to load recording');
+          setError(extractApiErrorMessage(err, 'Failed to load recording'));
         }
         setRecording(null);
       } finally {
@@ -52,7 +53,7 @@ export function useAppointmentRecording(appointmentId: number | null) {
       if (err.response?.status === 404) {
         setError('No recording found for this appointment');
       } else {
-        setError(err.response?.data?.error || 'Failed to load recording');
+        setError(extractApiErrorMessage(err, 'Failed to load recording'));
       }
       setRecording(null);
     } finally {
@@ -79,7 +80,7 @@ export function useRecordingsList(page: number = 1, pageSize: number = 20) {
         const response = await recordingService.listRecordings(page, pageSize);
         setData(response);
       } catch (err: any) {
-        setError(err.response?.data?.error || 'Failed to load recordings');
+        setError(extractApiErrorMessage(err, 'Failed to load recordings'));
         setData(null);
       } finally {
         setLoading(false);
@@ -96,7 +97,7 @@ export function useRecordingsList(page: number = 1, pageSize: number = 20) {
       const response = await recordingService.listRecordings(page, pageSize);
       setData(response);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load recordings');
+      setError(extractApiErrorMessage(err, 'Failed to load recordings'));
     } finally {
       setLoading(false);
     }
@@ -118,7 +119,7 @@ export function useRecordingDownload() {
     try {
       await recordingService.downloadRecording(recordingId);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to download recording');
+      setError(extractApiErrorMessage(err, 'Failed to download recording'));
       throw err;
     } finally {
       setDownloading(false);

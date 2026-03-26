@@ -1,5 +1,6 @@
 import { authService } from './auth';
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 // Intake form data interface matching backend serializer exactly
 export interface IntakeFormData {
@@ -134,11 +135,7 @@ export const intakeService = {
       return response.data;
     } catch (error: any) {
       console.error('Failed to submit intake form:', error);
-      const errorMessage = error.response?.data?.message 
-        || (error.response?.data && typeof error.response.data === 'object' 
-          ? JSON.stringify(error.response.data) 
-          : 'Failed to submit intake form data');
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to submit intake form data'));
     }
   },
 
@@ -160,7 +157,7 @@ export const intakeService = {
       return response.data;
     } catch (error: any) {
       console.error('Failed to save draft:', error);
-      throw new Error(error.response?.data?.message || 'Failed to save draft');
+      throw new Error(extractApiErrorMessage(error, 'Failed to save draft'));
     }
   },
 

@@ -10,6 +10,7 @@ import { PrivacyPolicyPage } from '../pages/public/PrivacyPolicyPage';
 import { ResourcesPage } from '../pages/public/ResourcesPage';
 import { ContactPage } from '../pages/public/ContactPage';
 import { GetMatchedPage } from '../pages/public/GetMatchedPage';
+import { MedicareRebatesPage } from '../pages/public/MedicareRebatesPage';
 
 // Auth pages
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -102,6 +103,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
       <Route path="/contact" element={<ContactPage />} />
 
       <Route path="/get-matched" element={<GetMatchedPage />} />
+      <Route path="/medicare-rebates" element={<MedicareRebatesPage />} />
 
       {/* Auth Routes - redirect to dashboard if already authenticated */}
       <Route path="/login" element={

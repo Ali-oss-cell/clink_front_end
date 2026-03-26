@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 export interface ThirdPartyService {
   name: string;
@@ -99,7 +100,7 @@ export const getPrivacyPolicyStatus = async (): Promise<PrivacyPolicyStatus> => 
     } else {
       // Request setup error
       console.error('[PrivacyService] Request setup error:', error.message);
-      throw new Error(error.message || 'Failed to get Privacy Policy status');
+      throw new Error(extractApiErrorMessage(error, 'Failed to get Privacy Policy status'));
     }
   }
 };
@@ -143,7 +144,7 @@ export const acceptPrivacyPolicy = async (): Promise<AcceptPrivacyPolicyResponse
     } else if (error.request) {
       throw new Error('Network error: Unable to connect to server. Please check if the server is running.');
     } else {
-      throw new Error(error.message || 'Failed to accept Privacy Policy');
+      throw new Error(extractApiErrorMessage(error, 'Failed to accept Privacy Policy'));
     }
   }
 };
@@ -171,7 +172,7 @@ export const withdrawConsent = async (
     } else if (error.request) {
       throw new Error('Network error: Unable to connect to server');
     } else {
-      throw new Error(error.message || 'Failed to withdraw consent');
+      throw new Error(extractApiErrorMessage(error, 'Failed to withdraw consent'));
     }
   }
 };
@@ -202,7 +203,7 @@ export const getThirdPartyDataSharing = async (): Promise<ThirdPartyDataSharingR
     } else if (error.request) {
       throw new Error('Network error: Unable to fetch third-party disclosures. Please try again.');
     } else {
-      throw new Error(error.message || 'Failed to load third-party data sharing information');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load third-party data sharing information'));
     }
   }
 };

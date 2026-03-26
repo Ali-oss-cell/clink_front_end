@@ -52,7 +52,7 @@ const slides: Slide[] = [
     title: 'Therapy from home, without compromise',
     subtitle: 'Secure video sessions with the same standards of care as in clinic—private, structured, and easy to join.',
     primaryAction: 'Book Telehealth Session',
-    primaryLink: '/register',
+    primaryLink: '/telehealth-requirements',
     secondaryAction: 'View Services',
     secondaryLink: '/services',
     backgroundImage: heroImage2
@@ -73,9 +73,9 @@ const slides: Slide[] = [
     subtitle:
       'We are registered providers. With a GP mental health care plan, you may receive rebates—ask us if you are unsure.',
     primaryAction: 'Check Eligibility',
-    primaryLink: '/register',
+    primaryLink: '/medicare-rebates',
     secondaryAction: 'Learn About Medicare',
-    secondaryLink: '/about',
+    secondaryLink: '/medicare-rebates',
     backgroundImage: heroImage4
   }
 ];

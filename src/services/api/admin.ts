@@ -1,5 +1,6 @@
 // Admin API service for system management
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 // User Management Types
 export interface PsychologistProfile {
@@ -267,10 +268,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get users:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          'Failed to load users';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to load users'));
     }
   }
 
@@ -280,7 +278,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get user:', error);
-      throw new Error('Failed to load user');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load user'));
     }
   }
 
@@ -347,11 +345,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to create user:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          error.response?.data?.error ||
-                          'Failed to create user';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to create user'));
     }
   }
 
@@ -398,11 +392,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to update user:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          error.response?.data?.error ||
-                          'Failed to update user';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to update user'));
     }
   }
 
@@ -411,11 +401,7 @@ export class AdminService {
       await axiosInstance.delete(`/users/${id}/`);
     } catch (error: any) {
       console.error('Failed to delete user:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          error.response?.data?.error ||
-                          'Failed to delete user';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to delete user'));
     }
   }
 
@@ -435,7 +421,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get patients:', error);
-      throw new Error('Failed to load patients');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load patients'));
     }
   }
 
@@ -445,7 +431,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get patient:', error);
-      throw new Error('Failed to load patient');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load patient'));
     }
   }
 
@@ -473,11 +459,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get appointments:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          error.message ||
-                          'Failed to load appointments';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to load appointments'));
     }
   }
 
@@ -497,7 +479,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get psychologists:', error);
-      throw new Error('Failed to load psychologists');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load psychologists'));
     }
   }
 
@@ -516,7 +498,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get practice managers:', error);
-      throw new Error('Failed to load practice managers');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load practice managers'));
     }
   }
 
@@ -536,7 +518,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get invoices:', error);
-      throw new Error('Failed to load invoices');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load invoices'));
     }
   }
 
@@ -553,7 +535,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get payments:', error);
-      throw new Error('Failed to load payments');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load payments'));
     }
   }
 
@@ -572,7 +554,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get Medicare claims:', error);
-      throw new Error('Failed to load Medicare claims');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load Medicare claims'));
     }
   }
 
@@ -589,10 +571,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to download invoice PDF:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          'Failed to download invoice PDF';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to download invoice PDF'));
     }
   }
 
@@ -607,10 +586,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get invoice:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          'Failed to load invoice';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to load invoice'));
     }
   }
 
@@ -626,11 +602,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to update invoice:', error);
-      const errorMessage =
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        'Failed to update invoice';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to update invoice'));
     }
   }
 
@@ -641,7 +613,7 @@ export class AdminService {
       return response.data;
     } catch (error) {
       console.error('Failed to get system settings:', error);
-      throw new Error('Failed to load system settings');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load system settings'));
     }
   }
 
@@ -651,8 +623,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to update system settings:', error);
-      const errorMessage = error.response?.data?.detail || error.response?.data?.message || 'Failed to update system settings';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to update system settings'));
     }
   }
 
@@ -672,11 +643,7 @@ export class AdminService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get system analytics:', error);
-      const errorMessage = error.response?.data?.detail || 
-                          error.response?.data?.message || 
-                          error.response?.data?.error ||
-                          'Failed to load system analytics';
-      throw new Error(errorMessage);
+      throw new Error(extractApiErrorMessage(error, 'Failed to load system analytics'));
     }
   }
 }

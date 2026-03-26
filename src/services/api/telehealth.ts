@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 export interface TelehealthConsentResponse {
   consent_to_telehealth: boolean;
@@ -46,7 +47,7 @@ export const TelehealthService = {
         throw new Error('Network error: Unable to connect to server.');
       }
 
-      throw new Error(error.message || 'Failed to load telehealth consent');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load telehealth consent'));
     }
   },
 
@@ -68,7 +69,7 @@ export const TelehealthService = {
         throw new Error('Network error: Unable to connect to server.');
       }
 
-      throw new Error(error.message || 'Failed to submit telehealth consent');
+      throw new Error(extractApiErrorMessage(error, 'Failed to submit telehealth consent'));
     }
   },
 };

@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
+import { appointmentsService, type AppointmentConfirmationResponse } from '../../services/api/appointments';
+import { paymentsService } from '../../services/api/payments';
+import { extractApiErrorMessage } from '../../utils/apiError';
 import {
   CalendarIcon,
   VideoIcon,
@@ -20,89 +23,54 @@ import styles from './Confirmation.module.scss';
 export const ConfirmationPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const selectedService = searchParams.get('service');
-  const selectedPsychologist = searchParams.get('psychologist');
-  const selectedDate = searchParams.get('date');
-  const selectedTime = searchParams.get('time');
-  const selectedSessionType = searchParams.get('sessionType');
-  const amount = searchParams.get('amount');
-  const paymentMethod = searchParams.get('paymentMethod');
+  const appointmentId = searchParams.get('appointment_id');
   
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmation, setConfirmation] = useState<AppointmentConfirmationResponse | null>(null);
   
   // Get user from auth service
   const user = authService.getStoredUser();
 
-  // TODO: Fetch appointment details from Django backend
-  // TODO: Generate unique booking reference from backend
-  // TODO: Send confirmation email to user
-  // TODO: Send WhatsApp notification to user
-  // TODO: Notify psychologist of confirmed appointment
-  // TODO: Add appointment to user's calendar
-  // TODO: Store appointment in user's appointment history
-
-  // Mock data for demonstration
-  const getPsychologistName = (id: string) => {
-    const names: { [key: string]: string } = {
-      'dr-sarah-johnson': 'Dr. Sarah Johnson',
-      'dr-michael-chen': 'Dr. Michael Chen',
-      'dr-emma-wilson': 'Dr. Emma Wilson',
-      'dr-james-martinez': 'Dr. James Martinez'
+  useEffect(() => {
+    if (!appointmentId) {
+      setError('Missing appointment ID.');
+      setIsLoading(false);
+      return;
+    }
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await appointmentsService.getAppointmentConfirmation(parseInt(appointmentId));
+        setConfirmation(data);
+      } catch (err: unknown) {
+        console.error('Failed to load confirmation:', err);
+        setError(extractApiErrorMessage(err, 'Could not load your confirmation details.'));
+      } finally {
+        setIsLoading(false);
+      }
     };
-    return names[id] || 'Selected Psychologist';
-  };
-
-  const getServiceName = (id: string) => {
-    const services: { [key: string]: string } = {
-      'individual-therapy': 'Individual Therapy Session (50 min)',
-      'couples-therapy': 'Couples Therapy Session (60 min)',
-      'psychological-assessment': 'Psychological Assessment (90 min)'
-    };
-    return services[id] || 'Selected Service';
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  };
-
-  const generateBookingReference = () => {
-    const timestamp = Date.now().toString().slice(-6);
-    return `APT-2025-${timestamp}`;
-  };
-
-  const bookingReference = generateBookingReference();
+    load();
+  }, [appointmentId]);
 
   const handleAddToCalendar = () => {
-    // TODO: Implement calendar integration with Google Calendar, Outlook, etc.
-    // TODO: Generate .ics file for calendar import
-    // TODO: Add appointment to user's calendar via API
-    // TODO: Send calendar invite to user's email
-    console.log('Add to calendar functionality');
-    alert('Calendar integration will be implemented with your backend');
+    alert('Calendar invite support will be available from backend notifications.');
   };
 
-  const handleEmailReceipt = () => {
-    // TODO: Implement email receipt functionality
-    // TODO: Generate PDF receipt from backend
-    // TODO: Send receipt via email to user
-    // TODO: Store receipt in user's account
-    console.log('Email receipt functionality');
-    alert('Email receipt will be sent via your backend');
+  const handleEmailReceipt = async () => {
+    if (!appointmentId) return;
+    try {
+      const receipt = await paymentsService.getReceipt(parseInt(appointmentId));
+      alert(`Receipt is available${receipt.receipt_id ? `: ${receipt.receipt_id}` : '.'}`);
+    } catch (err: unknown) {
+      console.error('Failed to load receipt:', err);
+      alert(extractApiErrorMessage(err, 'Could not load receipt right now.'));
+    }
   };
 
   const handleContactClinic = () => {
-    // TODO: Implement contact clinic functionality
-    // TODO: Open contact form or phone dialer
-    // TODO: Send message to clinic via backend
-    // TODO: Log contact request for follow-up
-    console.log('Contact clinic functionality');
-    alert('Contact clinic functionality will be implemented');
+    navigate('/contact');
   };
 
   const handleBookAnother = () => {
@@ -112,6 +80,44 @@ export const ConfirmationPage: React.FC = () => {
   const handleReturnToDashboard = () => {
     navigate('/patient/dashboard');
   };
+
+  if (isLoading) {
+    return (
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.confirmationContainer}>
+          <div className="container">
+            <div className={styles.successMessage}>
+              <p>Loading confirmation...</p>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !confirmation) {
+    return (
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.confirmationContainer}>
+          <div className="container">
+            <div className={styles.emergencyBox}>
+              <h3>
+                <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                Unable to load confirmation
+              </h3>
+              <p>{error || 'Confirmation details are unavailable.'}</p>
+              <button className={styles.navButton} onClick={handleReturnToDashboard}>
+                Return to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const isTelehealth = confirmation.session.type !== 'in_person';
+  const amountPaid = confirmation.pricing.total_paid || confirmation.pricing.out_of_pocket_cost;
 
   return (
     <Layout 
@@ -135,69 +141,53 @@ export const ConfirmationPage: React.FC = () => {
               <div className={styles.detailsGrid}>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Booking Reference:</span>
-                  <span className={styles.detailValue}>{bookingReference}</span>
+                  <span className={styles.detailValue}>{confirmation.booking_reference}</span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Service:</span>
-                  <span className={styles.detailValue}>{getServiceName(selectedService || '')}</span>
+                  <span className={styles.detailValue}>{confirmation.service.name}</span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Psychologist:</span>
-                  <span className={styles.detailValue}>{getPsychologistName(selectedPsychologist || '')}</span>
+                  <span className={styles.detailValue}>{confirmation.psychologist.name}</span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Date & Time:</span>
                   <span className={styles.detailValue}>
-                    {formatDate(selectedDate || '')} at {selectedTime}
+                    {confirmation.session.formatted_date} at {confirmation.session.formatted_time}
                   </span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Duration:</span>
                   <span className={styles.detailValue}>
-                    {selectedService === 'individual-therapy' ? '50 minutes' : 
-                     selectedService === 'couples-therapy' ? '60 minutes' : 
-                     selectedService === 'psychological-assessment' ? '90 minutes' : '50 minutes'}
+                    {confirmation.service.duration_minutes} minutes
                   </span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Session Type:</span>
                   <span className={styles.detailValue}>
-                    {selectedSessionType === 'in-person' ? (
-                      <>
-                        <BuildingIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                        In-Person Session
-                      </>
-                    ) : (
+                    {isTelehealth ? (
                       <>
                         <VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                         Telehealth (Video Call)
+                      </>
+                    ) : (
+                      <>
+                        <BuildingIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                        In-Person Session
                       </>
                     )}
                   </span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Amount Paid:</span>
-                  <span className={styles.detailValue}>${amount}</span>
+                  <span className={styles.detailValue}>${amountPaid}</span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Payment Method:</span>
                   <span className={styles.detailValue}>
-                    {paymentMethod === 'card' ? (
-                      <>
-                        <CreditCardIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                        Credit/Debit Card
-                      </>
-                    ) : paymentMethod === 'phone' ? (
-                      <>
-                        <PhoneIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                        Phone Payment
-                      </>
-                    ) : paymentMethod === 'in-person' ? (
-                      <>
-                        <BuildingIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                        In-Person Payment
-                      </>
-                    ) : 'Card'}
+                    <CreditCardIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                    Payment confirmed
                   </span>
                 </div>
               </div>

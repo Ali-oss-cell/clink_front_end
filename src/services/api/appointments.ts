@@ -1,5 +1,6 @@
 // Appointments API service
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 export interface TimeSlot {
   id: number;
@@ -123,6 +124,44 @@ export interface BookingSummaryResponse {
   };
   notes: string;
   created_at: string;
+}
+
+export interface AppointmentDetailsUpdateRequest {
+  therapy_focus?: string;
+  special_requests?: string;
+  additional_notes?: string;
+}
+
+export interface AppointmentConfirmationResponse {
+  appointment_id: number;
+  booking_reference: string;
+  status: string;
+  patient: {
+    name: string;
+    email: string;
+  };
+  psychologist: {
+    name: string;
+    ahpra_number: string;
+  };
+  service: {
+    name: string;
+    duration_minutes: number;
+  };
+  session: {
+    type: 'telehealth' | 'in_person' | string;
+    formatted_date: string;
+    formatted_time: string;
+    video_room_id: string | null;
+  };
+  pricing: {
+    consultation_fee: string;
+    medicare_rebate: string;
+    out_of_pocket_cost: string;
+    gst_amount?: string;
+    total_paid?: string;
+  };
+  receipt_id?: string;
 }
 
 export interface MedicareLimitCheckResponse {
@@ -337,7 +376,32 @@ export class AppointmentsService {
       return response.data;
     } catch (error) {
       console.error('Failed to get booking summary:', error);
-      throw new Error('Failed to load booking summary');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load booking summary'));
+    }
+  }
+
+  async updateAppointmentDetails(
+    appointmentId: number,
+    payload: AppointmentDetailsUpdateRequest
+  ): Promise<{ message?: string }> {
+    try {
+      const response = await axiosInstance.patch(`/appointments/${appointmentId}/details/`, payload);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update appointment details:', error);
+      throw new Error(extractApiErrorMessage(error, 'Failed to save appointment details'));
+    }
+  }
+
+  async getAppointmentConfirmation(appointmentId: number): Promise<AppointmentConfirmationResponse> {
+    try {
+      const response = await axiosInstance.get<AppointmentConfirmationResponse>(
+        `/appointments/${appointmentId}/confirmation/`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Failed to load appointment confirmation:', error);
+      throw new Error(extractApiErrorMessage(error, 'Failed to load confirmation'));
     }
   }
 

@@ -1,5 +1,6 @@
 // Audit Logs API service
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 export interface AuditLog {
   id: number;
@@ -73,7 +74,7 @@ class AuditService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get audit logs:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load audit logs');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load audit logs'));
     }
   }
 
@@ -84,7 +85,7 @@ class AuditService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get audit log:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load audit log');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load audit log'));
     }
   }
 
@@ -95,7 +96,7 @@ class AuditService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get audit log stats:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load audit log statistics');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load audit log statistics'));
     }
   }
 }

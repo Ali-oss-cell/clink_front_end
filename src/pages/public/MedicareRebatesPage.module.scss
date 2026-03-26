@@ -1,0 +1,97 @@
+@use '../../assets/styles/variables' as *;
+@use '../../assets/styles/mixins' as *;
+
+.hero {
+  background: $hero-bg;
+  color: $text-white;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: $text-white;
+  margin-bottom: 1rem;
+
+  @include mobile {
+    font-size: 2rem;
+  }
+}
+
+.heroSubtitle {
+  max-width: 42rem;
+  margin: 0 auto;
+  color: rgba($text-white, 0.92);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.contentSection {
+  padding: 4rem 0;
+}
+
+.contentGrid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.infoBlock {
+  border: 1px solid $border-light;
+  border-radius: 14px;
+  padding: 1.25rem 1.1rem;
+  background: $background-white;
+
+  h2 {
+    font-size: 1.25rem;
+    margin: 0 0 0.65rem;
+    color: $text-dark;
+  }
+
+  p {
+    margin: 0;
+    color: $text-light;
+    line-height: 1.65;
+  }
+}
+
+.actions {
+  margin-top: 1.6rem;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  @include mobile {
+    justify-content: center;
+  }
+}
+
+.primaryButton {
+  @include button-base;
+  background: $button-primary-bg;
+  color: $text-white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+
+  &:hover {
+    background: $button-primary-hover;
+    text-decoration: none;
+    color: $text-white;
+  }
+}
+
+.secondaryButton {
+  @include button-base;
+  background: transparent;
+  color: $text-dark;
+  border: 1px solid $border-medium;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+
+  &:hover {
+    background: $background-gray;
+    text-decoration: none;
+    color: $text-dark;
+  }
+}

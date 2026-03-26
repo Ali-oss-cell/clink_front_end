@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
+import { contactService } from '../../services/api/contact';
+import { extractApiErrorMessage } from '../../utils/apiError';
 import styles from './ContactPage.module.scss';
 
 export const ContactPage: React.FC = () => {
@@ -11,14 +13,28 @@ export const ContactPage: React.FC = () => {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      await contactService.submitEnquiry({
+        ...formData,
+        source_page: '/contact',
+      });
+      setSubmitted(true);
+    } catch (err: unknown) {
+      setError(extractApiErrorMessage(err, 'Could not send your message right now. Please try again.'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -120,6 +136,11 @@ export const ContactPage: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit}>
                   <h2 className={styles.formTitle}>Send Us a Message</h2>
+                  {error && (
+                    <p style={{ color: '#c0392b', marginBottom: '0.85rem' }} role="alert">
+                      {error}
+                    </p>
+                  )}
 
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
@@ -193,8 +214,8 @@ export const ContactPage: React.FC = () => {
                     />
                   </div>
 
-                  <button type="submit" className={styles.submitButton}>
-                    Send Message
+                  <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
                   </button>
                 </form>
               )}

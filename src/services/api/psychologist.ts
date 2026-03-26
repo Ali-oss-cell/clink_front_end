@@ -1,5 +1,6 @@
 // Psychologist API service for profile management
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 export interface PsychologistProfile {
   id: number;
@@ -77,6 +78,23 @@ export interface PsychologistDashboard {
   recent_notes: any[];
 }
 
+export interface MatchPreviewParams {
+  specialization: string;
+  session_type: string;
+  gender: string;
+  availability: string;
+  goal?: string;
+  limit?: number;
+}
+
+export interface MatchPreviewPsychologist {
+  id: number;
+  name: string;
+  title: string;
+  match_score: number;
+  reasons: string[];
+}
+
 // Psychologist service class
 export class PsychologistService {
 
@@ -122,6 +140,71 @@ export class PsychologistService {
     }
   }
 
+  async getMatchPreview(params: MatchPreviewParams): Promise<MatchPreviewPsychologist[]> {
+    try {
+      const response = await axiosInstance.get('/services/psychologists/match-preview/', { params });
+      const data = response.data;
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data?.results)) return data.results;
+      return [];
+    } catch (error: any) {
+      // Fallback to local scoring using real backend psychologist profiles
+      if (error?.response?.status === 404 || error?.response?.status === 405) {
+        const all = await this.getAllPsychologists();
+        const scored = all.map((p) => {
+          let score = 35;
+          const reasons: string[] = [];
+          const specs = (p.specializations_list || []).map((s) => s.name.toLowerCase());
+          const normalizedSpec = (params.specialization || '').toLowerCase();
+          if (normalizedSpec && normalizedSpec !== 'all') {
+            if (specs.some((s) => s.includes(normalizedSpec))) {
+              score += 30;
+              reasons.push('Specialisation match');
+            }
+          } else {
+            score += 8;
+          }
+
+          const wantSession = params.session_type;
+          if (
+            wantSession === 'both' ||
+            (wantSession === 'telehealth' && p.telehealth_available) ||
+            (wantSession === 'in-person' && p.in_person_available)
+          ) {
+            score += 20;
+            reasons.push('Session format match');
+          }
+
+          if (params.gender === 'any' || (p.user_gender || '').toLowerCase() === params.gender.toLowerCase()) {
+            score += 10;
+            reasons.push('Gender preference match');
+          }
+
+          if (params.availability === 'any' || p.is_accepting_new_patients) {
+            score += 12;
+            reasons.push('Availability match');
+          }
+
+          if ((params.goal || '').trim().length >= 12) {
+            score += 6;
+            reasons.push('Goal context provided');
+          }
+
+          return {
+            id: p.id,
+            name: p.display_name || p.user_name || `Psychologist #${p.id}`,
+            title: p.title || 'Psychologist',
+            match_score: Math.min(100, score),
+            reasons: reasons.slice(0, 3),
+          };
+        });
+
+        return scored.sort((a, b) => b.match_score - a.match_score).slice(0, params.limit || 3);
+      }
+      throw new Error(extractApiErrorMessage(error, 'Failed to load match preview'));
+    }
+  }
+
   // Get specific psychologist profile
   async getPsychologistProfile(id: number): Promise<PsychologistProfile> {
     try {
@@ -129,7 +212,7 @@ export class PsychologistService {
       return response.data;
     } catch (error) {
       console.error('Failed to get psychologist profile:', error);
-      throw new Error('Failed to load psychologist profile');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load psychologist profile'));
     }
   }
 
@@ -140,7 +223,7 @@ export class PsychologistService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get my profile:', error);
-      throw new Error(`Failed to load my profile: ${error.response?.status || 'Unknown error'}`);
+      throw new Error(extractApiErrorMessage(error, 'Failed to load my profile'));
     }
   }
 
@@ -151,7 +234,7 @@ export class PsychologistService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to update profile:', error);
-      throw new Error(`Failed to update profile: ${error.response?.data?.message || 'Unknown error'}`);
+      throw new Error(extractApiErrorMessage(error, 'Failed to update profile'));
     }
   }
 
@@ -170,7 +253,7 @@ export class PsychologistService {
       return response.data;
     } catch (error) {
       console.error('Failed to upload image:', error);
-      throw new Error('Failed to upload image');
+      throw new Error(extractApiErrorMessage(error, 'Failed to upload image'));
     }
   }
 
@@ -181,7 +264,7 @@ export class PsychologistService {
       return response.data;
     } catch (error) {
       console.error('Failed to get dashboard:', error);
-      throw new Error('Failed to load dashboard');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load dashboard'));
     }
   }
 
@@ -192,7 +275,7 @@ export class PsychologistService {
       return response.data;
     } catch (error) {
       console.error('Failed to get appointments:', error);
-      throw new Error('Failed to load appointments');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load appointments'));
     }
   }
 }

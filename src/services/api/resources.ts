@@ -1,5 +1,6 @@
 // Resources API service
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 export interface Resource {
   id: number;
@@ -121,7 +122,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get resources:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load resources');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load resources'));
     }
   }
 
@@ -132,7 +133,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get resource:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load resource');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load resource'));
     }
   }
 
@@ -143,7 +144,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get categories:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load categories');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load categories'));
     }
   }
 
@@ -154,7 +155,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to bookmark resource:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to update bookmark');
+      throw new Error(extractApiErrorMessage(error, 'Failed to update bookmark'));
     }
   }
 
@@ -184,7 +185,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to update progress:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to update progress');
+      throw new Error(extractApiErrorMessage(error, 'Failed to update progress'));
     }
   }
 
@@ -202,7 +203,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to rate resource:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to submit rating');
+      throw new Error(extractApiErrorMessage(error, 'Failed to submit rating'));
     }
   }
 
@@ -216,7 +217,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get bookmarks:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load bookmarks');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load bookmarks'));
     }
   }
 
@@ -230,7 +231,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get history:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to load history');
+      throw new Error(extractApiErrorMessage(error, 'Failed to load history'));
     }
   }
 
@@ -262,7 +263,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to search resources:', error);
-      throw new Error(error.response?.data?.detail || 'Failed to search resources');
+      throw new Error(extractApiErrorMessage(error, 'Failed to search resources'));
     }
   }
 
@@ -313,7 +314,7 @@ class ResourceService {
       }
     } catch (error: any) {
       console.error('Failed to create resource:', error);
-      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to create resource');
+      throw new Error(extractApiErrorMessage(error, 'Failed to create resource'));
     }
   }
 
@@ -369,7 +370,7 @@ class ResourceService {
       }
     } catch (error: any) {
       console.error('Failed to update resource:', error);
-      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to update resource');
+      throw new Error(extractApiErrorMessage(error, 'Failed to update resource'));
     }
   }
 
@@ -425,7 +426,7 @@ class ResourceService {
       }
     } catch (error: any) {
       console.error('Failed to update resource:', error);
-      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to update resource');
+      throw new Error(extractApiErrorMessage(error, 'Failed to update resource'));
     }
   }
 
@@ -436,7 +437,7 @@ class ResourceService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to delete resource:', error);
-      throw new Error(error.response?.data?.detail || error.response?.data?.message || 'Failed to delete resource');
+      throw new Error(extractApiErrorMessage(error, 'Failed to delete resource'));
     }
   }
 }

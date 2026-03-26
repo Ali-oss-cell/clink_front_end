@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 export interface VideoTokenRequest {
   identity: string; // User's full name
@@ -97,21 +98,16 @@ class VideoCallService {
           case 401:
             throw new Error('Authentication failed. Please log in again.');
           case 403:
-            throw new Error(errorData?.error || 'Permission denied. You are not authorized to access this video call.');
+            throw new Error(extractApiErrorMessage(error, 'Permission denied. You are not authorized to access this video call.'));
           case 404:
             if (errorData?.error?.includes('video room')) {
               throw new Error('No video room found for this appointment.');
             }
-            throw new Error(errorData?.error || 'Appointment not found.');
+            throw new Error(extractApiErrorMessage(error, 'Appointment not found.'));
           case 500:
-            throw new Error(errorData?.error || 'Failed to generate access token. Please try again later.');
+            throw new Error(extractApiErrorMessage(error, 'Failed to generate access token. Please try again later.'));
           default:
-            throw new Error(
-              errorData?.error ||
-              errorData?.detail ||
-              errorData?.message ||
-              'Failed to get video access token'
-            );
+            throw new Error(extractApiErrorMessage(error, 'Failed to get video access token'));
         }
       } else if (error.request) {
         // Request made but no response received - network error
@@ -206,11 +202,7 @@ class VideoCallService {
       return response.data;
     } catch (error: any) {
       console.error('Failed to get video room info:', error);
-      throw new Error(
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        'Failed to get video room information'
-      );
+      throw new Error(extractApiErrorMessage(error, 'Failed to get video room information'));
     }
   }
 

@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
+import { psychologistService, type MatchPreviewPsychologist } from '../../services/api/psychologist';
 import {
   MATCH_PREFERENCES_STORAGE_KEY,
   type MatchPreferences,
@@ -13,6 +14,7 @@ import {
 import styles from './GetMatchedPage.module.scss';
 
 const TOTAL_STEPS = 5;
+const MATCH_GOAL_STORAGE_KEY = 'tailored_match_goal';
 
 const FOCUS_OPTIONS: {
   value: MatchSpecializationFilter;
@@ -57,21 +59,93 @@ function buildPreferences(
 
 export const GetMatchedPage: React.FC = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [step, setStep] = useState(() => Math.max(1, Math.min(TOTAL_STEPS, Number(searchParams.get('step')) || 1)));
   const [specialization, setSpecialization] = useState<MatchSpecializationFilter>('all');
   const [sessionType, setSessionType] = useState<MatchSessionTypeFilter>('both');
   const [gender, setGender] = useState<MatchGenderFilter>('any');
   const [availability, setAvailability] = useState<MatchAvailabilityFilter>('any');
+  const [goalText, setGoalText] = useState('');
+  const [previewMatches, setPreviewMatches] = useState<MatchPreviewPsychologist[]>([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState('');
 
   const user = authService.getStoredUser();
   const isPatient = user?.role === 'patient';
 
   const progressPct = useMemo(() => (step / TOTAL_STEPS) * 100, [step]);
+  const estimatedMinutes = 1;
+  const matchConfidence = useMemo(() => {
+    let score = 38;
+    if (specialization !== 'all') score += 22;
+    if (sessionType !== 'both') score += 14;
+    if (gender !== 'any') score += 8;
+    if (availability !== 'any') score += 12;
+    if (goalText.trim().length >= 12) score += 6;
+    return Math.min(100, score);
+  }, [availability, gender, goalText, sessionType, specialization]);
+
+  useEffect(() => {
+    const qSpecialization = searchParams.get('specialization') as MatchSpecializationFilter | null;
+    const qSession = searchParams.get('sessionType') as MatchSessionTypeFilter | null;
+    const qGender = searchParams.get('gender') as MatchGenderFilter | null;
+    const qAvailability = searchParams.get('availability') as MatchAvailabilityFilter | null;
+    const qGoal = searchParams.get('goal') ?? '';
+    if (qSpecialization && FOCUS_OPTIONS.some((f) => f.value === qSpecialization)) setSpecialization(qSpecialization);
+    if (qSession && SESSION_OPTIONS.some((s) => s.value === qSession)) setSessionType(qSession);
+    if (qGender && GENDER_OPTIONS.some((g) => g.value === qGender)) setGender(qGender);
+    if (qAvailability && AVAILABILITY_OPTIONS.some((a) => a.value === qAvailability)) setAvailability(qAvailability);
+    if (qGoal) setGoalText(qGoal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const next = new URLSearchParams();
+    next.set('step', String(step));
+    next.set('specialization', specialization);
+    next.set('sessionType', sessionType);
+    next.set('gender', gender);
+    next.set('availability', availability);
+    if (goalText.trim()) next.set('goal', goalText.trim());
+    setSearchParams(next, { replace: true });
+  }, [availability, gender, goalText, sessionType, setSearchParams, specialization, step]);
+
+  useEffect(() => {
+    let active = true;
+    async function loadPreview() {
+      if (step !== 5) return;
+      setPreviewLoading(true);
+      setPreviewError('');
+      try {
+        const data = await psychologistService.getMatchPreview({
+          specialization,
+          session_type: sessionType,
+          gender,
+          availability,
+          goal: goalText.trim() || undefined,
+          limit: 3,
+        });
+        if (active) setPreviewMatches(data);
+      } catch (error: any) {
+        if (active) {
+          setPreviewError(error?.message || 'Failed to load match preview');
+          setPreviewMatches([]);
+        }
+      } finally {
+        if (active) setPreviewLoading(false);
+      }
+    }
+    loadPreview();
+    return () => {
+      active = false;
+    };
+  }, [availability, gender, goalText, sessionType, specialization, step]);
 
   const persistAndRoute = () => {
     const prefs = buildPreferences(specialization, sessionType, gender, availability);
     try {
       sessionStorage.setItem(MATCH_PREFERENCES_STORAGE_KEY, JSON.stringify(prefs));
+      sessionStorage.setItem(MATCH_GOAL_STORAGE_KEY, goalText.trim());
     } catch {
       /* ignore */
     }
@@ -93,6 +167,9 @@ export const GetMatchedPage: React.FC = () => {
               <p className={styles.heroSubtitle}>
                 A few quick questions help narrow who may fit your goals and schedule. Your answers stay private and
                 secure.
+              </p>
+              <p className={styles.heroMeta}>
+                Takes about {estimatedMinutes} minute • Match confidence: <strong>{matchConfidence}%</strong>
               </p>
               <div className={styles.progress}>
                 <div className={styles.progressBar}>
@@ -147,6 +224,19 @@ export const GetMatchedPage: React.FC = () => {
                       </span>
                     </label>
                   ))}
+                </div>
+                <div className={styles.goalBox}>
+                  <label htmlFor="goalText" className={styles.goalLabel}>
+                    Optional: In one sentence, what do you want help with?
+                  </label>
+                  <textarea
+                    id="goalText"
+                    className={styles.goalInput}
+                    value={goalText}
+                    onChange={(e) => setGoalText(e.target.value)}
+                    rows={3}
+                    placeholder="Example: I want support with sleep, overthinking, and feeling stuck at work."
+                  />
                 </div>
                 <div className={styles.actions}>
                   <button type="button" className={styles.backBtn} onClick={goBack}>
@@ -258,19 +348,74 @@ export const GetMatchedPage: React.FC = () => {
                   <li>
                     <strong>Focus:</strong>{' '}
                     {FOCUS_OPTIONS.find((f) => f.value === specialization)?.label ?? specialization}
+                    <button type="button" className={styles.editLink} onClick={() => setStep(2)}>
+                      Edit
+                    </button>
                   </li>
                   <li>
                     <strong>Session:</strong>{' '}
                     {SESSION_OPTIONS.find((s) => s.value === sessionType)?.label ?? sessionType}
+                    <button type="button" className={styles.editLink} onClick={() => setStep(3)}>
+                      Edit
+                    </button>
                   </li>
                   <li>
                     <strong>Gender:</strong> {GENDER_OPTIONS.find((g) => g.value === gender)?.label ?? gender}
+                    <button type="button" className={styles.editLink} onClick={() => setStep(4)}>
+                      Edit
+                    </button>
                   </li>
                   <li>
                     <strong>Timing:</strong>{' '}
                     {AVAILABILITY_OPTIONS.find((a) => a.value === availability)?.label ?? availability}
+                    <button type="button" className={styles.editLink} onClick={() => setStep(5)}>
+                      Edit
+                    </button>
                   </li>
+                  {goalText.trim() && (
+                    <li>
+                      <strong>Goal note:</strong> {goalText.trim()}
+                      <button type="button" className={styles.editLink} onClick={() => setStep(2)}>
+                        Edit
+                      </button>
+                    </li>
+                  )}
                 </ul>
+
+                {specialization === 'trauma' && availability === 'this-week' && (
+                  <div className={styles.safetyNote} role="status" aria-live="polite">
+                    If you are in immediate danger or crisis, call <strong>000</strong> or Lifeline <strong>13 11 14</strong>.
+                    This matching tool is not a crisis service.
+                  </div>
+                )}
+
+                <div className={styles.previewBlock}>
+                  <h3 className={styles.previewTitle}>Likely top matches</h3>
+                  <p className={styles.previewHint}>Preview from backend scoring. You can still choose anyone later.</p>
+                  {previewLoading ? (
+                    <p className={styles.previewHint}>Loading matches...</p>
+                  ) : previewError ? (
+                    <p className={styles.previewHint}>{previewError}</p>
+                  ) : previewMatches.length === 0 ? (
+                    <p className={styles.previewHint}>No matches available yet. Try adjusting your preferences.</p>
+                  ) : (
+                    <div className={styles.previewGrid}>
+                      {previewMatches.map((match) => (
+                        <article key={match.id} className={styles.previewCard}>
+                          <h4>{match.name}</h4>
+                          <p>
+                            {match.title} · <strong>{match.match_score}%</strong> fit
+                          </p>
+                          <ul>
+                            {match.reasons.map((r) => (
+                              <li key={r}>{r}</li>
+                            ))}
+                          </ul>
+                        </article>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 <div className={styles.finishActions}>
                   {isPatient ? (
@@ -291,6 +436,7 @@ export const GetMatchedPage: React.FC = () => {
                           );
                           try {
                             sessionStorage.setItem(MATCH_PREFERENCES_STORAGE_KEY, JSON.stringify(prefs));
+                            sessionStorage.setItem(MATCH_GOAL_STORAGE_KEY, goalText.trim());
                           } catch {
                             /* ignore */
                           }
@@ -312,6 +458,7 @@ export const GetMatchedPage: React.FC = () => {
                           );
                           try {
                             sessionStorage.setItem(MATCH_PREFERENCES_STORAGE_KEY, JSON.stringify(prefs));
+                            sessionStorage.setItem(MATCH_GOAL_STORAGE_KEY, goalText.trim());
                           } catch {
                             /* ignore */
                           }
@@ -343,6 +490,9 @@ export const GetMatchedPage: React.FC = () => {
                     <Link to="/register">register to book</Link>
                   )}
                   .
+                </p>
+                <p className={styles.privacyLine}>
+                  Privacy note: your answers are used to improve matching and booking flow only.
                 </p>
               </>
             )}

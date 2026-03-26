@@ -1,77 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
-import { VideoIcon, BuildingIcon, CreditCardIcon, PhoneIcon, LockIcon } from '../../utils/icons';
+import { appointmentsService, type BookingSummaryResponse } from '../../services/api/appointments';
+import { paymentsService } from '../../services/api/payments';
+import { extractApiErrorMessage } from '../../utils/apiError';
+import { VideoIcon, BuildingIcon, CreditCardIcon, PhoneIcon, LockIcon, WarningIcon } from '../../utils/icons';
 import styles from './Payment.module.scss';
 
 export const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const selectedService = searchParams.get('service');
-  const selectedPsychologist = searchParams.get('psychologist');
-  const selectedDate = searchParams.get('date');
-  const selectedTime = searchParams.get('time');
-  const selectedSessionType = searchParams.get('sessionType');
+  const appointmentId = searchParams.get('appointment_id');
   
   const [isProcessing, setIsProcessing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'phone' | 'in-person'>('card');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [bookingData, setBookingData] = useState<BookingSummaryResponse | null>(null);
   
   // Get user from auth service
   const user = authService.getStoredUser();
 
-  // TODO: Fetch payment methods from Django backend
-  // TODO: Implement Stripe payment processing
-  // TODO: Add payment validation and security checks
-  // TODO: Implement payment retry logic
-  // TODO: Add payment receipt generation
-  // TODO: Store payment information securely
-
-  // Mock data for demonstration
-  const getPsychologistName = (id: string) => {
-    const names: { [key: string]: string } = {
-      'dr-sarah-johnson': 'Dr. Sarah Johnson',
-      'dr-michael-chen': 'Dr. Michael Chen',
-      'dr-emma-wilson': 'Dr. Emma Wilson',
-      'dr-james-martinez': 'Dr. James Martinez'
+  useEffect(() => {
+    if (!appointmentId) {
+      setError('No appointment ID provided.');
+      setLoading(false);
+      return;
+    }
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const summary = await appointmentsService.getBookingSummary(parseInt(appointmentId));
+        setBookingData(summary);
+      } catch (err: unknown) {
+        console.error('Failed to load booking summary for payment:', err);
+        setError(extractApiErrorMessage(err, 'Unable to load payment summary.'));
+      } finally {
+        setLoading(false);
+      }
     };
-    return names[id] || 'Selected Psychologist';
-  };
-
-  const getServiceName = (id: string) => {
-    const services: { [key: string]: string } = {
-      'individual-therapy': 'Individual Therapy Session (50 min)',
-      'couples-therapy': 'Couples Therapy Session (60 min)',
-      'psychological-assessment': 'Psychological Assessment (90 min)'
-    };
-    return services[id] || 'Selected Service';
-  };
-
-  const getServicePrice = (id: string) => {
-    const prices: { [key: string]: { standard: number; rebate: number; final: number } } = {
-      'individual-therapy': { standard: 180.00, rebate: 87.45, final: 92.55 },
-      'couples-therapy': { standard: 220.00, rebate: 0, final: 220.00 },
-      'psychological-assessment': { standard: 280.00, rebate: 126.55, final: 153.45 }
-    };
-    return prices[id] || { standard: 0, rebate: 0, final: 0 };
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  };
-
-  const servicePrice = getServicePrice(selectedService || '');
-  const gstAmount = servicePrice.final * 0.1; // 10% GST
-  const totalAmount = servicePrice.final + gstAmount;
+    load();
+  }, [appointmentId]);
 
   const handlePayment = async () => {
+    if (!appointmentId) return;
     if (!agreedToTerms) {
       alert('Please agree to the terms and conditions to continue.');
       return;
@@ -79,63 +54,75 @@ export const PaymentPage: React.FC = () => {
 
     setIsProcessing(true);
     try {
-      // TODO: Submit payment to Django backend
-      // TODO: Process payment through Stripe API
-      // TODO: Validate payment amount and currency
-      // TODO: Check payment method availability
-      // TODO: Implement payment security checks
-      // TODO: Store payment transaction in database
-      // TODO: Send payment confirmation email
-      // TODO: Update appointment status to confirmed
-      // TODO: Generate payment receipt
-      // TODO: Log payment for accounting/analytics
-      
-      const paymentData = {
-        service: selectedService,
-        psychologist: selectedPsychologist,
-        date: selectedDate,
-        time: selectedTime,
-        sessionType: selectedSessionType,
-        amount: totalAmount,
-        paymentMethod: paymentMethod,
-        // Add other form data from previous steps
-      };
-
-      console.log('Payment data to send to Django backend:', paymentData);
-      
-      // Simulate API call to Django backend
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Navigate to confirmation page
-      const params = new URLSearchParams({
-        service: selectedService || '',
-        psychologist: selectedPsychologist || '',
-        date: selectedDate || '',
-        time: selectedTime || '',
-        sessionType: selectedSessionType || '',
-        amount: totalAmount.toString(),
-        paymentMethod: paymentMethod
+      const methodForApi = paymentMethod === 'in-person' ? 'in_person' : paymentMethod;
+      const intent = await paymentsService.createIntent({
+        appointment_id: parseInt(appointmentId),
+        payment_method: methodForApi,
       });
-      
-      navigate(`/appointments/confirmation?${params.toString()}`);
-    } catch (error) {
-      console.error('Error processing payment:', error);
-      alert('Payment failed. Please try again.');
+
+      await paymentsService.confirm({
+        appointment_id: parseInt(appointmentId),
+        payment_intent_id: intent.payment_intent_id,
+      });
+
+      navigate(`/appointments/confirmation?appointment_id=${appointmentId}`);
+    } catch (err: unknown) {
+      console.error('Error processing payment:', err);
+      alert(extractApiErrorMessage(err, 'Payment failed. Please try again.'));
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleBack = () => {
-    const params = new URLSearchParams({
-      service: selectedService || '',
-      psychologist: selectedPsychologist || '',
-      date: selectedDate || '',
-      time: selectedTime || '',
-      sessionType: selectedSessionType || ''
-    });
-    navigate(`/appointments/details?${params.toString()}`);
+    if (!appointmentId) {
+      navigate('/appointments/book-appointment');
+      return;
+    }
+    navigate(`/appointments/details?appointment_id=${appointmentId}`);
   };
+
+  if (loading) {
+    return (
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.paymentContainer}>
+          <div className="container">
+            <div className={styles.summaryCard}>
+              <p>Loading payment details...</p>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !bookingData) {
+    return (
+      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+        <div className={styles.paymentContainer}>
+          <div className="container">
+            <div className={styles.summaryCard}>
+              <h3>
+                <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                Unable to Load Payment
+              </h3>
+              <p>{error || 'Payment data unavailable.'}</p>
+              <button className={styles.cancelButton} onClick={handleBack}>
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const consultationFee = parseFloat(bookingData.pricing.consultation_fee || '0') || 0;
+  const rebate = parseFloat(bookingData.pricing.medicare_rebate || '0') || 0;
+  const outOfPocket = parseFloat(bookingData.pricing.out_of_pocket_cost || '0') || 0;
+  const gstAmount = outOfPocket * 0.1;
+  const totalAmount = outOfPocket + gstAmount;
+  const isTelehealth = bookingData.session.type !== 'in_person';
 
   return (
     <Layout 
@@ -165,30 +152,30 @@ export const PaymentPage: React.FC = () => {
                 <div className={styles.summaryDetails}>
                   <div className={styles.summaryItem}>
                     <span className={styles.summaryLabel}>Service:</span>
-                    <span className={styles.summaryValue}>{getServiceName(selectedService || '')}</span>
+                    <span className={styles.summaryValue}>{bookingData.service.name}</span>
                   </div>
                   <div className={styles.summaryItem}>
                     <span className={styles.summaryLabel}>Psychologist:</span>
-                    <span className={styles.summaryValue}>{getPsychologistName(selectedPsychologist || '')}</span>
+                    <span className={styles.summaryValue}>{bookingData.psychologist.name}</span>
                   </div>
                   <div className={styles.summaryItem}>
                     <span className={styles.summaryLabel}>Date & Time:</span>
                     <span className={styles.summaryValue}>
-                      {formatDate(selectedDate || '')} at {selectedTime}
+                      {bookingData.session.formatted_date} at {bookingData.session.formatted_time}
                     </span>
                   </div>
                   <div className={styles.summaryItem}>
                     <span className={styles.summaryLabel}>Session Type:</span>
                     <span className={styles.summaryValue}>
-                      {selectedSessionType === 'in-person' ? (
-                        <>
-                          <BuildingIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                          In-Person Session
-                        </>
-                      ) : (
+                      {isTelehealth ? (
                         <>
                           <VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                           Telehealth (Video Call)
+                        </>
+                      ) : (
+                        <>
+                          <BuildingIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                          In-Person Session
                         </>
                       )}
                     </span>
@@ -198,17 +185,17 @@ export const PaymentPage: React.FC = () => {
                 <div className={styles.pricingBreakdown}>
                   <div className={styles.pricingRow}>
                     <span>Standard Fee:</span>
-                    <span>${servicePrice.standard.toFixed(2)}</span>
+                    <span>${consultationFee.toFixed(2)}</span>
                   </div>
-                  {servicePrice.rebate > 0 && (
+                  {rebate > 0 && (
                     <div className={styles.pricingRow}>
                       <span>Medicare Rebate:</span>
-                      <span className={styles.rebateAmount}>-${servicePrice.rebate.toFixed(2)}</span>
+                      <span className={styles.rebateAmount}>-${rebate.toFixed(2)}</span>
                     </div>
                   )}
                   <div className={styles.pricingRow}>
                     <span>Subtotal:</span>
-                    <span>${servicePrice.final.toFixed(2)}</span>
+                    <span>${outOfPocket.toFixed(2)}</span>
                   </div>
                   <div className={styles.pricingRow}>
                     <span>GST (10%):</span>
@@ -288,7 +275,7 @@ export const PaymentPage: React.FC = () => {
                         value="in-person"
                         checked={paymentMethod === 'in-person'}
                         onChange={() => setPaymentMethod('in-person')}
-                        disabled={selectedSessionType === 'telehealth'}
+                        disabled={isTelehealth}
                       />
                     </div>
                   </div>

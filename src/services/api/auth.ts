@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from '../../types/simple-auth';
+import { extractApiErrorMessage } from '../../utils/apiError';
 
 interface PatientRegistrationData {
   email: string;
@@ -144,6 +145,8 @@ const createHeaders = (includeAuth: boolean = true, includeCSRF: boolean = false
   return headers;
 };
 
+const parseApiError = (error: unknown, fallback: string) => extractApiErrorMessage(error, fallback);
+
 export interface DataAccessRequestResponse {
   message: string;
   request_date: string;
@@ -202,8 +205,7 @@ export const authService = {
       
       return data;
     } catch (error: any) {
-      // Django backend returns error in 'error' field
-      throw new Error(error.response?.data?.error || error.response?.data?.detail || 'Login failed');
+      throw new Error(parseApiError(error, 'Login failed'));
     }
   },
 
@@ -270,19 +272,10 @@ export const authService = {
       const response = await authAPI.post('/forgot-password/', { email }, { headers });
       return response.data;
     } catch (error: any) {
-      const status = error.response?.status;
-      if (status === 429) {
-        throw new Error(
-          error.response?.data?.detail ||
-            'Too many reset requests. Please try again later.'
-        );
+      if (error.response?.status === 429) {
+        throw new Error(parseApiError(error, 'Too many reset requests. Please try again later.'));
       }
-      throw new Error(
-        error.response?.data?.detail ||
-          error.response?.data?.message ||
-          error.message ||
-          'Could not process password reset request.'
-      );
+      throw new Error(parseApiError(error, 'Could not process password reset request.'));
     }
   },
 
@@ -299,10 +292,7 @@ export const authService = {
     } catch (error: any) {
       const status = error.response?.status;
       if (status === 429) {
-        throw new Error(
-          error.response?.data?.detail ||
-            'Too many attempts. Please try again later.'
-        );
+        throw new Error(parseApiError(error, 'Too many attempts. Please try again later.'));
       }
       if (status === 400) {
         const d = error.response?.data;
@@ -313,12 +303,7 @@ export const authService = {
           'Invalid token or password.';
         throw new Error(typeof msg === 'string' ? msg : 'Invalid token or password.');
       }
-      throw new Error(
-        error.response?.data?.detail ||
-          error.response?.data?.message ||
-          error.message ||
-          'Could not reset password.'
-      );
+      throw new Error(parseApiError(error, 'Could not reset password.'));
     }
   },
 
@@ -328,7 +313,7 @@ export const authService = {
       const response = await authAPI.post('/register/', userData);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Registration failed');
+      throw new Error(parseApiError(error, 'Registration failed'));
     }
   },
 
@@ -401,8 +386,7 @@ export const authService = {
         }
         
         // Fallback to detail or error message
-        const errorMessage = errorData.detail || errorData.error || 'Registration validation failed';
-        throw new Error(errorMessage);
+        throw new Error(parseApiError(error, 'Registration validation failed'));
       }
       
       // Handle network errors
@@ -411,12 +395,7 @@ export const authService = {
       }
       
       // Handle other errors
-      const errorMessage = error.response?.data?.detail 
-        || error.response?.data?.error 
-        || error.message 
-        || 'Patient registration failed';
-      
-      throw new Error(errorMessage);
+      throw new Error(parseApiError(error, 'Patient registration failed'));
     }
   },
 
@@ -533,13 +512,13 @@ export const authService = {
             try {
               const text = await error.response.data.text();
               const errorData = JSON.parse(text);
-              throw new Error(errorData.detail || errorData.error || 'Failed to request data access');
+              throw new Error(parseApiError({ response: { data: errorData } }, 'Failed to request data access'));
             } catch (parseError) {
               throw new Error('Failed to request data access');
             }
           } else {
             // Regular JSON error
-            throw new Error(error.response.data?.detail || error.response.data?.error || 'Failed to request data access');
+            throw new Error(parseApiError(error, 'Failed to request data access'));
           }
         } else {
           throw new Error(`Failed to request data access (Status: ${status}). Please try again.`);
@@ -578,7 +557,7 @@ export const authService = {
         } else if (status === 409) {
           throw new Error('You already have a pending deletion request');
         }
-        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to submit deletion request');
+        throw new Error(parseApiError(error, 'Failed to submit deletion request'));
       }
       throw new Error('Network error. Please check your connection and try again.');
     }
@@ -600,7 +579,7 @@ export const authService = {
           // No request found - this is OK, return empty status
           return { has_request: false, request: null };
         }
-        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to get deletion status');
+        throw new Error(parseApiError(error, 'Failed to get deletion status'));
       }
       throw new Error('Network error. Please check your connection and try again.');
     }
@@ -622,9 +601,9 @@ export const authService = {
         if (status === 404) {
           throw new Error('Deletion request not found');
         } else if (status === 400) {
-          throw new Error(error.response.data?.error || 'Cannot cancel this deletion request');
+          throw new Error(parseApiError(error, 'Cannot cancel this deletion request'));
         }
-        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to cancel deletion request');
+        throw new Error(parseApiError(error, 'Failed to cancel deletion request'));
       }
       throw new Error('Network error. Please check your connection and try again.');
     }
@@ -648,7 +627,7 @@ export const authService = {
         if (status === 403) {
           throw new Error('You do not have permission to view deletion requests');
         }
-        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to load deletion requests');
+        throw new Error(parseApiError(error, 'Failed to load deletion requests'));
       }
       throw new Error('Network error. Please check your connection and try again.');
     }
@@ -678,9 +657,9 @@ export const authService = {
         } else if (status === 404) {
           throw new Error('Deletion request not found');
         } else if (status === 400) {
-          throw new Error(error.response.data?.error || error.response.data?.detail || 'Invalid review action');
+          throw new Error(parseApiError(error, 'Invalid review action'));
         }
-        throw new Error(error.response.data?.error || error.response.data?.detail || 'Failed to review deletion request');
+        throw new Error(parseApiError(error, 'Failed to review deletion request'));
       }
       throw new Error('Network error. Please check your connection and try again.');
     }
@@ -702,7 +681,7 @@ export const authService = {
       } else if (status === 404) {
         throw new Error('Preferences not found');
       }
-      throw new Error(error.response?.data?.error || error.response?.data?.detail || 'Failed to fetch preferences');
+      throw new Error(parseApiError(error, 'Failed to fetch preferences'));
     }
   },
 
@@ -725,9 +704,9 @@ export const authService = {
       if (status === 403) {
         throw new Error('You do not have permission to update preferences');
       } else if (status === 400) {
-        throw new Error(error.response.data?.error || error.response.data?.detail || 'Invalid preferences data');
+        throw new Error(parseApiError(error, 'Invalid preferences data'));
       }
-      throw new Error(error.response?.data?.error || error.response?.data?.detail || 'Failed to update preferences');
+      throw new Error(parseApiError(error, 'Failed to update preferences'));
     }
   },
 
