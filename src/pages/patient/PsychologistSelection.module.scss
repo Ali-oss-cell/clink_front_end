@@ -34,19 +34,19 @@
 // Filters Section
 .filtersSection {
   background: white;
-  border-radius: 20px;
+  border-radius: 14px;
   padding: 2rem;
   margin-bottom: 3rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+  border: 1px solid rgba($border-medium, 0.45);
   animation: fadeInDown 0.6s ease-out;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   overflow: visible; // Ensure selects are not clipped
   width: 100%;
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    border-color: rgba($patient-primary, 0.28);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
   }
 }
 
@@ -58,6 +58,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba($border-light, 0.95);
 }
 
 .filtersGrid {
@@ -189,11 +191,11 @@
 // Psychologist Card
 .psychologistCard {
   background: white;
-  border: 3px solid $border-light;
-  border-radius: 20px;
+  border: 1px solid rgba($border-medium, 0.65);
+  border-radius: 14px;
   padding: 1.35rem;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   position: relative;
   animation: fadeInUp 0.8s ease-out;
   overflow: hidden;
@@ -212,8 +214,8 @@
   
   &:hover {
     border-color: $patient-primary;
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba($patient-primary, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba($patient-primary, 0.12);
 
     &::before {
       transform: scaleX(1);
@@ -230,9 +232,9 @@
   }
   
   &.psychologistCardSelected {
-    border-color: $patient-primary;
+    border-color: rgba($patient-primary, 0.9);
     background: linear-gradient(135deg, white 0%, rgba($patient-primary, 0.03) 100%);
-    box-shadow: 0 15px 40px rgba($patient-primary, 0.2);
+    box-shadow: 0 10px 24px rgba($patient-primary, 0.16);
 
     &::before {
       transform: scaleX(1);
@@ -262,7 +264,7 @@
   align-items: flex-start;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid $background-light;
+  border-bottom: 1px solid rgba($border-light, 0.95);
 }
 
 .psychologistProfile {
@@ -278,12 +280,12 @@
   height: 64px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid $border-light;
+  border: 2px solid rgba($border-medium, 0.65);
   background: linear-gradient(135deg, $background-light 0%, $background-gray 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
   transition: all 0.3s ease;
 }
 
@@ -341,10 +343,10 @@
 // Psychologist Details
 .psychologistDetails {
   background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid $border-light;
+  border: 1px solid rgba($border-medium, 0.5);
   transition: all 0.3s ease;
 
   &:hover {
@@ -388,6 +390,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba($border-light, 0.95);
 }
 
 .specializationsList {
@@ -397,28 +401,29 @@
 }
 
 .specializationItem {
-  background: linear-gradient(135deg, $patient-primary 0%, $patient-light 100%);
-  color: white;
+  background: rgba($accent-color, 0.45);
+  color: $text-dark;
   padding: 0.48rem 0.95rem;
-  border-radius: 25px;
+  border-radius: 999px;
   font-size: 0.84rem;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba($patient-primary, 0.25);
-  transition: all 0.3s ease;
+  border: 1px solid rgba($patient-primary, 0.25);
+  box-shadow: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba($patient-primary, 0.35);
+    background: rgba($accent-color, 0.58);
+    border-color: rgba($patient-primary, 0.45);
   }
 }
 
 // Psychologist Bio
 .psychologistBio {
   background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid $border-light;
+  border: 1px solid rgba($border-medium, 0.5);
   transition: all 0.3s ease;
 
   &:hover {
@@ -435,6 +440,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba($border-light, 0.95);
 }
 
 .bioText {
@@ -456,7 +463,8 @@
   font-size: 0.92rem;
   padding: 0.6rem 0.85rem;
   background: rgba($patient-primary, 0.05);
-  border-radius: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba($patient-primary, 0.2);
   margin-bottom: 0.5rem;
 
   &:last-child {
@@ -555,11 +563,11 @@
   width: 100%;
   padding: 1rem;
   background: white;
-  border: 3px solid $patient-primary;
-  border-radius: 50px;
+  border: 1px solid rgba($patient-primary, 0.65);
+  border-radius: 10px;
   color: $patient-primary;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 1rem;
@@ -567,8 +575,8 @@
   &:hover {
     background: $patient-primary;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba($patient-primary, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba($patient-primary, 0.2);
   }
   
   &.selectButtonSelected {
