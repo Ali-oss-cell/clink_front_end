@@ -1000,13 +1000,18 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
+    padding-top: 0.15rem;
   }
 
   .trustBandIntro {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 0.6rem;
+    gap: 0.5rem;
+    background: linear-gradient(180deg, rgba($background-light, 0.9) 0%, rgba($background-white, 0.98) 100%);
+    border: 1px solid rgba($border-light, 0.9);
+    border-radius: 14px;
+    padding: 0.95rem 1.05rem;
   }
 
   .trustBandColumn {
@@ -1019,15 +1024,15 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
 
   .trustBandTitle {
     text-align: left;
-    font-size: clamp(1.75rem, 2.8vw, 2rem);
+    font-size: clamp(1.62rem, 2.5vw, 2rem);
     font-weight: 800;
     color: $text-dark;
     margin: 0;
     max-width: 100%;
     letter-spacing: -0.03em;
-    line-height: 1.2;
-    padding-bottom: 0.15rem;
-    border-bottom: 2px solid rgba($accent-color, 0.55);
+    line-height: 1.15;
+    padding-bottom: 0.28rem;
+    border-bottom: 1px solid rgba($border-medium, 0.9);
 
     @include tablet {
       text-align: center;
@@ -1047,16 +1052,42 @@ $home-section-y: clamp(3.25rem, 5vw, 5.25rem);
 
   .trustBandLead {
     margin: 0;
-    font-size: 1.05rem;
-    line-height: 1.6;
-    color: $text-light;
-    max-width: none;
+    font-size: 1rem;
+    line-height: 1.58;
+    color: rgba($text-dark, 0.88);
+    max-width: 60ch;
     text-align: left;
 
     @include tablet {
       text-align: center;
       margin-left: auto;
       margin-right: auto;
+    }
+  }
+
+  .trustBandLabels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.15rem;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba($text-dark, 0.88);
+      background: rgba($accent-color, 0.44);
+      border: 1px solid rgba($button-primary-bg, 0.2);
+    }
+
+    @include tablet {
+      justify-content: center;
     }
   }
 

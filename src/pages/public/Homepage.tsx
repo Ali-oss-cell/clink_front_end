@@ -683,6 +683,11 @@ export const Homepage: React.FC = () => {
                   <p className={styles.trustBandLead}>
                     Registration, privacy, and booking—designed around how real healthcare works in Australia.
                   </p>
+                  <div className={styles.trustBandLabels} aria-label="Trust highlights">
+                    <span>AHPRA aligned</span>
+                    <span>Privacy-first</span>
+                    <span>Transparent booking</span>
+                  </div>
                 </div>
                 <div className={styles.trustGrid}>
                   <div className={styles.trustCard}>
