@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import {
   OutlineTelehealthIcon,
@@ -19,6 +19,14 @@ import heroImage3 from '../../assets/imges/optimized/hero-consultation.webp';
 import heroImage4 from '../../assets/imges/optimized/hero-support.webp';
 import homeResourcesReading from '../../assets/imges/optimized/home-resources-reading.webp';
 import homeTrustConnection from '../../assets/imges/optimized/home-trust-connection.webp';
+import { authService } from '../../services/api/auth';
+import {
+  MATCH_PREFERENCES_STORAGE_KEY,
+  type MatchAvailabilityFilter,
+  type MatchPreferences,
+  type MatchSessionTypeFilter,
+  type MatchSpecializationFilter,
+} from '../../constants/matchPreferences';
 import styles from './Homepage.module.scss';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -80,8 +88,14 @@ const slides: Slide[] = [
   }
 ];
 
+const HERO_TRUST_CHIPS = ['AHPRA-registered', 'Medicare eligible', 'Private & secure'];
+
 export const Homepage: React.FC = () => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [quickFocus, setQuickFocus] = useState<MatchSpecializationFilter>('all');
+  const [quickSession, setQuickSession] = useState<MatchSessionTypeFilter>('both');
+  const [quickAvailability, setQuickAvailability] = useState<MatchAvailabilityFilter>('any');
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
   const heroTimelineRef = useRef<gsap.core.Timeline | null>(null);
   /** Last fully settled hero slide; updated when a transition finishes (or instant switch). Not bumped early, so overlapping transitions still animate from the correct slide. */
@@ -309,6 +323,22 @@ export const Homepage: React.FC = () => {
     };
   }, []);
 
+  const handleQuickMatchSubmit = () => {
+    const prefs: MatchPreferences = {
+      specialization: quickFocus,
+      sessionType: quickSession,
+      gender: 'any',
+      availability: quickAvailability,
+    };
+    try {
+      sessionStorage.setItem(MATCH_PREFERENCES_STORAGE_KEY, JSON.stringify(prefs));
+    } catch {
+      /* ignore storage failure */
+    }
+    const isPatient = authService.getStoredUser()?.role === 'patient';
+    navigate(isPatient ? '/appointments/book-appointment' : '/register');
+  };
+
   return (
     <Layout className={styles.homepage}>
       <section className={styles.hero}>
@@ -346,6 +376,11 @@ export const Homepage: React.FC = () => {
                       </Link>
                     )}
                   </div>
+                  <ul className={styles.heroTrustChips} aria-label="Trust signals">
+                    {HERO_TRUST_CHIPS.map((chip) => (
+                      <li key={chip}>{chip}</li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
@@ -373,6 +408,84 @@ export const Homepage: React.FC = () => {
               <span>Medicare rebates for eligible clients with a mental health care plan</span>
             </li>
           </ul>
+        </div>
+      </section>
+
+      <section className={styles.quickMatch} data-home-reveal>
+        <div className="container">
+          <div className={styles.quickMatchCard}>
+            <div className={styles.quickMatchIntro}>
+              <p className="tp-brand-kicker">Find your fit faster</p>
+              <h2>Start with preferences and we&apos;ll pre-fill booking.</h2>
+              <p>Choose what matters most now. You can still adjust everything later before confirming.</p>
+            </div>
+            <div className={styles.quickMatchFields}>
+              <label className={styles.quickMatchField}>
+                <span>What support do you want?</span>
+                <select value={quickFocus} onChange={(e) => setQuickFocus(e.target.value as MatchSpecializationFilter)}>
+                  <option value="all">General wellbeing / not sure yet</option>
+                  <option value="anxiety">Anxiety or stress</option>
+                  <option value="depression">Low mood or depression</option>
+                  <option value="trauma">Trauma or PTSD</option>
+                  <option value="adhd">ADHD or attention</option>
+                  <option value="relationship">Relationships or family</option>
+                </select>
+              </label>
+              <label className={styles.quickMatchField}>
+                <span>How would you like to attend?</span>
+                <select value={quickSession} onChange={(e) => setQuickSession(e.target.value as MatchSessionTypeFilter)}>
+                  <option value="both">Either / no preference</option>
+                  <option value="telehealth">Telehealth (online)</option>
+                  <option value="in-person">In-person</option>
+                </select>
+              </label>
+              <label className={styles.quickMatchField}>
+                <span>When would you like to start?</span>
+                <select
+                  value={quickAvailability}
+                  onChange={(e) => setQuickAvailability(e.target.value as MatchAvailabilityFilter)}
+                >
+                  <option value="any">Any time</option>
+                  <option value="this-week">Soon (this week)</option>
+                  <option value="next-week">Next week is fine</option>
+                </select>
+              </label>
+            </div>
+            <div className={styles.quickMatchActions}>
+              <button type="button" className={styles.quickMatchPrimary} onClick={handleQuickMatchSubmit}>
+                Continue with these preferences
+              </button>
+              <Link to="/login" className={styles.quickMatchSecondary}>
+                Sign in instead
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.costClarity} data-home-reveal>
+        <div className="container">
+          <div className={styles.costClarityHeading}>
+            <p className="tp-brand-kicker">Pricing clarity</p>
+            <h2>Know costs before you book</h2>
+          </div>
+          <div className={styles.costClarityGrid}>
+            <article className={styles.costCard} data-home-stagger-item>
+              <h3>Session fee</h3>
+              <p>Fees vary by clinician, service type, and session length.</p>
+            </article>
+            <article className={styles.costCard} data-home-stagger-item>
+              <h3>Medicare rebate (if eligible)</h3>
+              <p>With a valid GP Mental Health Treatment Plan, rebates may apply to eligible sessions.</p>
+            </article>
+            <article className={styles.costCard} data-home-stagger-item>
+              <h3>Estimated out-of-pocket</h3>
+              <p>We help you understand likely out-of-pocket costs before your first appointment.</p>
+            </article>
+          </div>
+          <Link to="/medicare-rebates" className={styles.costClarityLink}>
+            Check Medicare rebate information
+          </Link>
         </div>
       </section>
 
@@ -452,6 +565,7 @@ export const Homepage: React.FC = () => {
               <div className={styles.stepIcon}>
                 <OutlineCalendarDaysIcon size="xl" />
               </div>
+              <p className={styles.stepMeta}>2 min</p>
               <h3 className={styles.stepTitle}>Book Your Appointment</h3>
               <p className={styles.stepDescription}>
                 Choose a convenient time and select your preferred psychologist. Book online in minutes, 24/7.
@@ -462,6 +576,7 @@ export const Homepage: React.FC = () => {
               <div className={styles.stepIcon}>
                 <OutlineClipboardIcon size="xl" />
               </div>
+              <p className={styles.stepMeta}>5 min</p>
               <h3 className={styles.stepTitle}>Complete Intake Form</h3>
               <p className={styles.stepDescription}>
                 Fill out a brief intake form to help us understand your needs and prepare for your first session.
@@ -472,6 +587,7 @@ export const Homepage: React.FC = () => {
               <div className={styles.stepIcon}>
                 <OutlineTelehealthIcon size="xl" />
               </div>
+              <p className={styles.stepMeta}>45-50 min</p>
               <h3 className={styles.stepTitle}>Attend Your Session</h3>
               <p className={styles.stepDescription}>
                 Join your session via secure video call or visit our clinic. Your psychologist will guide you through evidence-based therapy.
@@ -482,6 +598,7 @@ export const Homepage: React.FC = () => {
               <div className={styles.stepIcon}>
                 <OutlineChartLineIcon size="xl" />
               </div>
+              <p className={styles.stepMeta}>Ongoing</p>
               <h3 className={styles.stepTitle}>Track Your Progress</h3>
               <p className={styles.stepDescription}>
                 Monitor your journey with progress notes, session summaries, and personalized resources in your dashboard.
@@ -560,11 +677,13 @@ export const Homepage: React.FC = () => {
             </div>
             <div className={styles.trustBandContent}>
               <div className={styles.trustBandColumn}>
-                <p className="tp-brand-kicker">Trust &amp; standards</p>
-                <h2 className={styles.trustBandTitle}>Built for safe, accountable care</h2>
-                <p className={styles.trustBandLead}>
-                  Registration, privacy, and booking—designed around how real healthcare works in Australia.
-                </p>
+                <div className={styles.trustBandIntro}>
+                  <p className="tp-brand-kicker">Trust &amp; standards</p>
+                  <h2 className={styles.trustBandTitle}>Built for safe, accountable care</h2>
+                  <p className={styles.trustBandLead}>
+                    Registration, privacy, and booking—designed around how real healthcare works in Australia.
+                  </p>
+                </div>
                 <div className={styles.trustGrid}>
                   <div className={styles.trustCard}>
                     <div className={styles.trustIconWrap}>
