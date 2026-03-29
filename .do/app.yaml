@@ -24,4 +24,5 @@ static_sites:
       - key: VITE_DEBUG
         value: "false"
         scope: RUN_AND_BUILD_TIME
+      # Add VITE_STRIPE_PUBLISHABLE_KEY (pk_...) in the App Platform UI at build time for Stripe card checkout.
 

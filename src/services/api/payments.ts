@@ -12,6 +12,7 @@ export interface CreatePaymentIntentResponse {
   amount: string;
   currency: string;
   payment_intent_id: string;
+  /** Present when payment_method is card and Stripe PaymentIntent was created. */
   client_secret?: string;
   status: string;
 }
@@ -38,9 +39,25 @@ export interface PaymentReceiptResponse {
   [key: string]: unknown;
 }
 
+export interface CreateIntentOptions {
+  /** Passed as Idempotency-Key header (e.g. stable per checkout attempt). */
+  idempotencyKey?: string;
+}
+
 export const paymentsService = {
-  async createIntent(payload: CreatePaymentIntentRequest): Promise<CreatePaymentIntentResponse> {
-    const response = await axiosInstance.post<CreatePaymentIntentResponse>('/payments/create-intent/', payload);
+  async createIntent(
+    payload: CreatePaymentIntentRequest,
+    options?: CreateIntentOptions
+  ): Promise<CreatePaymentIntentResponse> {
+    const headers: Record<string, string> = {};
+    if (options?.idempotencyKey) {
+      headers['Idempotency-Key'] = options.idempotencyKey;
+    }
+    const response = await axiosInstance.post<CreatePaymentIntentResponse>(
+      '/payments/create-intent/',
+      payload,
+      Object.keys(headers).length ? { headers } : undefined
+    );
     return response.data;
   },
 

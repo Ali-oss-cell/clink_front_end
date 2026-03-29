@@ -1,27 +1,100 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { appointmentsService, type BookingSummaryResponse } from '../../services/api/appointments';
 import { paymentsService } from '../../services/api/payments';
 import { extractApiErrorMessage } from '../../utils/apiError';
+import { getStripePromise, hasStripePublishableKey } from '../../lib/stripe';
 import { VideoIcon, BuildingIcon, CreditCardIcon, PhoneIcon, LockIcon, WarningIcon } from '../../utils/icons';
 import styles from './Payment.module.scss';
+
+type PaymentMethodUi = 'card' | 'phone' | 'in-person';
+
+interface CardPaymentFormProps {
+  appointmentId: number;
+  paymentIntentId: string;
+  totalAmount: number;
+  onPaid: () => void;
+  onError: (message: string) => void;
+}
+
+function CardPaymentForm({ appointmentId, paymentIntentId, totalAmount, onPaid, onError }: CardPaymentFormProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [submitting, setSubmitting] = useState(false);
+
+  const handlePay = async () => {
+    if (!stripe || !elements) return;
+    setSubmitting(true);
+    onError('');
+    try {
+      const returnUrl = `${window.location.origin}/appointments/payment?appointment_id=${appointmentId}`;
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: { return_url: returnUrl },
+        redirect: 'if_required',
+      });
+      if (error) {
+        onError(error.message || 'Payment failed.');
+        return;
+      }
+      const piId = paymentIntent?.id ?? paymentIntentId;
+      if (paymentIntent?.status === 'succeeded') {
+        await paymentsService.confirm({
+          appointment_id: appointmentId,
+          payment_intent_id: piId,
+        });
+        onPaid();
+      }
+    } catch (err: unknown) {
+      onError(extractApiErrorMessage(err, 'Payment failed. Please try again.'));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className={styles.stripeCheckout}>
+      <div className={styles.stripeElementWrap}>
+        <PaymentElement />
+      </div>
+      <button
+        type="button"
+        className={styles.payButton}
+        onClick={handlePay}
+        disabled={!stripe || submitting}
+      >
+        {submitting ? 'Processing…' : `Pay $${totalAmount.toFixed(2)}`}
+      </button>
+    </div>
+  );
+}
 
 export const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const appointmentId = searchParams.get('appointment_id');
-  
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'phone' | 'in-person'>('card');
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodUi>('card');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [bookingData, setBookingData] = useState<BookingSummaryResponse | null>(null);
-  
-  // Get user from auth service
+
+  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
+  const [isPreparingIntent, setIsPreparingIntent] = useState(false);
+
+  const idempotencyKeyRef = useRef<string>(
+    typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `pay-${Date.now()}`
+  );
+
   const user = authService.getStoredUser();
+  const stripePromise = getStripePromise();
 
   useEffect(() => {
     if (!appointmentId) {
@@ -33,7 +106,7 @@ export const PaymentPage: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const summary = await appointmentsService.getBookingSummary(parseInt(appointmentId));
+        const summary = await appointmentsService.getBookingSummary(parseInt(appointmentId, 10));
         setBookingData(summary);
       } catch (err: unknown) {
         console.error('Failed to load booking summary for payment:', err);
@@ -45,34 +118,56 @@ export const PaymentPage: React.FC = () => {
     load();
   }, [appointmentId]);
 
-  const handlePayment = async () => {
-    if (!appointmentId) return;
-    if (!agreedToTerms) {
-      alert('Please agree to the terms and conditions to continue.');
+  // After redirect-based confirmation (3DS, etc.), Stripe returns to return_url with query params.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirectStatus = params.get('redirect_status');
+    const paymentIntentFromUrl = params.get('payment_intent');
+    if (!appointmentId || !paymentIntentFromUrl) return;
+
+    if (redirectStatus === 'failed' || redirectStatus === 'canceled') {
+      setPaymentError(
+        redirectStatus === 'canceled' ? 'Payment was cancelled.' : 'Payment could not be completed.'
+      );
+      window.history.replaceState({}, '', `/appointments/payment?appointment_id=${appointmentId}`);
       return;
     }
 
-    setIsProcessing(true);
-    try {
-      const methodForApi = paymentMethod === 'in-person' ? 'in_person' : paymentMethod;
-      const intent = await paymentsService.createIntent({
-        appointment_id: parseInt(appointmentId),
-        payment_method: methodForApi,
-      });
+    if (redirectStatus !== 'succeeded') return;
 
-      await paymentsService.confirm({
-        appointment_id: parseInt(appointmentId),
-        payment_intent_id: intent.payment_intent_id,
-      });
+    let cancelled = false;
+    (async () => {
+      try {
+        setIsProcessing(true);
+        setPaymentError(null);
+        await paymentsService.confirm({
+          appointment_id: parseInt(appointmentId, 10),
+          payment_intent_id: paymentIntentFromUrl,
+        });
+        if (!cancelled) {
+          navigate(`/appointments/confirmation?appointment_id=${appointmentId}`);
+        }
+      } catch (err: unknown) {
+        if (!cancelled) {
+          setPaymentError(extractApiErrorMessage(err, 'Could not confirm payment with the server.'));
+        }
+      } finally {
+        if (!cancelled) setIsProcessing(false);
+        window.history.replaceState({}, '', `/appointments/payment?appointment_id=${appointmentId}`);
+      }
+    })();
 
-      navigate(`/appointments/confirmation?appointment_id=${appointmentId}`);
-    } catch (err: unknown) {
-      console.error('Error processing payment:', err);
-      alert(extractApiErrorMessage(err, 'Payment failed. Please try again.'));
-    } finally {
-      setIsProcessing(false);
+    return () => {
+      cancelled = true;
+    };
+  }, [appointmentId, navigate]);
+
+  useEffect(() => {
+    if (paymentMethod !== 'card') {
+      setStripeClientSecret(null);
+      setPaymentIntentId(null);
     }
-  };
+  }, [paymentMethod]);
 
   const handleBack = () => {
     if (!appointmentId) {
@@ -80,6 +175,81 @@ export const PaymentPage: React.FC = () => {
       return;
     }
     navigate(`/appointments/details?appointment_id=${appointmentId}`);
+  };
+
+  const prepareCardCheckout = async () => {
+    if (!appointmentId) return;
+    if (!agreedToTerms) {
+      setPaymentError('Please agree to the terms and conditions to continue.');
+      return;
+    }
+    if (!hasStripePublishableKey() || !stripePromise) {
+      setPaymentError(
+        'Online card payments are not configured. Please choose another payment method or contact the clinic.'
+      );
+      return;
+    }
+
+    setIsPreparingIntent(true);
+    setPaymentError(null);
+    try {
+      const intent = await paymentsService.createIntent(
+        {
+          appointment_id: parseInt(appointmentId, 10),
+          payment_method: 'card',
+        },
+        { idempotencyKey: idempotencyKeyRef.current }
+      );
+      if (!intent.client_secret) {
+        setPaymentError('The server did not return card payment details. Please try again or contact support.');
+        return;
+      }
+      setStripeClientSecret(intent.client_secret);
+      setPaymentIntentId(intent.payment_intent_id);
+    } catch (err: unknown) {
+      console.error('createIntent failed:', err);
+      setPaymentError(extractApiErrorMessage(err, 'Could not start card payment. Please try again.'));
+    } finally {
+      setIsPreparingIntent(false);
+    }
+  };
+
+  const handleNonCardPayment = async () => {
+    if (!appointmentId) return;
+    if (!agreedToTerms) {
+      setPaymentError('Please agree to the terms and conditions to continue.');
+      return;
+    }
+
+    setIsProcessing(true);
+    setPaymentError(null);
+    try {
+      const methodForApi = paymentMethod === 'in-person' ? 'in_person' : paymentMethod;
+      const intent = await paymentsService.createIntent(
+        {
+          appointment_id: parseInt(appointmentId, 10),
+          payment_method: methodForApi,
+        },
+        { idempotencyKey: idempotencyKeyRef.current }
+      );
+
+      await paymentsService.confirm({
+        appointment_id: parseInt(appointmentId, 10),
+        payment_intent_id: intent.payment_intent_id,
+      });
+
+      navigate(`/appointments/confirmation?appointment_id=${appointmentId}`);
+    } catch (err: unknown) {
+      console.error('Error processing payment:', err);
+      setPaymentError(extractApiErrorMessage(err, 'Payment failed. Please try again.'));
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const navigateToConfirmation = () => {
+    if (!appointmentId) return;
+    navigate(`/appointments/confirmation?appointment_id=${appointmentId}`);
   };
 
   if (loading) {
@@ -124,26 +294,29 @@ export const PaymentPage: React.FC = () => {
   const totalAmount = outOfPocket + gstAmount;
   const isTelehealth = bookingData.session.type !== 'in_person';
 
+  if (!appointmentId) {
+    return null;
+  }
+
+  const showCardStripe = paymentMethod === 'card' && stripeClientSecret && paymentIntentId && stripePromise;
+
   return (
-    <Layout 
-      user={user} 
-      isAuthenticated={true}
-      className={styles.patientLayout}
-    >
+    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
       <div className={styles.paymentContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <button 
-              className={styles.backButton}
-              onClick={handleBack}
-            >
+            <button className={styles.backButton} onClick={handleBack}>
               ← Back to Appointment Details
             </button>
             <h1 className={styles.pageTitle}>Payment</h1>
-            <p className={styles.pageSubtitle}>
-              Complete your payment to confirm your appointment
-            </p>
+            <p className={styles.pageSubtitle}>Complete your payment to confirm your appointment</p>
           </div>
+
+          {paymentError && (
+            <div className={styles.inlineError} role="alert">
+              {paymentError}
+            </div>
+          )}
 
           <div className={styles.paymentContent}>
             <div className={styles.paymentSummary}>
@@ -181,7 +354,7 @@ export const PaymentPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className={styles.pricingBreakdown}>
                   <div className={styles.pricingRow}>
                     <span>Standard Fee:</span>
@@ -216,21 +389,23 @@ export const PaymentPage: React.FC = () => {
             <div className={styles.paymentForm}>
               <div className={styles.paymentMethods}>
                 <h3>Choose Payment Method:</h3>
-                
+
                 <div className={styles.paymentMethodOptions}>
-                  <div 
+                  <div
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'card' ? styles.selected : ''}`}
                     onClick={() => setPaymentMethod('card')}
                   >
-                    <div className={styles.paymentMethodIcon}><CreditCardIcon size="xl" /></div>
+                    <div className={styles.paymentMethodIcon}>
+                      <CreditCardIcon size="xl" />
+                    </div>
                     <div className={styles.paymentMethodContent}>
                       <h4>Credit/Debit Card</h4>
-                      <p>Pay securely online with your card</p>
+                      <p>Pay securely online with your card (Stripe)</p>
                     </div>
                     <div className={styles.paymentMethodRadio}>
-                      <input 
-                        type="radio" 
-                        name="paymentMethod" 
+                      <input
+                        type="radio"
+                        name="paymentMethod"
                         value="card"
                         checked={paymentMethod === 'card'}
                         onChange={() => setPaymentMethod('card')}
@@ -238,19 +413,21 @@ export const PaymentPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div 
+                  <div
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'phone' ? styles.selected : ''}`}
                     onClick={() => setPaymentMethod('phone')}
                   >
-                    <div className={styles.paymentMethodIcon}><PhoneIcon size="xl" /></div>
+                    <div className={styles.paymentMethodIcon}>
+                      <PhoneIcon size="xl" />
+                    </div>
                     <div className={styles.paymentMethodContent}>
                       <h4>Pay by Phone</h4>
                       <p>Call (03) 9xxx-xxxx to pay over the phone</p>
                     </div>
                     <div className={styles.paymentMethodRadio}>
-                      <input 
-                        type="radio" 
-                        name="paymentMethod" 
+                      <input
+                        type="radio"
+                        name="paymentMethod"
                         value="phone"
                         checked={paymentMethod === 'phone'}
                         onChange={() => setPaymentMethod('phone')}
@@ -258,20 +435,22 @@ export const PaymentPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div 
+                  <div
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'in-person' ? styles.selected : ''}`}
-                    onClick={() => setPaymentMethod('in-person')}
+                    onClick={() => !isTelehealth && setPaymentMethod('in-person')}
                   >
-                    <div className={styles.paymentMethodIcon}><BuildingIcon size="xl" /></div>
+                    <div className={styles.paymentMethodIcon}>
+                      <BuildingIcon size="xl" />
+                    </div>
                     <div className={styles.paymentMethodContent}>
                       <h4>Pay in Person</h4>
                       <p>Pay cash or EFTPOS at your appointment</p>
                       <small>(Telehealth appointments must be paid online)</small>
                     </div>
                     <div className={styles.paymentMethodRadio}>
-                      <input 
-                        type="radio" 
-                        name="paymentMethod" 
+                      <input
+                        type="radio"
+                        name="paymentMethod"
                         value="in-person"
                         checked={paymentMethod === 'in-person'}
                         onChange={() => setPaymentMethod('in-person')}
@@ -281,59 +460,6 @@ export const PaymentPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              {paymentMethod === 'card' && (
-                <div className={styles.cardPaymentSection}>
-                  <h3>Card Details</h3>
-                  <div className={styles.cardForm}>
-                    <div className={styles.formGroup}>
-                      <label className={styles.label}>Card Number</label>
-                      <input
-                        type="text"
-                        className={styles.cardInput}
-                        placeholder="1234 5678 9012 3456"
-                        maxLength={19}
-                      />
-                    </div>
-                    
-                    <div className={styles.cardRow}>
-                      <div className={styles.formGroup}>
-                        <label className={styles.label}>Expiry Date</label>
-                        <input
-                          type="text"
-                          className={styles.cardInput}
-                          placeholder="MM/YY"
-                          maxLength={5}
-                        />
-                      </div>
-                      
-                      <div className={styles.formGroup}>
-                        <label className={styles.label}>CVC</label>
-                        <input
-                          type="text"
-                          className={styles.cardInput}
-                          placeholder="123"
-                          maxLength={4}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className={styles.formGroup}>
-                      <label className={styles.label}>Name on Card</label>
-                      <input
-                        type="text"
-                        className={styles.cardInput}
-                        placeholder="John Smith"
-                      />
-                    </div>
-                    
-                    <div className={styles.securityNote}>
-                      <LockIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                      Secured by Stripe - Your payment info is encrypted
-                    </div>
-                  </div>
-                </div>
-              )}
 
               <div className={styles.termsSection}>
                 <h3>Terms & Conditions</h3>
@@ -347,7 +473,7 @@ export const PaymentPage: React.FC = () => {
                     <span className={styles.checkboxCustom}></span>
                     I agree to the Terms of Service and Privacy Policy
                   </label>
-                  
+
                   <label className={styles.checkboxWrapper}>
                     <input
                       type="checkbox"
@@ -357,7 +483,7 @@ export const PaymentPage: React.FC = () => {
                     <span className={styles.checkboxCustom}></span>
                     I understand the cancellation policy (48-hour notice required)
                   </label>
-                  
+
                   <label className={styles.checkboxWrapper}>
                     <input
                       type="checkbox"
@@ -367,7 +493,7 @@ export const PaymentPage: React.FC = () => {
                     <span className={styles.checkboxCustom}></span>
                     I consent to receive appointment reminders via my selected method
                   </label>
-                  
+
                   <label className={styles.checkboxWrapper}>
                     <input
                       type="checkbox"
@@ -380,23 +506,69 @@ export const PaymentPage: React.FC = () => {
                 </div>
               </div>
 
+              {paymentMethod === 'card' && (
+                <div className={styles.cardPaymentSection}>
+                  <h3>Card payment</h3>
+                  <p className={styles.cardPaymentLead}>
+                    Card details are collected securely by Stripe — they are not sent to our servers.
+                  </p>
+                  {!showCardStripe && (
+                    <div className={styles.securityNote}>
+                      <LockIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                      Accept the terms above, then use &quot;Continue to secure payment&quot; to load the form.
+                    </div>
+                  )}
+                  {showCardStripe && stripePromise && stripeClientSecret && paymentIntentId && (
+                    <Elements
+                      stripe={stripePromise}
+                      options={{
+                        clientSecret: stripeClientSecret,
+                        appearance: { theme: 'stripe' },
+                      }}
+                    >
+                      <CardPaymentForm
+                        appointmentId={parseInt(appointmentId, 10)}
+                        paymentIntentId={paymentIntentId}
+                        totalAmount={totalAmount}
+                        onPaid={navigateToConfirmation}
+                        onError={setPaymentError}
+                      />
+                    </Elements>
+                  )}
+                </div>
+              )}
+
               <div className={styles.paymentActions}>
                 <button
                   type="button"
                   className={styles.cancelButton}
                   onClick={handleBack}
-                  disabled={isProcessing}
+                  disabled={isProcessing || isPreparingIntent}
                 >
                   Back to Details
                 </button>
-                <button
-                  type="button"
-                  className={styles.payButton}
-                  onClick={handlePayment}
-                  disabled={!agreedToTerms || isProcessing}
-                >
-                  {isProcessing ? 'Processing Payment...' : `Confirm & Pay $${totalAmount.toFixed(2)}`}
-                </button>
+
+                {paymentMethod === 'card' && !stripeClientSecret && (
+                  <button
+                    type="button"
+                    className={styles.payButton}
+                    onClick={prepareCardCheckout}
+                    disabled={!agreedToTerms || isPreparingIntent || isProcessing}
+                  >
+                    {isPreparingIntent ? 'Preparing secure checkout…' : 'Continue to secure payment'}
+                  </button>
+                )}
+
+                {paymentMethod !== 'card' && (
+                  <button
+                    type="button"
+                    className={styles.payButton}
+                    onClick={handleNonCardPayment}
+                    disabled={!agreedToTerms || isProcessing}
+                  >
+                    {isProcessing ? 'Processing…' : `Confirm & Pay $${totalAmount.toFixed(2)}`}
+                  </button>
+                )}
               </div>
             </div>
           </div>
