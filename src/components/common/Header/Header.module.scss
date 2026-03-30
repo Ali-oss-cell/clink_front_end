@@ -18,6 +18,39 @@
   }
 }
 
+// Full-width transparent shell; glass lives on `.container` (Homepage only — paired with fixed positioning in Homepage.module.scss).
+.headerHeroOverlay {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border-bottom: none;
+
+  &:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .container {
+    @include glass-card(admin, $glass-blur-sm, true);
+    border-bottom: 1px solid rgba($btn-admin-primary, 0.18);
+    border-radius: 14px;
+    width: min(98%, 1280px);
+    margin: 0 auto;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  &:hover .container {
+    transform: translateY(-1px);
+    box-shadow: $glass-shadow-hover;
+  }
+}
+
 .container {
   @include container;
   @include flex-between;

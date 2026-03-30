@@ -46,7 +46,12 @@ When token/theme values change, update:
 - `THEME_QUICK_REFERENCE.md`
 - This document (`docs/CSS_GOVERNANCE.md`) if architecture rules changed.
 
-## 6) PR Checklist for Styling Work
+## 6) Marketing homepage: hero under fixed nav
+
+- `Layout` exposes `overlayPublicHeader` (used only on `Homepage`). That sets `Header` `heroOverlay`, moving glass styling to the inner `.container` pill so the outer `<header>` is a full-width transparent track.
+- `Homepage.module.scss` fixes the header (`> header { position: fixed }`) and offsets the hero slider upward so background imagery meets the top of the viewport under the nav (safe-area aware). Other public routes keep the default sticky, full-glass header.
+
+## 7) PR Checklist for Styling Work
 
 - [ ] Uses existing tokens (no new raw palette in feature modules)
 - [ ] No duplicate pattern introduced when a shared option exists
@@ -54,3 +59,4 @@ When token/theme values change, update:
 - [ ] Theme reference docs updated if token values changed
 - [ ] Dashboard button classes map to shared role variants (`patient`, `psychologist`, `admin`, `manager`)
 - [ ] Card-like containers use centralized glass mixins/tokens (role-mapped where possible)
+- [ ] If changing homepage hero/header stacking, keep `overlayPublicHeader` + `heroOverlay` paired and safe-area calcs in sync (`Homepage.module.scss`, `Header.module.scss`)

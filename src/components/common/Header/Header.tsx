@@ -6,12 +6,18 @@ interface HeaderProps {
   isAuthenticated?: boolean;
   userRole?: 'patient' | 'psychologist' | 'practice_manager' | 'admin';
   userName?: string;
+  /**
+   * Marketing homepage: outer header is a full-width transparent track so the hero can sit underneath;
+   * glass styling moves to the inner `.container` pill.
+   */
+  heroOverlay?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   isAuthenticated = false,
   userRole,
-  userName
+  userName,
+  heroOverlay = false,
 }) => {
   const navigate = useNavigate();
 
@@ -45,7 +51,9 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className={styles.header}>
+    <header
+      className={`${styles.header}${heroOverlay ? ` ${styles.headerHeroOverlay}` : ''}`}
+    >
       <div className={styles.container}>
         <div className={styles.logo}>
           <Link to="/" className={styles.logoLink} aria-label="Tailored Psychology - Home">

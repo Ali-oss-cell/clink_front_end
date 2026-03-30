@@ -12,6 +12,10 @@ interface LayoutProps {
   className?: string;
   /** Patient-only: sidebar shell matching in-app design (no marketing header/footer). */
   patientShell?: boolean;
+  /**
+   * Public marketing homepage only: fixed header layered above the hero (see Homepage styles).
+   */
+  overlayPublicHeader?: boolean;
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -21,6 +25,7 @@ export const Layout: React.FC<LayoutProps> = ({
   showFooter = true,
   className = '',
   patientShell = false,
+  overlayPublicHeader = false,
 }) => {
   const usePatientShell =
     patientShell && isAuthenticated && user?.role === 'patient';
@@ -42,6 +47,7 @@ export const Layout: React.FC<LayoutProps> = ({
         isAuthenticated={isAuthenticated}
         userRole={user?.role}
         userName={user?.full_name || user?.first_name}
+        heroOverlay={overlayPublicHeader}
       />
 
       <main className={styles.main}>{children}</main>

@@ -345,7 +345,7 @@ export const Homepage: React.FC = () => {
   };
 
   return (
-    <Layout className={styles.homepage}>
+    <Layout className={styles.homepage} overlayPublicHeader>
       <section className={styles.hero}>
         {/* Slider Container */}
         <div className={styles.sliderContainer}>
