@@ -6,6 +6,7 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 
 - Sass design tokens: `src/assets/styles/_variables.scss`
 - Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
+- Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
 - Scoped patient CSS variables: `src/assets/styles/_clinicalSanctuary.scss`
 - Shared/global primitives: `src/assets/styles/*`, `src/components/ui/ui.scss`
 - Feature styles: `src/**/*.module.scss`
@@ -26,6 +27,7 @@ Rule: feature modules consume tokens; they do not define new palette systems.
 - Large page modules should be split into focused files by section or component.
 - Style changes must not bypass token layers in `_variables.scss` or `_clinicalSanctuary.scss`.
 - Dashboard buttons must use shared button mixins/tokens, not per-page color/shadow inventions.
+- Card surfaces should use shared glass primitives instead of ad-hoc blur/alpha patterns.
 
 ## 4) High-Churn Decomposition Targets
 
@@ -51,3 +53,4 @@ When token/theme values change, update:
 - [ ] Module scope remains clear and component-aligned
 - [ ] Theme reference docs updated if token values changed
 - [ ] Dashboard button classes map to shared role variants (`patient`, `psychologist`, `admin`, `manager`)
+- [ ] Card-like containers use centralized glass mixins/tokens (role-mapped where possible)

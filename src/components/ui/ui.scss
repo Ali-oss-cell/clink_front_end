@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/buttonSystem' as btn;
+@use '../../assets/styles/mixins' as mx;
 
 .tp-ui-btn {
   @include btn.dashboard-button-base;
@@ -131,4 +132,30 @@
 .tp-ui-badge--danger {
   background: rgba($error-red, 0.12);
   color: $error-red;
+}
+
+.tp-ui-glass-card {
+  @include mx.glass-card(default);
+  border-radius: $border-radius-lg;
+}
+
+.tp-ui-glass-panel {
+  @include mx.glass-card(default, $glass-blur-lg, true);
+  border-radius: $border-radius-xl;
+}
+
+.tp-ui-glass-card--patient {
+  @include mx.glass-card(patient);
+}
+
+.tp-ui-glass-card--psychologist {
+  @include mx.glass-card(psychologist);
+}
+
+.tp-ui-glass-card--admin {
+  @include mx.glass-card(admin);
+}
+
+.tp-ui-glass-card--manager {
+  @include mx.glass-card(manager);
 }

@@ -170,3 +170,20 @@ $btn-manager-primary: $primary-color;
 $btn-manager-primary-hover: $primary-dark;
 $btn-manager-outline: $primary-color;
 $btn-manager-ghost-hover: rgba($primary-color, 0.1);
+
+// Glassmorphism system tokens
+$glass-blur-sm: 8px;
+$glass-blur-md: 14px;
+$glass-blur-lg: 20px;
+$glass-surface-alpha: 0.72;
+$glass-surface-strong-alpha: 0.82;
+$glass-border-alpha: 0.28;
+$glass-highlight-alpha: 0.45;
+$glass-shadow: 0 10px 30px rgba(22, 28, 24, 0.14);
+$glass-shadow-hover: 0 18px 44px rgba(22, 28, 24, 0.2);
+
+// Role-mapped glass tint colors
+$glass-patient-tint: $patient-primary;
+$glass-psychologist-tint: $psychologist-primary;
+$glass-admin-tint: $btn-admin-primary;
+$glass-manager-tint: $primary-color;

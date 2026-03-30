@@ -836,3 +836,19 @@
   }
 }
 
+// Glassmorphism card migration
+.statCard,
+.secondaryStatCard,
+.dashboardCard,
+.statBox,
+.tableContainer,
+.modal {
+  @include glass-card(manager);
+}
+
+.statCard,
+.dashboardCard,
+.statBox {
+  @include glass-hover(manager);
+}
+

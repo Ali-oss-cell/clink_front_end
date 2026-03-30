@@ -14,6 +14,7 @@ Use this section as source-of-truth for active styling.
 - Role theming is preserved using `$patient-*` and `$psychologist-*` token groups.
 - Feature SCSS files should use tokens, not raw color literals.
 - Dashboard buttons are standardized via shared role mixins in `src/assets/styles/_buttonSystem.scss`.
+- Glassmorphism surfaces are standardized through shared tokens/mixins in `src/assets/styles/_variables.scss` and `src/assets/styles/_mixins.scss`.
 
 ### Core Rule
 

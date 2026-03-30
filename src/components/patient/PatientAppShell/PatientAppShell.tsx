@@ -102,7 +102,7 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
           </NavLink>
           <NavLink to="/patient/intake-form" className={navClass} onClick={closeMenu}>
             <ClipboardIcon size="sm" className={styles.navIcon} />
-            My care plan
+            Care plan
           </NavLink>
           <NavLink to="/patient/invoices" className={navClass} onClick={closeMenu}>
             <DollarIcon size="sm" className={styles.navIcon} />
@@ -127,14 +127,14 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
               navigate('/appointments/book-appointment');
             }}
           >
-            New appointment
+            Book session
           </button>
           <div className={styles.footerLinks}>
             <NavLink to="/patient/account" className={styles.footerLink} onClick={closeMenu}>
-              Settings
+              Account settings
             </NavLink>
             <NavLink to="/contact" className={styles.footerLink} onClick={closeMenu}>
-              Support
+              Help centre
             </NavLink>
             <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
               Log out

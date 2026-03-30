@@ -21,8 +21,10 @@ $shell-collapse: 900px;
   justify-content: center;
   border: none;
   border-radius: var(--cs-radius-xl);
-  background: var(--cs-surface-lowest);
-  box-shadow: var(--cs-shadow-atmospheric);
+  background: var(--cs-glass-bg-strong);
+  box-shadow: var(--cs-glass-shadow);
+  border: 1px solid var(--cs-glass-border);
+  backdrop-filter: blur(10px);
   color: var(--cs-primary);
   cursor: pointer;
   font-size: 1.25rem;
@@ -62,8 +64,10 @@ $shell-collapse: 900px;
   width: $sidebar-w;
   height: 100vh;
   padding: 1.5rem 0;
-  background: var(--cs-surface-lowest);
-  box-shadow: var(--cs-shadow-atmospheric);
+  background: var(--cs-glass-bg);
+  box-shadow: var(--cs-glass-shadow);
+  border-right: 1px solid var(--cs-glass-border);
+  backdrop-filter: blur(14px);
 
   @media (max-width: #{$shell-collapse - 1px}) {
     transform: translateX(-100%);
@@ -121,7 +125,8 @@ $shell-collapse: 900px;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 9999px;
-  background: var(--cs-surface-high);
+  background: var(--cs-glass-bg-strong);
+  border: 1px solid var(--cs-glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,21 +196,24 @@ $shell-collapse: 900px;
   letter-spacing: 0.02em;
   color: var(--cs-on-surface-variant);
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  border: 1px solid transparent;
 
   &:hover {
-    background: rgba(0, 52, 65, 0.06);
+    background: var(--cs-glass-bg-strong);
+    border-color: var(--cs-glass-border);
     color: var(--cs-primary);
   }
 }
 
 .navLinkActive {
-  background: var(--cs-surface-lowest);
+  background: var(--cs-glass-bg-strong);
   color: var(--cs-primary);
   font-weight: 700;
-  box-shadow: var(--cs-shadow-atmospheric);
+  box-shadow: var(--cs-glass-shadow);
   margin-left: 0.75rem;
   padding-left: 1rem;
+  border: 1px solid var(--cs-glass-border);
 }
 
 .navIcon {
@@ -234,7 +242,7 @@ $shell-collapse: 900px;
   color: var(--cs-on-primary);
   cursor: pointer;
   background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
-  box-shadow: var(--cs-shadow-atmospheric);
+  box-shadow: var(--cs-glass-shadow);
   transition: transform 0.15s ease, filter 0.15s ease;
 
   &:hover {
@@ -270,7 +278,8 @@ $shell-collapse: 900px;
 
   &:hover {
     color: var(--cs-primary);
-    background: var(--cs-surface-low);
+    background: var(--cs-glass-bg-strong);
+    border: 1px solid var(--cs-glass-border);
     border-radius: var(--cs-radius-xl);
     padding-left: 0.5rem;
   }

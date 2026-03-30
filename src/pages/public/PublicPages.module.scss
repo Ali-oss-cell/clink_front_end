@@ -251,6 +251,18 @@
   }
 }
 
+// Glassmorphism card migration
+.highlightCard,
+.resourceCard {
+  @include glass-card(manager);
+  @include glass-hover(manager);
+}
+
+.calloutCard {
+  @include glass-card(admin, $glass-blur-md, true);
+  @include glass-hover(admin);
+}
+
 .cardNote {
   margin-top: $spacing-lg;
   font-weight: 600;

@@ -243,3 +243,45 @@
     padding: 0 $spacing-lg;
   }
 }
+
+@function glass-tint($role) {
+  @if $role == patient {
+    @return $glass-patient-tint;
+  } @else if $role == psychologist {
+    @return $glass-psychologist-tint;
+  } @else if $role == admin {
+    @return $glass-admin-tint;
+  } @else if $role == manager {
+    @return $glass-manager-tint;
+  }
+  @return $primary-color;
+}
+
+@mixin glass-card($role: default, $blur: $glass-blur-md, $strong: false) {
+  $tint: glass-tint($role);
+  $alpha: if($strong, $glass-surface-strong-alpha, $glass-surface-alpha);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, $alpha) 0%,
+    rgba($tint, 0.14) 100%
+  );
+  border: 1px solid rgba($tint, $glass-border-alpha);
+  box-shadow:
+    $glass-shadow,
+    inset 0 1px 0 rgba(255, 255, 255, $glass-highlight-alpha);
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+}
+
+@mixin glass-hover($role: default) {
+  $tint: glass-tint($role);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: rgba($tint, 0.45);
+    box-shadow:
+      $glass-shadow-hover,
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+}

@@ -659,3 +659,15 @@ button.btnGhost {
   color: var(--cs-primary);
   font-size: 1.25rem;
 }
+
+// Glassmorphism card migration
+.card,
+.cardMuted,
+.resourceTile,
+.consentBanner {
+  background: var(--cs-glass-bg);
+  border: 1px solid var(--cs-glass-border);
+  box-shadow: var(--cs-glass-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}

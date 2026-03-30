@@ -1948,6 +1948,25 @@
   }
 }
 
+// Glassmorphism card migration
+.profileCard,
+.dashboardCard,
+.statCard,
+.appointmentCard,
+.patientCard,
+.noteCard,
+.modal {
+  @include glass-card(psychologist);
+}
+
+.dashboardCard,
+.statCard,
+.appointmentCard,
+.patientCard,
+.noteCard {
+  @include glass-hover(psychologist);
+}
+
 // ===================================
 // PATIENTS PAGE STYLES
 // ===================================

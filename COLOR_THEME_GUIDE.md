@@ -23,6 +23,7 @@ This section is the canonical reference. If older sections below conflict, follo
 - Feature/page SCSS modules should consume token variables from `_variables.scss`.
 - New raw color literals should not be added to feature module files.
 - Dashboard button behavior should use shared mixins in `src/assets/styles/_buttonSystem.scss`.
+- Glassmorphism behavior should use shared mixins in `src/assets/styles/_mixins.scss` and role-aware glass tokens from `_variables.scss`.
 
 ## Overview
 This application now implements a comprehensive role-based color theming system to enhance user experience and visual distinction between different user roles.

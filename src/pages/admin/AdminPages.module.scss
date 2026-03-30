@@ -1566,3 +1566,23 @@ $admin-accent: #6f8367;
   }
 }
 
+// Glassmorphism card migration
+.systemHealthCard,
+.statCard,
+.secondaryStatCard,
+.dashboardCard,
+.quickActionCard,
+.analyticsCard,
+.tableContainer,
+.modal,
+.modalContent {
+  @include glass-card(admin);
+}
+
+.statCard,
+.dashboardCard,
+.quickActionCard,
+.analyticsCard {
+  @include glass-hover(admin);
+}
+

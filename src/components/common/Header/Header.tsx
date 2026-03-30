@@ -58,18 +58,18 @@ export const Header: React.FC<HeaderProps> = ({
             // Public navigation
             <div className={styles.publicNav}>
               <Link to="/about">About</Link>
-              <Link to="/get-matched">Get matched</Link>
+              <Link to="/get-matched">Find your match</Link>
               <Link to="/services">Services</Link>
-              <Link to="/resources">Resources</Link>
+              <Link to="/resources">Resource library</Link>
               <Link to="/contact">Contact</Link>
               <Link 
                 to="/login" 
                 className={styles.loginButton}
                 onClick={handleLoginClick}
               >
-                Login
+                Sign in
               </Link>
-              <Link to="/register" className={styles.registerButton}>Book Appointment</Link>
+              <Link to="/register" className={styles.registerButton}>Start booking</Link>
             </div>
           ) : (
             // Authenticated navigation
@@ -84,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
                 {userRole === 'patient' && (
                   <>
                     <Link to="/patient/appointments">
-                      My Appointments
+                      Care schedule
                     </Link>
                     <Link to="/recordings">
                       Recordings
@@ -93,26 +93,26 @@ export const Header: React.FC<HeaderProps> = ({
                       Resources
                     </Link>
                     <Link to="/patient/account">
-                      My Account
+                      Account
                     </Link>
                   </>
                 )}
                 {userRole === 'psychologist' && (
                   <>
                     <Link to="/psychologist/schedule">
-                      Schedule
+                      Care schedule
                     </Link>
                     <Link to="/psychologist/profile">
                       Profile
                     </Link>
                     <Link to="/psychologist/patients">
-                      Patients
+                      Client roster
                     </Link>
                     <Link to="/recordings">
                       Recordings
                     </Link>
                     <Link to="/manager/resources">
-                      Resources
+                      Resource library
                     </Link>
                   </>
                 )}
@@ -122,13 +122,13 @@ export const Header: React.FC<HeaderProps> = ({
                       Dashboard
                     </Link>
                     <Link to="/manager/staff">
-                      Staff
+                      Team
                     </Link>
                     <Link to="/manager/patients">
                       Patients
                     </Link>
                     <Link to="/manager/appointments">
-                      Appointments
+                      Care schedule
                     </Link>
                     <Link to="/recordings">
                       Recordings
@@ -137,17 +137,17 @@ export const Header: React.FC<HeaderProps> = ({
                       Billing
                     </Link>
                     <Link to="/manager/resources">
-                      Resources
+                      Resource library
                     </Link>
                   </>
                 )}
                 {userRole === 'admin' && (
                   <>
                     <Link to="/admin/users">
-                      Users
+                      People
                     </Link>
                     <Link to="/admin/appointments">
-                      Appointments
+                      Care schedule
                     </Link>
                     <Link to="/recordings">
                       Recordings
@@ -171,7 +171,7 @@ export const Header: React.FC<HeaderProps> = ({
                       Resources
                     </Link>
                     <Link to="/admin/audit-logs">
-                      Audit Logs
+                      Audit trail
                     </Link>
                     <Link to="/admin/settings">
                       Settings
