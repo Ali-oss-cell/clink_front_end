@@ -143,3 +143,30 @@ $input-height: 44px;
 $input-padding: $spacing-md;
 $button-height: 44px;
 $button-padding: $spacing-md $spacing-lg;
+
+// Shared button system tokens
+$btn-radius: 10px;
+$btn-font-weight: 600;
+$btn-transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+$btn-focus-width: 3px;
+
+// Role button color maps
+$btn-patient-primary: $patient-primary;
+$btn-patient-primary-hover: $patient-dark;
+$btn-patient-outline: $patient-primary;
+$btn-patient-ghost-hover: rgba($patient-primary, 0.1);
+
+$btn-psych-primary: $psychologist-primary;
+$btn-psych-primary-hover: $psychologist-dark;
+$btn-psych-outline: $psychologist-primary;
+$btn-psych-ghost-hover: rgba($psychologist-primary, 0.1);
+
+$btn-admin-primary: #435343;
+$btn-admin-primary-hover: #394736;
+$btn-admin-outline: #435343;
+$btn-admin-ghost-hover: rgba(#435343, 0.08);
+
+$btn-manager-primary: $primary-color;
+$btn-manager-primary-hover: $primary-dark;
+$btn-manager-outline: $primary-color;
+$btn-manager-ghost-hover: rgba($primary-color, 0.1);

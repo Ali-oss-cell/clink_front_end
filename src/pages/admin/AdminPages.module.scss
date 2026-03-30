@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/buttonSystem' as btn;
 
 $admin-primary: #435343;
 $admin-accent: #6f8367;
@@ -446,6 +447,22 @@ $admin-accent: #6f8367;
   .statValue {
     font-size: 2rem;
   }
+}
+
+// Dashboard and admin-action button consistency layer
+.searchButton,
+.primaryButton,
+.actionButton,
+.editButton {
+  @include btn.dashboard-role-admin-primary;
+}
+
+.secondaryButton {
+  @include btn.dashboard-role-admin-outline;
+}
+
+.deleteButton {
+  @include btn.dashboard-button-primary($error-red, darken($error-red, 6%));
 }
 
 // Page Container (for all admin pages)

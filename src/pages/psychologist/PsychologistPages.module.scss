@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/buttonSystem' as btn;
 
 // Psychologist Layout - GREEN THEME
 .psychologistLayout {
@@ -2763,6 +2764,19 @@
     background: rgba($primary-color, 0.1);
     border-color: $primary-color;
   }
+}
+
+// Dashboard button consistency layer
+.actionButton,
+.retryButton,
+.primaryButton,
+.videoJoinButton {
+  @include btn.dashboard-role-psych-primary;
+}
+
+.secondaryButton,
+.viewAllButton {
+  @include btn.dashboard-role-psych-outline;
 }
 
 .statsContent {

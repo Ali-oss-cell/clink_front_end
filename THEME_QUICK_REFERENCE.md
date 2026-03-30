@@ -1,4 +1,25 @@
-# 🎨 Theme Quick Reference Card
+# Theme Quick Reference Card
+
+## Canonical Snapshot (2026-03-31)
+
+Use this section as source-of-truth for active styling.
+
+- Token source: `src/assets/styles/_variables.scss`
+- Scoped patient CSS vars: `src/assets/styles/_clinicalSanctuary.scss`
+- Governance standard: `docs/CSS_GOVERNANCE.md`
+
+### Active Direction
+
+- Current palette is sage/neutral (not legacy blue-only patient theme).
+- Role theming is preserved using `$patient-*` and `$psychologist-*` token groups.
+- Feature SCSS files should use tokens, not raw color literals.
+- Dashboard buttons are standardized via shared role mixins in `src/assets/styles/_buttonSystem.scss`.
+
+### Core Rule
+
+- Any token change requires synchronized updates to:
+  - `COLOR_THEME_GUIDE.md`
+  - `THEME_QUICK_REFERENCE.md`
 
 ## Summary
 ✅ **ALL patient pages are now BLUE** 🔵  

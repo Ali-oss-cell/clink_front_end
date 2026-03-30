@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/buttonSystem' as btn;
 
 // Manager Layout
 .managerLayout {
@@ -801,6 +802,12 @@
   &:hover {
     background: darken($primary-color, 10%);
   }
+}
+
+// Dashboard button consistency layer
+.actionButton,
+.primaryButton {
+  @include btn.dashboard-role-manager-primary;
 }
 
 // Responsive

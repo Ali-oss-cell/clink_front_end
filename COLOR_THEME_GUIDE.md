@@ -1,5 +1,29 @@
 # Color Theme Guide
 
+## Current Canonical Theme Status (2026-03-31)
+
+This section is the canonical reference. If older sections below conflict, follow this section.
+
+- Active base palette is **muted sage + warm neutrals**, defined in:
+  - `src/assets/styles/_variables.scss`
+- Patient shell also uses scoped CSS custom properties in:
+  - `src/assets/styles/_clinicalSanctuary.scss`
+- Prior blue/green-only role references in legacy notes are historical and non-canonical.
+
+### Canonical Token Highlights
+
+- Primary brand: `$primary-color`, `$primary-dark`, `$primary-light`
+- Patient role: `$patient-*` (sage-neutral scale)
+- Psychologist role: `$psychologist-*` (sage scale)
+- Utility status colors: `$success-*`, `$warning-*`, `$error-*`
+- Shared dashboard button tokens: `$btn-*` (role mappings and interaction states)
+
+### Implementation Rule
+
+- Feature/page SCSS modules should consume token variables from `_variables.scss`.
+- New raw color literals should not be added to feature module files.
+- Dashboard button behavior should use shared mixins in `src/assets/styles/_buttonSystem.scss`.
+
 ## Overview
 This application now implements a comprehensive role-based color theming system to enhance user experience and visual distinction between different user roles.
 

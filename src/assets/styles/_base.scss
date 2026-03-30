@@ -145,7 +145,7 @@ select {
   cursor: pointer;
 }
 
-button {
+button:not([class]) {
   @include button-primary;
 
   &:focus {
