@@ -462,3 +462,34 @@
     box-shadow: none;
   }
 }
+
+:global(.patientShell) {
+  .paymentContainer {
+    background: transparent;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .pageHeader {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
+  }
+
+  .pageTitle {
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+  }
+
+  .pageSubtitle {
+    color: var(--cs-on-surface-variant);
+  }
+
+  .paymentSummary .summaryCard,
+  .summaryCard {
+    background: var(--cs-surface-lowest);
+    box-shadow: var(--cs-shadow-atmospheric);
+    border-radius: var(--cs-radius-2xl);
+  }
+}

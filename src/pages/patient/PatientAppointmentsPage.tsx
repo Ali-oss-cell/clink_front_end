@@ -23,6 +23,8 @@ import {
   NotesIcon
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
+import { PatientShellPage, patientShellPageStyles } from '../../components/patient/PatientShellPage/PatientShellPage';
+import patientPageStyles from './PatientPages.module.scss';
 import styles from './PatientAppointments.module.scss';
 
 // Using PatientAppointment interface from appointments service
@@ -174,51 +176,46 @@ export const PatientAppointmentsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.dashboardContainer}>
-          <div className="container">
-            <div className={styles.loadingContainer}>
-              <div className={styles.loadingSpinner}></div>
-              <p>Loading your appointments...</p>
-            </div>
+      <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
+        <PatientShellPage>
+          <div className={styles.shellLoading}>
+            <div className={styles.shellSpinner} />
+            <p>Loading your appointments…</p>
           </div>
-        </div>
+        </PatientShellPage>
       </Layout>
     );
   }
 
   if (error) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.dashboardContainer}>
-          <div className="container">
-            <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Appointments</h3>
-              <p>{error.message || 'Failed to load appointments. Please try again.'}</p>
-              <Button 
-                className={styles.retryButton}
-                onClick={refetch}
-              >
-                <EditIcon size="sm" style={{ marginRight: '6px' }} />
-                Retry
-              </Button>
-            </div>
+      <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
+        <PatientShellPage>
+          <div className={styles.shellError}>
+            <h3>
+              <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to load
+              appointments
+            </h3>
+            <p>{error.message || 'Failed to load appointments. Please try again.'}</p>
+            <button type="button" className={patientShellPageStyles.btnPrimary} onClick={() => refetch()}>
+              <EditIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+              Retry
+            </button>
           </div>
-        </div>
+        </PatientShellPage>
       </Layout>
     );
   }
 
   return (
-    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-      <div className={styles.dashboardContainer}>
-        <div className="container">
-          <div className={styles.dashboardHeader}>
-            <h1 className={styles.welcomeTitle}>Your Appointments</h1>
-            <p className={styles.welcomeSubtitle}>
-              Manage your therapy sessions and view your appointment history. ({count} total)
-            </p>
-          </div>
+    <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
+      <PatientShellPage>
+        <header className={patientShellPageStyles.pageHeader}>
+          <h1 className={patientShellPageStyles.pageTitle}>Your appointments</h1>
+          <p className={patientShellPageStyles.pageSubtitle}>
+            Manage your therapy sessions and view your history ({count} total).
+          </p>
+        </header>
 
           {/* Action Bar */}
           <div className={styles.actionBar}>
@@ -483,8 +480,7 @@ export const PatientAppointmentsPage: React.FC = () => {
               </Button>
             </div>
           )}
-        </div>
-      </div>
+      </PatientShellPage>
 
       {/* Cancel Confirmation Modal */}
       {showCancelModal && selectedAppointment && (

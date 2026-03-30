@@ -31,3 +31,9 @@
   font-family: var(--cs-font-body);
   color: var(--cs-on-surface);
 }
+
+// Layout root when patient sidebar shell is active (any CSS-module `patientLayout` hash)
+[data-patient-shell] {
+  background: transparent;
+  min-height: 100vh;
+}

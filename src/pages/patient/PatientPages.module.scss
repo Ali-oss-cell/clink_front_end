@@ -2604,3 +2604,163 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Clinical Sanctuary: patient main content inside PatientAppShell (see Layout patientShell)
+:global(.patientShell) {
+  .pageContainer {
+    padding: 0;
+    min-height: 0;
+    background: transparent;
+  }
+
+  .pageHeader {
+    text-align: left;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 800;
+      font-family: var(--cs-font-headline);
+      color: var(--cs-primary);
+      background: none;
+      -webkit-text-fill-color: unset;
+      background-clip: unset;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: var(--cs-on-surface-variant);
+      font-size: 1rem;
+      max-width: 40rem;
+      margin: 0;
+    }
+  }
+
+  .dashboardContainer {
+    padding: 0;
+    max-width: none;
+  }
+
+  .accountContainer {
+    background: transparent;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .accountHeader {
+    text-align: left;
+  }
+
+  .pageTitle {
+    background: none;
+    -webkit-text-fill-color: unset;
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    text-align: left;
+    margin-left: 0;
+  }
+
+  .pageSubtitle {
+    color: var(--cs-on-surface-variant);
+    margin-left: 0;
+    max-width: 40rem;
+    text-align: left;
+  }
+
+  .accountContent {
+    max-width: 80rem;
+  }
+
+  .sidebar {
+    background: var(--cs-surface-lowest);
+    border-radius: var(--cs-radius-2xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+    border: none;
+  }
+
+  .mainContent {
+    background: var(--cs-surface-lowest);
+    border-radius: var(--cs-radius-2xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+    border: none;
+  }
+
+  .tabButton {
+    color: var(--cs-on-surface-variant);
+
+    &:hover {
+      background: rgba(0, 52, 65, 0.06);
+      color: var(--cs-primary);
+    }
+
+    &.active {
+      background: var(--cs-surface-low);
+      color: var(--cs-primary);
+      box-shadow: none;
+
+      &::before {
+        background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+      }
+    }
+  }
+
+  .serviceSelectionContainer {
+    background: transparent;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .serviceCard {
+    background: var(--cs-surface-lowest);
+    border: none;
+    box-shadow: var(--cs-shadow-atmospheric);
+    border-radius: var(--cs-radius-2xl);
+
+    &:hover {
+      border-color: transparent;
+      box-shadow: 0 24px 48px rgba(25, 28, 29, 0.08);
+    }
+
+    &.serviceCardSelected {
+      box-shadow: var(--cs-shadow-atmospheric);
+      background: var(--cs-surface-low);
+    }
+  }
+
+  .serviceName {
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+  }
+
+  .continueButton,
+  .retryButton {
+    background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+    color: var(--cs-on-primary);
+    border-radius: var(--cs-radius-xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+
+  .appointmentContainer {
+    background: transparent;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .emergencySection {
+    border-radius: var(--cs-radius-2xl);
+    border-width: 1px;
+  }
+
+  .emergencyCard {
+    background: var(--cs-surface-lowest);
+    border-radius: var(--cs-radius-xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+
+  .categoriesSection h2,
+  .resourcesSection h2 {
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+  }
+}

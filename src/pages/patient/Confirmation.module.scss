@@ -294,3 +294,17 @@
     }
   }
 }
+
+:global(.patientShell) {
+  .confirmationContainer {
+    background: transparent;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .successMessage {
+    background: var(--cs-surface-lowest);
+    border-radius: var(--cs-radius-2xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+}

@@ -1,15 +1,7 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 
-// Patient Appointments Page - BLUE THEME
-.patientLayout {
-  min-height: 100vh;
-  background: linear-gradient(135deg, $patient-bg-gradient-start 0%, $patient-bg-gradient-end 100%);
-  
-  :global(.main) {
-    background-color: transparent;
-  }
-}
+// patientLayout: use PatientPages.module.scss (single source) on Layout className
 
 .dashboardContainer {
   padding: 3rem 0;
@@ -66,31 +58,32 @@
 .filterTabs {
   display: flex;
   gap: $spacing-xs;
-  background: $background-gray;
+  background: var(--cs-surface-low);
   padding: $spacing-xs;
-  border-radius: $border-radius;
+  border-radius: var(--cs-radius-xl);
 }
 
 .filterTab {
   padding: $spacing-sm $spacing-md;
   border: none;
   background: transparent;
-  color: $text-light;
-  border-radius: $border-radius-sm;
+  color: var(--cs-on-surface-variant);
+  border-radius: var(--cs-radius-xl);
   cursor: pointer;
-  transition: all $transition-normal ease;
+  transition: background 0.15s ease, color 0.15s ease;
   font-size: 0.9rem;
   font-weight: 500;
 
   &:hover {
-    background: white;
-    color: $text-dark;
+    background: var(--cs-surface-lowest);
+    color: var(--cs-primary);
   }
 
   &.filterTabActive {
-    background: white;
-    color: $patient-primary;
-    box-shadow: $shadow-sm;
+    background: var(--cs-surface-lowest);
+    color: var(--cs-primary);
+    font-weight: 700;
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 }
 
@@ -103,15 +96,14 @@
 .appointmentCard {
   @include card;
   padding: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: $background-white;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: none;
+  background: var(--cs-surface-lowest);
   position: relative;
   overflow: hidden;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: var(--cs-radius-2xl);
+  box-shadow: var(--cs-shadow-atmospheric);
 
-  // Top accent bar
   &::before {
     content: '';
     position: absolute;
@@ -119,14 +111,13 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $patient-primary 0%, $secondary-color 100%);
+    background: linear-gradient(90deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
     opacity: 1;
   }
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
-    border-color: rgba($patient-primary, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 24px 48px rgba(25, 28, 29, 0.08);
   }
 
   // Add subtle animation on mount with stagger
@@ -196,15 +187,16 @@
 .psychologistName {
   font-size: 1.25rem;
   font-weight: 700;
-  color: $text-dark;
+  color: var(--cs-primary);
   margin: 0 0 $spacing-xs 0;
   letter-spacing: -0.01em;
   line-height: 1.3;
+  font-family: var(--cs-font-headline);
 }
 
 .psychologistTitle {
   font-size: 0.875rem;
-  color: $text-light;
+  color: var(--cs-on-surface-variant);
   margin: 0;
   line-height: 1.4;
 }
@@ -214,9 +206,9 @@
   grid-template-columns: repeat(2, 1fr);
   gap: $spacing-md;
   padding: $spacing-lg;
-  background: linear-gradient(135deg, rgba($patient-primary, 0.06) 0%, rgba($patient-primary, 0.02) 100%);
-  border-radius: $border-radius-lg;
-  border: 1px solid rgba($patient-primary, 0.1);
+  background: var(--cs-surface-low);
+  border-radius: var(--cs-radius-xl);
+  border: none;
 }
 
 .dateTimeItem {
@@ -368,16 +360,16 @@
 }
 
 .meetingLink {
-  color: $patient-primary;
+  color: var(--cs-primary);
   text-decoration: none;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease, gap 0.2s ease;
 
   &:hover {
-    color: darken($patient-primary, 10%);
+    opacity: 0.85;
     gap: 0.5rem;
   }
 }
@@ -393,20 +385,20 @@
 }
 
 .primaryButton {
-  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+  color: var(--cs-on-primary);
   border: none;
   padding: $spacing-md $spacing-xl;
-  border-radius: $border-radius-lg;
+  border-radius: var(--cs-radius-xl);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba($patient-primary, 0.3);
+  transition: filter 0.2s ease, transform 0.2s ease;
+  box-shadow: var(--cs-shadow-atmospheric);
 
   &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba($patient-primary, 0.4);
+    filter: saturate(1.06);
+    transform: translateY(-1px);
   }
 
   &:disabled {
@@ -484,9 +476,10 @@
 .emptyState {
   text-align: center;
   padding: $spacing-3xl $spacing-lg;
-  background: white;
-  border-radius: $border-radius-lg;
-  border: 2px dashed $border-light;
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-2xl);
+  border: 2px dashed var(--cs-surface-high);
+  box-shadow: var(--cs-shadow-atmospheric);
 }
 
 .emptyIcon {
@@ -520,22 +513,23 @@
 }
 
 .modal {
-  background: white;
-  border-radius: $border-radius-lg;
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-2xl);
   padding: $spacing-xl;
   max-width: 500px;
   width: 100%;
-  box-shadow: $shadow-xl;
+  box-shadow: var(--cs-shadow-atmospheric);
 }
 
 .modal h3 {
-  color: $text-dark;
+  color: var(--cs-primary);
+  font-family: var(--cs-font-headline);
   margin-bottom: $spacing-md;
   font-size: 1.25rem;
 }
 
 .modal p {
-  color: $text-light;
+  color: var(--cs-on-surface-variant);
   margin-bottom: $spacing-lg;
   line-height: 1.5;
 }
@@ -672,5 +666,45 @@
 
   .paginationButton {
     width: 100%;
+  }
+}
+
+.shellLoading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--cs-on-surface-variant);
+  font-family: var(--cs-font-body);
+}
+
+.shellSpinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0 auto 1rem;
+  border: 3px solid var(--cs-surface-high);
+  border-top-color: var(--cs-primary);
+  border-radius: 50%;
+  animation: shellSpin 0.9s linear infinite;
+}
+
+@keyframes shellSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.shellError {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--cs-on-surface-variant);
+
+  h3 {
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    margin-bottom: 1.25rem;
   }
 }

@@ -371,3 +371,27 @@
   border: 1px solid rgba($primary-color, 0.1);
 }
 
+:global(.patientShell) {
+  .container {
+    padding-top: 0;
+  }
+
+  .header {
+    background: var(--cs-surface-lowest);
+    border: none;
+    box-shadow: var(--cs-shadow-atmospheric);
+    border-radius: var(--cs-radius-2xl);
+  }
+
+  .title {
+    background: none;
+    -webkit-text-fill-color: unset;
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+  }
+
+  .subtitle {
+    color: var(--cs-on-surface-variant);
+  }
+}
+

@@ -672,3 +672,15 @@
     box-shadow: 0 4px 12px rgba($patient-primary, 0.2);
   }
 }
+
+:global(.patientShell) {
+  .dateTimeSelectionContainer {
+    background: transparent;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .pageHeader {
+    text-align: left;
+  }
+}

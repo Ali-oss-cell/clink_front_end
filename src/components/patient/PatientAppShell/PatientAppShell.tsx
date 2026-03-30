@@ -29,6 +29,14 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
     .join('')
     .toUpperCase() || 'P';
 
+  const displayName =
+    user.full_name?.trim() ||
+    [user.first_name, user.last_name].filter(Boolean).join(' ').trim() ||
+    user.email ||
+    'Your account';
+
+  const profileLabel = `View profile for ${displayName}`;
+
   const closeMenu = () => setMenuOpen(false);
 
   const handleLogout = async () => {
@@ -62,12 +70,24 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
         </div>
 
         <div className={styles.userBlock}>
-          <div className={styles.avatar} aria-hidden>
-            {initials}
-          </div>
+          <NavLink
+            to="/patient/account"
+            className={styles.avatarLink}
+            aria-label={profileLabel}
+            onClick={closeMenu}
+          >
+            <span className={styles.avatar}>{initials}</span>
+          </NavLink>
           <div className={styles.userMeta}>
             <p className={styles.welcomeLabel}>Welcome back</p>
-            <p className={styles.welcomeTag}>Clinical care</p>
+            <NavLink
+              to="/patient/account"
+              className={styles.profileNameLink}
+              aria-label={profileLabel}
+              onClick={closeMenu}
+            >
+              {displayName}
+            </NavLink>
           </div>
         </div>
 

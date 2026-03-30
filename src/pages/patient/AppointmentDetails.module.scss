@@ -393,3 +393,22 @@
   margin-bottom: $spacing-md;
   line-height: 1.6;
 }
+
+:global(.patientShell) {
+  .appointmentDetailsContainer {
+    background: transparent;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .summaryCard {
+    background: var(--cs-surface-lowest);
+    border-radius: var(--cs-radius-2xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+    border: none;
+  }
+
+  .pageHeader {
+    text-align: left;
+  }
+}
