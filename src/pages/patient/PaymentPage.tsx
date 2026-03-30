@@ -8,6 +8,8 @@ import { paymentsService } from '../../services/api/payments';
 import { extractApiErrorMessage } from '../../utils/apiError';
 import { getStripePromise, hasStripePublishableKey } from '../../lib/stripe';
 import { VideoIcon, BuildingIcon, CreditCardIcon, PhoneIcon, LockIcon, WarningIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
+import { Checkbox } from '../../components/ui/checkbox';
 import styles from './Payment.module.scss';
 
 type PaymentMethodUi = 'card' | 'phone' | 'in-person';
@@ -60,14 +62,14 @@ function CardPaymentForm({ appointmentId, paymentIntentId, totalAmount, onPaid, 
       <div className={styles.stripeElementWrap}>
         <PaymentElement />
       </div>
-      <button
+      <Button
         type="button"
         className={styles.payButton}
         onClick={handlePay}
         disabled={!stripe || submitting}
       >
         {submitting ? 'Processing…' : `Pay $${totalAmount.toFixed(2)}`}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -277,9 +279,9 @@ export const PaymentPage: React.FC = () => {
                 Unable to Load Payment
               </h3>
               <p>{error || 'Payment data unavailable.'}</p>
-              <button className={styles.cancelButton} onClick={handleBack}>
+              <Button variant="outline" className={styles.cancelButton} onClick={handleBack}>
                 Back
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -305,9 +307,9 @@ export const PaymentPage: React.FC = () => {
       <div className={styles.paymentContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <button className={styles.backButton} onClick={handleBack}>
+            <Button className={styles.backButton} onClick={handleBack}>
               ← Back to Appointment Details
-            </button>
+            </Button>
             <h1 className={styles.pageTitle}>Payment</h1>
             <p className={styles.pageSubtitle}>Complete your payment to confirm your appointment</p>
           </div>
@@ -464,43 +466,23 @@ export const PaymentPage: React.FC = () => {
               <div className={styles.termsSection}>
                 <h3>Terms & Conditions</h3>
                 <div className={styles.termsCheckboxes}>
-                  <label className={styles.checkboxWrapper}>
-                    <input
-                      type="checkbox"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    />
-                    <span className={styles.checkboxCustom}></span>
+                  <label className="tp-ui-checkboxRow">
+                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
                     I agree to the Terms of Service and Privacy Policy
                   </label>
 
-                  <label className={styles.checkboxWrapper}>
-                    <input
-                      type="checkbox"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    />
-                    <span className={styles.checkboxCustom}></span>
+                  <label className="tp-ui-checkboxRow">
+                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
                     I understand the cancellation policy (48-hour notice required)
                   </label>
 
-                  <label className={styles.checkboxWrapper}>
-                    <input
-                      type="checkbox"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    />
-                    <span className={styles.checkboxCustom}></span>
+                  <label className="tp-ui-checkboxRow">
+                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
                     I consent to receive appointment reminders via my selected method
                   </label>
 
-                  <label className={styles.checkboxWrapper}>
-                    <input
-                      type="checkbox"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    />
-                    <span className={styles.checkboxCustom}></span>
+                  <label className="tp-ui-checkboxRow">
+                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
                     I confirm that I have a valid Medicare card (if claiming rebate)
                   </label>
                 </div>
@@ -539,35 +521,36 @@ export const PaymentPage: React.FC = () => {
               )}
 
               <div className={styles.paymentActions}>
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   className={styles.cancelButton}
                   onClick={handleBack}
                   disabled={isProcessing || isPreparingIntent}
                 >
                   Back to Details
-                </button>
+                </Button>
 
                 {paymentMethod === 'card' && !stripeClientSecret && (
-                  <button
+                  <Button
                     type="button"
                     className={styles.payButton}
                     onClick={prepareCardCheckout}
                     disabled={!agreedToTerms || isPreparingIntent || isProcessing}
                   >
                     {isPreparingIntent ? 'Preparing secure checkout…' : 'Continue to secure payment'}
-                  </button>
+                  </Button>
                 )}
 
                 {paymentMethod !== 'card' && (
-                  <button
+                  <Button
                     type="button"
                     className={styles.payButton}
                     onClick={handleNonCardPayment}
                     disabled={!agreedToTerms || isProcessing}
                   >
                     {isProcessing ? 'Processing…' : `Confirm & Pay $${totalAmount.toFixed(2)}`}
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>

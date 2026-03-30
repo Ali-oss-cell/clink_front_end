@@ -22,6 +22,9 @@ import {
   CloseIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 
 interface Appointment {
   id: number;
@@ -336,10 +339,10 @@ export const PsychologistSchedulePage: React.FC = () => {
             <div className={styles.errorState}>
               <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Schedule</h2>
               <p>{error}</p>
-              <button className={styles.retryButton} onClick={fetchAppointments}>
+              <Button className={styles.retryButton} onClick={fetchAppointments}>
                 <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -365,20 +368,20 @@ export const PsychologistSchedulePage: React.FC = () => {
               </div>
               <div className={styles.headerActions}>
                 <div className={styles.viewToggle}>
-                  <button
+                  <Button
                     className={viewMode === 'list' ? styles.active : ''}
                     onClick={() => setViewMode('list')}
                   >
                     <span><ClipboardIcon size="sm" /></span>
                     <span className={styles.buttonText}>List View</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     className={viewMode === 'calendar' ? styles.active : ''}
                     onClick={() => setViewMode('calendar')}
                   >
                     <span><CalendarIcon size="sm" /></span>
                     <span className={styles.buttonText}>Calendar</span>
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -424,24 +427,24 @@ export const PsychologistSchedulePage: React.FC = () => {
 
           {/* Filter Tabs */}
           <div className={styles.filterTabs}>
-            <button
+            <Button
               className={filterStatus === 'today' ? styles.active : ''}
               onClick={() => setFilterStatus('today')}
             >
               Today
-            </button>
-            <button
+            </Button>
+            <Button
               className={filterStatus === 'upcoming' ? styles.active : ''}
               onClick={() => setFilterStatus('upcoming')}
             >
               Upcoming
-            </button>
-            <button
+            </Button>
+            <Button
               className={filterStatus === 'all' ? styles.active : ''}
               onClick={() => setFilterStatus('all')}
             >
               All
-            </button>
+            </Button>
           </div>
 
           {/* Appointments List */}
@@ -567,7 +570,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                     <div className={styles.appointmentActions}>
                       {/* Video Call Button */}
                       {videoCallService.isVideoCallAvailable(appointment) && (
-                        <button 
+                        <Button 
                           className={`${styles.videoCallButton} ${
                             (appointment.can_join_session === false || 
                              (appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment))) 
@@ -600,16 +603,16 @@ export const PsychologistSchedulePage: React.FC = () => {
                             ? 'Join Video Session' 
                             : 'Video Call (Not Available Yet)'
                           }
-                        </button>
+                        </Button>
                       )}
                       {appointment.status !== 'completed' && appointment.status !== 'cancelled' && (
-                        <button
+                        <Button
                           className={styles.successButton}
                           onClick={() => handleCompleteSession(appointment.id)}
                         >
                           <CheckCircleIcon size="sm" style={{ marginRight: '6px' }} />
                           Complete Session
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -622,21 +625,21 @@ export const PsychologistSchedulePage: React.FC = () => {
           {viewMode === 'calendar' && (
             <div className={styles.calendarContainer}>
               <div className={styles.calendarHeader}>
-                <button 
+                <Button 
                   className={styles.calendarNavButton}
                   onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
                 >
                   ← Previous
-                </button>
+                </Button>
                 <h3 className={styles.calendarTitle}>
                   {selectedDate.toLocaleDateString('en-AU', { month: 'long', year: 'numeric' })}
                 </h3>
-                <button 
+                <Button 
                   className={styles.calendarNavButton}
                   onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
                 >
                   Next →
-                </button>
+                </Button>
               </div>
               
               <div className={styles.calendarGrid}>
@@ -691,7 +694,7 @@ export const PsychologistSchedulePage: React.FC = () => {
               <h3>
                 Appointments on {dayModalDate ? new Date(dayModalDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
               </h3>
-              <button className={styles.closeButton} onClick={closeDayModal}><CloseIcon size="md" /></button>
+              <Button className={styles.closeButton} onClick={closeDayModal}><CloseIcon size="md" /></Button>
             </div>
             <div className={styles.modalBody}>
               {dayModalAppointments.length === 0 ? (
@@ -732,7 +735,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                         <div className={styles.appointmentActions}>
                           {/* Video Call Button - Use can_join_session if available, otherwise fallback to old logic */}
                           {videoCallService.isVideoCallAvailable(apt) && (
-                            <button 
+                            <Button 
                               className={`${styles.videoCallButton} ${
                                 (apt.can_join_session === false || 
                                  (apt.can_join_session === undefined && !videoCallService.canJoinNow(apt))) 
@@ -766,9 +769,9 @@ export const PsychologistSchedulePage: React.FC = () => {
                                 ? 'Join Video' 
                                 : 'Video (Not Available)'
                               }
-                            </button>
+                            </Button>
                           )}
-                          <button
+                          <Button
                             className={styles.secondaryButton}
                             onClick={() => {
                               setSelectedAppointmentId(apt.id);
@@ -777,8 +780,8 @@ export const PsychologistSchedulePage: React.FC = () => {
                             style={{ marginRight: '0.5rem', padding: '0.5rem 1rem' }}
                           >
                             Cancel
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             className={styles.secondaryButton}
                             onClick={() => {
                               setSelectedAppointmentId(apt.id);
@@ -788,7 +791,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                             style={{ padding: '0.5rem 1rem' }}
                           >
                             Reschedule
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -797,7 +800,7 @@ export const PsychologistSchedulePage: React.FC = () => {
               )}
             </div>
             <div className={styles.modalActions}>
-              <button className={styles.secondaryButton} onClick={closeDayModal}>Close</button>
+              <Button className={styles.secondaryButton} onClick={closeDayModal}>Close</Button>
             </div>
           </div>
         </div>
@@ -809,13 +812,13 @@ export const PsychologistSchedulePage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
             <div className={styles.modalHeader}>
               <h3>Cancel Appointment</h3>
-              <button className={styles.closeButton} onClick={() => setShowCancelModal(false)}><CloseIcon size="md" /></button>
+              <Button className={styles.closeButton} onClick={() => setShowCancelModal(false)}><CloseIcon size="md" /></Button>
             </div>
             <div className={styles.modalBody}>
               <p>Are you sure you want to cancel this appointment?</p>
               <div className={styles.formGroup}>
                 <label>Reason (optional):</label>
-                <textarea
+                <Textarea
                   value={cancelReason}
                   onChange={(e) => setCancelReason(e.target.value)}
                   placeholder="Enter cancellation reason..."
@@ -825,12 +828,12 @@ export const PsychologistSchedulePage: React.FC = () => {
               </div>
             </div>
             <div className={styles.modalActions}>
-              <button className={styles.secondaryButton} onClick={() => setShowCancelModal(false)}>
+              <Button className={styles.secondaryButton} onClick={() => setShowCancelModal(false)}>
                 Keep Appointment
-              </button>
-              <button className={styles.deleteButton} onClick={handleCancelAppointment}>
+              </Button>
+              <Button className={styles.deleteButton} onClick={handleCancelAppointment}>
                 Confirm Cancellation
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -842,12 +845,12 @@ export const PsychologistSchedulePage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
             <div className={styles.modalHeader}>
               <h3>Reschedule Appointment</h3>
-              <button className={styles.closeButton} onClick={() => setShowRescheduleModal(false)}><CloseIcon size="md" /></button>
+              <Button className={styles.closeButton} onClick={() => setShowRescheduleModal(false)}><CloseIcon size="md" /></Button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.formGroup}>
                 <label>New Date & Time:</label>
-                <input
+                <Input
                   type="datetime-local"
                   value={newAppointmentDate}
                   onChange={(e) => setNewAppointmentDate(e.target.value)}
@@ -856,12 +859,12 @@ export const PsychologistSchedulePage: React.FC = () => {
               </div>
             </div>
             <div className={styles.modalActions}>
-              <button className={styles.secondaryButton} onClick={() => setShowRescheduleModal(false)}>
+              <Button className={styles.secondaryButton} onClick={() => setShowRescheduleModal(false)}>
                 Cancel
-              </button>
-              <button className={styles.primaryButton} onClick={handleRescheduleAppointment}>
+              </Button>
+              <Button className={styles.primaryButton} onClick={handleRescheduleAppointment}>
                 Confirm Reschedule
-              </button>
+              </Button>
             </div>
           </div>
         </div>

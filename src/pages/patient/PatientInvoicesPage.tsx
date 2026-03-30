@@ -5,6 +5,8 @@ import { authService } from '../../services/api/auth';
 import { adminService, type Invoice } from '../../services/api/admin';
 import { downloadInvoicePDF } from '../../utils/invoicePDF';
 import { DocumentIcon, CreditCardIcon, ClockIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
+import { Select } from '../../components/ui/select';
 import styles from './PatientPages.module.scss';
 
 export const PatientInvoicesPage: React.FC = () => {
@@ -223,7 +225,7 @@ export const PatientInvoicesPage: React.FC = () => {
 
           {/* Filter */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <select
+            <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               style={{
@@ -240,7 +242,7 @@ export const PatientInvoicesPage: React.FC = () => {
               <option value="pending">Pending</option>
               <option value="overdue">Overdue</option>
               <option value="cancelled">Cancelled</option>
-            </select>
+            </Select>
           </div>
 
           {/* Invoices Table */}
@@ -328,7 +330,7 @@ export const PatientInvoicesPage: React.FC = () => {
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'center' }}>
                         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                          <button
+                          <Button
                             onClick={() => handleDownloadPDF(invoice.id)}
                             disabled={downloadingId === invoice.id}
                             style={{
@@ -355,9 +357,9 @@ export const PatientInvoicesPage: React.FC = () => {
                                 Download PDF
                               </>
                             )}
-                          </button>
+                          </Button>
                           {invoice.status !== 'paid' && invoice.status !== 'cancelled' && (
-                            <button
+                            <Button
                               onClick={() => navigate(`/appointments/payment?invoice=${invoice.id}`)}
                               style={{
                                 padding: '0.5rem 1rem',
@@ -373,7 +375,7 @@ export const PatientInvoicesPage: React.FC = () => {
                             >
                               <CreditCardIcon size="sm" style={{ marginRight: '6px' }} />
                               Pay Now
-                            </button>
+                            </Button>
                           )}
                         </div>
                       </td>

@@ -3,6 +3,8 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type AdminAppointment } from '../../services/api/admin';
 import styles from './ManagerPages.module.scss';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
 
 export const ManagerAppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
@@ -96,7 +98,7 @@ export const ManagerAppointmentsPage: React.FC = () => {
 
           <div className={styles.filtersRow}>
             <div className={styles.searchBar}>
-              <input
+              <Input
                 type="text"
                 placeholder="Search by patient or psychologist name..."
                 value={searchTerm}
@@ -104,7 +106,7 @@ export const ManagerAppointmentsPage: React.FC = () => {
                 className={styles.searchInput}
               />
             </div>
-            <select
+            <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className={styles.filterSelect}
@@ -114,7 +116,7 @@ export const ManagerAppointmentsPage: React.FC = () => {
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
               <option value="no_show">No Show</option>
-            </select>
+            </Select>
           </div>
 
           <div className={styles.statsRow}>

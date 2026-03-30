@@ -13,6 +13,9 @@ import {
   CloseIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
 
 export const PsychologistNotesPage: React.FC = () => {
   const [notes, setNotes] = useState<ProgressNote[]>([]);
@@ -157,12 +160,12 @@ export const PsychologistNotesPage: React.FC = () => {
                   Manage SOAP notes and track patient progress
                 </p>
               </div>
-              <button
+              <Button
                 className={styles.primaryButton}
                 onClick={handleCreateNote}
               >
                 + New Note
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -170,7 +173,7 @@ export const PsychologistNotesPage: React.FC = () => {
           <div className={styles.searchFilterSection}>
             <div className={styles.searchBox}>
               <span className={styles.searchIcon}><SearchIcon size="md" /></span>
-              <input
+              <Input
                 type="text"
                 placeholder="Search by patient name or note content..."
                 value={searchQuery}
@@ -180,7 +183,7 @@ export const PsychologistNotesPage: React.FC = () => {
             </div>
             <div className={styles.filterGroup}>
               <label htmlFor="patient-filter">Patient:</label>
-              <select
+              <Select
                 id="patient-filter"
                 value={selectedPatient || ''}
                 onChange={(e) => setSelectedPatient(e.target.value ? parseInt(e.target.value) : null)}
@@ -192,7 +195,7 @@ export const PsychologistNotesPage: React.FC = () => {
                     {patient.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 
@@ -208,9 +211,9 @@ export const PsychologistNotesPage: React.FC = () => {
               <p style={{ fontSize: '0.9rem', color: '#4a4b4a', marginTop: '1rem' }}>
                 Make sure your Django backend is running on port 8000
               </p>
-              <button className={styles.retryButton} onClick={fetchNotes}>
+              <Button className={styles.retryButton} onClick={fetchNotes}>
                 Retry
-              </button>
+              </Button>
             </div>
           ) : filteredNotes.length === 0 ? (
             <div className={styles.emptyState}>
@@ -221,9 +224,9 @@ export const PsychologistNotesPage: React.FC = () => {
                   ? 'Try adjusting your search or filter criteria.'
                   : 'Start by creating your first progress note.'}
               </p>
-              <button className={styles.primaryButton} onClick={handleCreateNote}>
+              <Button className={styles.primaryButton} onClick={handleCreateNote}>
                 + Create First Note
-              </button>
+              </Button>
             </div>
           ) : (
             <div className={styles.notesList}>
@@ -287,24 +290,24 @@ export const PsychologistNotesPage: React.FC = () => {
                   </div>
 
                   <div className={styles.noteActions}>
-                    <button
+                    <Button
                       className={styles.viewButton}
                       onClick={() => handleViewNote(note)}
                     >
                       View Full
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       className={styles.editButton}
                       onClick={() => handleEditNote(note.id)}
                     >
                       Edit
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       className={styles.deleteButton}
                       onClick={() => handleDeleteClick(note.id)}
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -317,13 +320,13 @@ export const PsychologistNotesPage: React.FC = () => {
       {showNoteForm && (
         <div className={styles.modalOverlay} onClick={handleCancelNote}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button
+            <Button
               className={styles.modalClose}
               onClick={handleCancelNote}
               aria-label="Close"
             >
               <CloseIcon size="md" />
-            </button>
+            </Button>
             <SOAPNoteForm
               noteId={selectedNoteId || undefined}
               onSave={handleSaveNote}
@@ -340,9 +343,9 @@ export const PsychologistNotesPage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>Session #{selectedNote.session_number} - {selectedNote.patient_name}</h3>
-              <button className={styles.modalClose} onClick={handleCloseNote}>
+              <Button className={styles.modalClose} onClick={handleCloseNote}>
                 <CloseIcon size="md" />
-              </button>
+              </Button>
             </div>
 
             <div className={styles.modalBody}>
@@ -388,10 +391,10 @@ export const PsychologistNotesPage: React.FC = () => {
             </div>
 
             <div className={styles.modalActions}>
-              <button className={styles.secondaryButton} onClick={handleCloseNote}>
+              <Button className={styles.secondaryButton} onClick={handleCloseNote}>
                 Close
-              </button>
-              <button
+              </Button>
+              <Button
                 className={styles.primaryButton}
                 onClick={() => {
                   handleCloseNote();
@@ -399,7 +402,7 @@ export const PsychologistNotesPage: React.FC = () => {
                 }}
               >
                 Edit Note
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -412,12 +415,12 @@ export const PsychologistNotesPage: React.FC = () => {
             <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Delete Progress Note?</h3>
             <p>Are you sure you want to delete this progress note? This action cannot be undone.</p>
             <div className={styles.confirmActions}>
-              <button className={styles.secondaryButton} onClick={handleCancelDelete}>
+              <Button className={styles.secondaryButton} onClick={handleCancelDelete}>
                 Cancel
-              </button>
-              <button className={styles.dangerButton} onClick={handleConfirmDelete}>
+              </Button>
+              <Button className={styles.dangerButton} onClick={handleConfirmDelete}>
                 Delete Note
-              </button>
+              </Button>
             </div>
           </div>
         </div>

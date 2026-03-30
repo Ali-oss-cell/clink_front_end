@@ -18,6 +18,7 @@ import {
   BoltIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import { Button } from '../../components/ui/button';
 
 export const PsychologistDashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -297,7 +298,7 @@ export const PsychologistDashboardPage: React.FC = () => {
                             <span>{appointment.duration_minutes} min</span>
                           </div>
                         </div>
-                        <button
+                        <Button
                           className={`${styles.actionButton} ${styles.videoJoinButton} ${
                             appointment.can_join_session === false ? styles.disabledButton : ''
                           }`}
@@ -322,7 +323,7 @@ export const PsychologistDashboardPage: React.FC = () => {
                               ? 'Not Available' 
                               : 'Join Now'
                           }
-                        </button>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -338,9 +339,9 @@ export const PsychologistDashboardPage: React.FC = () => {
             <div className={styles.dashboardCard}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                 <h3><NotesIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Progress Notes</h3>
-                <button className={styles.viewAllButton} onClick={handleViewNotes}>
+                <Button className={styles.viewAllButton} onClick={handleViewNotes}>
                   View All →
-                </button>
+                </Button>
               </div>
               {dashboardData.recent_notes.length === 0 ? (
                 <div className={styles.emptyState}>
@@ -397,18 +398,18 @@ export const PsychologistDashboardPage: React.FC = () => {
             <div className={styles.dashboardCard}>
               <h3><BoltIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Quick Actions</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1rem' }}>
-                <button className={styles.actionButton} onClick={handleViewPatients}>
+                <Button className={styles.actionButton} onClick={handleViewPatients}>
                   <UsersIcon size="sm" style={{ marginRight: '6px' }} />
                   Manage Patients
-                </button>
-                <button className={styles.actionButton} onClick={handleViewSchedule}>
+                </Button>
+                <Button className={styles.actionButton} onClick={handleViewSchedule}>
                   <CalendarIcon size="sm" style={{ marginRight: '6px' }} />
                   View Schedule
-                </button>
-                <button className={styles.actionButton} onClick={handleViewNotes}>
+                </Button>
+                <Button className={styles.actionButton} onClick={handleViewNotes}>
                   <NotesIcon size="sm" style={{ marginRight: '6px' }} />
                   Write Progress Note
-                </button>
+                </Button>
               </div>
             </div>
 

@@ -3,6 +3,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Patient } from '../../services/api/admin';
 import styles from './ManagerPages.module.scss';
+import { Input } from '../../components/ui/input';
 
 export const ManagerPatientsPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -78,7 +79,7 @@ export const ManagerPatientsPage: React.FC = () => {
           )}
 
           <div className={styles.searchBar}>
-            <input
+            <Input
               type="text"
               placeholder="Search patients by name or email..."
               value={searchTerm}

@@ -5,6 +5,9 @@ import type { LoginRequest } from '../../../types/simple-auth';
 import { authService } from '../../../services/api/auth';
 import { getPrivacyPolicyStatus } from '../../../services/api/privacy';
 import { WarningIcon, CheckCircleIcon } from '../../../utils/icons';
+import { Button } from '../../../components/ui/button';
+import { Checkbox } from '../../../components/ui/checkbox';
+import { Input } from '../../../components/ui/input';
 import styles from './Login.module.scss';
 
 // Helper function to get redirect path based on user role
@@ -143,7 +146,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
             <label htmlFor="email" className={styles.label}>
               Email
             </label>
-            <input
+            <Input
               {...register('email', {
                 required: 'Email is required',
                 pattern: {
@@ -167,7 +170,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
             <label htmlFor="password" className={styles.label}>
               Password
             </label>
-            <input
+            <Input
               {...register('password', {
                 required: 'Password is required',
                 minLength: {
@@ -190,8 +193,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
 
         <div className={styles.formOptions}>
           <label className={styles.checkboxLabel}>
-            <input 
-              type="checkbox" 
+            <Checkbox
               className={styles.checkbox}
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
@@ -203,11 +205,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
           </Link>
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={styles.submitButton}
-        >
+        <Button type="submit" disabled={isLoading} className={styles.submitButton}>
           {isLoading ? (
             <>
               <span className={styles.spinner}></span>
@@ -216,7 +214,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
           ) : (
             'Sign In'
           )}
-        </button>
+        </Button>
 
 
         <div className={styles.formFooter}>

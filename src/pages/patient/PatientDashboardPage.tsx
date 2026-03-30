@@ -19,6 +19,7 @@ import {
   WarningIcon,
   DollarIcon
 } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
 import styles from './PatientPages.module.scss';
 
 export const PatientDashboardPage: React.FC = () => {
@@ -154,12 +155,12 @@ export const PatientDashboardPage: React.FC = () => {
             <div className={styles.errorContainer}>
               <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h2>
               <p>{error}</p>
-              <button 
+              <Button 
                 className={styles.retryButton}
                 onClick={() => window.location.reload()}
               >
                 Try Again
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -196,12 +197,12 @@ export const PatientDashboardPage: React.FC = () => {
                   an emergency plan.
                 </p>
               </div>
-              <button
+              <Button
                 className={styles.actionButton}
                 onClick={() => navigate('/patient/account?tab=privacy')}
               >
                 Update Telehealth Consent
-              </button>
+              </Button>
             </div>
           )}
 
@@ -231,13 +232,13 @@ export const PatientDashboardPage: React.FC = () => {
                             <span>{appointment.duration_minutes} min</span>
                           </div>
                         </div>
-                        <button
+                        <Button
                           className={`${styles.actionButton} ${styles.videoJoinButton}`}
                           onClick={() => handleJoinVideoCall(appointment.id)}
                         >
                           <VideoIcon size="sm" style={{ marginRight: '6px' }} />
                           Join Now
-                        </button>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -247,12 +248,12 @@ export const PatientDashboardPage: React.FC = () => {
                     <p className={styles.placeholderSubtext}>
                       Video sessions will appear here when you have upcoming telehealth appointments
                     </p>
-                    <button 
+                    <Button 
                       className={styles.actionButton}
                       onClick={() => navigate('/patient/appointments')}
                     >
                       View All Appointments
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -277,25 +278,25 @@ export const PatientDashboardPage: React.FC = () => {
                             {videoCallService.getTimeUntilAppointment(dashboardData.next_appointment)}
                           </span>
                         </div>
-                        <button
+                        <Button
                           className={`${styles.actionButton} ${styles.videoButton}`}
                           onClick={() => handleJoinVideoCall(dashboardData.next_appointment!.id)}
                         >
                           <VideoIcon size="sm" style={{ marginRight: '6px' }} />
                           Join Video Session
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className={styles.placeholder}>
                     <p>No upcoming appointments</p>
-                    <button 
+                    <Button 
                       className={styles.actionButton}
                       onClick={handleBookAppointment}
                     >
                       Book New Appointment
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -370,12 +371,12 @@ export const PatientDashboardPage: React.FC = () => {
                 ) : (
                   <div className={styles.placeholder}>
                     <p>Complete your intake form to get started</p>
-                    <button 
+                    <Button 
                       className={styles.actionButton}
                       onClick={handleContinueIntake}
                     >
                       Continue Intake
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -389,12 +390,12 @@ export const PatientDashboardPage: React.FC = () => {
                   {dashboardData?.outstanding_invoices || 0}
                 </div>
                 <p>Pending payments</p>
-                <button 
+                <Button 
                   className={styles.actionButton}
                   onClick={() => navigate('/patient/invoices')}
                 >
                   View Invoices
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -437,7 +438,7 @@ export const PatientDashboardPage: React.FC = () => {
               <div className={styles.cardContent}>
                 <div className={styles.placeholder}>
                   <p>Mental health resources and tools</p>
-                  <button className={styles.actionButton}>View Resources</button>
+                  <Button className={styles.actionButton}>View Resources</Button>
                 </div>
               </div>
             </div>

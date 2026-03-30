@@ -5,6 +5,9 @@ import { adminService, type Invoice } from '../../services/api/admin';
 import { downloadInvoicePDF } from '../../utils/invoicePDF';
 import { ClockIcon, DocumentIcon } from '../../utils/icons';
 import styles from './ManagerPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
 
 export const ManagerBillingPage: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -149,7 +152,7 @@ export const ManagerBillingPage: React.FC = () => {
 
           <div className={styles.filtersRow}>
             <div className={styles.searchBar}>
-              <input
+              <Input
                 type="text"
                 placeholder="Search by patient name or invoice ID..."
                 value={searchTerm}
@@ -157,7 +160,7 @@ export const ManagerBillingPage: React.FC = () => {
                 className={styles.searchInput}
               />
             </div>
-            <select
+            <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className={styles.filterSelect}
@@ -167,7 +170,7 @@ export const ManagerBillingPage: React.FC = () => {
               <option value="pending">Pending</option>
               <option value="overdue">Overdue</option>
               <option value="cancelled">Cancelled</option>
-            </select>
+            </Select>
           </div>
 
           <div className={styles.statsRow}>
@@ -230,7 +233,7 @@ export const ManagerBillingPage: React.FC = () => {
                           }}
                           title="GST-free invoice (no 10% GST)"
                         >
-                          <input
+                          <Input
                             type="checkbox"
                             checked={!!invoice.is_gst_free}
                             disabled={gstUpdatingId === invoice.id}
@@ -246,7 +249,7 @@ export const ManagerBillingPage: React.FC = () => {
                       </td>
                       <td>{formatDate(invoice.due_date)}</td>
                       <td>
-                        <button
+                        <Button
                           onClick={() => handleDownloadPDF(invoice.id)}
                           disabled={downloadingId === invoice.id}
                           className={styles.actionButton}
@@ -263,7 +266,7 @@ export const ManagerBillingPage: React.FC = () => {
                                 Download PDF
                               </>
                             )}
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   ))

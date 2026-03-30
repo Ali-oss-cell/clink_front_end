@@ -3,6 +3,9 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { CheckCircleIcon, WarningIcon, CloseIcon, DeleteIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Select } from '../../components/ui/select';
+import { Textarea } from '../../components/ui/textarea';
 
 interface DeletionRequest {
   id: number;
@@ -139,7 +142,7 @@ export const AdminDataDeletionPage: React.FC = () => {
 
           <div className={styles.filterSection}>
             <label htmlFor="statusFilter">Filter by Status:</label>
-            <select
+            <Select
               id="statusFilter"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -151,7 +154,7 @@ export const AdminDataDeletionPage: React.FC = () => {
               <option value="rejected">Rejected</option>
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
-            </select>
+            </Select>
           </div>
 
           {loading ? (
@@ -195,24 +198,24 @@ export const AdminDataDeletionPage: React.FC = () => {
                       <td>
                         {request.status === 'pending' && (
                           <div className={styles.actionButtons}>
-                            <button
+                            <Button
                               className={styles.approveButton}
                               onClick={() => handleReview(request, 'approve')}
                             >
                               <CheckCircleIcon size="sm" />
                               Approve
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               className={styles.rejectButton}
                               onClick={() => handleReview(request, 'reject')}
                             >
                               <CloseIcon size="sm" />
                               Reject
-                            </button>
+                            </Button>
                           </div>
                         )}
                         {request.status !== 'pending' && (
-                          <button
+                          <Button
                             className={styles.viewButton}
                             onClick={() => {
                               setSelectedRequest(request);
@@ -220,7 +223,7 @@ export const AdminDataDeletionPage: React.FC = () => {
                             }}
                           >
                             View Details
-                          </button>
+                          </Button>
                         )}
                       </td>
                     </tr>
@@ -238,12 +241,12 @@ export const AdminDataDeletionPage: React.FC = () => {
                   <h2>
                     {reviewAction === 'approve' ? 'Approve' : 'Reject'} Deletion Request #{selectedRequest.id}
                   </h2>
-                  <button
+                  <Button
                     className={styles.modalCloseButton}
                     onClick={() => setShowReviewModal(false)}
                   >
                     <CloseIcon size="md" />
-                  </button>
+                  </Button>
                 </div>
 
                 <div className={styles.modalBody}>
@@ -287,7 +290,7 @@ export const AdminDataDeletionPage: React.FC = () => {
                   {reviewAction === 'reject' && (
                     <div className={styles.formGroup}>
                       <label htmlFor="rejectionReason">Rejection Reason *</label>
-                      <select
+                      <Select
                         id="rejectionReason"
                         value={rejectionReason}
                         onChange={(e) => setRejectionReason(e.target.value)}
@@ -300,14 +303,14 @@ export const AdminDataDeletionPage: React.FC = () => {
                         <option value="unpaid_invoices">Patient has unpaid invoices</option>
                         <option value="legal_obligation">Legal obligation to retain records</option>
                         <option value="other">Other</option>
-                      </select>
+                      </Select>
                     </div>
                   )}
 
                   {reviewAction === 'reject' && (
                     <div className={styles.formGroup}>
                       <label htmlFor="rejectionNotes">Rejection Notes</label>
-                      <textarea
+                      <Textarea
                         id="rejectionNotes"
                         value={rejectionNotes}
                         onChange={(e) => setRejectionNotes(e.target.value)}
@@ -320,7 +323,7 @@ export const AdminDataDeletionPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label htmlFor="reviewNotes">Review Notes</label>
-                    <textarea
+                    <Textarea
                       id="reviewNotes"
                       value={reviewNotes}
                       onChange={(e) => setReviewNotes(e.target.value)}
@@ -332,14 +335,14 @@ export const AdminDataDeletionPage: React.FC = () => {
                 </div>
 
                 <div className={styles.modalFooter}>
-                  <button
+                  <Button
                     className={styles.cancelButton}
                     onClick={() => setShowReviewModal(false)}
                     disabled={reviewing}
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     className={reviewAction === 'approve' ? styles.approveButton : styles.rejectButton}
                     onClick={submitReview}
                     disabled={reviewing || (reviewAction === 'reject' && !rejectionReason)}
@@ -364,7 +367,7 @@ export const AdminDataDeletionPage: React.FC = () => {
                         )}
                       </>
                     )}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

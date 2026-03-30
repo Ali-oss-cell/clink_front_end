@@ -9,6 +9,10 @@ import { getPrivacyPolicyStatus, acceptPrivacyPolicy } from '../../../services/a
 import { WarningIcon } from '../../../utils/icons';
 import { normalizeToE164 } from '../../../utils/phoneE164';
 import { RegisterDobFields, validateRegisterDob } from './RegisterDobFields';
+import { Button } from '../../../components/ui/button';
+import { Checkbox } from '../../../components/ui/checkbox';
+import { Input } from '../../../components/ui/input';
+import { Select } from '../../../components/ui/select';
 import styles from './Register.module.scss';
 
 interface RegisterProps {
@@ -232,7 +236,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 First name *
               </label>
               <div className={styles.inputWrapper}>
-                <input
+                <Input
                   {...register('first_name', {
                     required: 'First name is required',
                     minLength: {
@@ -257,7 +261,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 Last Name *
               </label>
               <div className={styles.inputWrapper}>
-                <input
+                <Input
                   {...register('last_name', {
                     required: 'Last name is required',
                     minLength: {
@@ -286,7 +290,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               Email *
             </label>
             <div className={styles.inputWrapper}>
-              <input
+              <Input
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
@@ -389,7 +393,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
             </div>
 
             <div className={`${styles.stepActions} ${styles.stepActionsEnd}`}>
-              <button
+              <Button
                 type="button"
                 className={styles.nextButton}
                 onClick={nextStep}
@@ -403,7 +407,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 }
               >
                 Continue
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -418,7 +422,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               Street Address *
             </label>
             <div className={styles.inputWrapper}>
-              <input
+              <Input
                 {...register('address_line_1', {
                   required: 'Street address is required',
                   minLength: {
@@ -444,7 +448,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 Suburb *
               </label>
               <div className={styles.inputWrapper}>
-                <input
+                <Input
                   {...register('suburb', {
                     required: 'Suburb is required',
                     minLength: {
@@ -469,7 +473,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 State *
               </label>
               <div className={styles.inputWrapper}>
-                <select
+                <Select
                   {...register('state', {
                     required: 'State is required'
                   })}
@@ -486,7 +490,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                   <option value="TAS">Tasmania</option>
                   <option value="ACT">Australian Capital Territory</option>
                   <option value="NT">Northern Territory</option>
-                </select>
+                </Select>
               </div>
               {errors.state && (
                 <span className={styles.fieldError}>{errors.state.message}</span>
@@ -499,7 +503,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               Postcode *
             </label>
             <div className={styles.inputWrapper}>
-              <input
+              <Input
                 {...register('postcode', {
                   required: 'Postcode is required',
                   pattern: {
@@ -522,21 +526,21 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
             </div>
 
             <div className={styles.stepActions}>
-              <button
+              <Button
                 type="button"
                 className={styles.backButton}
                 onClick={prevStep}
               >
                 Back
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 className={styles.nextButton}
                 onClick={nextStep}
                 disabled={!address_line_1 || !suburb || !state || !postcode}
               >
                 Continue
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -551,7 +555,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               Medicare Number *
             </label>
             <div className={styles.inputWrapper}>
-              <input
+              <Input
                 {...register('medicare_number', {
                   required: 'Medicare number is required',
                   minLength: {
@@ -588,7 +592,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 Password *
               </label>
               <div className={styles.inputWrapper}>
-                <input
+                <Input
                   {...register('password', {
                     required: 'Password is required',
                     minLength: {
@@ -644,7 +648,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 Confirm Password *
               </label>
               <div className={styles.inputWrapper}>
-                <input
+                <Input
                   {...register('password_confirm', {
                     required: 'Please confirm your password',
                     validate: (value) => value === password || 'Passwords do not match'
@@ -669,11 +673,10 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         <div className={`${styles.fieldCluster} ${styles.termsCluster}`}>
           <div className={styles.formGroup}>
             <label className={styles.checkboxLabel}>
-              <input
+              <Checkbox
                 {...register('terms_accepted', {
                   required: 'You must accept the terms and conditions'
                 })}
-                type="checkbox"
                 className={styles.checkbox}
                 disabled={isLoading}
               />
@@ -699,14 +702,14 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
             <p className={styles.lastStepHint}>Review your details, then create your account.</p>
 
             <div className={styles.stepActions}>
-              <button
+              <Button
                 type="button"
                 className={styles.backButton}
                 onClick={prevStep}
               >
                 Back
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={isLoading || !isValid}
                 className={`${styles.submitButton} ${!isValid ? styles.submitDisabled : ''}`}
@@ -719,7 +722,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 ) : (
                   'Create account'
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         )}

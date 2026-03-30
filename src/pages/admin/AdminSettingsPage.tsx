@@ -6,6 +6,9 @@ import { CloseIcon } from '../../utils/icons';
 import { AHPRAInput } from '../../components/common/AHPRAInput';
 import { validateAHPRA } from '../../utils/validation';
 import styles from './AdminPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
 
 export const AdminSettingsPage: React.FC = () => {
   const [settings, setSettings] = useState<SystemSettings | null>(null);
@@ -129,14 +132,14 @@ export const AdminSettingsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
+              <Button onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
             </div>
           )}
 
           {success && (
             <div className={styles.successBanner}>
               <p>{success}</p>
-              <button onClick={() => setSuccess(null)}><CloseIcon size="sm" /></button>
+              <Button onClick={() => setSuccess(null)}><CloseIcon size="sm" /></Button>
             </div>
           )}
 
@@ -147,7 +150,7 @@ export const AdminSettingsPage: React.FC = () => {
               <div className={styles.settingsGrid}>
                 <div className={styles.formGroup}>
                   <label>Clinic Name</label>
-                  <input
+                  <Input
                     type="text"
                     value={settings.clinic.name}
                     onChange={(e) => handleChange('clinic', 'name', e.target.value)}
@@ -155,7 +158,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>Address</label>
-                  <input
+                  <Input
                     type="text"
                     value={settings.clinic.address}
                     onChange={(e) => handleChange('clinic', 'address', e.target.value)}
@@ -163,7 +166,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>Phone</label>
-                  <input
+                  <Input
                     type="tel"
                     value={settings.clinic.phone}
                     onChange={(e) => handleChange('clinic', 'phone', e.target.value)}
@@ -171,7 +174,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>Email</label>
-                  <input
+                  <Input
                     type="email"
                     value={settings.clinic.email}
                     onChange={(e) => handleChange('clinic', 'email', e.target.value)}
@@ -179,7 +182,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>Website</label>
-                  <input
+                  <Input
                     type="url"
                     value={settings.clinic.website}
                     onChange={(e) => handleChange('clinic', 'website', e.target.value)}
@@ -187,7 +190,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>ABN</label>
-                  <input
+                  <Input
                     type="text"
                     value={settings.clinic.abn}
                     onChange={(e) => handleChange('clinic', 'abn', e.target.value)}
@@ -202,7 +205,7 @@ export const AdminSettingsPage: React.FC = () => {
               <div className={styles.settingsGrid}>
                 <div className={styles.formGroup}>
                   <label>Timezone</label>
-                  <select
+                  <Select
                     value={settings.system.timezone}
                     onChange={(e) => handleChange('system', 'timezone', e.target.value)}
                   >
@@ -212,21 +215,21 @@ export const AdminSettingsPage: React.FC = () => {
                     <option value="Australia/Perth">Australia/Perth</option>
                     <option value="Australia/Adelaide">Australia/Adelaide</option>
                     <option value="Australia/Darwin">Australia/Darwin</option>
-                  </select>
+                  </Select>
                 </div>
                 <div className={styles.formGroup}>
                   <label>Language</label>
-                  <select
+                  <Select
                     value={settings.system.language}
                     onChange={(e) => handleChange('system', 'language', e.target.value)}
                   >
                     <option value="en-au">English (Australia)</option>
                     <option value="en-us">English (US)</option>
-                  </select>
+                  </Select>
                 </div>
                 <div className={styles.formGroup}>
                   <label>GST Rate</label>
-                  <input
+                  <Input
                     type="number"
                     step="0.01"
                     min="0"
@@ -237,7 +240,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>Medicare Provider Number</label>
-                  <input
+                  <Input
                     type="text"
                     value={settings.system.medicare_provider_number}
                     onChange={(e) => handleChange('system', 'medicare_provider_number', e.target.value)}
@@ -267,7 +270,7 @@ export const AdminSettingsPage: React.FC = () => {
               <div className={styles.settingsGrid}>
                 <div className={styles.formGroup}>
                   <label>
-                    <input
+                    <Input
                       type="checkbox"
                       checked={settings.notifications.email_enabled}
                       onChange={(e) => handleChange('notifications', 'email_enabled', e.target.checked)}
@@ -277,7 +280,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>
-                    <input
+                    <Input
                       type="checkbox"
                       checked={settings.notifications.sms_enabled}
                       onChange={(e) => handleChange('notifications', 'sms_enabled', e.target.checked)}
@@ -287,7 +290,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>
-                    <input
+                    <Input
                       type="checkbox"
                       checked={settings.notifications.whatsapp_enabled}
                       onChange={(e) => handleChange('notifications', 'whatsapp_enabled', e.target.checked)}
@@ -304,7 +307,7 @@ export const AdminSettingsPage: React.FC = () => {
               <div className={styles.settingsGrid}>
                 <div className={styles.formGroup}>
                   <label>Default Payment Method</label>
-                  <select
+                  <Select
                     value={settings.billing.default_payment_method}
                     onChange={(e) => handleChange('billing', 'default_payment_method', e.target.value)}
                   >
@@ -312,11 +315,11 @@ export const AdminSettingsPage: React.FC = () => {
                     <option value="bank_transfer">Bank Transfer</option>
                     <option value="cash">Cash</option>
                     <option value="medicare">Medicare</option>
-                  </select>
+                  </Select>
                 </div>
                 <div className={styles.formGroup}>
                   <label>Invoice Terms (Days)</label>
-                  <input
+                  <Input
                     type="number"
                     min="1"
                     value={settings.billing.invoice_terms_days}
@@ -325,7 +328,7 @@ export const AdminSettingsPage: React.FC = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>
-                    <input
+                    <Input
                       type="checkbox"
                       checked={settings.billing.auto_generate_invoices}
                       onChange={(e) => handleChange('billing', 'auto_generate_invoices', e.target.checked)}
@@ -337,12 +340,12 @@ export const AdminSettingsPage: React.FC = () => {
             </div>
 
             <div className={styles.formActions}>
-              <button type="submit" className={styles.primaryButton} disabled={saving}>
+              <Button type="submit" className={styles.primaryButton} disabled={saving}>
                 {saving ? 'Saving...' : 'Save Settings'}
-              </button>
-              <button type="button" onClick={fetchSettings} className={styles.secondaryButton}>
+              </Button>
+              <Button type="button" onClick={fetchSettings} className={styles.secondaryButton}>
                 Reset Changes
-              </button>
+              </Button>
             </div>
           </form>
         </div>

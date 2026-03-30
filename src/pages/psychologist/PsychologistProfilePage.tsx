@@ -5,6 +5,9 @@ import { authService } from '../../services/api/auth';
 import type { PsychologistProfile } from '../../services/api/psychologist';
 import { StarIcon } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 
 export const PsychologistProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<PsychologistProfile | null>(null);
@@ -177,12 +180,12 @@ export const PsychologistProfilePage: React.FC = () => {
             <div className={styles.errorState}>
               <h3>Unable to Load Profile</h3>
               <p><strong>Error:</strong> {error}</p>
-              <button 
+              <Button 
                 className={styles.retryButton}
                 onClick={() => window.location.reload()}
               >
                 Retry
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -249,7 +252,7 @@ export const PsychologistProfilePage: React.FC = () => {
                       className={styles.profileImage}
                     />
                     <div className={styles.uploadOverlay}>
-                      <input
+                      <Input
                         type="file"
                         id="profile-image-upload"
                         accept="image/*"
@@ -264,7 +267,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   </>
                 ) : (
                   <div className={styles.profileImagePlaceholder}>
-                    <input
+                    <Input
                       type="file"
                       id="profile-image-upload"
                       accept="image/*"
@@ -282,7 +285,7 @@ export const PsychologistProfilePage: React.FC = () => {
               <div className={styles.profileInfo}>
                 <h2 className={styles.profileName}>{profile.display_name}</h2>
                 {isEditing ? (
-                  <input
+                  <Input
                     type="text"
                     value={editForm.title || ''}
                     onChange={(e) => handleInputChange('title', e.target.value)}
@@ -311,7 +314,7 @@ export const PsychologistProfilePage: React.FC = () => {
               <div className={styles.detailSection}>
                 <h4 className={styles.sectionTitle}>Qualifications</h4>
                 {isEditing ? (
-                  <textarea
+                  <Textarea
                     value={editForm.qualifications || ''}
                     onChange={(e) => handleInputChange('qualifications', e.target.value)}
                     className={styles.editableTextarea}
@@ -342,7 +345,7 @@ export const PsychologistProfilePage: React.FC = () => {
               <div className={styles.detailSection}>
                 <h4 className={styles.sectionTitle}>About Me</h4>
                 {isEditing ? (
-                  <textarea
+                  <Textarea
                     value={editForm.bio || ''}
                     onChange={(e) => handleInputChange('bio', e.target.value)}
                     className={styles.editableTextarea}
@@ -368,14 +371,14 @@ export const PsychologistProfilePage: React.FC = () => {
                 <h4 className={styles.sectionTitle}>Practice Location</h4>
                 {isEditing ? (
                   <div className={styles.editableFields}>
-                    <input
+                    <Input
                       type="text"
                       value={editForm.practice_name || ''}
                       onChange={(e) => handleInputChange('practice_name', e.target.value)}
                       className={styles.editableInput}
                       placeholder="Practice Name"
                     />
-                    <textarea
+                    <Textarea
                       value={editForm.practice_address || ''}
                       onChange={(e) => handleInputChange('practice_address', e.target.value)}
                       className={styles.editableTextarea}
@@ -396,21 +399,21 @@ export const PsychologistProfilePage: React.FC = () => {
                 <h4 className={styles.sectionTitle}>Contact Information</h4>
                 {isEditing ? (
                   <div className={styles.editableFields}>
-                    <input
+                    <Input
                       type="tel"
                       value={editForm.practice_phone || ''}
                       onChange={(e) => handleInputChange('practice_phone', e.target.value)}
                       className={styles.editableInput}
                       placeholder="Practice Phone"
                     />
-                    <input
+                    <Input
                       type="email"
                       value={editForm.practice_email || ''}
                       onChange={(e) => handleInputChange('practice_email', e.target.value)}
                       className={styles.editableInput}
                       placeholder="Practice Email"
                     />
-                    <input
+                    <Input
                       type="url"
                       value={editForm.personal_website || ''}
                       onChange={(e) => handleInputChange('personal_website', e.target.value)}
@@ -433,7 +436,7 @@ export const PsychologistProfilePage: React.FC = () => {
               <div className={styles.detailSection}>
                 <h4 className={styles.sectionTitle}>Languages</h4>
                 {isEditing ? (
-                  <input
+                  <Input
                     type="text"
                     value={editForm.languages_spoken || ''}
                     onChange={(e) => handleInputChange('languages_spoken', e.target.value)}
@@ -459,7 +462,7 @@ export const PsychologistProfilePage: React.FC = () => {
               <div className={styles.detailSection}>
                 <h4 className={styles.sectionTitle}>Session Types</h4>
                 {isEditing ? (
-                  <input
+                  <Input
                     type="text"
                     value={editForm.session_types || ''}
                     onChange={(e) => handleInputChange('session_types', e.target.value)}
@@ -492,7 +495,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div className={styles.editableFields}>
                     <div>
                       <label>Insurance Providers:</label>
-                      <input
+                      <Input
                         type="text"
                         value={editForm.insurance_providers || ''}
                         onChange={(e) => handleInputChange('insurance_providers', e.target.value)}
@@ -502,7 +505,7 @@ export const PsychologistProfilePage: React.FC = () => {
                     </div>
                     <div>
                       <label>Medicare Rebate Amount ($):</label>
-                      <input
+                      <Input
                         type="number"
                         step="0.01"
                         min="0"
@@ -550,7 +553,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div className={styles.simpleFields}>
                     <div>
                       <label>
-                        <input
+                        <Input
                           type="checkbox"
                           checked={editForm.is_accepting_new_patients ?? false}
                           onChange={(e) => handleInputChange('is_accepting_new_patients', e.target.checked)}
@@ -560,7 +563,7 @@ export const PsychologistProfilePage: React.FC = () => {
                     </div>
                     <div>
                       <label>
-                        <input
+                        <Input
                           type="checkbox"
                           checked={editForm.is_active_practitioner ?? true}
                           onChange={(e) => handleInputChange('is_active_practitioner', e.target.checked)}
@@ -570,7 +573,7 @@ export const PsychologistProfilePage: React.FC = () => {
                     </div>
                     <div>
                       <label>Max Patients Per Day:</label>
-                      <input
+                      <Input
                         type="number"
                         value={editForm.max_patients_per_day || ''}
                         onChange={(e) => handleInputChange('max_patients_per_day', parseInt(e.target.value) || 0)}
@@ -600,7 +603,7 @@ export const PsychologistProfilePage: React.FC = () => {
                       <div className={styles.workingDays}>
                         {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
                           <label key={day} className={styles.dayCheckbox}>
-                            <input
+                            <Input
                               type="checkbox"
                               checked={(editForm as any).working_days?.includes(day) || false}
                               onChange={(e) => {
@@ -652,7 +655,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div>
                     <label>Start Time:</label>
                     {isEditing ? (
-                      <input
+                      <Input
                         type="time"
                         value={(editForm as any).start_time || '09:00'}
                         onChange={(e) => handleInputChange('start_time' as any, e.target.value)}
@@ -665,7 +668,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div>
                     <label>End Time:</label>
                     {isEditing ? (
-                      <input
+                      <Input
                         type="time"
                         value={(editForm as any).end_time || '17:00'}
                         onChange={(e) => handleInputChange('end_time' as any, e.target.value)}
@@ -678,7 +681,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div>
                     <label>Session Duration:</label>
                     {isEditing ? (
-                      <input
+                      <Input
                         type="number"
                         value={editForm.session_duration_minutes || ''}
                         onChange={(e) => handleInputChange('session_duration_minutes', parseInt(e.target.value))}
@@ -692,7 +695,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div>
                     <label>Break Between Sessions:</label>
                     {isEditing ? (
-                      <input
+                      <Input
                         type="number"
                         value={editForm.break_between_sessions_minutes || ''}
                         onChange={(e) => handleInputChange('break_between_sessions_minutes', parseInt(e.target.value))}
@@ -706,7 +709,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div>
                     <label>Telehealth Available:</label>
                     {isEditing ? (
-                      <input
+                      <Input
                         type="checkbox"
                         checked={editForm.telehealth_available || false}
                         onChange={(e) => handleInputChange('telehealth_available', e.target.checked)}
@@ -718,7 +721,7 @@ export const PsychologistProfilePage: React.FC = () => {
                   <div>
                     <label>In-Person Available:</label>
                     {isEditing ? (
-                      <input
+                      <Input
                         type="checkbox"
                         checked={editForm.in_person_available || false}
                         onChange={(e) => handleInputChange('in_person_available', e.target.checked)}
@@ -767,25 +770,25 @@ export const PsychologistProfilePage: React.FC = () => {
             {/* Action Buttons */}
             <div className={styles.profileActions}>
               {!isEditing ? (
-                <button className={styles.editButton} onClick={handleEditClick}>
+                <Button className={styles.editButton} onClick={handleEditClick}>
                   Edit Profile
-                </button>
+                </Button>
               ) : (
                 <>
-                  <button 
+                  <Button 
                     className={styles.saveButton} 
                     onClick={handleSaveProfile}
                     disabled={saving}
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
-                  </button>
-                  <button 
+                  </Button>
+                  <Button 
                     className={styles.cancelButton} 
                     onClick={handleCancelEdit}
                     disabled={saving}
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </>
               )}
             </div>

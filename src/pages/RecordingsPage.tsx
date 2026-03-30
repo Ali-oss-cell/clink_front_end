@@ -5,6 +5,7 @@ import type { SessionRecordingListItem } from '../types/recordings';
 import { Layout } from '../components/common/Layout/Layout';
 import { authService } from '../services/api/auth';
 import { VideoIcon, DownloadIcon, CalendarIcon, ClockIcon, UsersIcon, InfoIcon } from '../utils/icons';
+import { Button } from '../components/ui/button';
 import styles from './RecordingsPage.module.scss';
 
 export const RecordingsPage: React.FC = () => {
@@ -52,9 +53,9 @@ export const RecordingsPage: React.FC = () => {
       <Layout user={user} isAuthenticated={true}>
         <div className={styles.errorContainer}>
           <div className={styles.errorMessage}>{error}</div>
-          <button onClick={() => refetch()} className={styles.retryButton}>
+          <Button onClick={() => refetch()} className={styles.retryButton}>
             Retry
-          </button>
+          </Button>
         </div>
       </Layout>
     );
@@ -133,23 +134,23 @@ export const RecordingsPage: React.FC = () => {
 
             {data && data.count > pageSize && (
               <div className={styles.pagination}>
-                <button
+                <Button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={!data.previous || page === 1}
                   className={styles.paginationButton}
                 >
                   Previous
-                </button>
+                </Button>
                 <span className={styles.paginationInfo}>
                   Page {page} of {totalPages}
                 </span>
-                <button
+                <Button
                   onClick={() => setPage((p) => p + 1)}
                   disabled={!data.next || page === totalPages}
                   className={styles.paginationButton}
                 >
                   Next
-                </button>
+                </Button>
               </div>
             )}
           </>

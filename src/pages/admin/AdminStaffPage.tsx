@@ -4,6 +4,8 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type User } from '../../services/api/admin';
 import styles from './AdminPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 
 export const AdminStaffPage: React.FC = () => {
   const [psychologists, setPsychologists] = useState<User[]>([]);
@@ -88,29 +90,29 @@ export const AdminStaffPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
+              <Button onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
             </div>
           )}
 
           {/* Tabs */}
           <div className={styles.tabContainer}>
-            <button
+            <Button
               className={`${styles.tab} ${activeTab === 'psychologists' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('psychologists')}
             >
               Psychologists ({psychologists.length})
-            </button>
-            <button
+            </Button>
+            <Button
               className={`${styles.tab} ${activeTab === 'managers' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('managers')}
             >
               Practice Managers ({practiceManagers.length})
-            </button>
+            </Button>
           </div>
 
           {/* Search */}
           <div className={styles.filtersBar}>
-            <input
+            <Input
               type="text"
               placeholder={`Search ${activeTab}...`}
               value={searchTerm}

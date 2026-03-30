@@ -3,6 +3,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authService } from '../../../services/api/auth';
 import { WarningIcon, CheckCircleIcon } from '../../../utils/icons';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
 import styles from '../Login/Login.module.scss';
 
 interface ResetForm {
@@ -85,7 +87,7 @@ export const ResetPassword: React.FC = () => {
           <label htmlFor="new_password" className={styles.label}>
             New password
           </label>
-          <input
+          <Input
             {...register('new_password', {
               required: 'Password is required',
               minLength: {
@@ -108,7 +110,7 @@ export const ResetPassword: React.FC = () => {
           <label htmlFor="new_password_confirm" className={styles.label}>
             Confirm new password
           </label>
-          <input
+          <Input
             {...register('new_password_confirm', {
               required: 'Please confirm your password',
               validate: (v) => v === pwd || 'Passwords do not match',
@@ -124,11 +126,7 @@ export const ResetPassword: React.FC = () => {
           )}
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading || !token}
-          className={styles.submitButton}
-        >
+        <Button type="submit" disabled={isLoading || !token} className={styles.submitButton}>
           {isLoading ? (
             <>
               <span className={styles.spinner}></span>
@@ -137,7 +135,7 @@ export const ResetPassword: React.FC = () => {
           ) : (
             'Update password'
           )}
-        </button>
+        </Button>
 
         <div className={styles.formFooter}>
           <p className={styles.footerText}>

@@ -4,6 +4,9 @@ import { authService } from '../../services/api/auth';
 import { auditService, type AuditLog, type AuditLogStats } from '../../services/api/audit';
 import { CloseIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
 
 export const AdminAuditLogsPage: React.FC = () => {
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -142,7 +145,7 @@ export const AdminAuditLogsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
+              <Button onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
             </div>
           )}
 
@@ -196,7 +199,7 @@ export const AdminAuditLogsPage: React.FC = () => {
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
-              <input
+              <Input
                 type="text"
                 placeholder="Search by user email, object name, or IP address..."
                 value={filters.search}
@@ -206,7 +209,7 @@ export const AdminAuditLogsPage: React.FC = () => {
             </div>
             
             <div className={styles.filterGroup}>
-              <select
+              <Select
                 value={filters.action}
                 onChange={(e) => {
                   setFilters({ ...filters, action: e.target.value });
@@ -223,9 +226,9 @@ export const AdminAuditLogsPage: React.FC = () => {
                 <option value="view">View</option>
                 <option value="download">Download</option>
                 <option value="export">Export</option>
-              </select>
+              </Select>
 
-              <select
+              <Select
                 value={filters.user_role}
                 onChange={(e) => {
                   setFilters({ ...filters, user_role: e.target.value });
@@ -238,9 +241,9 @@ export const AdminAuditLogsPage: React.FC = () => {
                 <option value="practice_manager">Practice Manager</option>
                 <option value="psychologist">Psychologist</option>
                 <option value="patient">Patient</option>
-              </select>
+              </Select>
 
-              <input
+              <Input
                 type="date"
                 value={filters.start_date}
                 onChange={(e) => {
@@ -252,7 +255,7 @@ export const AdminAuditLogsPage: React.FC = () => {
                 style={{ padding: '0.5rem' }}
               />
 
-              <input
+              <Input
                 type="date"
                 value={filters.end_date}
                 onChange={(e) => {
@@ -265,7 +268,7 @@ export const AdminAuditLogsPage: React.FC = () => {
               />
 
               {(filters.action || filters.user_role || filters.start_date || filters.end_date || filters.search) && (
-                <button
+                <Button
                   onClick={() => {
                     setFilters({
                       action: '',
@@ -279,7 +282,7 @@ export const AdminAuditLogsPage: React.FC = () => {
                   className={styles.secondaryButton}
                 >
                   Clear Filters
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -362,27 +365,27 @@ export const AdminAuditLogsPage: React.FC = () => {
               gap: '1rem',
               marginTop: '2rem'
             }}>
-              <button
+              <Button
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
                 className={styles.secondaryButton}
                 style={{ opacity: currentPage === 1 ? 0.5 : 1, cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
               >
                 Previous
-              </button>
+              </Button>
               
               <span style={{ color: '#7a7b7a' }}>
                 Page {currentPage} of {totalPages}
               </span>
               
-              <button
+              <Button
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
                 className={styles.secondaryButton}
                 style={{ opacity: currentPage === totalPages ? 0.5 : 1, cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
               >
                 Next
-              </button>
+              </Button>
             </div>
           )}
         </div>

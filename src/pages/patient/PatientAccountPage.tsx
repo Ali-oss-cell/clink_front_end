@@ -7,6 +7,10 @@ import { authService } from '../../services/api/auth';
 import { PrivacyPolicyStatusCard, ThirdPartyDataSharing } from '../../components/privacy';
 import { TelehealthConsentCard } from '../../components/telehealth';
 import { UserIcon, HospitalIcon, SettingsIcon, LockIcon, ClipboardIcon, DownloadIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
+import { Checkbox } from '../../components/ui/checkbox';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 import styles from './PatientPages.module.scss';
 
 type AccountTab = 'personal' | 'medical' | 'preferences' | 'security' | 'privacy';
@@ -264,14 +268,14 @@ export const PatientAccountPage: React.FC = () => {
             <div className={styles.sidebar}>
               <nav className={styles.tabNavigation}>
                 {tabs.map((tab) => (
-                  <button
+                  <Button
                     key={tab.id}
                     className={`${styles.tabButton} ${activeTab === tab.id ? styles.active : ''}`}
                     onClick={() => setActiveTab(tab.id as any)}
                   >
                     <span className={styles.tabIcon}>{tab.icon}</span>
                     <span className={styles.tabLabel}>{tab.label}</span>
-                  </button>
+                  </Button>
                 ))}
               </nav>
             </div>
@@ -315,9 +319,9 @@ export const PatientAccountPage: React.FC = () => {
                       <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                       <h3>Complete Your Intake Form</h3>
                       <p>Provide comprehensive information about your health and preferences.</p>
-                      <button className={styles.primaryButton}>
+                      <Button className={styles.primaryButton}>
                         Complete Intake Form
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -335,11 +339,11 @@ export const PatientAccountPage: React.FC = () => {
                           <div className={styles.infoValue}>
                             {medicalInfo?.currentMedications || 'Not provided'}
                           </div>
-                          <button 
+                          <Button 
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       
@@ -349,11 +353,11 @@ export const PatientAccountPage: React.FC = () => {
                           <div className={styles.infoValue}>
                             {medicalInfo?.medicalConditions || 'Not provided'}
                           </div>
-                          <button 
+                          <Button 
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       
@@ -363,11 +367,11 @@ export const PatientAccountPage: React.FC = () => {
                           <div className={styles.infoValue}>
                             {medicalInfo?.previousTherapy || 'Not provided'}
                           </div>
-                          <button 
+                          <Button 
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       
@@ -377,11 +381,11 @@ export const PatientAccountPage: React.FC = () => {
                           <div className={styles.infoValue}>
                             {medicalInfo?.otherHealthProfessionals || 'Not provided'}
                           </div>
-                          <button 
+                          <Button 
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       
@@ -391,11 +395,11 @@ export const PatientAccountPage: React.FC = () => {
                           <div className={styles.infoValue}>
                             {medicalInfo?.gpContact || 'Not provided'}
                           </div>
-                          <button 
+                          <Button 
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
+                          </Button>
                         </div>
                       </div>
 
@@ -450,11 +454,11 @@ export const PatientAccountPage: React.FC = () => {
                           <div className={styles.infoValue}>
                             {medicalInfo?.presentingConcerns || 'Not provided'}
                           </div>
-                          <button 
+                          <Button 
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       
@@ -464,11 +468,11 @@ export const PatientAccountPage: React.FC = () => {
                           <div className={styles.infoValue}>
                             {medicalInfo?.therapyGoals || 'Not provided'}
                           </div>
-                          <button 
+                          <Button 
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -477,9 +481,9 @@ export const PatientAccountPage: React.FC = () => {
                       <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                       <h3>Complete Your Intake Form</h3>
                       <p>To view and manage your medical information, please complete your intake form first.</p>
-                      <button className={styles.primaryButton}>
+                      <Button className={styles.primaryButton}>
                         Complete Intake Form
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -508,8 +512,7 @@ export const PatientAccountPage: React.FC = () => {
                           <h3 className={styles.subsectionTitle}>Communication</h3>
                           <div className={styles.preferenceItem}>
                             <label className={styles.checkboxLabel}>
-                              <input
-                                type="checkbox"
+                              <Checkbox
                                 className={styles.checkbox}
                                 checked={preferences.email_notifications_enabled}
                                 onChange={(e) => handlePreferenceChange('email_notifications_enabled', e.target.checked)}
@@ -520,8 +523,7 @@ export const PatientAccountPage: React.FC = () => {
                           </div>
                           <div className={styles.preferenceItem}>
                             <label className={styles.checkboxLabel}>
-                              <input
-                                type="checkbox"
+                              <Checkbox
                                 className={styles.checkbox}
                                 checked={preferences.sms_notifications_enabled}
                                 onChange={(e) => handlePreferenceChange('sms_notifications_enabled', e.target.checked)}
@@ -532,8 +534,7 @@ export const PatientAccountPage: React.FC = () => {
                           </div>
                           <div className={styles.preferenceItem}>
                             <label className={styles.checkboxLabel}>
-                              <input
-                                type="checkbox"
+                              <Checkbox
                                 className={styles.checkbox}
                                 checked={preferences.appointment_reminders_enabled}
                                 onChange={(e) => handlePreferenceChange('appointment_reminders_enabled', e.target.checked)}
@@ -548,8 +549,7 @@ export const PatientAccountPage: React.FC = () => {
                           <h3 className={styles.subsectionTitle}>Privacy</h3>
                           <div className={styles.preferenceItem}>
                             <label className={styles.checkboxLabel}>
-                              <input
-                                type="checkbox"
+                              <Checkbox
                                 className={styles.checkbox}
                                 checked={preferences.telehealth_recording_consent}
                                 onChange={(e) => handlePreferenceChange('telehealth_recording_consent', e.target.checked)}
@@ -563,8 +563,7 @@ export const PatientAccountPage: React.FC = () => {
                           </div>
                           <div className={styles.preferenceItem}>
                             <label className={styles.checkboxLabel}>
-                              <input
-                                type="checkbox"
+                              <Checkbox
                                 className={styles.checkbox}
                                 checked={preferences.share_progress_with_emergency_contact}
                                 onChange={(e) => handlePreferenceChange('share_progress_with_emergency_contact', e.target.checked)}
@@ -579,7 +578,7 @@ export const PatientAccountPage: React.FC = () => {
                         </div>
                       </div>
                       
-                      <button
+                      <Button
                         className={styles.saveButton}
                         onClick={handleSavePreferences}
                         disabled={preferencesSaving}
@@ -592,7 +591,7 @@ export const PatientAccountPage: React.FC = () => {
                         ) : (
                           'Save Preferences'
                         )}
-                      </button>
+                      </Button>
                     </>
                   ) : (
                     <div className={styles.errorAlert}>
@@ -610,17 +609,17 @@ export const PatientAccountPage: React.FC = () => {
                       <h3 className={styles.subsectionTitle}>Change Password</h3>
                       <div className={styles.formGroup}>
                         <label className={styles.label}>Current Password</label>
-                        <input type="password" className={styles.input} />
+                        <Input type="password" className={styles.input} />
                       </div>
                       <div className={styles.formGroup}>
                         <label className={styles.label}>New Password</label>
-                        <input type="password" className={styles.input} />
+                        <Input type="password" className={styles.input} />
                       </div>
                       <div className={styles.formGroup}>
                         <label className={styles.label}>Confirm New Password</label>
-                        <input type="password" className={styles.input} />
+                        <Input type="password" className={styles.input} />
                       </div>
-                      <button className={styles.primaryButton}>Update Password</button>
+                      <Button className={styles.primaryButton}>Update Password</Button>
                     </div>
 
                     <div className={styles.securitySection}>
@@ -632,7 +631,7 @@ export const PatientAccountPage: React.FC = () => {
                       <p className={styles.securityDescription}>
                         Add an extra layer of security to your account
                       </p>
-                      <button className={styles.secondaryButton}>Enable 2FA</button>
+                      <Button className={styles.secondaryButton}>Enable 2FA</Button>
                     </div>
 
                     <div className={styles.securitySection}>
@@ -690,7 +689,7 @@ export const PatientAccountPage: React.FC = () => {
                     )}
 
                     <div className={styles.downloadButtons}>
-                      <button
+                      <Button
                         className={styles.downloadButton}
                         onClick={handleDownloadPDF}
                         disabled={downloadingPDF || downloadingCSV}
@@ -706,9 +705,9 @@ export const PatientAccountPage: React.FC = () => {
                             Download as PDF
                           </>
                         )}
-                      </button>
+                      </Button>
 
-                      <button
+                      <Button
                         className={`${styles.downloadButton} ${styles.downloadButtonSecondary}`}
                         onClick={handleDownloadCSV}
                         disabled={downloadingPDF || downloadingCSV}
@@ -724,7 +723,7 @@ export const PatientAccountPage: React.FC = () => {
                             Download as CSV
                           </>
                         )}
-                      </button>
+                      </Button>
                     </div>
                     
                     <p className={styles.dataAccessNote}>
@@ -754,14 +753,14 @@ export const PatientAccountPage: React.FC = () => {
                           retention period. Once your data is deleted, it cannot be recovered. 
                           Please ensure you have downloaded a copy of your data before requesting deletion.
                         </div>
-                        <textarea
+                        <Textarea
                           className={styles.deletionReasonInput}
                           value={deletionReason}
                           onChange={(e) => setDeletionReason(e.target.value)}
                           placeholder="Optional: Please provide a reason for your deletion request..."
                           rows={4}
                         />
-                        <button
+                        <Button
                           className={styles.deleteButton}
                           onClick={handleRequestDeletion}
                           disabled={deletionLoading}
@@ -774,7 +773,7 @@ export const PatientAccountPage: React.FC = () => {
                           ) : (
                             'Submit Deletion Request'
                           )}
-                        </button>
+                        </Button>
                       </div>
                     )}
 
@@ -837,13 +836,13 @@ export const PatientAccountPage: React.FC = () => {
                         </div>
 
                         {['pending', 'approved'].includes(deletionStatus.request.status) && (
-                          <button
+                          <Button
                             className={styles.cancelButton}
                             onClick={handleCancelDeletion}
                             disabled={deletionLoading}
                           >
                             {deletionLoading ? 'Cancelling...' : 'Cancel Request'}
-                          </button>
+                          </Button>
                         )}
                       </div>
                     )}
@@ -860,9 +859,9 @@ export const PatientAccountPage: React.FC = () => {
                       For more information about how we collect, use, and protect your personal 
                       information, please review our Privacy Policy.
                     </p>
-                    <button className={styles.secondaryButton}>
+                    <Button className={styles.secondaryButton}>
                       View Privacy Policy
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}

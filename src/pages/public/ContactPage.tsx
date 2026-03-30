@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
 import { contactService } from '../../services/api/contact';
 import { extractApiErrorMessage } from '../../utils/apiError';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
+import { Textarea } from '../../components/ui/textarea';
 import styles from './ContactPage.module.scss';
 
 export const ContactPage: React.FC = () => {
@@ -126,12 +130,12 @@ export const ContactPage: React.FC = () => {
                   </div>
                   <h3>Message Sent</h3>
                   <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
-                  <button 
+                  <Button
                     className={styles.resetButton}
                     onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', phone: '', subject: '', message: '' }); }}
                   >
                     Send Another Message
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
@@ -145,7 +149,7 @@ export const ContactPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label htmlFor="name">Full Name</label>
-                      <input
+                      <Input
                         type="text"
                         id="name"
                         name="name"
@@ -157,7 +161,7 @@ export const ContactPage: React.FC = () => {
                     </div>
                     <div className={styles.formGroup}>
                       <label htmlFor="email">Email Address</label>
-                      <input
+                      <Input
                         type="email"
                         id="email"
                         name="email"
@@ -172,7 +176,7 @@ export const ContactPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label htmlFor="phone">Phone Number</label>
-                      <input
+                      <Input
                         type="tel"
                         id="phone"
                         name="phone"
@@ -183,7 +187,7 @@ export const ContactPage: React.FC = () => {
                     </div>
                     <div className={styles.formGroup}>
                       <label htmlFor="subject">Subject</label>
-                      <select
+                      <Select
                         id="subject"
                         name="subject"
                         value={formData.subject}
@@ -197,13 +201,13 @@ export const ContactPage: React.FC = () => {
                         <option value="medicare">Medicare &amp; Billing</option>
                         <option value="feedback">Feedback</option>
                         <option value="other">Other</option>
-                      </select>
+                      </Select>
                     </div>
                   </div>
 
                   <div className={styles.formGroup}>
                     <label htmlFor="message">Message</label>
-                    <textarea
+                    <Textarea
                       id="message"
                       name="message"
                       value={formData.message}
@@ -214,9 +218,9 @@ export const ContactPage: React.FC = () => {
                     />
                   </div>
 
-                  <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+                  <Button type="submit" className={styles.submitButton} disabled={isSubmitting}>
                     {isSubmitting ? 'Sending...' : 'Send Message'}
-                  </button>
+                  </Button>
                 </form>
               )}
             </div>

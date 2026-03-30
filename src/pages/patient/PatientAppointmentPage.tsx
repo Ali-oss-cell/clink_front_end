@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Select } from '../../components/ui/select';
+import { Textarea } from '../../components/ui/textarea';
 import styles from './PatientPages.module.scss';
 
 interface AppointmentFormData {
@@ -58,12 +63,9 @@ export const PatientAppointmentPage: React.FC = () => {
       <div className={styles.appointmentContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <button 
-              className={styles.backButton}
-              onClick={handleCancel}
-            >
+            <Button className={styles.backButton} onClick={handleCancel}>
               ← Back to Dashboard
-            </button>
+            </Button>
             <h1 className={styles.pageTitle}>Book New Appointment</h1>
             <p className={styles.pageSubtitle}>
               Request an appointment with your psychologist
@@ -75,8 +77,8 @@ export const PatientAppointmentPage: React.FC = () => {
               <h3 className={styles.sectionTitle}>Appointment Details</h3>
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Appointment Type *</label>
-                  <select
+                  <Label className={styles.label}>Appointment Type *</Label>
+                  <Select
                     {...register('appointmentType', { required: 'Please select an appointment type' })}
                     className={styles.select}
                   >
@@ -85,13 +87,13 @@ export const PatientAppointmentPage: React.FC = () => {
                     <option value="follow-up">Follow-up Session</option>
                     <option value="urgent">Urgent Consultation</option>
                     <option value="assessment">Assessment Session</option>
-                  </select>
+                  </Select>
                   {errors.appointmentType && <span className={styles.fieldError}>{errors.appointmentType.message}</span>}
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Preferred Date *</label>
-                  <input
+                  <Label className={styles.label}>Preferred Date *</Label>
+                  <Input
                     {...register('preferredDate', { required: 'Please select a preferred date' })}
                     type="date"
                     className={styles.input}
@@ -101,8 +103,8 @@ export const PatientAppointmentPage: React.FC = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Preferred Time *</label>
-                  <select
+                  <Label className={styles.label}>Preferred Time *</Label>
+                  <Select
                     {...register('preferredTime', { required: 'Please select a preferred time' })}
                     className={styles.select}
                   >
@@ -111,13 +113,13 @@ export const PatientAppointmentPage: React.FC = () => {
                     <option value="afternoon">Afternoon (12:00 PM - 5:00 PM)</option>
                     <option value="evening">Evening (5:00 PM - 8:00 PM)</option>
                     <option value="flexible">Flexible</option>
-                  </select>
+                  </Select>
                   {errors.preferredTime && <span className={styles.fieldError}>{errors.preferredTime.message}</span>}
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Urgency Level *</label>
-                  <select
+                  <Label className={styles.label}>Urgency Level *</Label>
+                  <Select
                     {...register('urgency', { required: 'Please select urgency level' })}
                     className={styles.select}
                   >
@@ -126,7 +128,7 @@ export const PatientAppointmentPage: React.FC = () => {
                     <option value="medium">Medium - Within 1 week</option>
                     <option value="high">High - Within 2-3 days</option>
                     <option value="urgent">Urgent - Same day or next day</option>
-                  </select>
+                  </Select>
                   {errors.urgency && <span className={styles.fieldError}>{errors.urgency.message}</span>}
                 </div>
               </div>
@@ -136,8 +138,8 @@ export const PatientAppointmentPage: React.FC = () => {
               <h3 className={styles.sectionTitle}>Additional Information</h3>
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Reason for Appointment *</label>
-                  <textarea
+                  <Label className={styles.label}>Reason for Appointment *</Label>
+                  <Textarea
                     {...register('reason', { required: 'Please provide a reason for the appointment' })}
                     className={styles.textarea}
                     placeholder="Please describe what you'd like to discuss or work on during this appointment"
@@ -147,8 +149,8 @@ export const PatientAppointmentPage: React.FC = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Additional Notes</label>
-                  <textarea
+                  <Label className={styles.label}>Additional Notes</Label>
+                  <Textarea
                     {...register('notes')}
                     className={styles.textarea}
                     placeholder="Any additional information that might be helpful for your psychologist"
@@ -159,21 +161,18 @@ export const PatientAppointmentPage: React.FC = () => {
             </div>
 
             <div className={styles.formActions}>
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 className={styles.cancelButton}
                 onClick={handleCancel}
                 disabled={isSubmitting}
               >
                 Cancel
-              </button>
-              <button
-                type="submit"
-                className={styles.submitButton}
-                disabled={isSubmitting}
-              >
+              </Button>
+              <Button type="submit" className={styles.submitButton} disabled={isSubmitting}>
                 {isSubmitting ? 'Submitting Request...' : 'Submit Appointment Request'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

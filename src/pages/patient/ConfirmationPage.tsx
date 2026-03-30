@@ -18,6 +18,7 @@ import {
   WarningIcon,
   LinkIcon
 } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
 import styles from './Confirmation.module.scss';
 
 export const ConfirmationPage: React.FC = () => {
@@ -106,9 +107,9 @@ export const ConfirmationPage: React.FC = () => {
                 Unable to load confirmation
               </h3>
               <p>{error || 'Confirmation details are unavailable.'}</p>
-              <button className={styles.navButton} onClick={handleReturnToDashboard}>
+              <Button className={styles.navButton} onClick={handleReturnToDashboard}>
                 Return to Dashboard
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -240,45 +241,30 @@ export const ConfirmationPage: React.FC = () => {
           <div className={styles.quickActions}>
             <h3><LinkIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Quick Actions</h3>
             <div className={styles.actionButtons}>
-              <button 
-                className={styles.actionButton}
-                onClick={handleAddToCalendar}
-              >
+              <Button className={styles.actionButton} onClick={handleAddToCalendar}>
                 <CalendarIcon size="sm" style={{ marginRight: '6px' }} />
                 Add to Calendar
-              </button>
-              <button 
-                className={styles.actionButton}
-                onClick={handleEmailReceipt}
-              >
+              </Button>
+              <Button className={styles.actionButton} onClick={handleEmailReceipt}>
                 <EmailIcon size="sm" style={{ marginRight: '6px' }} />
                 Email Receipt
-              </button>
-              <button 
-                className={styles.actionButton}
-                onClick={handleContactClinic}
-              >
+              </Button>
+              <Button className={styles.actionButton} onClick={handleContactClinic}>
                 <MobileIcon size="sm" style={{ marginRight: '6px' }} />
                 Contact Clinic
-              </button>
+              </Button>
             </div>
           </div>
 
           <div className={styles.navigationActions}>
-            <button 
-              className={styles.navButton}
-              onClick={handleReturnToDashboard}
-            >
+            <Button className={styles.navButton} onClick={handleReturnToDashboard}>
               <HomeIcon size="sm" style={{ marginRight: '6px' }} />
               Return to Dashboard
-            </button>
-            <button 
-              className={styles.navButton}
-              onClick={handleBookAnother}
-            >
+            </Button>
+            <Button className={styles.navButton} onClick={handleBookAnother}>
               <CalendarIcon size="sm" style={{ marginRight: '6px' }} />
               Book Another Appointment
-            </button>
+            </Button>
           </div>
 
           <div className={styles.emergencyInfo}>

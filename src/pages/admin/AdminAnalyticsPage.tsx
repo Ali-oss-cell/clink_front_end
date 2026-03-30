@@ -4,6 +4,8 @@ import { authService } from '../../services/api/auth';
 import { adminService, type SystemAnalytics } from '../../services/api/admin';
 import { UsersIcon, CalendarIcon, DollarIcon, NotesIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
 
 export const AdminAnalyticsPage: React.FC = () => {
   const [analytics, setAnalytics] = useState<SystemAnalytics | null>(null);
@@ -99,7 +101,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           <div className={styles.analyticsFilters}>
             <div className={styles.filterGroup}>
               <label>
-                <input
+                <Input
                   type="checkbox"
                   checked={useCustomRange}
                   onChange={(e) => setUseCustomRange(e.target.checked)}
@@ -109,7 +111,7 @@ export const AdminAnalyticsPage: React.FC = () => {
             </div>
             
             {!useCustomRange ? (
-              <select
+              <Select
                 value={period}
                 onChange={(e) => setPeriod(e.target.value as any)}
                 className={styles.filterSelect}
@@ -119,17 +121,17 @@ export const AdminAnalyticsPage: React.FC = () => {
                 <option value="month">This Month</option>
                 <option value="year">This Year</option>
                 <option value="all">All Time</option>
-              </select>
+              </Select>
             ) : (
               <div className={styles.dateRangeGroup}>
-                <input
+                <Input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   className={styles.dateInput}
                 />
                 <span>to</span>
-                <input
+                <Input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}

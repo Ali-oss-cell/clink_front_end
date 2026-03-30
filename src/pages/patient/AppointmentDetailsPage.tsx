@@ -7,6 +7,10 @@ import { appointmentsService } from '../../services/api/appointments';
 import type { BookingSummaryResponse } from '../../services/api/appointments';
 import { extractApiErrorMessage } from '../../utils/apiError';
 import { WarningIcon, CalendarIcon, BuildingIcon, VideoIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
+import { Label } from '../../components/ui/label';
+import { Textarea } from '../../components/ui/textarea';
+import { cn } from '../../lib/cn';
 import styles from './AppointmentDetails.module.scss';
 
 interface AppointmentDetailsFormData {
@@ -109,9 +113,9 @@ export const AppointmentDetailsPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Appointment</h3>
               <p>{error || 'Appointment not found'}</p>
-              <button className={styles.retryButton} onClick={() => navigate('/appointments/date-time')}>
+              <Button className={styles.retryButton} onClick={() => navigate('/appointments/date-time')}>
                 Go Back
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -128,12 +132,9 @@ export const AppointmentDetailsPage: React.FC = () => {
       <div className={styles.appointmentDetailsContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <button 
-              className={styles.backButton}
-              onClick={handleBack}
-            >
+            <Button className={styles.backButton} onClick={handleBack}>
               ← Back
-            </button>
+            </Button>
             <h1 className={styles.pageTitle}>Review Your Appointment</h1>
             <p className={styles.pageSubtitle}>
               Please review your appointment details before proceeding to payment
@@ -221,10 +222,10 @@ export const AppointmentDetailsPage: React.FC = () => {
               </p>
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>What would you like to focus on in this session?</label>
-                  <textarea
+                  <Label className={styles.label}>What would you like to focus on in this session?</Label>
+                  <Textarea
                     {...register('therapyFocus')}
-                    className={styles.textarea}
+                    className={cn('tp-ui-textarea', styles.textarea)}
                     placeholder="Example: I've been experiencing anxiety about work and would like to learn some coping strategies..."
                     rows={4}
                   />
@@ -234,20 +235,20 @@ export const AppointmentDetailsPage: React.FC = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Special Requests or Accommodations</label>
-                  <textarea
+                  <Label className={styles.label}>Special Requests or Accommodations</Label>
+                  <Textarea
                     {...register('specialRequests')}
-                    className={styles.textarea}
+                    className={cn('tp-ui-textarea', styles.textarea)}
                     placeholder="Any accessibility needs, preferred communication style, or other accommodations..."
                     rows={3}
                   />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Additional Notes</label>
-                  <textarea
+                  <Label className={styles.label}>Additional Notes</Label>
+                  <Textarea
                     {...register('additionalNotes')}
-                    className={styles.textarea}
+                    className={cn('tp-ui-textarea', styles.textarea)}
                     placeholder="Any other information that might be helpful..."
                     rows={3}
                   />
@@ -272,21 +273,18 @@ export const AppointmentDetailsPage: React.FC = () => {
             </div>
 
             <div className={styles.formActions}>
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 className={styles.cancelButton}
                 onClick={handleBack}
                 disabled={isSubmitting}
               >
                 ← Back
-              </button>
-              <button
-                type="submit"
-                className={styles.submitButton}
-                disabled={isSubmitting}
-              >
+              </Button>
+              <Button type="submit" className={styles.submitButton} disabled={isSubmitting}>
                 {isSubmitting ? 'Processing...' : 'Continue to Payment →'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

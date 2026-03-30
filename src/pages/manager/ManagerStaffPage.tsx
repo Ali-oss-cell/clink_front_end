@@ -3,6 +3,8 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type User } from '../../services/api/admin';
 import styles from './ManagerPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 
 export const ManagerStaffPage: React.FC = () => {
   const [staff, setStaff] = useState<User[]>([]);
@@ -110,7 +112,7 @@ export const ManagerStaffPage: React.FC = () => {
           )}
 
           <div className={styles.searchBar}>
-            <input
+            <Input
               type="text"
               placeholder="Search staff by name or email..."
               value={searchTerm}
@@ -167,12 +169,12 @@ export const ManagerStaffPage: React.FC = () => {
                       </td>
                       <td>{formatDate(staffMember.created_at)}</td>
                       <td>
-                        <button
+                        <Button
                           onClick={() => openEditModal(staffMember)}
                           className={styles.actionButton}
                         >
                           Edit
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   ))
@@ -189,7 +191,7 @@ export const ManagerStaffPage: React.FC = () => {
                 <form onSubmit={handleEditStaff}>
                   <div className={styles.formGroup}>
                     <label>Full Name</label>
-                    <input
+                    <Input
                       type="text"
                       value={editForm.full_name}
                       onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
@@ -198,7 +200,7 @@ export const ManagerStaffPage: React.FC = () => {
                   </div>
                   <div className={styles.formGroup}>
                     <label>Email</label>
-                    <input
+                    <Input
                       type="email"
                       value={editForm.email}
                       onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
@@ -207,7 +209,7 @@ export const ManagerStaffPage: React.FC = () => {
                   </div>
                   <div className={styles.formGroup}>
                     <label>Phone Number</label>
-                    <input
+                    <Input
                       type="text"
                       value={editForm.phone_number}
                       onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
@@ -216,7 +218,7 @@ export const ManagerStaffPage: React.FC = () => {
                   </div>
                   <div className={styles.formGroup}>
                     <label>
-                      <input
+                      <Input
                         type="checkbox"
                         checked={editForm.is_active}
                         onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })}
@@ -225,12 +227,12 @@ export const ManagerStaffPage: React.FC = () => {
                     </label>
                   </div>
                   <div className={styles.modalActions}>
-                    <button type="button" onClick={() => setShowEditModal(false)}>
+                    <Button type="button" onClick={() => setShowEditModal(false)}>
                       Cancel
-                    </button>
-                    <button type="submit" className={styles.primaryButton}>
+                    </Button>
+                    <Button type="submit" className={styles.primaryButton}>
                       Update
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>

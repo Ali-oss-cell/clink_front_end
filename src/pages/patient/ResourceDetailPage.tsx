@@ -5,6 +5,7 @@ import { authService } from '../../services/api/auth';
 import { resourceService, type ResourceDetail } from '../../services/api/resources';
 import { markResourcesViewed } from '../../utils/onboardingTracking';
 import { EyeIcon, StarIcon, PrintIcon, BookIcon, ShareIcon, DownloadIcon, BookmarkIcon, getIconFromEmoji } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
 import styles from './PatientPages.module.scss';
 
 export const ResourceDetailPage: React.FC = () => {
@@ -248,9 +249,9 @@ export const ResourceDetailPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3>Error Loading Resource</h3>
               <p>{error || 'Resource not found'}</p>
-              <button onClick={() => navigate('/patient/resources')} className={styles.backButton}>
+              <Button onClick={() => navigate('/patient/resources')} className={styles.backButton}>
                 ← Back to Resources
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -263,9 +264,9 @@ export const ResourceDetailPage: React.FC = () => {
       <div className={styles.pageContainer}>
         <div className="container">
           {/* Back Button */}
-          <button onClick={() => navigate('/patient/resources')} className={styles.backButton}>
+          <Button onClick={() => navigate('/patient/resources')} className={styles.backButton}>
             ← Back to Resources
-          </button>
+          </Button>
 
           {/* Resource Header */}
           <div className={styles.resourceDetailHeader}>
@@ -292,18 +293,18 @@ export const ResourceDetailPage: React.FC = () => {
             </div>
 
             <div className={styles.resourceActions}>
-              <button onClick={handleBookmark} className={styles.actionButton}>
+              <Button onClick={handleBookmark} className={styles.actionButton}>
                 <BookmarkIcon size="sm" style={{ marginRight: '6px' }} />
                 {isBookmarked ? 'Bookmarked' : 'Bookmark'}
-              </button>
-              <button onClick={handlePrint} className={styles.actionButton}>
+              </Button>
+              <Button onClick={handlePrint} className={styles.actionButton}>
                 <PrintIcon size="sm" style={{ marginRight: '6px' }} />
                 Print
-              </button>
-              <button onClick={handleShare} className={styles.actionButton}>
+              </Button>
+              <Button onClick={handleShare} className={styles.actionButton}>
                 <ShareIcon size="sm" style={{ marginRight: '6px' }} />
                 Share
-              </button>
+              </Button>
               {(resource.has_download && (resource.download_file_url || resource.download_url)) && (
                 <a 
                   href={resource.download_file_url || resource.download_url || ''} 
@@ -403,25 +404,25 @@ export const ResourceDetailPage: React.FC = () => {
                     {resource.user_rating.review && (
                       <p className={styles.userReview}>{resource.user_rating.review}</p>
                     )}
-                    <button 
+                    <Button 
                       onClick={() => setShowRatingForm(true)}
                       className={styles.rateButton}
                     >
                       Update Rating
-                    </button>
+                    </Button>
                   </div>
                 ) : !showRatingForm ? (
-                  <button 
+                  <Button 
                     onClick={() => setShowRatingForm(true)}
                     className={styles.rateButton}
                   >
                     Leave a Rating
-                  </button>
+                  </Button>
                 ) : (
                   <div className={styles.ratingForm}>
                     <div className={styles.stars}>
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <button
+                        <Button
                           key={star}
                           onClick={() => handleRate(star)}
                           className={styles.starButton}
@@ -431,15 +432,15 @@ export const ResourceDetailPage: React.FC = () => {
                           ) : (
                             <StarIcon size="lg" style={{ color: '#d1cec9' }} />
                           )}
-                        </button>
+                        </Button>
                       ))}
                     </div>
-                    <button 
+                    <Button 
                       onClick={() => setShowRatingForm(false)}
                       className={styles.cancelButton}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>

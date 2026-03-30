@@ -14,6 +14,7 @@ import {
   AudioIcon,
   getIconFromEmoji
 } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
 import styles from './PatientPages.module.scss';
 
 export const PatientResourcesPage: React.FC = () => {
@@ -134,14 +135,14 @@ export const PatientResourcesPage: React.FC = () => {
             <h2>Browse by Topic</h2>
             <div className={styles.categoryGrid}>
               {allCategories.map((category) => (
-                <button
+                <Button
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
                   className={`${styles.categoryButton} ${activeCategory === category.id ? styles.active : ''}`}
                 >
                   <span className={styles.categoryIcon}>{category.icon}</span>
                   <span className={styles.categoryName}>{category.name}</span>
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -172,7 +173,7 @@ export const PatientResourcesPage: React.FC = () => {
                         <span className={styles.resourceType}>{resource.type_display}</span>
                       </div>
                       <p className={styles.resourceDescription}>{resource.description}</p>
-                      <button 
+                      <Button 
                         className={styles.resourceButton}
                         onClick={() => {
                           // Mark resources as viewed for onboarding progress
@@ -181,7 +182,7 @@ export const PatientResourcesPage: React.FC = () => {
                         }}
                       >
                         View Resource →
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ))
@@ -197,22 +198,22 @@ export const PatientResourcesPage: React.FC = () => {
               <div className={styles.toolCard}>
                 <h3><ChartIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Mood Tracker</h3>
                 <p>Track your daily mood and identify patterns over time.</p>
-                <button className={styles.toolButton}>Coming Soon</button>
+                <Button className={styles.toolButton}>Coming Soon</Button>
               </div>
               <div className={styles.toolCard}>
                 <h3><NotesIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Thought Journal</h3>
                 <p>Record and reflect on your thoughts and feelings.</p>
-                <button className={styles.toolButton}>Coming Soon</button>
+                <Button className={styles.toolButton}>Coming Soon</Button>
               </div>
               <div className={styles.toolCard}>
                 <h3><AudioIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Guided Exercises</h3>
                 <p>Audio exercises for relaxation and mindfulness.</p>
-                <button className={styles.toolButton}>Coming Soon</button>
+                <Button className={styles.toolButton}>Coming Soon</Button>
               </div>
               <div className={styles.toolCard}>
                 <h3><ChartIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Progress Dashboard</h3>
                 <p>View your mental health journey progress.</p>
-                <button className={styles.toolButton}>Coming Soon</button>
+                <Button className={styles.toolButton}>Coming Soon</Button>
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { differenceInYears, isValid, parseISO } from 'date-fns';
+import { Select } from '../../../components/ui/select';
 import styles from './Register.module.scss';
 
 const MONTHS: { value: string; label: string }[] = [
@@ -132,7 +133,7 @@ export function RegisterDobFields({
           <label className={styles.dobCellLabel} htmlFor="register-dob-day">
             Day
           </label>
-          <select
+          <Select
             id="register-dob-day"
             className={styles.dobSelect}
             value={draft.d}
@@ -150,13 +151,13 @@ export function RegisterDobFields({
                 </option>
               );
             })}
-          </select>
+          </Select>
         </div>
         <div className={styles.dobCell}>
           <label className={styles.dobCellLabel} htmlFor="register-dob-month">
             Month
           </label>
-          <select
+          <Select
             id="register-dob-month"
             className={styles.dobSelect}
             value={draft.m}
@@ -170,13 +171,13 @@ export function RegisterDobFields({
                 {mo.label}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
         <div className={styles.dobCell}>
           <label className={styles.dobCellLabel} htmlFor="register-dob-year">
             Year
           </label>
-          <select
+          <Select
             id="register-dob-year"
             className={styles.dobSelect}
             value={draft.y}
@@ -190,7 +191,7 @@ export function RegisterDobFields({
                 {yr}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
     </div>

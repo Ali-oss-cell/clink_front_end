@@ -4,6 +4,8 @@ import { authService } from '../../services/api/auth';
 import { adminService, type Patient } from '../../services/api/admin';
 import { CloseIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 
 export const AdminPatientsPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -90,23 +92,23 @@ export const AdminPatientsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
+              <Button onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
             </div>
           )}
 
           {/* Search */}
           <div className={styles.filtersBar}>
             <form onSubmit={handleSearch} className={styles.searchForm}>
-              <input
+              <Input
                 type="text"
                 placeholder="Search patients by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={styles.searchInput}
               />
-              <button type="submit" className={styles.searchButton}>
+              <Button type="submit" className={styles.searchButton}>
                 Search
-              </button>
+              </Button>
             </form>
           </div>
 

@@ -11,6 +11,9 @@ import {
   type MatchGenderFilter,
   type MatchAvailabilityFilter,
 } from '../../constants/matchPreferences';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 import styles from './GetMatchedPage.module.scss';
 
 const TOTAL_STEPS = 5;
@@ -194,9 +197,9 @@ export const GetMatchedPage: React.FC = () => {
                   later.
                 </p>
                 <div className={styles.actions} style={{ justifyContent: 'flex-end' }}>
-                  <button type="button" className={styles.primaryBtn} onClick={goNext}>
+                  <Button type="button" className={styles.primaryBtn} onClick={goNext}>
                     Continue →
-                  </button>
+                  </Button>
                 </div>
               </>
             )}
@@ -211,7 +214,7 @@ export const GetMatchedPage: React.FC = () => {
                       key={opt.value}
                       className={`${styles.option} ${specialization === opt.value ? styles.optionSelected : ''}`}
                     >
-                      <input
+                      <Input
                         type="radio"
                         name="focus"
                         value={opt.value}
@@ -229,7 +232,7 @@ export const GetMatchedPage: React.FC = () => {
                   <label htmlFor="goalText" className={styles.goalLabel}>
                     Optional: In one sentence, what do you want help with?
                   </label>
-                  <textarea
+                  <Textarea
                     id="goalText"
                     className={styles.goalInput}
                     value={goalText}
@@ -239,12 +242,12 @@ export const GetMatchedPage: React.FC = () => {
                   />
                 </div>
                 <div className={styles.actions}>
-                  <button type="button" className={styles.backBtn} onClick={goBack}>
+                  <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
-                  </button>
-                  <button type="button" className={styles.primaryBtn} onClick={goNext}>
+                  </Button>
+                  <Button type="button" className={styles.primaryBtn} onClick={goNext}>
                     Next →
-                  </button>
+                  </Button>
                 </div>
               </>
             )}
@@ -259,7 +262,7 @@ export const GetMatchedPage: React.FC = () => {
                       key={opt.value}
                       className={`${styles.option} ${sessionType === opt.value ? styles.optionSelected : ''}`}
                     >
-                      <input
+                      <Input
                         type="radio"
                         name="session"
                         value={opt.value}
@@ -274,12 +277,12 @@ export const GetMatchedPage: React.FC = () => {
                   ))}
                 </div>
                 <div className={styles.actions}>
-                  <button type="button" className={styles.backBtn} onClick={goBack}>
+                  <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
-                  </button>
-                  <button type="button" className={styles.primaryBtn} onClick={goNext}>
+                  </Button>
+                  <Button type="button" className={styles.primaryBtn} onClick={goNext}>
                     Next →
-                  </button>
+                  </Button>
                 </div>
               </>
             )}
@@ -294,7 +297,7 @@ export const GetMatchedPage: React.FC = () => {
                       key={opt.value}
                       className={`${styles.option} ${gender === opt.value ? styles.optionSelected : ''}`}
                     >
-                      <input
+                      <Input
                         type="radio"
                         name="gender"
                         value={opt.value}
@@ -306,12 +309,12 @@ export const GetMatchedPage: React.FC = () => {
                   ))}
                 </div>
                 <div className={styles.actions}>
-                  <button type="button" className={styles.backBtn} onClick={goBack}>
+                  <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
-                  </button>
-                  <button type="button" className={styles.primaryBtn} onClick={goNext}>
+                  </Button>
+                  <Button type="button" className={styles.primaryBtn} onClick={goNext}>
                     Next →
-                  </button>
+                  </Button>
                 </div>
               </>
             )}
@@ -326,7 +329,7 @@ export const GetMatchedPage: React.FC = () => {
                       key={opt.value}
                       className={`${styles.option} ${availability === opt.value ? styles.optionSelected : ''}`}
                     >
-                      <input
+                      <Input
                         type="radio"
                         name="availability"
                         value={opt.value}
@@ -348,36 +351,36 @@ export const GetMatchedPage: React.FC = () => {
                   <li>
                     <strong>Focus:</strong>{' '}
                     {FOCUS_OPTIONS.find((f) => f.value === specialization)?.label ?? specialization}
-                    <button type="button" className={styles.editLink} onClick={() => setStep(2)}>
+                    <Button type="button" className={styles.editLink} onClick={() => setStep(2)}>
                       Edit
-                    </button>
+                    </Button>
                   </li>
                   <li>
                     <strong>Session:</strong>{' '}
                     {SESSION_OPTIONS.find((s) => s.value === sessionType)?.label ?? sessionType}
-                    <button type="button" className={styles.editLink} onClick={() => setStep(3)}>
+                    <Button type="button" className={styles.editLink} onClick={() => setStep(3)}>
                       Edit
-                    </button>
+                    </Button>
                   </li>
                   <li>
                     <strong>Gender:</strong> {GENDER_OPTIONS.find((g) => g.value === gender)?.label ?? gender}
-                    <button type="button" className={styles.editLink} onClick={() => setStep(4)}>
+                    <Button type="button" className={styles.editLink} onClick={() => setStep(4)}>
                       Edit
-                    </button>
+                    </Button>
                   </li>
                   <li>
                     <strong>Timing:</strong>{' '}
                     {AVAILABILITY_OPTIONS.find((a) => a.value === availability)?.label ?? availability}
-                    <button type="button" className={styles.editLink} onClick={() => setStep(5)}>
+                    <Button type="button" className={styles.editLink} onClick={() => setStep(5)}>
                       Edit
-                    </button>
+                    </Button>
                   </li>
                   {goalText.trim() && (
                     <li>
                       <strong>Goal note:</strong> {goalText.trim()}
-                      <button type="button" className={styles.editLink} onClick={() => setStep(2)}>
+                      <Button type="button" className={styles.editLink} onClick={() => setStep(2)}>
                         Edit
-                      </button>
+                      </Button>
                     </li>
                   )}
                 </ul>
@@ -419,12 +422,12 @@ export const GetMatchedPage: React.FC = () => {
 
                 <div className={styles.finishActions}>
                   {isPatient ? (
-                    <button type="button" className={styles.primaryBtn} onClick={persistAndRoute}>
+                    <Button type="button" className={styles.primaryBtn} onClick={persistAndRoute}>
                       Continue to book — choose service & psychologist
-                    </button>
+                    </Button>
                   ) : (
                     <>
-                      <button
+                      <Button
                         type="button"
                         className={styles.primaryBtn}
                         onClick={() => {
@@ -444,8 +447,8 @@ export const GetMatchedPage: React.FC = () => {
                         }}
                       >
                         Create account & book
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
                         className={styles.backBtn}
                         style={{ width: '100%', justifyContent: 'center' }}
@@ -466,7 +469,7 @@ export const GetMatchedPage: React.FC = () => {
                         }}
                       >
                         Sign in — preferences saved for after login
-                      </button>
+                      </Button>
                       <p className={styles.secondaryLink}>
                         After you sign in as a patient, open <strong>Book appointment</strong> — your filters apply when
                         you choose a psychologist.
@@ -476,9 +479,9 @@ export const GetMatchedPage: React.FC = () => {
                 </div>
 
                 <div className={styles.actions} style={{ marginTop: '1.25rem' }}>
-                  <button type="button" className={styles.backBtn} onClick={goBack}>
+                  <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
-                  </button>
+                  </Button>
                 </div>
 
                 <p className={styles.skipNote}>

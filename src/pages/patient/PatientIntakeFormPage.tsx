@@ -9,6 +9,11 @@ import { intakeService } from '../../services/api/intake';
 import { validateIntakeForm } from '../../utils/validation';
 import { normalizeToE164 } from '../../utils/phoneE164';
 import { CheckCircleIcon, ClipboardIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
+import { Checkbox } from '../../components/ui/checkbox';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
+import { Textarea } from '../../components/ui/textarea';
 import styles from './PatientPages.module.scss';
 
 // Import the interface from the service
@@ -212,7 +217,7 @@ export const PatientIntakeFormPage: React.FC = () => {
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>First Name *</label>
-                <input
+                <Input
                   {...register('first_name', { required: 'First name is required' })}
                   className={`${styles.input} ${errors.first_name ? styles.inputError : ''} ${preFilledData.first_name ? styles.preFilled : ''}`}
                   placeholder="Enter your first name"
@@ -225,7 +230,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Last Name *</label>
-                <input
+                <Input
                   {...register('last_name', { required: 'Last name is required' })}
                   className={`${styles.input} ${errors.last_name ? styles.inputError : ''} ${preFilledData.last_name ? styles.preFilled : ''}`}
                   placeholder="Enter your last name"
@@ -238,7 +243,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Preferred Name <span className={styles.optionalLabel}>(Optional)</span></label>
-                <input
+                <Input
                   {...register('preferred_name')}
                   className={styles.input}
                   placeholder="What would you like to be called?"
@@ -247,7 +252,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Date of Birth *</label>
-                <input
+                <Input
                   {...register('date_of_birth', { required: 'Date of birth is required' })}
                   type="date"
                   className={`${styles.input} ${errors.date_of_birth ? styles.inputError : ''} ${preFilledData.date_of_birth ? styles.preFilled : ''}`}
@@ -260,7 +265,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Gender Identity <span className={styles.optionalLabel}>(Optional)</span></label>
-                <input
+                <Input
                   {...register('gender_identity')}
                   className={styles.input}
                   placeholder="How do you identify?"
@@ -269,7 +274,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Pronouns <span className={styles.optionalLabel}>(Optional)</span></label>
-                <input
+                <Input
                   {...register('pronouns')}
                   className={styles.input}
                   placeholder="e.g., they/them, she/her, he/him"
@@ -278,7 +283,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Street Address *</label>
-                <input
+                <Input
                   {...register('address_line_1', { required: 'Street address is required' })}
                   className={`${styles.input} ${errors.address_line_1 ? styles.inputError : ''} ${preFilledData.address_line_1 ? styles.preFilled : ''}`}
                   placeholder="Enter your street address"
@@ -291,7 +296,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Suburb *</label>
-                <input
+                <Input
                   {...register('suburb', { required: 'Suburb is required' })}
                   className={`${styles.input} ${errors.suburb ? styles.inputError : ''} ${preFilledData.suburb ? styles.preFilled : ''}`}
                   placeholder="Enter your suburb"
@@ -304,7 +309,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>State *</label>
-                <select
+                <Select
                   {...register('state', { required: 'State is required' })}
                   className={`${styles.select} ${errors.state ? styles.inputError : ''} ${preFilledData.state ? styles.preFilled : ''}`}
                 >
@@ -317,7 +322,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   <option value="TAS">Tasmania (TAS)</option>
                   <option value="ACT">Australian Capital Territory (ACT)</option>
                   <option value="NT">Northern Territory (NT)</option>
-                </select>
+                </Select>
                 {preFilledData.state && (
                   <span className={styles.preFilledLabel}><CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Pre-filled from your account</span>
                 )}
@@ -326,7 +331,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Postcode *</label>
-                <input
+                <Input
                   {...register('postcode', { required: 'Postcode is required' })}
                   className={`${styles.input} ${errors.postcode ? styles.inputError : ''} ${preFilledData.postcode ? styles.preFilled : ''}`}
                   placeholder="Enter your postcode"
@@ -430,7 +435,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Email Address *</label>
-                <input
+                <Input
                   {...register('email', { 
                     required: 'Email address is required',
                     pattern: {
@@ -461,7 +466,7 @@ export const PatientIntakeFormPage: React.FC = () => {
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Emergency Contact Name *</label>
-                <input
+                <Input
                   {...register('emergency_contact_name', { required: 'Emergency contact name is required' })}
                   className={`${styles.input} ${errors.emergency_contact_name ? styles.inputError : ''}`}
                   placeholder="Enter emergency contact name"
@@ -471,7 +476,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>Relationship *</label>
-                <input
+                <Input
                   {...register('emergency_contact_relationship', { required: 'Relationship is required' })}
                   className={`${styles.input} ${errors.emergency_contact_relationship ? styles.inputError : ''}`}
                   placeholder="e.g., Spouse, Parent, Friend"
@@ -531,7 +536,7 @@ export const PatientIntakeFormPage: React.FC = () => {
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>How did you hear about us? *</label>
-                <select
+                <Select
                   {...register('referral_source', { required: 'Referral source is required' })}
                   className={`${styles.select} ${errors.referral_source ? styles.inputError : ''}`}
                 >
@@ -541,7 +546,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   <option value="online">Online Search</option>
                   <option value="psychology-today">Psychology Today</option>
                   <option value="other">Other</option>
-                </select>
+                </Select>
                 {errors.referral_source && <span className={styles.fieldError}>{errors.referral_source.message}</span>}
               </div>
 
@@ -549,7 +554,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                 <label className={styles.label}>Were you referred by a GP? *</label>
                 <div className={styles.radioGroup}>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('has_gp_referral')}
                       type="radio"
                       value="true"
@@ -562,7 +567,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     Yes
                   </label>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('has_gp_referral')}
                       type="radio"
                       value="false"
@@ -585,7 +590,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                   </p>
                   <div className={styles.formGroup}>
                     <label className={styles.label}>GP&apos;s name *</label>
-                    <input
+                    <Input
                       {...register('gp_name')}
                       className={styles.input}
                       placeholder="Enter GP's name"
@@ -594,7 +599,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label className={styles.label}>Practice name *</label>
-                    <input
+                    <Input
                       {...register('gp_practice_name')}
                       className={styles.input}
                       placeholder="Enter practice name"
@@ -603,7 +608,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label className={styles.label}>GP referral date *</label>
-                    <input
+                    <Input
                       {...register('gp_referral_date')}
                       type="date"
                       className={styles.input}
@@ -615,7 +620,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     <label className={styles.label}>
                       Referral expiry <span className={styles.optionalLabel}>(Optional)</span>
                     </label>
-                    <input
+                    <Input
                       {...register('gp_referral_expiry_date')}
                       type="date"
                       className={styles.input}
@@ -627,7 +632,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label className={styles.label}>GP provider number *</label>
-                    <input
+                    <Input
                       {...register('gp_provider_number')}
                       className={styles.input}
                       placeholder="Medicare provider number"
@@ -639,7 +644,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     <label className={styles.label}>
                       MHCP / plan reference <span className={styles.optionalLabel}>(Optional)</span>
                     </label>
-                    <input
+                    <Input
                       {...register('gp_mhcp_reference')}
                       className={styles.input}
                       placeholder="As shown on your document"
@@ -650,7 +655,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     <label className={styles.label}>
                       Related MBS items <span className={styles.optionalLabel}>(Optional)</span>
                     </label>
-                    <input
+                    <Input
                       {...register('gp_mhtp_related_mbs_items')}
                       className={styles.input}
                       placeholder="e.g. 2710, 2712"
@@ -659,7 +664,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label className={styles.label}>Practice address <span className={styles.optionalLabel}>(Optional)</span></label>
-                    <textarea
+                    <Textarea
                       {...register('gp_address')}
                       className={styles.textarea}
                       placeholder="Enter practice address"
@@ -680,7 +685,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                 <label className={styles.label}>Have you had therapy or counselling before? *</label>
                 <div className={styles.radioGroup}>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('previous_therapy')}
                       type="radio"
                       value="true"
@@ -693,7 +698,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     Yes
                   </label>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('previous_therapy')}
                       type="radio"
                       value="false"
@@ -711,7 +716,7 @@ export const PatientIntakeFormPage: React.FC = () => {
               {isTruthy(watchedPreviousTherapy) && (
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Previous Therapy Details <span className={styles.recommendedLabel}>(Recommended)</span></label>
-                  <textarea
+                  <Textarea
                     {...register('previous_therapy_details')}
                     className={styles.textarea}
                     placeholder="When and with whom did you have therapy?"
@@ -723,7 +728,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                 <label className={styles.label}>Are you currently taking any medications? *</label>
                 <div className={styles.radioGroup}>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('current_medications')}
                       type="radio"
                       value="true"
@@ -736,7 +741,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     Yes
                   </label>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('current_medications')}
                       type="radio"
                       value="false"
@@ -754,7 +759,7 @@ export const PatientIntakeFormPage: React.FC = () => {
               {isTruthy(watchedCurrentMedications) && (
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Current Medications <span className={styles.recommendedLabel}>(Recommended)</span></label>
-                  <textarea
+                  <Textarea
                     {...register('medication_list')}
                     className={styles.textarea}
                     placeholder="Please list all current medications, including dosages"
@@ -766,7 +771,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                 <label className={styles.label}>Are you currently being seen by any other medical or health professional? *</label>
                 <div className={styles.radioGroup}>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('other_health_professionals')}
                       type="radio"
                       value="true"
@@ -779,7 +784,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     Yes
                   </label>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('other_health_professionals')}
                       type="radio"
                       value="false"
@@ -797,7 +802,7 @@ export const PatientIntakeFormPage: React.FC = () => {
               {isTruthy(watchedOtherHealthProfessionals) && (
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Other Health Professionals <span className={styles.recommendedLabel}>(Recommended)</span></label>
-                  <textarea
+                  <Textarea
                     {...register('other_health_details')}
                     className={styles.textarea}
                     placeholder="Who are you currently seeing?"
@@ -809,7 +814,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                 <label className={styles.label}>Do you have any significant medical conditions? *</label>
                 <div className={styles.radioGroup}>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('medical_conditions')}
                       type="radio"
                       value="true"
@@ -822,7 +827,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                     Yes
                   </label>
                   <label className={styles.radioWrapper}>
-                    <input
+                    <Input
                       {...register('medical_conditions')}
                       type="radio"
                       value="false"
@@ -840,7 +845,7 @@ export const PatientIntakeFormPage: React.FC = () => {
               {isTruthy(watchedMedicalConditions) && (
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Medical Conditions <span className={styles.recommendedLabel}>(Recommended)</span></label>
-                  <textarea
+                  <Textarea
                     {...register('medical_conditions_details')}
                     className={styles.textarea}
                     placeholder="Please describe any significant medical conditions"
@@ -858,7 +863,7 @@ export const PatientIntakeFormPage: React.FC = () => {
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>What brings you to therapy at this time? *</label>
-                <textarea
+                <Textarea
                   {...register('presenting_concerns', { required: 'Presenting concerns are required' })}
                   className={`${styles.textarea} ${errors.presenting_concerns ? styles.inputError : ''}`}
                   placeholder="Please describe what's bringing you to therapy..."
@@ -869,7 +874,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>What are your goals for therapy? *</label>
-                <textarea
+                <Textarea
                   {...register('therapy_goals', { required: 'Therapy goals are required' })}
                   className={`${styles.textarea} ${errors.therapy_goals ? styles.inputError : ''}`}
                   placeholder="What would you like to achieve through therapy?"
@@ -898,11 +903,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('consent_to_treatment', { required: 'Consent to treatment is required' })}
-                      type="checkbox"
-                      className={styles.checkbox}
-                    />
+                    <Checkbox
+                      {...register('consent_to_treatment', { required: 'Consent to treatment is required' })} className={styles.checkbox} />
                     <span className={styles.checkboxText}>
                       I consent to treatment and have read the above information *
                     </span>
@@ -912,11 +914,8 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('privacy_policy_accepted', { required: 'Privacy policy acceptance is required' })}
-                      type="checkbox"
-                      className={styles.checkbox}
-                    />
+                    <Checkbox
+                      {...register('privacy_policy_accepted', { required: 'Privacy policy acceptance is required' })} className={styles.checkbox} />
                     <span className={styles.checkboxText}>
                       I have read and accept the Privacy Policy (Privacy Act 1988 compliance) *
                     </span>
@@ -931,11 +930,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('consent_to_telehealth')}
-                      type="checkbox"
-                      className={styles.checkbox}
-                    />
+                    <Checkbox
+                      {...register('consent_to_telehealth')} className={styles.checkbox} />
                     <span className={styles.checkboxText}>
                       I consent to telehealth sessions <span className={styles.optionalLabel}>(Optional)</span>
                     </span>
@@ -946,11 +942,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                   <>
                     <div className={styles.checkboxGroup}>
                       <label className={styles.checkboxLabel}>
-                        <input
-                          {...register('telehealth_emergency_protocol_acknowledged')}
-                          type="checkbox"
-                          className={styles.checkbox}
-                        />
+                        <Checkbox
+                          {...register('telehealth_emergency_protocol_acknowledged')} className={styles.checkbox} />
                         <span className={styles.checkboxText}>
                           I acknowledge the telehealth emergency protocol *
                         </span>
@@ -959,11 +952,8 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                     <div className={styles.checkboxGroup}>
                       <label className={styles.checkboxLabel}>
-                        <input
-                          {...register('telehealth_tech_requirements_acknowledged')}
-                          type="checkbox"
-                          className={styles.checkbox}
-                        />
+                        <Checkbox
+                          {...register('telehealth_tech_requirements_acknowledged')} className={styles.checkbox} />
                         <span className={styles.checkboxText}>
                           I acknowledge the telehealth technical requirements *
                         </span>
@@ -972,11 +962,8 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                     <div className={styles.checkboxGroup}>
                       <label className={styles.checkboxLabel}>
-                        <input
-                          {...register('telehealth_recording_consent')}
-                          type="checkbox"
-                          className={styles.checkbox}
-                        />
+                        <Checkbox
+                          {...register('telehealth_recording_consent')} className={styles.checkbox} />
                         <span className={styles.checkboxText}>
                           I consent to session recording (if applicable) <span className={styles.optionalLabel}>(Optional)</span>
                         </span>
@@ -992,11 +979,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('consent_to_data_sharing')}
-                      type="checkbox"
-                      className={styles.checkbox}
-                    />
+                    <Checkbox
+                      {...register('consent_to_data_sharing')} className={styles.checkbox} />
                     <span className={styles.checkboxText}>
                       I consent to data sharing with third-party services (Twilio, Stripe) for appointment and payment processing <span className={styles.optionalLabel}>(Recommended)</span>
                     </span>
@@ -1005,11 +989,8 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('consent_to_marketing')}
-                      type="checkbox"
-                      className={styles.checkbox}
-                    />
+                    <Checkbox
+                      {...register('consent_to_marketing')} className={styles.checkbox} />
                     <span className={styles.checkboxText}>
                       I consent to receive marketing communications <span className={styles.optionalLabel}>(Optional)</span>
                     </span>
@@ -1023,11 +1004,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('email_notifications_enabled')}
-                      type="checkbox"
-                      className={styles.checkbox}
-                      defaultChecked={true}
+                    <Checkbox
+                      {...register('email_notifications_enabled')} className={styles.checkbox} defaultChecked={true}
                     />
                     <span className={styles.checkboxText}>
                       Email notifications enabled
@@ -1037,11 +1015,8 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('sms_notifications_enabled')}
-                      type="checkbox"
-                      className={styles.checkbox}
-                    />
+                    <Checkbox
+                      {...register('sms_notifications_enabled')} className={styles.checkbox} />
                     <span className={styles.checkboxText}>
                       SMS notifications enabled
                     </span>
@@ -1050,11 +1025,8 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('appointment_reminders_enabled')}
-                      type="checkbox"
-                      className={styles.checkbox}
-                      defaultChecked={true}
+                    <Checkbox
+                      {...register('appointment_reminders_enabled')} className={styles.checkbox} defaultChecked={true}
                     />
                     <span className={styles.checkboxText}>
                       Appointment reminders enabled
@@ -1069,11 +1041,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                 
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
-                    <input
-                      {...register('share_progress_with_emergency_contact')}
-                      type="checkbox"
-                      className={styles.checkbox}
-                    />
+                    <Checkbox
+                      {...register('share_progress_with_emergency_contact')} className={styles.checkbox} />
                     <span className={styles.checkboxText}>
                       Share progress updates with emergency contact <span className={styles.optionalLabel}>(Optional)</span>
                     </span>
@@ -1088,11 +1057,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                   
                   <div className={styles.checkboxGroup}>
                     <label className={styles.checkboxLabel}>
-                      <input
-                        {...register('parental_consent', { required: 'Parental consent is required for patients under 18' })}
-                        type="checkbox"
-                        className={styles.checkbox}
-                      />
+                      <Checkbox
+                        {...register('parental_consent', { required: 'Parental consent is required for patients under 18' })} className={styles.checkbox} />
                       <span className={styles.checkboxText}>
                         Parent/Guardian consent provided *
                       </span>
@@ -1102,7 +1068,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label className={styles.label}>Parent/Guardian Name *</label>
-                    <input
+                    <Input
                       {...register('parental_consent_name', { required: isMinor ? 'Parent/guardian name is required' : false })}
                       className={`${styles.input} ${errors.parental_consent_name ? styles.inputError : ''}`}
                       placeholder="Full name of parent/guardian"
@@ -1112,7 +1078,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label className={styles.label}>Parent/Guardian Signature *</label>
-                    <input
+                    <Input
                       {...register('parental_consent_signature', { required: isMinor ? 'Parent/guardian signature is required' : false })}
                       className={`${styles.input} ${errors.parental_consent_signature ? styles.inputError : ''}`}
                       placeholder="Type full name to sign"
@@ -1129,7 +1095,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                 <div className={styles.formGrid}>
                   <div className={styles.formGroup}>
                     <label className={styles.label}>Client Signature *</label>
-                    <input
+                    <Input
                       {...register('client_signature', { required: 'Signature is required' })}
                       className={`${styles.input} ${errors.client_signature ? styles.inputError : ''}`}
                       placeholder="Type your full name to sign"
@@ -1139,7 +1105,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label className={styles.label}>Date *</label>
-                    <input
+                    <Input
                       {...register('consent_date', { required: 'Date is required' })}
                       type="date"
                       className={`${styles.input} ${errors.consent_date ? styles.inputError : ''}`}
@@ -1222,31 +1188,31 @@ export const PatientIntakeFormPage: React.FC = () => {
 
             <div className={styles.formNavigation}>
               {currentStep > 1 && (
-                <button
+                <Button
                   type="button"
                   onClick={prevStep}
                   className={styles.navButton}
                 >
                   ← Previous
-                </button>
+                </Button>
               )}
               
               {currentStep < 6 ? (
-                <button
+                <Button
                   type="button"
                   onClick={nextStep}
                   className={styles.navButton}
                 >
                   Next →
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="submit"
                   disabled={isSubmitting}
                   className={styles.submitButton}
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit Intake Form'}
-                </button>
+                </Button>
               )}
             </div>
           </form>

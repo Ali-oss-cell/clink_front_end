@@ -5,6 +5,7 @@ import { authService } from '../../services/api/auth';
 import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
 import { servicesService, type Service as APIService } from '../../services/api/services';
 import { InfoIcon, VideoIcon, PhoneIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
 import styles from './PatientPages.module.scss';
 
 interface Service {
@@ -201,12 +202,9 @@ export const ServiceSelectionPage: React.FC = () => {
       <div className={styles.serviceSelectionContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <button 
-              className={styles.backButton}
-              onClick={handleBack}
-            >
+            <Button className={styles.backButton} onClick={handleBack}>
               ← Back to Dashboard
-            </button>
+            </Button>
             <h1 className={styles.pageTitle}>Book Your Appointment</h1>
             <p className={styles.pageSubtitle}>
               Choose the service that best fits your needs. All sessions include Medicare rebates for eligible patients.
@@ -223,9 +221,9 @@ export const ServiceSelectionPage: React.FC = () => {
                 </p>
                 {consentError && <p className={styles.placeholderSubtext}>{consentError}</p>}
               </div>
-              <button className={styles.actionButton} onClick={() => navigate('/patient/account?tab=privacy')}>
+              <Button className={styles.actionButton} onClick={() => navigate('/patient/account?tab=privacy')}>
                 Update Consent
-              </button>
+              </Button>
             </div>
           )}
 
@@ -237,9 +235,9 @@ export const ServiceSelectionPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3>Unable to Load Services</h3>
               <p>{servicesError}</p>
-              <button className={styles.actionButton} onClick={() => window.location.reload()}>
+              <Button className={styles.actionButton} onClick={() => window.location.reload()}>
                 Retry
-              </button>
+              </Button>
             </div>
           ) : services.length === 0 ? (
             <div className={styles.errorState}>
@@ -298,7 +296,7 @@ export const ServiceSelectionPage: React.FC = () => {
                   {service.description}
                 </div>
 
-                    <button 
+                    <Button
                       className={`${styles.selectButton} ${selectedService === service.id ? styles.selectButtonSelected : ''}`}
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent card click from firing
@@ -307,7 +305,7 @@ export const ServiceSelectionPage: React.FC = () => {
                       }}
                     >
                       {selectedService === service.id ? 'SELECTED' : 'SELECT'}
-                    </button>
+                    </Button>
                   </div>
                 );
               })}
@@ -341,21 +339,17 @@ export const ServiceSelectionPage: React.FC = () => {
           </div>
 
           <div className={styles.formActions}>
-            <button
-              type="button"
-              className={styles.cancelButton}
-              onClick={handleBack}
-            >
+            <Button type="button" variant="outline" className={styles.cancelButton} onClick={handleBack}>
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               className={styles.continueButton}
               onClick={handleContinue}
               disabled={!selectedService}
             >
               Continue to Psychologist Selection
-            </button>
+            </Button>
           </div>
         </div>
       </div>

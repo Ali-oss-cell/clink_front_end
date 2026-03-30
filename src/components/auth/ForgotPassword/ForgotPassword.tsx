@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authService } from '../../../services/api/auth';
 import { WarningIcon, CheckCircleIcon } from '../../../utils/icons';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
 import styles from '../Login/Login.module.scss';
 
 interface ForgotForm {
@@ -70,7 +72,7 @@ export const ForgotPassword: React.FC = () => {
           <label htmlFor="forgot-email" className={styles.label}>
             Email address
           </label>
-          <input
+          <Input
             {...register('email', {
               required: 'Email is required',
               pattern: {
@@ -90,7 +92,7 @@ export const ForgotPassword: React.FC = () => {
           )}
         </div>
 
-        <button type="submit" disabled={isLoading} className={styles.submitButton}>
+        <Button type="submit" disabled={isLoading} className={styles.submitButton}>
           {isLoading ? (
             <>
               <span className={styles.spinner}></span>
@@ -99,7 +101,7 @@ export const ForgotPassword: React.FC = () => {
           ) : (
             'Send reset link'
           )}
-        </button>
+        </Button>
 
         <div className={styles.formFooter}>
           <p className={styles.footerText}>

@@ -17,6 +17,7 @@ import {
   CircleIcon
 } from '../../utils/icons';
 import styles from './VideoCallPage.module.scss';
+import { Button } from '../../components/ui/button';
 
 export const VideoCallPage: React.FC = () => {
   const { appointmentId } = useParams<{ appointmentId: string }>();
@@ -421,7 +422,7 @@ export const VideoCallPage: React.FC = () => {
           <h2><ErrorCircleIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Connection Failed</h2>
           <p>{error}</p>
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-            <button 
+            <Button 
               onClick={() => {
                 setError(null);
                 setLoading(true);
@@ -432,10 +433,10 @@ export const VideoCallPage: React.FC = () => {
               style={{ backgroundColor: '#364539', color: 'white' }}
             >
               Retry Connection
-            </button>
-            <button onClick={() => navigate(-1)} className={styles.backButton}>
+            </Button>
+            <Button onClick={() => navigate(-1)} className={styles.backButton}>
               Go Back
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -526,32 +527,32 @@ export const VideoCallPage: React.FC = () => {
 
       {/* Controls */}
       <div className={styles.videoControls}>
-        <button
+        <Button
           onClick={toggleAudio}
           className={`${styles.controlButton} ${isAudioMuted ? styles.active : ''}`}
           title={isAudioMuted ? 'Unmute' : 'Mute'}
         >
           {isAudioMuted ? <MicrophoneSlashIcon size="md" /> : <MicrophoneIcon size="md" />}
           <span>{isAudioMuted ? 'Unmute' : 'Mute'}</span>
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={toggleVideo}
           className={`${styles.controlButton} ${isVideoOff ? styles.active : ''}`}
           title={isVideoOff ? 'Turn On Camera' : 'Turn Off Camera'}
         >
           {isVideoOff ? <CameraIcon size="md" /> : <VideoIcon size="md" />}
           <span>{isVideoOff ? 'Camera Off' : 'Camera On'}</span>
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleLeave}
           className={`${styles.controlButton} ${styles.leaveButton}`}
           title="Leave Call"
         >
           <PhoneIcon size="md" />
           <span>Leave Call</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

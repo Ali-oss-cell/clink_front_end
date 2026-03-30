@@ -27,6 +27,8 @@ import {
   type MatchSessionTypeFilter,
   type MatchSpecializationFilter,
 } from '../../constants/matchPreferences';
+import { Button } from '../../components/ui/button';
+import { Select } from '../../components/ui/select';
 import styles from './Homepage.module.scss';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -237,11 +239,12 @@ export const Homepage: React.FC = () => {
 
         if (animateChildren.length > 0) {
           gsap.from(animateChildren, {
-            y: 40,
+            y: 48,
+            scale: 0.96,
             autoAlpha: 0,
-            duration: 0.65,
-            ease: 'power3.out',
-            stagger: 0.09,
+            duration: 0.78,
+            ease: 'power4.out',
+            stagger: 0.11,
             scrollTrigger: {
               trigger: section,
               start: 'top 86%',
@@ -253,10 +256,11 @@ export const Homepage: React.FC = () => {
         }
 
         gsap.from(section, {
-          y: 52,
+          y: 56,
+          scale: 0.98,
           autoAlpha: 0,
-          duration: 0.85,
-          ease: 'power3.out',
+          duration: 0.92,
+          ease: 'power4.out',
           scrollTrigger: {
             trigger: section,
             start: 'top 88%',
@@ -292,11 +296,12 @@ export const Homepage: React.FC = () => {
           tl.from(
             stepEls,
             {
-              y: 32,
+              y: 40,
+              scale: 0.94,
               autoAlpha: 0,
-              duration: 0.58,
-              ease: 'power2.out',
-              stagger: 0.12,
+              duration: 0.72,
+              ease: 'power3.out',
+              stagger: 0.14,
             },
             0.12
           );
@@ -422,39 +427,39 @@ export const Homepage: React.FC = () => {
             <div className={styles.quickMatchFields}>
               <label className={styles.quickMatchField}>
                 <span>What support do you want?</span>
-                <select value={quickFocus} onChange={(e) => setQuickFocus(e.target.value as MatchSpecializationFilter)}>
+                <Select value={quickFocus} onChange={(e) => setQuickFocus(e.target.value as MatchSpecializationFilter)}>
                   <option value="all">General wellbeing / not sure yet</option>
                   <option value="anxiety">Anxiety or stress</option>
                   <option value="depression">Low mood or depression</option>
                   <option value="trauma">Trauma or PTSD</option>
                   <option value="adhd">ADHD or attention</option>
                   <option value="relationship">Relationships or family</option>
-                </select>
+                </Select>
               </label>
               <label className={styles.quickMatchField}>
                 <span>How would you like to attend?</span>
-                <select value={quickSession} onChange={(e) => setQuickSession(e.target.value as MatchSessionTypeFilter)}>
+                <Select value={quickSession} onChange={(e) => setQuickSession(e.target.value as MatchSessionTypeFilter)}>
                   <option value="both">Either / no preference</option>
                   <option value="telehealth">Telehealth (online)</option>
                   <option value="in-person">In-person</option>
-                </select>
+                </Select>
               </label>
               <label className={styles.quickMatchField}>
                 <span>When would you like to start?</span>
-                <select
+                <Select
                   value={quickAvailability}
                   onChange={(e) => setQuickAvailability(e.target.value as MatchAvailabilityFilter)}
                 >
                   <option value="any">Any time</option>
                   <option value="this-week">Soon (this week)</option>
                   <option value="next-week">Next week is fine</option>
-                </select>
+                </Select>
               </label>
             </div>
             <div className={styles.quickMatchActions}>
-              <button type="button" className={styles.quickMatchPrimary} onClick={handleQuickMatchSubmit}>
+              <Button type="button" className={styles.quickMatchPrimary} onClick={handleQuickMatchSubmit}>
                 Continue with these preferences
-              </button>
+              </Button>
               <Link to="/login" className={styles.quickMatchSecondary}>
                 Sign in instead
               </Link>
@@ -762,17 +767,20 @@ export const Homepage: React.FC = () => {
           </div>
           <div className={styles.testimonialsGrid} data-home-reveal>
             <blockquote className={styles.testimonialCard} data-home-stagger-item>
+              <span className={styles.testimonialAccent} aria-hidden />
               <p>
                 &ldquo;Straightforward booking and clear communication before the first appointment made it easier to
                 take the first step.&rdquo;
               </p>
             </blockquote>
             <blockquote className={styles.testimonialCard} data-home-stagger-item>
+              <span className={styles.testimonialAccent} aria-hidden />
               <p>
                 &ldquo;I felt listened to and the telehealth format actually suited my work hours really well.&rdquo;
               </p>
             </blockquote>
             <blockquote className={styles.testimonialCard} data-home-stagger-item>
+              <span className={styles.testimonialAccent} aria-hidden />
               <p>
                 &ldquo;Having Medicare rebates explained upfront helped me plan sessions without surprises.&rdquo;
               </p>

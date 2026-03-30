@@ -16,6 +16,8 @@ import {
   CloseIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 
 interface Patient {
   id: number;
@@ -263,7 +265,7 @@ export const PsychologistPatientsPage: React.FC = () => {
           <div className={styles.searchFilterSection}>
             <div className={styles.searchBox}>
               <span className={styles.searchIcon}><SearchIcon size="md" /></span>
-              <input
+              <Input
                 type="text"
                 placeholder="Search by name, email, or patient ID..."
                 value={searchQuery}
@@ -272,30 +274,30 @@ export const PsychologistPatientsPage: React.FC = () => {
               />
             </div>
             <div className={styles.filterTabs}>
-              <button
+              <Button
                 className={statusFilter === 'all' ? styles.active : ''}
                 onClick={() => setStatusFilter('all')}
               >
                 All Patients
-              </button>
-              <button
+              </Button>
+              <Button
                 className={statusFilter === 'active' ? styles.active : ''}
                 onClick={() => setStatusFilter('active')}
               >
                 Active
-              </button>
-              <button
+              </Button>
+              <Button
                 className={statusFilter === 'inactive' ? styles.active : ''}
                 onClick={() => setStatusFilter('inactive')}
               >
                 Inactive
-              </button>
-              <button
+              </Button>
+              <Button
                 className={statusFilter === 'completed' ? styles.active : ''}
                 onClick={() => setStatusFilter('completed')}
               >
                 Completed
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -308,9 +310,9 @@ export const PsychologistPatientsPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Patients</h3>
               <p>{error}</p>
-              <button className={styles.retryButton} onClick={fetchPatients}>
+              <Button className={styles.retryButton} onClick={fetchPatients}>
                 Retry
-              </button>
+              </Button>
             </div>
           ) : (
           <div className={styles.patientsList}>
@@ -390,18 +392,18 @@ export const PsychologistPatientsPage: React.FC = () => {
                   </div>
 
                   <div className={styles.patientCardActions}>
-                    <button 
+                    <Button 
                       className={styles.primaryButton}
                       onClick={() => handleViewDetails(patient)}
                     >
                       View Details
-                    </button>
-                    <button className={styles.secondaryButton}>
+                    </Button>
+                    <Button className={styles.secondaryButton}>
                       View Sessions
-                    </button>
-                    <button className={styles.secondaryButton}>
+                    </Button>
+                    <Button className={styles.secondaryButton}>
                       Schedule
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))
@@ -417,34 +419,34 @@ export const PsychologistPatientsPage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>Patient Details - {selectedPatient.name}</h3>
-              <button 
+              <Button 
                 className={styles.closeButton}
                 onClick={() => setShowDetailsModal(false)}
               >
                 <CloseIcon size="md" />
-              </button>
+              </Button>
             </div>
 
             {/* Tabs */}
             <div className={styles.tabsContainer}>
-              <button
+              <Button
                 className={`${styles.tab} ${activeTab === 'overview' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('overview')}
               >
                 Overview
-              </button>
-              <button
+              </Button>
+              <Button
                 className={`${styles.tab} ${activeTab === 'notes' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('notes')}
               >
                 Progress Notes
-              </button>
-              <button
+              </Button>
+              <Button
                 className={`${styles.tab} ${activeTab === 'sessions' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('sessions')}
               >
                 Sessions
-              </button>
+              </Button>
             </div>
             
             <div className={styles.modalBody}>
@@ -514,12 +516,12 @@ export const PsychologistPatientsPage: React.FC = () => {
                 <div className={styles.notesTabContent}>
                   <div className={styles.notesTabHeader}>
                     <h4>Progress Notes History</h4>
-                    <button 
+                    <Button 
                       className={styles.primaryButton}
                       onClick={handleWriteNoteForPatient}
                     >
                       + Write Note
-                    </button>
+                    </Button>
                   </div>
 
                   {loadingNotes ? (
@@ -529,12 +531,12 @@ export const PsychologistPatientsPage: React.FC = () => {
                   ) : patientNotes.length === 0 ? (
                     <div className={styles.emptyState}>
                       <p>No progress notes for this patient yet.</p>
-                      <button 
+                      <Button 
                         className={styles.primaryButton}
                         onClick={handleWriteNoteForPatient}
                       >
                         Write First Note
-                      </button>
+                      </Button>
                     </div>
                   ) : (
                     <div className={styles.patientNotesList}>
@@ -584,12 +586,12 @@ export const PsychologistPatientsPage: React.FC = () => {
             </div>
 
             <div className={styles.modalActions}>
-              <button 
+              <Button 
                 className={styles.secondaryButton}
                 onClick={() => setShowDetailsModal(false)}
               >
                 Close
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -599,9 +601,9 @@ export const PsychologistPatientsPage: React.FC = () => {
       {showNoteForm && selectedPatient && (
         <div className={styles.modalOverlay} onClick={handleNoteFormClose}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.modalClose} onClick={handleNoteFormClose}>
+            <Button className={styles.modalClose} onClick={handleNoteFormClose}>
               <CloseIcon size="md" />
-            </button>
+            </Button>
             <SOAPNoteForm
               patientId={selectedPatient.id}
               noteId={selectedNote?.id}
@@ -619,12 +621,12 @@ export const PsychologistPatientsPage: React.FC = () => {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '800px' }}>
             <div className={styles.modalHeader}>
               <h3>Progress Note - Session #{selectedNote.session_number}</h3>
-              <button 
+              <Button 
                 className={styles.closeButton}
                 onClick={() => setShowNoteDetail(false)}
               >
                 <CloseIcon size="md" />
-              </button>
+              </Button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.noteDetailMeta}>
@@ -654,7 +656,7 @@ export const PsychologistPatientsPage: React.FC = () => {
               </div>
             </div>
             <div className={styles.modalActions}>
-              <button 
+              <Button 
                 className={styles.secondaryButton}
                 onClick={() => {
                   setShowNoteDetail(false);
@@ -663,13 +665,13 @@ export const PsychologistPatientsPage: React.FC = () => {
                 }}
               >
                 Edit Note
-              </button>
-              <button 
+              </Button>
+              <Button 
                 className={styles.secondaryButton}
                 onClick={() => setShowNoteDetail(false)}
               >
                 Close
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -4,6 +4,10 @@ import { authService } from '../../services/api/auth';
 import { resourceService, type Resource, type CreateResourceRequest, type UpdateResourceRequest, type ResourceCategory } from '../../services/api/resources';
 import { DocumentIcon, CloseIcon } from '../../utils/icons';
 import styles from '../admin/AdminPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
+import { Textarea } from '../../components/ui/textarea';
 
 export const ManagerResourcesPage: React.FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -342,7 +346,7 @@ export const ManagerResourcesPage: React.FC = () => {
           {/* Filters and Actions */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
-              <input
+              <Input
                 type="text"
                 placeholder="Search resources..."
                 value={searchTerm}
@@ -352,7 +356,7 @@ export const ManagerResourcesPage: React.FC = () => {
             </div>
             
             <div className={styles.filterGroup}>
-              <select
+              <Select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 className={styles.filterSelect}
@@ -361,9 +365,9 @@ export const ManagerResourcesPage: React.FC = () => {
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
-              </select>
+              </Select>
 
-              <select
+              <Select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className={styles.filterSelect}
@@ -372,9 +376,9 @@ export const ManagerResourcesPage: React.FC = () => {
                 {resourceTypes.map(type => (
                   <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
                 ))}
-              </select>
+              </Select>
 
-              <select
+              <Select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className={styles.filterSelect}
@@ -382,14 +386,14 @@ export const ManagerResourcesPage: React.FC = () => {
                 <option value="all">All Status</option>
                 <option value="published">Published</option>
                 <option value="unpublished">Unpublished</option>
-              </select>
+              </Select>
 
-              <button
+              <Button
                 onClick={() => setShowCreateModal(true)}
                 className={styles.primaryButton}
               >
                 + Create Resource
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -444,18 +448,18 @@ export const ManagerResourcesPage: React.FC = () => {
                       </td>
                       <td>
                         <div className={styles.actionButtons}>
-                          <button
+                          <Button
                             onClick={() => openEditModal(resource)}
                             className={styles.editButton}
                           >
                             Edit
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => handleDeleteResource(resource.id)}
                             className={styles.deleteButton}
                           >
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -471,7 +475,7 @@ export const ManagerResourcesPage: React.FC = () => {
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                   <h2>Create New Resource</h2>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
                     style={{
@@ -493,12 +497,12 @@ export const ManagerResourcesPage: React.FC = () => {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <CloseIcon size="sm" />
-                  </button>
+                  </Button>
                 </div>
                 <form onSubmit={handleCreateResource}>
                   <div className={styles.formGroup}>
                     <label>Title *</label>
-                    <input
+                    <Input
                       type="text"
                       value={createForm.title}
                       onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })}
@@ -508,7 +512,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Description *</label>
-                    <textarea
+                    <Textarea
                       value={createForm.description}
                       onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
                       rows={3}
@@ -519,7 +523,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>Category *</label>
-                      <select
+                      <Select
                         value={createForm.category}
                         onChange={(e) => setCreateForm({ ...createForm, category: e.target.value })}
                         required
@@ -528,12 +532,12 @@ export const ManagerResourcesPage: React.FC = () => {
                         {categories.map(cat => (
                           <option key={cat.id} value={cat.id}>{cat.name}</option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
 
                     <div className={styles.formGroup}>
                       <label>Type *</label>
-                      <select
+                      <Select
                         value={createForm.type}
                         onChange={(e) => setCreateForm({ ...createForm, type: e.target.value })}
                         required
@@ -541,14 +545,14 @@ export const ManagerResourcesPage: React.FC = () => {
                         {resourceTypes.map(type => (
                           <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
                   </div>
 
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>Icon</label>
-                      <input
+                      <Input
                         type="text"
                         value={createForm.icon}
                         onChange={(e) => setCreateForm({ ...createForm, icon: e.target.value })}
@@ -558,19 +562,19 @@ export const ManagerResourcesPage: React.FC = () => {
 
                     <div className={styles.formGroup}>
                       <label>Difficulty Level</label>
-                      <select
+                      <Select
                         value={createForm.difficulty_level}
                         onChange={(e) => setCreateForm({ ...createForm, difficulty_level: e.target.value })}
                       >
                         {difficultyLevels.map(level => (
                           <option key={level} value={level}>{level.charAt(0).toUpperCase() + level.slice(1)}</option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
 
                     <div className={styles.formGroup}>
                       <label>Duration (minutes)</label>
-                      <input
+                      <Input
                         type="number"
                         value={createForm.duration_minutes || ''}
                         onChange={(e) => setCreateForm({ ...createForm, duration_minutes: e.target.value ? parseInt(e.target.value) : undefined })}
@@ -581,7 +585,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Content (HTML)</label>
-                    <textarea
+                    <Textarea
                       value={createForm.content}
                       onChange={(e) => setCreateForm({ ...createForm, content: e.target.value })}
                       rows={6}
@@ -591,7 +595,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Tags (comma-separated)</label>
-                    <input
+                    <Input
                       type="text"
                       value={tagsInput}
                       onChange={(e) => setTagsInput(e.target.value)}
@@ -603,7 +607,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>Image File (Optional)</label>
-                      <input
+                      <Input
                         type="file"
                         accept="image/*"
                         onChange={(e) => handleImageChange(e, false)}
@@ -621,7 +625,7 @@ export const ManagerResourcesPage: React.FC = () => {
                               border: '1px solid #c8c5c0'
                             }}
                           />
-                          <button
+                          <Button
                             type="button"
                             onClick={() => removeImage(false)}
                             style={{
@@ -639,7 +643,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             }}
                           >
                             <CloseIcon size="sm" />
-                          </button>
+                          </Button>
                         </div>
                       )}
                       <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
@@ -649,7 +653,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                     <div className={styles.formGroup}>
                       <label>PDF File (Optional)</label>
-                      <input
+                      <Input
                         type="file"
                         accept="application/pdf"
                         onChange={(e) => handlePdfChange(e, false)}
@@ -661,7 +665,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                             {pdfFile.name}
                           </span>
-                          <button
+                          <Button
                             type="button"
                             onClick={() => removePdf(false)}
                             style={{
@@ -676,7 +680,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             }}
                           >
                             Remove
-                          </button>
+                          </Button>
                         </div>
                       )}
                       <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
@@ -688,7 +692,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   {/* External URL Fields */}
                   <div className={styles.formGroup}>
                     <label>External Image URL (Optional - Alternative to file upload)</label>
-                    <input
+                    <Input
                       type="url"
                       value={createForm.thumbnail_url || ''}
                       onChange={(e) => setCreateForm({ ...createForm, thumbnail_url: e.target.value || undefined })}
@@ -701,7 +705,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Media URL (Optional - For Videos/Audio)</label>
-                    <input
+                    <Input
                       type="url"
                       value={createForm.media_url || ''}
                       onChange={(e) => setCreateForm({ ...createForm, media_url: e.target.value || undefined })}
@@ -714,7 +718,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>External Download URL (Optional - Alternative to PDF upload)</label>
-                    <input
+                    <Input
                       type="url"
                       value={createForm.download_url || ''}
                       onChange={(e) => setCreateForm({ ...createForm, download_url: e.target.value || undefined })}
@@ -728,7 +732,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>
-                        <input
+                        <Input
                           type="checkbox"
                           checked={createForm.is_published}
                           onChange={(e) => setCreateForm({ ...createForm, is_published: e.target.checked })}
@@ -739,7 +743,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                     <div className={styles.formGroup}>
                       <label>
-                        <input
+                        <Input
                           type="checkbox"
                           checked={createForm.is_featured}
                           onChange={(e) => setCreateForm({ ...createForm, is_featured: e.target.checked })}
@@ -750,12 +754,12 @@ export const ManagerResourcesPage: React.FC = () => {
                   </div>
 
                   <div className={styles.modalActions}>
-                    <button type="button" onClick={() => setShowCreateModal(false)} className={styles.secondaryButton}>
+                    <Button type="button" onClick={() => setShowCreateModal(false)} className={styles.secondaryButton}>
                       Cancel
-                    </button>
-                    <button type="submit" className={styles.primaryButton}>
+                    </Button>
+                    <Button type="submit" className={styles.primaryButton}>
                       Create Resource
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>
@@ -768,7 +772,7 @@ export const ManagerResourcesPage: React.FC = () => {
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                   <h2>Edit Resource</h2>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setShowEditModal(false)}
                     style={{
@@ -790,12 +794,12 @@ export const ManagerResourcesPage: React.FC = () => {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <CloseIcon size="sm" />
-                  </button>
+                  </Button>
                 </div>
                 <form onSubmit={handleEditResource}>
                   <div className={styles.formGroup}>
                     <label>Title *</label>
-                    <input
+                    <Input
                       type="text"
                       value={editForm.title}
                       onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
@@ -805,7 +809,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Description *</label>
-                    <textarea
+                    <Textarea
                       value={editForm.description}
                       onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                       rows={3}
@@ -816,7 +820,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>Category *</label>
-                      <select
+                      <Select
                         value={editForm.category}
                         onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
                         required
@@ -825,12 +829,12 @@ export const ManagerResourcesPage: React.FC = () => {
                         {categories.map(cat => (
                           <option key={cat.id} value={cat.id}>{cat.name}</option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
 
                     <div className={styles.formGroup}>
                       <label>Type *</label>
-                      <select
+                      <Select
                         value={editForm.type}
                         onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
                         required
@@ -838,14 +842,14 @@ export const ManagerResourcesPage: React.FC = () => {
                         {resourceTypes.map(type => (
                           <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
                   </div>
 
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>Icon</label>
-                      <input
+                      <Input
                         type="text"
                         value={editForm.icon}
                         onChange={(e) => setEditForm({ ...editForm, icon: e.target.value })}
@@ -854,19 +858,19 @@ export const ManagerResourcesPage: React.FC = () => {
 
                     <div className={styles.formGroup}>
                       <label>Difficulty Level</label>
-                      <select
+                      <Select
                         value={editForm.difficulty_level}
                         onChange={(e) => setEditForm({ ...editForm, difficulty_level: e.target.value })}
                       >
                         {difficultyLevels.map(level => (
                           <option key={level} value={level}>{level.charAt(0).toUpperCase() + level.slice(1)}</option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
 
                     <div className={styles.formGroup}>
                       <label>Duration (minutes)</label>
-                      <input
+                      <Input
                         type="number"
                         value={editForm.duration_minutes || ''}
                         onChange={(e) => setEditForm({ ...editForm, duration_minutes: e.target.value ? parseInt(e.target.value) : undefined })}
@@ -877,7 +881,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Content (HTML)</label>
-                    <textarea
+                    <Textarea
                       value={editForm.content}
                       onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
                       rows={6}
@@ -886,7 +890,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Tags (comma-separated)</label>
-                    <input
+                    <Input
                       type="text"
                       value={editTagsInput}
                       onChange={(e) => setEditTagsInput(e.target.value)}
@@ -897,7 +901,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>Image File (Optional)</label>
-                      <input
+                      <Input
                         type="file"
                         accept="image/*"
                         onChange={(e) => handleImageChange(e, true)}
@@ -915,7 +919,7 @@ export const ManagerResourcesPage: React.FC = () => {
                               border: '1px solid #c8c5c0'
                             }}
                           />
-                          <button
+                          <Button
                             type="button"
                             onClick={() => removeImage(true)}
                             style={{
@@ -933,7 +937,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             }}
                           >
                             <CloseIcon size="sm" />
-                          </button>
+                          </Button>
                         </div>
                       )}
                       {existingImageUrl && !editImagePreview && (
@@ -948,7 +952,7 @@ export const ManagerResourcesPage: React.FC = () => {
                               border: '1px solid #c8c5c0'
                             }}
                           />
-                          <button
+                          <Button
                             type="button"
                             onClick={() => removeImage(true)}
                             style={{
@@ -966,7 +970,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             }}
                           >
                             <CloseIcon size="sm" />
-                          </button>
+                          </Button>
                           <small style={{ display: 'block', marginTop: '0.25rem', color: '#7a7b7a' }}>
                             Current image
                           </small>
@@ -979,7 +983,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                     <div className={styles.formGroup}>
                       <label>PDF File (Optional)</label>
-                      <input
+                      <Input
                         type="file"
                         accept="application/pdf"
                         onChange={(e) => handlePdfChange(e, true)}
@@ -991,7 +995,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                             {editPdfFile.name}
                           </span>
-                          <button
+                          <Button
                             type="button"
                             onClick={() => removePdf(true)}
                             style={{
@@ -1006,7 +1010,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             }}
                           >
                             Remove
-                          </button>
+                          </Button>
                         </div>
                       )}
                       {existingPdfUrl && !editPdfFile && (
@@ -1020,7 +1024,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
                             View current PDF
                           </a>
-                          <button
+                          <Button
                             type="button"
                             onClick={() => removePdf(true)}
                             style={{
@@ -1035,7 +1039,7 @@ export const ManagerResourcesPage: React.FC = () => {
                             }}
                           >
                             Remove
-                          </button>
+                          </Button>
                         </div>
                       )}
                       <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
@@ -1047,7 +1051,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   {/* External URL Fields */}
                   <div className={styles.formGroup}>
                     <label>External Image URL (Optional - Alternative to file upload)</label>
-                    <input
+                    <Input
                       type="url"
                       value={editForm.thumbnail_url || ''}
                       onChange={(e) => setEditForm({ ...editForm, thumbnail_url: e.target.value || undefined })}
@@ -1060,7 +1064,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>Media URL (Optional - For Videos/Audio)</label>
-                    <input
+                    <Input
                       type="url"
                       value={editForm.media_url || ''}
                       onChange={(e) => setEditForm({ ...editForm, media_url: e.target.value || undefined })}
@@ -1073,7 +1077,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                   <div className={styles.formGroup}>
                     <label>External Download URL (Optional - Alternative to PDF upload)</label>
-                    <input
+                    <Input
                       type="url"
                       value={editForm.download_url || ''}
                       onChange={(e) => setEditForm({ ...editForm, download_url: e.target.value || undefined })}
@@ -1087,7 +1091,7 @@ export const ManagerResourcesPage: React.FC = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label>
-                        <input
+                        <Input
                           type="checkbox"
                           checked={editForm.is_published}
                           onChange={(e) => setEditForm({ ...editForm, is_published: e.target.checked })}
@@ -1098,7 +1102,7 @@ export const ManagerResourcesPage: React.FC = () => {
 
                     <div className={styles.formGroup}>
                       <label>
-                        <input
+                        <Input
                           type="checkbox"
                           checked={editForm.is_featured}
                           onChange={(e) => setEditForm({ ...editForm, is_featured: e.target.checked })}
@@ -1109,12 +1113,12 @@ export const ManagerResourcesPage: React.FC = () => {
                   </div>
 
                   <div className={styles.modalActions}>
-                    <button type="button" onClick={() => setShowEditModal(false)} className={styles.secondaryButton}>
+                    <Button type="button" onClick={() => setShowEditModal(false)} className={styles.secondaryButton}>
                       Cancel
-                    </button>
-                    <button type="submit" className={styles.primaryButton}>
+                    </Button>
+                    <Button type="submit" className={styles.primaryButton}>
                       Update Resource
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>

@@ -22,6 +22,7 @@ import {
   LinkIcon,
   NotesIcon
 } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
 import styles from './PatientAppointments.module.scss';
 
 // Using PatientAppointment interface from appointments service
@@ -194,13 +195,13 @@ export const PatientAppointmentsPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Appointments</h3>
               <p>{error.message || 'Failed to load appointments. Please try again.'}</p>
-              <button 
+              <Button 
                 className={styles.retryButton}
                 onClick={refetch}
               >
                 <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -222,35 +223,35 @@ export const PatientAppointmentsPage: React.FC = () => {
           {/* Action Bar */}
           <div className={styles.actionBar}>
             <div className={styles.filterTabs}>
-              <button 
+              <Button 
                 className={`${styles.filterTab} ${filter === 'all' ? styles.filterTabActive : ''}`}
                 onClick={() => setFilter('all')}
               >
                 All Appointments
-              </button>
-              <button 
+              </Button>
+              <Button 
                 className={`${styles.filterTab} ${filter === 'upcoming' ? styles.filterTabActive : ''}`}
                 onClick={() => setFilter('upcoming')}
               >
                 Upcoming
-              </button>
-              <button 
+              </Button>
+              <Button 
                 className={`${styles.filterTab} ${filter === 'completed' ? styles.filterTabActive : ''}`}
                 onClick={() => setFilter('completed')}
               >
                 Completed
-              </button>
-              <button 
+              </Button>
+              <Button 
                 className={`${styles.filterTab} ${filter === 'cancelled' ? styles.filterTabActive : ''}`}
                 onClick={() => setFilter('cancelled')}
               >
                 Cancelled
-              </button>
+              </Button>
             </div>
-            <button className={styles.primaryButton} onClick={handleBookNew}>
+            <Button className={styles.primaryButton} onClick={handleBookNew}>
               <CalendarPlusIcon size="sm" style={{ marginRight: '8px' }} /> 
               Book New Appointment
-            </button>
+            </Button>
           </div>
 
           {/* Appointments List */}
@@ -265,9 +266,9 @@ export const PatientAppointmentsPage: React.FC = () => {
                     : `No ${filter} appointments found.`
                   }
                 </p>
-                <button className={styles.primaryButton} onClick={handleBookNew}>
+                <Button className={styles.primaryButton} onClick={handleBookNew}>
                   Book Your First Appointment
-                </button>
+                </Button>
               </div>
             ) : (
               appointments.map((appointment) => (
@@ -391,7 +392,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                   <div className={styles.appointmentActions}>
                     {/* Video Call Button */}
                     {videoCallService.isVideoCallAvailable(appointment) && (
-                      <button 
+                      <Button 
                         className={`${styles.videoCallButton} ${
                           (appointment.can_join_session === false || 
                            (appointment.can_join_session === undefined && !videoCallService.canJoinNow(appointment))) 
@@ -424,35 +425,35 @@ export const PatientAppointmentsPage: React.FC = () => {
                           ? 'Join Video Session' 
                           : 'Video Call (Not Available Yet)'
                         }
-                      </button>
+                      </Button>
                     )}
                     
-                    <button 
+                    <Button 
                       className={styles.secondaryButton}
                       onClick={() => handleViewDetails(appointment)}
                     >
                       <ClipboardIcon size="sm" style={{ marginRight: '6px' }} />
                       View Details
-                    </button>
+                    </Button>
                     
                     {appointment.can_reschedule && (
-                      <button 
+                      <Button 
                         className={styles.secondaryButton}
                         onClick={() => handleRescheduleAppointment(appointment)}
                       >
                         <EditIcon size="sm" style={{ marginRight: '6px' }} />
                         Reschedule
-                      </button>
+                      </Button>
                     )}
                     
                     {appointment.can_cancel && (
-                      <button 
+                      <Button 
                         className={styles.dangerButton}
                         onClick={() => handleCancelAppointment(appointment)}
                       >
                         <CloseIcon size="sm" style={{ marginRight: '6px' }} />
                         Cancel
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -463,23 +464,23 @@ export const PatientAppointmentsPage: React.FC = () => {
           {/* Pagination Controls */}
           {(hasNext || hasPrevious) && (
             <div className={styles.paginationControls}>
-              <button 
+              <Button 
                 className={styles.paginationButton}
                 onClick={previousPage}
                 disabled={!hasPrevious}
               >
                 Previous
-              </button>
+              </Button>
               <span className={styles.paginationInfo}>
                 Page {currentPage} of {Math.ceil(count / 50)}
               </span>
-              <button 
+              <Button 
                 className={styles.paginationButton}
                 onClick={nextPage}
                 disabled={!hasNext}
               >
                 Next
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -492,18 +493,18 @@ export const PatientAppointmentsPage: React.FC = () => {
             <h3>Cancel Appointment</h3>
             <p>Are you sure you want to cancel your appointment with {selectedAppointment.psychologist.name} on {selectedAppointment.formatted_date} at {selectedAppointment.formatted_time}?</p>
             <div className={styles.modalActions}>
-              <button 
+              <Button 
                 className={styles.secondaryButton}
                 onClick={() => setShowCancelModal(false)}
               >
                 Keep Appointment
-              </button>
-              <button 
+              </Button>
+              <Button 
                 className={styles.dangerButton}
                 onClick={confirmCancel}
               >
                 Yes, Cancel
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -516,13 +517,13 @@ export const PatientAppointmentsPage: React.FC = () => {
             <h3>Reschedule Appointment</h3>
             <p>Redirecting to appointment booking to reschedule your session with {selectedAppointment.psychologist.name}...</p>
             <div className={styles.modalActions}>
-              <button 
+              <Button 
                 className={styles.secondaryButton}
                 onClick={() => setShowRescheduleModal(false)}
               >
                 Cancel
-              </button>
-              <button 
+              </Button>
+              <Button 
                 className={styles.primaryButton}
                 onClick={() => {
                   navigate('/appointments/book-appointment');
@@ -530,7 +531,7 @@ export const PatientAppointmentsPage: React.FC = () => {
                 }}
               >
                 Go to Booking
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -5,6 +5,9 @@ import { authService } from '../../services/api/auth';
 import { adminService, type Invoice, type Payment, type MedicareClaim } from '../../services/api/admin';
 import { downloadInvoicePDF } from '../../utils/invoicePDF';
 import styles from './AdminPages.module.scss';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
 
 export const AdminBillingPage: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -143,36 +146,36 @@ export const AdminBillingPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
+              <Button onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
             </div>
           )}
 
           {/* Tabs */}
           <div className={styles.tabContainer}>
-            <button
+            <Button
               className={`${styles.tab} ${activeTab === 'invoices' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('invoices')}
             >
               Invoices ({invoices.length})
-            </button>
-            <button
+            </Button>
+            <Button
               className={`${styles.tab} ${activeTab === 'payments' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('payments')}
             >
               Payments ({payments.length})
-            </button>
-            <button
+            </Button>
+            <Button
               className={`${styles.tab} ${activeTab === 'claims' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('claims')}
             >
               Medicare Claims ({medicareClaims.length})
-            </button>
+            </Button>
           </div>
 
           {/* Filters */}
           {(activeTab === 'invoices' || activeTab === 'claims') && (
             <div className={styles.filtersBar}>
-              <select
+              <Select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className={styles.filterSelect}
@@ -182,7 +185,7 @@ export const AdminBillingPage: React.FC = () => {
                 <option value="pending">Pending</option>
                 <option value="cancelled">Cancelled</option>
                 <option value="failed">Failed</option>
-              </select>
+              </Select>
             </div>
           )}
 
@@ -228,7 +231,7 @@ export const AdminBillingPage: React.FC = () => {
                             }}
                             title="GST-free: no 10% GST on subtotal (accounting rules apply)"
                           >
-                            <input
+                            <Input
                               type="checkbox"
                               checked={!!invoice.is_gst_free}
                               disabled={gstUpdatingId === invoice.id}
@@ -248,7 +251,7 @@ export const AdminBillingPage: React.FC = () => {
                         <td>{invoice.due_date ? formatDate(invoice.due_date) : 'N/A'}</td>
                         <td>{formatDate(invoice.created_at)}</td>
                         <td>
-                          <button
+                          <Button
                             onClick={() => handleDownloadPDF(invoice.id)}
                             disabled={downloadingId === invoice.id}
                             className={styles.actionButton}
@@ -265,7 +268,7 @@ export const AdminBillingPage: React.FC = () => {
                                 Download PDF
                               </>
                             )}
-                          </button>
+                          </Button>
                         </td>
                       </tr>
                     ))
