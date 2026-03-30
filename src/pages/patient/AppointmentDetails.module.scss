@@ -8,6 +8,52 @@
   background: $background-light;
 }
 
+.pageHeader {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+}
+
+.backButton {
+  background: white;
+  border: 2px solid $border-light;
+  border-radius: 12px;
+  padding: 0.62rem 1.15rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: $text-dark;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  &:hover {
+    background: $patient-primary;
+    color: white;
+    border-color: $patient-primary;
+    transform: translateX(-5px);
+  }
+}
+
+.pageTitle {
+  font-size: 1.85rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, $patient-primary 0%, $secondary-color 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.pageSubtitle {
+  font-size: 0.95rem;
+  color: $text-light;
+  margin: 0 auto;
+  max-width: 36rem;
+  line-height: 1.55;
+}
+
 .appointmentSummary {
   margin-bottom: $spacing-xl;
 }
@@ -26,6 +72,22 @@
     color: $text-dark;
     margin: 0 0 $spacing-lg 0;
   }
+}
+
+.summaryHeading {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 $spacing-lg 0;
+}
+
+.summaryHeadingIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: $patient-primary;
 }
 
 .summaryGrid {
@@ -111,6 +173,12 @@
   border-bottom: 2px solid $border-light;
 }
 
+.sectionTitleMeta {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: $text-light;
+}
+
 .formGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -143,25 +211,33 @@
 }
 
 .textarea {
-  padding: $spacing-md;
+  padding: $spacing-md $spacing-md;
   border: 1px solid $border-light;
   border-radius: $border-radius;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   font-family: inherit;
+  line-height: 1.5;
   resize: vertical;
-  min-height: 100px;
-  transition: border-color 0.2s ease;
-  
+  min-height: 108px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $text-light;
+    opacity: 0.72;
+  }
+
   &:focus {
     outline: none;
     border-color: $patient-primary;
+    box-shadow: 0 0 0 3px rgba($patient-primary, 0.12);
   }
 }
 
 .fieldHelp {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: $text-light;
-  font-style: italic;
+  margin: 0;
+  line-height: 1.45;
 }
 
 .fieldError {
@@ -359,16 +435,29 @@
   max-width: 500px;
   margin: 0 auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
+
   h3 {
     color: $error-red;
     margin-bottom: $spacing-md;
   }
-  
+
   p {
     color: $text-light;
     margin-bottom: $spacing-lg;
   }
+}
+
+.errorStateTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.errorStateIconWrap {
+  display: inline-flex;
+  flex-shrink: 0;
 }
 
 .retryButton {
@@ -411,9 +500,51 @@
   .pageHeader {
     text-align: left;
   }
+
+  .appointmentDetailsForm {
+    background: var(--cs-surface-lowest);
+    border-radius: var(--cs-radius-2xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+    border: none;
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .sectionTitle {
+    border-bottom-color: var(--cs-outline-variant);
+  }
+
+  .sectionTitleMeta {
+    color: var(--cs-on-surface-variant);
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+    max-width: 42rem;
+    margin: 0 auto;
+    gap: $spacing-xl;
+  }
+
+  .textarea {
+    border-radius: var(--cs-radius-lg);
+
+    &:focus {
+      border-color: var(--cs-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--cs-primary) 18%, transparent);
+    }
+  }
+
+  .label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .summaryHeadingIcon {
+    color: var(--cs-primary);
+  }
 }
 
 // Booking flow CTA normalization (Clinical Sanctuary)
+button.backButton,
 button.cancelButton,
 button.retryButton {
   border: none;

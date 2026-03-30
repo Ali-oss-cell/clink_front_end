@@ -91,17 +91,74 @@
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   animation: fadeInUp 0.6s ease-out;
-  
+
   h3 {
     font-size: 2rem;
     color: $text-dark;
     margin-bottom: 1rem;
   }
-  
+
+  h3.errorStateHeading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 1.65rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    line-height: 1.3;
+  }
+
   p {
     font-size: 1.125rem;
     color: $text-light;
     margin-bottom: 2rem;
+  }
+
+  .errorStateIcon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: $warning-color;
+  }
+
+  .errorFriendly {
+    font-size: 1rem;
+    color: $text-dark;
+    max-width: 32rem;
+    margin: 0 auto 0.75rem;
+    line-height: 1.55;
+  }
+
+  .errorMessage {
+    font-size: 1.0625rem;
+    color: $text-light;
+    margin: 0 auto 2rem;
+    max-width: 36rem;
+    line-height: 1.5;
+  }
+
+  .errorTechnical {
+    font-size: 0.875rem;
+    color: $text-light;
+    margin: 0 auto 1.75rem;
+    max-width: 36rem;
+    line-height: 1.45;
+    opacity: 0.9;
+  }
+
+  .errorCtaRow {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .retryIcon {
+    display: inline-flex;
+    margin-right: 0.35rem;
+    vertical-align: middle;
   }
 }
 

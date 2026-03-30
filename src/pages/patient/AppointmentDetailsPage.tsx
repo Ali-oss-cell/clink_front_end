@@ -12,6 +12,7 @@ import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { cn } from '../../lib/cn';
 import styles from './AppointmentDetails.module.scss';
+import patientPageStyles from './PatientPages.module.scss';
 
 interface AppointmentDetailsFormData {
   therapyFocus: string;
@@ -93,7 +94,7 @@ export const AppointmentDetailsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
         <div className={styles.appointmentDetailsContainer}>
           <div className="container">
             <div className={styles.loadingState}>
@@ -107,11 +108,16 @@ export const AppointmentDetailsPage: React.FC = () => {
 
   if (error || !bookingData) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
         <div className={styles.appointmentDetailsContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Appointment</h3>
+              <h3 className={styles.errorStateTitle}>
+                <span className={styles.errorStateIconWrap} aria-hidden>
+                  <WarningIcon size="md" />
+                </span>
+                Unable to Load Appointment
+              </h3>
               <p>{error || 'Appointment not found'}</p>
               <Button className={styles.retryButton} onClick={() => navigate('/appointments/date-time')}>
                 Go Back
@@ -128,7 +134,7 @@ export const AppointmentDetailsPage: React.FC = () => {
       user={user} 
       isAuthenticated={true}
       patientShell
-      className={styles.patientLayout}
+      className={patientPageStyles.patientLayout}
     >
       <div className={styles.appointmentDetailsContainer}>
         <div className="container">
@@ -144,7 +150,12 @@ export const AppointmentDetailsPage: React.FC = () => {
 
           <div className={styles.appointmentSummary}>
             <div className={styles.summaryCard}>
-              <h3><CalendarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Appointment Summary</h3>
+              <h3 className={styles.summaryHeading}>
+                <span className={styles.summaryHeadingIcon} aria-hidden>
+                  <CalendarIcon size="md" />
+                </span>
+                Appointment Summary
+              </h3>
               <div className={styles.summaryGrid}>
                 <div className={styles.summaryItem}>
                   <span className={styles.summaryLabel}>Psychologist:</span>
@@ -216,41 +227,47 @@ export const AppointmentDetailsPage: React.FC = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className={styles.appointmentDetailsForm}>
             <div className={styles.formSection}>
-              <h3 className={styles.sectionTitle}>Session Notes (Optional)</h3>
+              <h3 className={styles.sectionTitle}>Session notes <span className={styles.sectionTitleMeta}>(optional)</span></h3>
               <p className={styles.sectionDescription}>
-                You can provide additional information to help your psychologist prepare for this session. 
-                This is optional and can also be discussed during your appointment.
+                Share anything that helps your psychologist prepare. You can skip this entirely or talk it through in the session.
               </p>
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
-                  <Label className={styles.label}>What would you like to focus on in this session?</Label>
+                  <Label className={styles.label} htmlFor="therapy-focus">
+                    Focus for this session
+                  </Label>
                   <Textarea
+                    id="therapy-focus"
                     {...register('therapyFocus')}
                     className={cn('tp-ui-textarea', styles.textarea)}
-                    placeholder="Example: I've been experiencing anxiety about work and would like to learn some coping strategies..."
+                    placeholder="e.g. Work stress, sleep, a recent life change — whatever feels most important today."
                     rows={4}
                   />
-                  <div className={styles.fieldHelp}>
-                    This helps your psychologist prepare but is completely optional
-                  </div>
+                  <p className={styles.fieldHelp}>Optional. A few words is enough.</p>
                 </div>
 
                 <div className={styles.formGroup}>
-                  <Label className={styles.label}>Special Requests or Accommodations</Label>
+                  <Label className={styles.label} htmlFor="special-requests">
+                    Access or communication preferences
+                  </Label>
                   <Textarea
+                    id="special-requests"
                     {...register('specialRequests')}
                     className={cn('tp-ui-textarea', styles.textarea)}
-                    placeholder="Any accessibility needs, preferred communication style, or other accommodations..."
+                    placeholder="e.g. captions, slower pace, written materials, or anything that makes the session easier for you."
                     rows={3}
                   />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <Label className={styles.label}>Additional Notes</Label>
+                  <Label className={styles.label} htmlFor="additional-notes">
+                    Anything else to know
+                  </Label>
                   <Textarea
+                    id="additional-notes"
                     {...register('additionalNotes')}
                     className={cn('tp-ui-textarea', styles.textarea)}
-                    placeholder="Any other information that might be helpful..."
+                    placeholder="Optional context — only if there is something else you want them to see beforehand."
                     rows={3}
                   />
                 </div>

@@ -328,26 +328,34 @@ export const DateTimeSelectionPage: React.FC = () => {
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
-              <h3>
-                <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 
-                {isPsychologistNotFound ? 'Psychologist Not Found' : 'Unable to Load Available Slots'}
+              <h3 className={styles.errorStateHeading}>
+                <span className={styles.errorStateIcon} aria-hidden>
+                  <WarningIcon size="md" />
+                </span>
+                {isPsychologistNotFound ? 'Psychologist not available' : 'Unable to load available slots'}
               </h3>
-              <p>{error}</p>
               {isPsychologistNotFound ? (
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem' }}>
-                  <Button
-                    className={styles.retryButton} 
-                    onClick={handleBack}
-                    style={{ backgroundColor: '#4A90E2', color: 'white' }}
-                  >
-                    ← Select Different Psychologist
-                  </Button>
-                </div>
+                <>
+                  <p className={styles.errorFriendly}>
+                    This clinician may not be bookable anymore, or your link is out of date. Choose another psychologist to keep your booking.
+                  </p>
+                  <p className={styles.errorTechnical}>{error}</p>
+                  <div className={styles.errorCtaRow}>
+                    <Button type="button" className={styles.continueButton} onClick={handleBack}>
+                      ← Choose another psychologist
+                    </Button>
+                  </div>
+                </>
               ) : (
-                <Button className={styles.retryButton} onClick={fetchAvailableSlots}>
-                  <EditIcon size="sm" style={{ marginRight: '6px' }} />
-                  Retry
-                </Button>
+                <>
+                  <p className={styles.errorMessage}>{error}</p>
+                  <Button type="button" className={styles.retryButton} onClick={fetchAvailableSlots}>
+                    <span className={styles.retryIcon} aria-hidden>
+                      <EditIcon size="sm" />
+                    </span>
+                    Retry
+                  </Button>
+                </>
               )}
             </div>
           </div>
@@ -369,10 +377,17 @@ export const DateTimeSelectionPage: React.FC = () => {
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> No Data Available</h3>
-              <p>Unable to load appointment availability. Please try again.</p>
-              <Button className={styles.retryButton} onClick={fetchAvailableSlots}>
-                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+              <h3 className={styles.errorStateHeading}>
+                <span className={styles.errorStateIcon} aria-hidden>
+                  <WarningIcon size="md" />
+                </span>
+                No data available
+              </h3>
+              <p className={styles.errorMessage}>Unable to load appointment availability. Please try again.</p>
+              <Button type="button" className={styles.retryButton} onClick={fetchAvailableSlots}>
+                <span className={styles.retryIcon} aria-hidden>
+                  <EditIcon size="sm" />
+                </span>
                 Retry
               </Button>
             </div>
@@ -395,10 +410,17 @@ export const DateTimeSelectionPage: React.FC = () => {
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> No Data Available</h3>
-              <p>Unable to load appointment availability. Please try again.</p>
-              <Button className={styles.retryButton} onClick={fetchAvailableSlots}>
-                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+              <h3 className={styles.errorStateHeading}>
+                <span className={styles.errorStateIcon} aria-hidden>
+                  <WarningIcon size="md" />
+                </span>
+                No data available
+              </h3>
+              <p className={styles.errorMessage}>Unable to load appointment availability. Please try again.</p>
+              <Button type="button" className={styles.retryButton} onClick={fetchAvailableSlots}>
+                <span className={styles.retryIcon} aria-hidden>
+                  <EditIcon size="sm" />
+                </span>
                 Retry
               </Button>
             </div>
