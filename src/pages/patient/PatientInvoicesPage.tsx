@@ -132,7 +132,7 @@ export const PatientInvoicesPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.pageContainer}>
           <div className="container">
             <div style={{ textAlign: 'center', padding: '3rem' }}>
@@ -145,7 +145,7 @@ export const PatientInvoicesPage: React.FC = () => {
   }
 
   return (
-    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.pageContainer}>
         <div className="container">
           <div className={styles.pageHeader}>

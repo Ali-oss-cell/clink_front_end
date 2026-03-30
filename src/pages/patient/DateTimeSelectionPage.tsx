@@ -294,7 +294,7 @@ export const DateTimeSelectionPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
@@ -318,7 +318,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                                    error.toLowerCase().includes('not found');
     
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
@@ -359,7 +359,7 @@ export const DateTimeSelectionPage: React.FC = () => {
   // Show error if we finished loading but have no data and no error (shouldn't happen, but handle gracefully)
   if (!loading && !availabilityData && !error) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
@@ -385,7 +385,7 @@ export const DateTimeSelectionPage: React.FC = () => {
   // Final guard: if we reach here without availabilityData, something went wrong
   if (!availabilityData) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
@@ -409,7 +409,7 @@ export const DateTimeSelectionPage: React.FC = () => {
   }
 
   return (
-    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.dateTimeSelectionContainer}>
         <div className="container">
           {/* Page Header */}

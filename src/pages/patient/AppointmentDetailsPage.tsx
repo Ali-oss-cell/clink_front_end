@@ -93,7 +93,7 @@ export const AppointmentDetailsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.appointmentDetailsContainer}>
           <div className="container">
             <div className={styles.loadingState}>
@@ -107,7 +107,7 @@ export const AppointmentDetailsPage: React.FC = () => {
 
   if (error || !bookingData) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.appointmentDetailsContainer}>
           <div className="container">
             <div className={styles.errorState}>
@@ -127,6 +127,7 @@ export const AppointmentDetailsPage: React.FC = () => {
     <Layout 
       user={user} 
       isAuthenticated={true}
+      patientShell
       className={styles.patientLayout}
     >
       <div className={styles.appointmentDetailsContainer}>

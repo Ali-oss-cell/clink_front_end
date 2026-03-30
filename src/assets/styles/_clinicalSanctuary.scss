@@ -1,0 +1,33 @@
+// "Clinical Sanctuary" tokens — scoped under .patientShell (see PatientAppShell)
+// Reference: new/DESIGN.md (not the Tailwind HTML prototype)
+
+.patientShell {
+  --cs-primary: #003441;
+  --cs-primary-container: #0f4c5c;
+  --cs-on-primary: #ffffff;
+  --cs-primary-fixed: #b6ebfe;
+  --cs-surface: #f8fafa;
+  --cs-surface-low: #f2f4f4;
+  --cs-surface-high: #e6e8e8;
+  --cs-surface-highest: #e1e3e3;
+  --cs-surface-lowest: #ffffff;
+  --cs-on-surface: #191c1d;
+  --cs-on-surface-variant: #40484b;
+  --cs-secondary: #51634e;
+  --cs-secondary-container: #d1e6cb;
+  --cs-on-secondary-fixed-variant: #394b38;
+  --cs-tertiary-fixed: #efe1c7;
+  --cs-on-tertiary-fixed-variant: #4f4633;
+  --cs-tertiary-fixed-dim: #d3c5ac;
+  --cs-error-container: #ffdad6;
+  --cs-on-error-container: #93000a;
+  --cs-outline: #70787c;
+  --cs-shadow-atmospheric: 0 20px 40px rgba(25, 28, 29, 0.06);
+  --cs-radius-xl: 0.75rem;
+  --cs-radius-2xl: 1rem;
+  --cs-font-headline: 'Public Sans', system-ui, sans-serif;
+  --cs-font-body: 'Inter', system-ui, sans-serif;
+
+  font-family: var(--cs-font-body);
+  color: var(--cs-on-surface);
+}

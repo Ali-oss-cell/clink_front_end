@@ -36,7 +36,7 @@ export const RecordingsPage: React.FC = () => {
 
   if (loading && !data) {
     return (
-      <Layout user={user} isAuthenticated={true}>
+      <Layout user={user} isAuthenticated={true} patientShell={user?.role === 'patient'}>
         <div className={styles.container}>
           <div className={styles.loadingContainer}>
             <div className={styles.loadingSpinner}></div>
@@ -50,7 +50,7 @@ export const RecordingsPage: React.FC = () => {
 
   if (error) {
     return (
-      <Layout user={user} isAuthenticated={true}>
+      <Layout user={user} isAuthenticated={true} patientShell={user?.role === 'patient'}>
         <div className={styles.errorContainer}>
           <div className={styles.errorMessage}>{error}</div>
           <Button onClick={() => refetch()} className={styles.retryButton}>
@@ -66,7 +66,7 @@ export const RecordingsPage: React.FC = () => {
   const completedRecordings = data?.results.filter(r => r.status === 'completed').length || 0;
 
   return (
-    <Layout user={user} isAuthenticated={true}>
+    <Layout user={user} isAuthenticated={true} patientShell={user?.role === 'patient'}>
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.headerContent}>

@@ -1141,6 +1141,7 @@ export const PatientIntakeFormPage: React.FC = () => {
         created_at: '2024-01-01'
       }} 
       isAuthenticated={true}
+      patientShell
       className={styles.patientLayout}
     >
       <div className={styles.dashboardContainer}>

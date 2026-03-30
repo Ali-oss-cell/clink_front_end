@@ -253,6 +253,7 @@ export const PatientAccountPage: React.FC = () => {
     <Layout 
       user={user} 
       isAuthenticated={true}
+      patientShell
       className={styles.patientLayout}
     >
       <div className={styles.accountContainer}>

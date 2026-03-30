@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { OnboardingProgress } from '../../components/patient/OnboardingProgress/OnboardingProgress';
@@ -17,10 +17,15 @@ import {
   StarIcon,
   BookIcon,
   WarningIcon,
-  DollarIcon
+  DollarIcon,
+  DoctorIcon,
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
-import styles from './PatientPages.module.scss';
+import pageStyles from './PatientPages.module.scss';
+import d from './PatientDashboard.module.scss';
+
+const RING_R = 58;
+const RING_C = 2 * Math.PI * RING_R;
 
 export const PatientDashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,8 +35,7 @@ export const PatientDashboardPage: React.FC = () => {
   const [videoCallAppointments, setVideoCallAppointments] = useState<PatientAppointment[]>([]);
   const [medicareInfo, setMedicareInfo] = useState<MedicareSessionInfoResponse | null>(null);
   const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
-  
-  // Get user data from auth service
+
   const user = authService.getStoredUser() || {
     id: 1,
     email: 'john@example.com',
@@ -44,19 +48,18 @@ export const PatientDashboardPage: React.FC = () => {
     date_of_birth: '1990-01-15',
     age: 34,
     is_verified: true,
-    created_at: '2024-01-01'
+    created_at: '2024-01-01',
   };
 
-  // Load dashboard data
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
         setLoading(true);
         const data = await dashboardService.getPatientDashboard();
         setDashboardData(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to load dashboard:', err);
-        setError(err.message || 'Failed to load dashboard data');
+        setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
       } finally {
         setLoading(false);
       }
@@ -65,15 +68,13 @@ export const PatientDashboardPage: React.FC = () => {
     loadDashboardData();
   }, []);
 
-  // Load Medicare session info
   useEffect(() => {
     const loadMedicareInfo = async () => {
       try {
         const info = await appointmentsService.getMedicareSessionInfo();
         setMedicareInfo(info);
-      } catch (err: any) {
-        // Don't show error if Medicare info fails - it's optional
-        console.warn('Failed to load Medicare session info:', err);
+      } catch {
+        console.warn('Failed to load Medicare session info');
       }
     };
 
@@ -85,8 +86,8 @@ export const PatientDashboardPage: React.FC = () => {
       try {
         const consent = await TelehealthService.getConsent();
         setTelehealthConsent(consent);
-      } catch (err: any) {
-        console.warn('Failed to load telehealth consent:', err);
+      } catch {
+        console.warn('Failed to load telehealth consent');
         setTelehealthConsent(null);
       }
     };
@@ -94,25 +95,23 @@ export const PatientDashboardPage: React.FC = () => {
     loadTelehealthConsent();
   }, []);
 
-  // Load appointments for video call card
   useEffect(() => {
     const loadVideoCallAppointments = async () => {
       try {
         const response = await appointmentsService.getPatientAppointments({
           status: 'upcoming',
           page: 1,
-          page_size: 10
+          page_size: 10,
         });
-        
-        // Filter for telehealth appointments that can be joined
-        const eligibleAppointments = response.results.filter((apt: PatientAppointment) => {
-          return videoCallService.isVideoCallAvailable(apt) && videoCallService.canJoinNow(apt);
-        });
-        
-        setVideoCallAppointments(eligibleAppointments);
-      } catch (err: any) {
+
+        const eligible = response.results.filter(
+          (apt: PatientAppointment) =>
+            videoCallService.isVideoCallAvailable(apt) && videoCallService.canJoinNow(apt)
+        );
+
+        setVideoCallAppointments(eligible);
+      } catch (err) {
         console.error('Failed to load video call appointments:', err);
-        // Don't show error, just leave empty
         setVideoCallAppointments([]);
       }
     };
@@ -120,28 +119,28 @@ export const PatientDashboardPage: React.FC = () => {
     loadVideoCallAppointments();
   }, []);
 
-  const handleContinueIntake = () => {
-    navigate('/patient/intake-form');
-  };
+  const nextAppt = dashboardData?.next_appointment as PatientAppointment | undefined;
+  const hasNextAppt = Boolean(nextAppt && Object.keys(nextAppt).length > 0);
 
-  const handleBookAppointment = () => {
-    navigate('/appointments/book-appointment');
-  };
+  const medicareOffset = useMemo(() => {
+    if (!medicareInfo?.max_sessions) return RING_C;
+    const ratio = Math.min(1, medicareInfo.sessions_used / medicareInfo.max_sessions);
+    return RING_C * (1 - ratio);
+  }, [medicareInfo]);
 
-  const handleJoinVideoCall = (appointmentId: number | string) => {
-    navigate(`/video-session/${appointmentId}`);
+  const layoutProps = {
+    user,
+    isAuthenticated: true as const,
+    patientShell: true as const,
+    className: pageStyles.patientLayout,
   };
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
-        <div className={styles.dashboardContainer}>
-          <div className="container">
-            <div className={styles.loadingContainer}>
-              <div className={styles.loadingSpinner}></div>
-              <p>Loading your dashboard...</p>
-            </div>
-          </div>
+      <Layout {...layoutProps}>
+        <div className={d.loadingBox}>
+          <div className={d.spinner} />
+          <p>Loading your dashboard…</p>
         </div>
       </Layout>
     );
@@ -149,300 +148,331 @@ export const PatientDashboardPage: React.FC = () => {
 
   if (error) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
-        <div className={styles.dashboardContainer}>
-          <div className="container">
-            <div className={styles.errorContainer}>
-              <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h2>
-              <p>{error}</p>
-              <Button 
-                className={styles.retryButton}
-                onClick={() => window.location.reload()}
-              >
-                Try Again
-              </Button>
-            </div>
-          </div>
+      <Layout {...layoutProps}>
+        <div className={d.errorBox}>
+          <h2>
+            <WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Error loading dashboard
+          </h2>
+          <p>{error}</p>
+          <Button className={pageStyles.retryButton} onClick={() => window.location.reload()}>
+            Try again
+          </Button>
         </div>
       </Layout>
     );
   }
 
+  const primaryVideo = videoCallAppointments[0];
+
   return (
-    <Layout 
-      user={user} 
-      isAuthenticated={true}
-      className={styles.patientLayout}
-    >
-      <div className={styles.dashboardContainer}>
-        <div className="container">
-          <div className={styles.dashboardHeader}>
-            <h1 className={styles.welcomeTitle}>Welcome back, {user.first_name}!</h1>
-            <p className={styles.welcomeSubtitle}>
-              Here's an overview of your mental health journey with us.
-            </p>
-          </div>
+    <Layout {...layoutProps}>
+      <div className={d.wrap}>
+        <header className={d.pageHeader}>
+          <h1 className={d.welcomeTitle}>Welcome back, {user.first_name}.</h1>
+          <p className={d.welcomeSubtitle}>
+            Your journey to well-being is our priority. Here is an overview of your care with us.
+          </p>
+        </header>
 
-          <OnboardingProgress user={user} />
+        <OnboardingProgress user={user} clinicalLayout />
 
-          {(!telehealthConsent || !telehealthConsent.consent_to_telehealth) && (
-            <div className={styles.telehealthWarning}>
-              <div>
-                <h3>
-                  <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                  Telehealth consent required
-                </h3>
-                <p>
-                  Before booking or joining video appointments, please complete the Telehealth consent form and provide
-                  an emergency plan.
-                </p>
-              </div>
-              <Button
-                className={styles.actionButton}
-                onClick={() => navigate('/patient/account?tab=privacy')}
-              >
-                Update Telehealth Consent
-              </Button>
+        {(!telehealthConsent || !telehealthConsent.consent_to_telehealth) && (
+          <div className={d.consentBanner}>
+            <div>
+              <h3>
+                <WarningIcon size="sm" style={{ verticalAlign: 'middle' }} />
+                Telehealth consent required
+              </h3>
+              <p>
+                Complete the telehealth consent form and emergency plan before booking or joining video
+                appointments.
+              </p>
             </div>
+            <button
+              type="button"
+              className={d.btnPrimary}
+              onClick={() => navigate('/patient/account?tab=privacy')}
+            >
+              Go to privacy settings
+            </button>
+          </div>
+        )}
+
+        <div className={d.bento}>
+          {/* Video hero */}
+          <section className={`${d.card} ${d.videoHero} ${d.span8}`}>
+            <span className={d.decoIcon} aria-hidden>
+              <VideoIcon size="lg" />
+            </span>
+            <div className={d.rel}>
+              {primaryVideo ? (
+                <>
+                  <div className={d.badgeLive}>
+                    <span className={d.pulseDot} />
+                    Upcoming session
+                  </div>
+                  <h2 className={d.cardHeading}>Session with {primaryVideo.psychologist?.name ?? 'your clinician'}</h2>
+                  <p className={d.sessionMeta}>
+                    <VideoIcon size="sm" />
+                    {videoCallService.getTimeUntilAppointment(primaryVideo)} · {primaryVideo.formatted_time}
+                  </p>
+                  <div className={d.actions}>
+                    <button
+                      type="button"
+                      className={d.btnPrimary}
+                      onClick={() => navigate(`/video-session/${primaryVideo.id}`)}
+                    >
+                      Join now
+                    </button>
+                    <button type="button" className={d.btnGhost} onClick={() => navigate('/patient/resources')}>
+                      Prepare materials
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={d.badgeLive}>
+                    <VideoIcon size="sm" style={{ opacity: 0.8 }} />
+                    Video sessions
+                  </div>
+                  <h2 className={d.cardHeading}>No session to join right now</h2>
+                  <p className={d.placeholder}>
+                    When you have an upcoming telehealth visit in the join window, it will show here.
+                  </p>
+                  <div className={d.actions}>
+                    <button type="button" className={d.btnPrimary} onClick={() => navigate('/patient/appointments')}>
+                      View appointments
+                    </button>
+                    <button
+                      type="button"
+                      className={d.btnGhost}
+                      onClick={() => navigate('/appointments/book-appointment')}
+                    >
+                      Book appointment
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+
+          {/* Medicare */}
+          {medicareInfo && (
+            <section className={`${d.card} ${d.medicareCard} ${d.span4}`}>
+              <h3 className={d.medicareTitle}>Medicare usage {medicareInfo.current_year}</h3>
+              <div className={d.ringWrap}>
+                <svg className={d.ringSvg} viewBox="0 0 128 128" aria-hidden>
+                  <circle className={d.ringBg} cx="64" cy="64" r={RING_R} />
+                  <circle
+                    className={d.ringFg}
+                    cx="64"
+                    cy="64"
+                    r={RING_R}
+                    strokeDasharray={RING_C}
+                    strokeDashoffset={medicareOffset}
+                  />
+                </svg>
+                <div className={d.ringLabel}>
+                  <span className={d.ringNumbers}>
+                    {medicareInfo.sessions_used}/{medicareInfo.max_sessions}
+                  </span>
+                  <span className={d.ringSub}>sessions</span>
+                </div>
+              </div>
+              <div className={d.medicareNote}>
+                {medicareInfo.sessions_remaining} session{medicareInfo.sessions_remaining !== 1 ? 's' : ''}{' '}
+                remaining this year
+              </div>
+              {medicareInfo.sessions_remaining === 0 && (
+                <div className={d.medicareWarn}>
+                  <WarningIcon size="sm" />
+                  <span>Medicare limit reached. You can still book private sessions.</span>
+                </div>
+              )}
+              {medicareInfo.sessions_remaining > 0 && medicareInfo.sessions_remaining <= 2 && (
+                <div className={d.medicareWarn}>
+                  <WarningIcon size="sm" />
+                  <span>Only a few Medicare sessions remain this year.</span>
+                </div>
+              )}
+            </section>
           )}
 
-          <div className={styles.dashboardGrid}>
-            {/* Video Sessions Card - Prominent */}
-            <div className={`${styles.dashboardCard} ${styles.videoSessionsCard}`}>
-              <h3><VideoIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Video Sessions</h3>
-              <div className={styles.cardContent}>
-                {videoCallAppointments.length > 0 ? (
-                  <div className={styles.videoSessionsList}>
-                    {videoCallAppointments.map((appointment) => (
-                      <div key={appointment.id} className={styles.videoSessionItem}>
-                        <div className={styles.videoSessionInfo}>
-                          <div className={styles.videoSessionHeader}>
-                            <span className={styles.videoSessionPsychologist}>
-                              {appointment.psychologist.name}
-                            </span>
-                            <span className={styles.videoSessionTime}>
-                              {videoCallService.getTimeUntilAppointment(appointment)}
-                            </span>
-                          </div>
-                          <div className={styles.videoSessionDetails}>
-                            <span>{appointment.formatted_date}</span>
-                            <span>•</span>
-                            <span>{appointment.formatted_time}</span>
-                            <span>•</span>
-                            <span>{appointment.duration_minutes} min</span>
-                          </div>
-                        </div>
-                        <Button
-                          className={`${styles.actionButton} ${styles.videoJoinButton}`}
-                          onClick={() => handleJoinVideoCall(appointment.id)}
-                        >
-                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
-                          Join Now
-                        </Button>
-                      </div>
-                    ))}
+          {/* Next appointment */}
+          <section className={`${d.card} ${d.span4}`}>
+            <h3 className={d.cardTitle}>Following session</h3>
+            {hasNextAppt ? (
+              <div className={d.nextBlock}>
+                <div className={d.nextRow}>
+                  <div className={d.nextIcon}>
+                    <CalendarIcon size="sm" />
                   </div>
-                ) : (
-                  <div className={styles.placeholder}>
-                    <p>No active video sessions available</p>
-                    <p className={styles.placeholderSubtext}>
-                      Video sessions will appear here when you have upcoming telehealth appointments
+                  <div>
+                    <p className={d.nextPrimary}>{nextAppt?.formatted_date ?? 'Scheduled'}</p>
+                    <p className={d.nextSecondary}>
+                      {nextAppt?.formatted_time}
+                      {nextAppt?.duration_minutes != null ? ` · ${nextAppt.duration_minutes} min` : ''}
                     </p>
-                    <Button 
-                      className={styles.actionButton}
-                      onClick={() => navigate('/patient/appointments')}
-                    >
-                      View All Appointments
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Next Appointment Card */}
-            <div className={styles.dashboardCard}>
-              <h3><CalendarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Next Appointment</h3>
-              <div className={styles.cardContent}>
-                {dashboardData?.next_appointment && Object.keys(dashboardData.next_appointment).length > 0 ? (
-                  <div className={styles.appointmentInfo}>
-                    <p><strong>Appointment scheduled</strong></p>
-                    <p>Check your appointments for details</p>
-                    
-                    {/* Video Call Button - Show if it's a telehealth appointment */}
-                    {dashboardData.next_appointment.id && 
-                     videoCallService.canJoinNow(dashboardData.next_appointment) && (
-                      <div className={styles.videoCallSection}>
-                        <div className={styles.videoCallInfo}>
-                          <span className={styles.videoBadge}><VideoIcon size="xs" style={{ marginRight: '4px' }} /> Telehealth</span>
-                          <span className={styles.timeUntil}>
-                            {videoCallService.getTimeUntilAppointment(dashboardData.next_appointment)}
-                          </span>
-                        </div>
-                        <Button
-                          className={`${styles.actionButton} ${styles.videoButton}`}
-                          onClick={() => handleJoinVideoCall(dashboardData.next_appointment!.id)}
-                        >
-                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
-                          Join Video Session
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className={styles.placeholder}>
-                    <p>No upcoming appointments</p>
-                    <Button 
-                      className={styles.actionButton}
-                      onClick={handleBookAppointment}
-                    >
-                      Book New Appointment
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Medicare Sessions Card */}
-            {medicareInfo && (
-              <div className={`${styles.dashboardCard} ${medicareInfo.sessions_remaining <= 2 ? styles.warningCard : ''}`}>
-                <h3>
-                  <DollarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 
-                  Medicare Sessions {medicareInfo.current_year}
-                </h3>
-                <div className={styles.cardContent}>
-                  <div className={styles.medicareProgress}>
-                    <div className={styles.progressBar}>
-                      <div 
-                        className={styles.progressFill} 
-                        style={{ 
-                          width: `${(medicareInfo.sessions_used / medicareInfo.max_sessions) * 100}%`,
-                          backgroundColor: medicareInfo.sessions_remaining <= 2 ? '#d4841a' : '#2e7d42'
-                        }}
-                      />
-                    </div>
-                    <div className={styles.medicareStats}>
-                      <span className={styles.medicareUsed}>{medicareInfo.sessions_used}</span>
-                      <span className={styles.medicareSeparator}>/</span>
-                      <span className={styles.medicareMax}>{medicareInfo.max_sessions}</span>
-                      <span className={styles.medicareLabel}>sessions used</span>
-                    </div>
-                    <p className={styles.medicareRemaining}>
-                      {medicareInfo.sessions_remaining} session{medicareInfo.sessions_remaining !== 1 ? 's' : ''} remaining
-                    </p>
-                    {medicareInfo.sessions_remaining === 0 && (
-                      <div className={styles.medicareAlert}>
-                        <WarningIcon size="sm" />
-                        <span>Medicare limit reached. You can still book private sessions.</span>
-                      </div>
-                    )}
-                    {medicareInfo.sessions_remaining > 0 && medicareInfo.sessions_remaining <= 2 && (
-                      <div className={styles.medicareWarning}>
-                        <WarningIcon size="sm" />
-                        <span>Only {medicareInfo.sessions_remaining} Medicare session{medicareInfo.sessions_remaining !== 1 ? 's' : ''} remaining this year</span>
-                      </div>
-                    )}
                   </div>
                 </div>
+                <div className={d.nextRow}>
+                  <div className={d.nextIcon}>
+                    <DoctorIcon size="sm" />
+                  </div>
+                  <div>
+                    <p className={d.nextPrimary}>{nextAppt?.psychologist?.name ?? 'Your clinician'}</p>
+                    <p className={d.nextSecondary}>Clinical session</p>
+                  </div>
+                </div>
+                {nextAppt?.id && videoCallService.canJoinNow(nextAppt) && (
+                  <button
+                    type="button"
+                    className={d.btnPrimary}
+                    onClick={() => navigate(`/video-session/${nextAppt.id}`)}
+                  >
+                    Join video session
+                  </button>
+                )}
+                <button type="button" className={d.linkSubtle} onClick={() => navigate('/patient/appointments')}>
+                  View all appointments
+                </button>
+              </div>
+            ) : (
+              <div>
+                <p className={d.placeholder}>No upcoming appointment on file.</p>
+                <button type="button" className={d.btnPrimary} onClick={() => navigate('/appointments/book-appointment')}>
+                  Book new appointment
+                </button>
               </div>
             )}
+          </section>
 
-            {/* Total Sessions Card */}
-            <div className={styles.dashboardCard}>
-              <h3><ChartIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Total Sessions</h3>
-              <div className={styles.cardContent}>
-                <div className={styles.statNumber}>
-                  {dashboardData?.total_sessions || 0}
+          {/* Total sessions */}
+          <section className={`${d.card} ${d.span4}`}>
+            <div className={d.statBlock}>
+              <div className={d.statIconBox}>
+                <ChartIcon size="lg" />
+              </div>
+              <div>
+                <p className={d.statBig}>{dashboardData?.total_sessions ?? 0}</p>
+                <p className={d.cardTitle} style={{ margin: 0 }}>
+                  Total sessions completed
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Invoices */}
+          <section className={`${d.card} ${d.span4}`}>
+            <div className={d.invoiceRow}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className={d.invoiceIcon}>
+                  <DollarIcon size="md" />
                 </div>
-                <p>Completed therapy sessions</p>
-              </div>
-            </div>
-
-            {/* Intake Form Card */}
-            <div className={styles.dashboardCard}>
-              <h3><ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Intake Form</h3>
-              <div className={styles.cardContent}>
-                {dashboardData?.intake_completed ? (
-                  <div className={styles.completedStatus}>
-                    <div className={styles.statusText}>
-                      <p className={styles.statusTitle}>Completed</p>
-                      <p className={styles.statusDescription}>Your intake form is complete</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.placeholder}>
-                    <p>Complete your intake form to get started</p>
-                    <Button 
-                      className={styles.actionButton}
-                      onClick={handleContinueIntake}
-                    >
-                      Continue Intake
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Outstanding Invoices Card */}
-            <div className={styles.dashboardCard}>
-              <h3><DollarIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Outstanding Invoices</h3>
-              <div className={styles.cardContent}>
-                <div className={styles.statNumber}>
-                  {dashboardData?.outstanding_invoices || 0}
+                <div>
+                  <p className={d.nextPrimary}>{dashboardData?.outstanding_invoices ?? 0} outstanding invoice(s)</p>
+                  <p className={d.nextSecondary}>Review and pay from your invoices page</p>
                 </div>
-                <p>Pending payments</p>
-                <Button 
-                  className={styles.actionButton}
-                  onClick={() => navigate('/patient/invoices')}
-                >
-                  View Invoices
-                </Button>
               </div>
+              <button
+                type="button"
+                className={d.btnGhost}
+                aria-label="Go to invoices"
+                onClick={() => navigate('/patient/invoices')}
+              >
+                →
+              </button>
             </div>
+          </section>
 
-            {/* Recent Progress Card */}
-            <div className={styles.dashboardCard}>
-              <h3><ChartIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Progress</h3>
-              <div className={styles.cardContent}>
-                {dashboardData?.recent_progress && dashboardData.recent_progress.length > 0 ? (
-                  <div className={styles.progressList}>
-                    {dashboardData.recent_progress.map((progress: any, index: number) => (
-                      <div key={progress.id || index} className={styles.progressItem}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                          <strong>Session #{progress.session_number || index + 1}</strong>
-                          {progress.progress_rating && (
-                            <span><StarIcon size="sm" style={{ marginRight: '4px' }} /> {progress.progress_rating}/10</span>
-                          )}
-                        </div>
-                        <p style={{ fontSize: '0.9rem', color: '#7a7b7a', margin: 0 }}>
-                          {progress.psychologist_name && `Dr. ${progress.psychologist_name} • `}
-                          {progress.session_date && new Date(progress.session_date).toLocaleDateString('en-AU', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric'
-                          })}
+          {/* Intake */}
+          <section className={`${d.card} ${d.span4}`}>
+            <h3 className={d.cardTitle}>Intake</h3>
+            {dashboardData?.intake_completed ? (
+              <div>
+                <p className={d.intakeDone}>Completed</p>
+                <p className={d.intakeSub}>Your intake form is on file.</p>
+              </div>
+            ) : (
+              <div>
+                <p className={d.placeholder}>Complete your intake so we can tailor your care.</p>
+                <button type="button" className={d.btnPrimary} onClick={() => navigate('/patient/intake-form')}>
+                  Continue intake
+                </button>
+              </div>
+            )}
+          </section>
+
+          {/* Recent progress */}
+          <section className={`${d.card} ${d.span6}`}>
+            <div className={d.progressHead}>
+              <h3 className={d.progressTitle}>Recent progress</h3>
+              <button type="button" className={d.linkSubtle} onClick={() => navigate('/patient/appointments')}>
+                View all
+              </button>
+            </div>
+            {dashboardData?.recent_progress && dashboardData.recent_progress.length > 0 ? (
+              <div className={d.progressList}>
+                {dashboardData.recent_progress.map((progress: Record<string, unknown>, index: number) => (
+                  <div key={(progress.id as string) || index} className={d.progressRow}>
+                    <div className={d.progressLeft}>
+                      <span className={d.progressAccent} />
+                      <div>
+                        <p className={d.progressSession}>
+                          Session #
+                          {(progress.session_number as number) || index + 1}
+                          {progress.progress_rating != null ? (
+                            <span style={{ fontWeight: 600, marginLeft: '0.35rem' }}>
+                              <StarIcon size="sm" style={{ verticalAlign: 'middle' }} />{' '}
+                              {String(progress.progress_rating)}/10
+                            </span>
+                          ) : null}
+                        </p>
+                        <p className={d.progressMeta}>
+                          {progress.psychologist_name ? `Dr. ${String(progress.psychologist_name)} · ` : ''}
+                          {progress.session_date
+                            ? new Date(String(progress.session_date)).toLocaleDateString('en-AU', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                              })
+                            : ''}
                         </p>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                ) : (
-                  <div className={styles.placeholder}>
-                    <p>Your progress will appear here after sessions</p>
-                  </div>
-                )}
+                ))}
               </div>
-            </div>
+            ) : (
+              <p className={d.placeholder}>Your progress will appear here after sessions.</p>
+            )}
+          </section>
 
-            {/* Resources Card */}
-            <div className={styles.dashboardCard}>
-              <h3><BookIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Resources</h3>
-              <div className={styles.cardContent}>
-                <div className={styles.placeholder}>
-                  <p>Mental health resources and tools</p>
-                  <Button className={styles.actionButton}>View Resources</Button>
-                </div>
-              </div>
+          {/* Resources */}
+          <section className={`${d.card} ${d.span6}`}>
+            <h3 className={d.progressTitle} style={{ marginBottom: '1.25rem' }}>
+              Explore resources
+            </h3>
+            <div className={d.resourcesGrid}>
+              <button type="button" className={d.resourceTile} onClick={() => navigate('/patient/resources')}>
+                <BookIcon size="md" className={d.resourceTileIcon} />
+                <p className={d.resourceTileLabel}>Articles & tools</p>
+              </button>
+              <button type="button" className={d.resourceTile} onClick={() => navigate('/patient/resources')}>
+                <ClipboardIcon size="md" className={d.resourceTileIcon} />
+                <p className={d.resourceTileLabel}>Worksheets</p>
+              </button>
+              <button type="button" className={d.resourceTile} onClick={() => navigate('/patient/resources')}>
+                <ChartIcon size="md" className={d.resourceTileIcon} />
+                <p className={d.resourceTileLabel}>Self-guided exercises</p>
+              </button>
+              <button type="button" className={d.resourceTile} onClick={() => navigate('/contact')}>
+                <WarningIcon size="md" className={d.resourceTileIcon} />
+                <p className={d.resourceTileLabel}>Crisis & support</p>
+              </button>
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </Layout>

@@ -1,14 +1,19 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 
-// Patient Layout - BLUE THEME
+// Patient layout: gradient when using marketing header; transparent when patient sidebar shell is active
 .patientLayout {
   min-height: 100vh;
   background: linear-gradient(135deg, $patient-bg-gradient-start 0%, $patient-bg-gradient-end 100%);
-  
+
   .main {
     background-color: transparent;
   }
+}
+
+.patientLayout[data-patient-shell] {
+  background: transparent;
+  min-height: 100vh;
 }
 
 // Page Container (for all patient pages)

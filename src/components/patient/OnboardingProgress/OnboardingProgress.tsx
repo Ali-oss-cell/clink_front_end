@@ -17,10 +17,12 @@ interface OnboardingStep {
 }
 
 interface OnboardingProgressProps {
-  user?: any;
+  user?: unknown;
+  /** Dashboard: compact card grid aligned with Clinical Sanctuary reference */
+  clinicalLayout?: boolean;
 }
 
-export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
+export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinicalLayout = false }) => {
   const [dashboardData, setDashboardData] = useState<PatientDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
@@ -129,15 +131,75 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = () => {
 
   if (loading || telehealthLoading) {
     return (
-      <div className={styles.onboardingProgress}>
-        <div className={styles.progressHeader}>
-          <h3 className={styles.title}>Getting Started</h3>
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: '0%' }}></div>
-          </div>
-          <span className={styles.progressText}>Loading...</span>
+      <div className={clinicalLayout ? styles.clinical : styles.onboardingProgress}>
+        <div className={clinicalLayout ? styles.clinicalHeader : styles.progressHeader}>
+          <h3 className={clinicalLayout ? styles.clinicalTitle : styles.title}>
+            {clinicalLayout ? 'Onboarding progress' : 'Getting Started'}
+          </h3>
+          {!clinicalLayout && (
+            <>
+              <div className={styles.progressBar}>
+                <div className={styles.progressFill} style={{ width: '0%' }} />
+              </div>
+              <span className={styles.progressText}>Loading...</span>
+            </>
+          )}
+          {clinicalLayout && <span className={styles.clinicalMeta}>…</span>}
         </div>
       </div>
+    );
+  }
+
+  if (clinicalLayout) {
+    return (
+      <section className={styles.clinical} aria-label="Onboarding progress">
+        <div className={styles.clinicalHeader}>
+          <h3 className={styles.clinicalTitle}>Onboarding progress</h3>
+          <span className={styles.clinicalMeta}>
+            {completedSteps} of {totalSteps}
+          </span>
+        </div>
+        <div className={styles.clinicalGrid}>
+          {mainSteps.map((step) => (
+            <div
+              key={step.id}
+              className={`${styles.clinicalCard} ${step.completed ? styles.clinicalCardDone : styles.clinicalCardPending}`}
+            >
+              <div className={styles.clinicalCardTop}>
+                <div
+                  className={
+                    step.completed ? styles.clinicalIconDone : styles.clinicalIconPending
+                  }
+                >
+                  {step.completed ? <CheckCircleIcon size="sm" /> : null}
+                </div>
+                <div className={styles.clinicalCardText}>
+                  <p className={styles.clinicalCardTitle}>{step.title}</p>
+                  <p className={styles.clinicalCardStatus}>{step.completed ? 'Done' : 'Pending'}</p>
+                </div>
+              </div>
+              <Link to={step.actionUrl} className={styles.clinicalLink}>
+                {step.actionText}
+              </Link>
+            </div>
+          ))}
+        </div>
+        <div className={styles.clinicalExtra}>
+          <div className={styles.clinicalExtraIcon}>
+            <LightbulbIcon size="sm" />
+          </div>
+          <div className={styles.clinicalExtraBody}>
+            <p className={styles.clinicalExtraTitle}>
+              {extraStep.title}
+              <span className={styles.clinicalOptional}> (optional)</span>
+            </p>
+            <p className={styles.clinicalExtraDesc}>{extraStep.description}</p>
+          </div>
+          <Link to={extraStep.actionUrl} className={styles.clinicalLink}>
+            {extraStep.actionText}
+          </Link>
+        </div>
+      </section>
     );
   }
 

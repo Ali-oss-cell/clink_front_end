@@ -174,7 +174,7 @@ export const PatientAppointmentsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.loadingContainer}>
@@ -189,7 +189,7 @@ export const PatientAppointmentsPage: React.FC = () => {
 
   if (error) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
@@ -210,7 +210,7 @@ export const PatientAppointmentsPage: React.FC = () => {
   }
 
   return (
-    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.dashboardContainer}>
         <div className="container">
           <div className={styles.dashboardHeader}>

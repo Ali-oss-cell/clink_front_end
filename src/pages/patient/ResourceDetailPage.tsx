@@ -229,7 +229,7 @@ export const ResourceDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.pageContainer}>
           <div className="container">
             <div className={styles.loadingState}>
@@ -243,7 +243,7 @@ export const ResourceDetailPage: React.FC = () => {
 
   if (error || !resource) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.pageContainer}>
           <div className="container">
             <div className={styles.errorState}>
@@ -260,7 +260,7 @@ export const ResourceDetailPage: React.FC = () => {
   }
 
   return (
-    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.pageContainer}>
         <div className="container">
           {/* Back Button */}

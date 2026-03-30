@@ -1,5 +1,6 @@
 import { Header } from '../Header/Header';
 import { Footer } from '../Footer/Footer';
+import { PatientAppShell } from '../../patient/PatientAppShell/PatientAppShell';
 import type { User } from '../../../types/simple-auth';
 import styles from './Layout.module.scss';
 
@@ -9,6 +10,8 @@ interface LayoutProps {
   isAuthenticated?: boolean;
   showFooter?: boolean;
   className?: string;
+  /** Patient-only: sidebar shell matching in-app design (no marketing header/footer). */
+  patientShell?: boolean;
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -16,8 +19,23 @@ export const Layout: React.FC<LayoutProps> = ({
   user,
   isAuthenticated = false,
   showFooter = true,
-  className = ''
+  className = '',
+  patientShell = false,
 }) => {
+  const usePatientShell =
+    patientShell && isAuthenticated && user?.role === 'patient';
+
+  if (usePatientShell) {
+    return (
+      <div
+        className={`${styles.layout} ${className}`}
+        data-patient-shell=""
+      >
+        <PatientAppShell user={user}>{children}</PatientAppShell>
+      </div>
+    );
+  }
+
   return (
     <div className={`${styles.layout} ${className}`}>
       <Header
@@ -25,11 +43,9 @@ export const Layout: React.FC<LayoutProps> = ({
         userRole={user?.role}
         userName={user?.full_name || user?.first_name}
       />
-      
-      <main className={styles.main}>
-        {children}
-      </main>
-      
+
+      <main className={styles.main}>{children}</main>
+
       {showFooter && <Footer />}
     </div>
   );

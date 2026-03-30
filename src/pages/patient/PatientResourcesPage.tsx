@@ -97,7 +97,7 @@ export const PatientResourcesPage: React.FC = () => {
   ];
 
   return (
-    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.pageContainer}>
         <div className="container">
           <div className={styles.pageHeader}>

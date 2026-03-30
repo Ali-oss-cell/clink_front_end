@@ -277,6 +277,7 @@ export const PsychologistSelectionPage: React.FC = () => {
       <Layout 
         user={user}
         isAuthenticated={true}
+        patientShell
         className={styles.patientLayout}
       >
         <div className={styles.psychologistSelectionContainer}>
@@ -314,6 +315,7 @@ export const PsychologistSelectionPage: React.FC = () => {
     <Layout 
       user={user}
       isAuthenticated={true}
+      patientShell
       className={styles.patientLayout}
     >
       <div className={styles.psychologistSelectionContainer}>

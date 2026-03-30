@@ -246,3 +246,176 @@
     order: -1;
   }
 }
+
+// Clinical Sanctuary dashboard grid (inherits --cs-* from .patientShell)
+.clinical {
+  margin-bottom: 2rem;
+}
+
+.clinicalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.clinicalTitle {
+  font-family: var(--cs-font-headline);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--cs-primary);
+  margin: 0;
+}
+
+.clinicalMeta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--cs-on-surface-variant);
+}
+
+.clinicalGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.clinicalCard {
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-xl);
+  padding: 1rem 1.125rem;
+  box-shadow: var(--cs-shadow-atmospheric);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.clinicalCardDone {
+  background: var(--cs-surface-lowest);
+}
+
+.clinicalCardPending {
+  background: var(--cs-surface-low);
+}
+
+.clinicalCardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.clinicalIconDone {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: var(--cs-secondary-container);
+  color: var(--cs-on-secondary-fixed-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.clinicalIconPending {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: var(--cs-surface-high);
+  flex-shrink: 0;
+}
+
+.clinicalCardText {
+  min-width: 0;
+}
+
+.clinicalCardTitle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--cs-primary);
+  margin: 0 0 0.2rem;
+  line-height: 1.3;
+}
+
+.clinicalCardStatus {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--cs-on-secondary-fixed-variant);
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.clinicalCardPending .clinicalCardStatus {
+  color: var(--cs-on-surface-variant);
+}
+
+.clinicalLink {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--cs-primary);
+  text-decoration: none;
+  align-self: flex-start;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.clinicalExtra {
+  margin-top: 1rem;
+  padding: 1rem 1.125rem;
+  border-radius: var(--cs-radius-xl);
+  background: var(--cs-surface-lowest);
+  box-shadow: var(--cs-shadow-atmospheric);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.clinicalExtraIcon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background: var(--cs-tertiary-fixed);
+  color: var(--cs-on-tertiary-fixed-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.clinicalExtraBody {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.clinicalExtraTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cs-primary);
+  margin: 0 0 0.25rem;
+}
+
+.clinicalOptional {
+  font-weight: 500;
+  font-style: italic;
+  color: var(--cs-on-surface-variant);
+}
+
+.clinicalExtraDesc {
+  font-size: 0.75rem;
+  color: var(--cs-on-surface-variant);
+  margin: 0;
+  line-height: 1.45;
+}

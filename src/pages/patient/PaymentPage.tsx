@@ -256,7 +256,7 @@ export const PaymentPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.paymentContainer}>
           <div className="container">
             <div className={styles.summaryCard}>
@@ -270,7 +270,7 @@ export const PaymentPage: React.FC = () => {
 
   if (error || !bookingData) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.paymentContainer}>
           <div className="container">
             <div className={styles.summaryCard}>
@@ -303,7 +303,7 @@ export const PaymentPage: React.FC = () => {
   const showCardStripe = paymentMethod === 'card' && stripeClientSecret && paymentIntentId && stripePromise;
 
   return (
-    <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.paymentContainer}>
         <div className="container">
           <div className={styles.pageHeader}>

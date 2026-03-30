@@ -84,7 +84,7 @@ export const ConfirmationPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.confirmationContainer}>
           <div className="container">
             <div className={styles.successMessage}>
@@ -98,7 +98,7 @@ export const ConfirmationPage: React.FC = () => {
 
   if (error || !confirmation) {
     return (
-      <Layout user={user} isAuthenticated={true} className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
         <div className={styles.confirmationContainer}>
           <div className="container">
             <div className={styles.emergencyBox}>
@@ -124,6 +124,7 @@ export const ConfirmationPage: React.FC = () => {
     <Layout 
       user={user} 
       isAuthenticated={true}
+      patientShell
       className={styles.patientLayout}
     >
       <div className={styles.confirmationContainer}>
