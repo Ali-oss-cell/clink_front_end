@@ -123,3 +123,57 @@
   }
 }
 
+:global(.patientShell) {
+  button.viewButton {
+    background-color: var(--cs-surface-lowest);
+    background-image: none;
+    border: none;
+    border-radius: var(--cs-radius-xl);
+    color: var(--cs-primary);
+    box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+
+    &::before {
+      content: none;
+      display: none;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: var(--cs-surface-low);
+      transform: none;
+      box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+  }
+
+  button.downloadButton {
+    background-color: transparent;
+    background-image: linear-gradient(
+      135deg,
+      var(--cs-primary) 0%,
+      var(--cs-primary-container) 100%
+    );
+    border: none;
+    border-radius: var(--cs-radius-xl);
+    color: var(--cs-on-primary);
+    box-shadow: var(--cs-shadow-atmospheric);
+
+    &::before {
+      content: none;
+      display: none;
+    }
+
+    &:hover:not(:disabled) {
+      filter: saturate(1.08);
+      transform: none;
+      box-shadow: var(--cs-shadow-atmospheric);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+  }
+}
+

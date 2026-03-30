@@ -139,9 +139,16 @@
 }
 
 .categoryButton {
-  background: white;
-  border: 2px solid $border-light;
-  border-radius: 12px;
+  // Note: this class is applied to a native `button` via the shared `Button` component.
+  // Using `button.categoryButton` would beat the global `button { @include button-primary }` rule more reliably,
+  // but we keep the selector here to avoid changing markup usage.
+}
+
+button.categoryButton {
+  background-color: var(--cs-surface-lowest);
+  background-image: none;
+  border: none;
+  border-radius: var(--cs-radius-xl);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -149,16 +156,21 @@
   gap: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: $text-dark;
+  color: var(--cs-primary);
+  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+
+  &::before {
+    content: none;
+    display: none;
+  }
   
   &:hover {
-    border-color: $patient-primary;
-    background: rgba($patient-primary, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba($patient-primary, 0.2);
+    background-color: var(--cs-surface-low);
+    transform: none;
+    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
     
     .categoryName {
-      color: $patient-primary;
+      color: var(--cs-primary);
       font-weight: 700;
     }
     
@@ -168,20 +180,20 @@
   }
   
   &.active {
-    background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-    border-color: $patient-primary;
-    color: white;
-    box-shadow: 0 4px 12px rgba($patient-primary, 0.3);
+    background-color: transparent;
+    background-image: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+    color: var(--cs-on-primary);
+    box-shadow: var(--cs-shadow-atmospheric);
     
     .categoryName {
-      color: white;
+      color: var(--cs-on-primary);
       font-weight: 700;
     }
     
     &:hover {
-      background: linear-gradient(135deg, $patient-dark 0%, $patient-primary 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba($patient-primary, 0.4);
+      background-image: linear-gradient(135deg, var(--cs-primary-container) 0%, var(--cs-primary) 100%);
+      transform: none;
+      box-shadow: var(--cs-shadow-atmospheric);
     }
   }
 }
@@ -281,18 +293,30 @@
 }
 
 .resourceButton {
-  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-  color: white;
+  // marker for TSX class usage; actual styling lives in `button.resourceButton` to override global button styles.
+}
+
+button.resourceButton {
+  background-color: var(--cs-surface-lowest);
+  background-image: none;
+  color: var(--cs-primary);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--cs-radius-xl);
   padding: 0.75rem 1.5rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+
+  &::before {
+    content: none;
+    display: none;
+  }
   
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba($patient-primary, 0.4);
+  &:hover:not(:disabled) {
+    background-color: var(--cs-surface-low);
+    transform: none;
+    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
   }
 }
 
@@ -342,13 +366,23 @@
 }
 
 .toolButton {
-  background: $background-gray;
-  color: $text-light;
+  // marker for TSX class usage; actual styling lives in `button.toolButton`.
+}
+
+button.toolButton {
+  background-color: var(--cs-surface-high);
+  color: var(--cs-on-surface-variant);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--cs-radius-xl);
   padding: 0.75rem 1.5rem;
   font-weight: 600;
   cursor: not-allowed;
+  box-shadow: none;
+
+  &::before {
+    content: none;
+    display: none;
+  }
 }
 
 // Support Section
@@ -1719,10 +1753,10 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, $patient-primary, $patient-light);
+  background: linear-gradient(90deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
   transition: width 0.4s ease;
   border-radius: 50px;
-  box-shadow: 0 2px 8px rgba($patient-primary, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 52, 65, 0.35);
 }
 
 .progressText {
@@ -1776,7 +1810,7 @@
   font-weight: 500;
   
   &:hover {
-    background-color: rgba($patient-primary, 0.05);
+    background-color: color-mix(in srgb, var(--cs-primary) 5%, transparent);
   }
 }
 
@@ -1806,15 +1840,15 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: $patient-primary;
+  background-color: var(--cs-primary);
   opacity: 0;
   transform: scale(0);
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba($patient-primary, 0.4);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--cs-primary) 40%, transparent);
 }
 
 .radioChecked {
-  border-color: $patient-primary;
+  border-color: var(--cs-primary);
   
   .radioDot {
     opacity: 1;
@@ -1823,11 +1857,11 @@
 }
 
 .radioWrapper:hover .radioCustom {
-  border-color: $patient-primary;
+  border-color: var(--cs-primary);
 }
 
 .radioInput:focus + .radioCustom {
-  box-shadow: 0 0 0 4px rgba($patient-primary, 0.15);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--cs-primary) 15%, transparent);
 }
 
 .checkboxGroup {
@@ -1846,7 +1880,7 @@
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba($patient-primary, 0.05);
+    background: color-mix(in srgb, var(--cs-primary) 5%, transparent);
   }
 }
 
@@ -1897,7 +1931,7 @@
   margin-top: 4px;
   width: 20px;
   height: 20px;
-  accent-color: $patient-primary;
+  accent-color: var(--cs-primary);
   cursor: pointer;
 }
 
@@ -1915,46 +1949,53 @@
   border-top: 2px solid $background-light;
 }
 
-.navButton {
-  background: white;
-  color: $text-dark;
-  border: 2px solid $border-light;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  font-size: 1rem;
+button.navButton {
+  background-color: var(--cs-surface-lowest);
+  color: var(--cs-primary);
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--cs-radius-xl);
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    border-color: $patient-primary;
-    color: $patient-primary;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--cs-surface-low);
+    transform: none;
+    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
   }
 }
 
-.submitButton {
-  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-  color: white;
+button.submitButton {
+  background-color: transparent;
+  background-image: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+  color: var(--cs-on-primary);
   border: none;
-  padding: 1rem 2.5rem;
-  border-radius: 50px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--cs-radius-xl);
+  font-size: 0.875rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba($patient-primary, 0.3);
-  
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--cs-shadow-atmospheric);
+
   &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba($patient-primary, 0.4);
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    filter: saturate(1.08);
     transform: none;
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
   }
 }
 

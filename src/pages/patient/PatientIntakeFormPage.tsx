@@ -15,6 +15,7 @@ import { Input } from '../../components/ui/input';
 import { Select } from '../../components/ui/select';
 import { Textarea } from '../../components/ui/textarea';
 import styles from './PatientPages.module.scss';
+import shell from './PatientShellChrome.module.scss';
 
 // Import the interface from the service
 import type { IntakeFormData } from '../../services/api/intake';
@@ -1144,35 +1145,43 @@ export const PatientIntakeFormPage: React.FC = () => {
       patientShell
       className={styles.patientLayout}
     >
-      <div className={styles.dashboardContainer}>
-        <div className="container">
-          <div className={styles.dashboardHeader}>
-            <h1 className={styles.welcomeTitle}>New Client Intake Form</h1>
-            <p className={styles.welcomeSubtitle}>
+      <div className={shell.wrap}>
+        <header className={shell.pageHeader}>
+          <h1 className={shell.welcomeTitle}>New Client Intake Form</h1>
+          <p className={shell.welcomeSubtitle}>
               Welcome to Tailored Psychology! To ensure we provide you with the best possible care, 
               please complete this form prior to your first appointment. All information provided is confidential.
-            </p>
-            
-            <div className={styles.requirementSummary}>
-              <h3><ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Form Requirements</h3>
-              <div className={styles.requirementGrid}>
-                <div className={styles.requirementItem}>
-                  <span className={styles.requiredIcon}>*</span>
-                  <span><strong>9 Required Fields:</strong> Emergency contact, referral source, presenting concerns, therapy goals, consent & signature</span>
-                </div>
-                <div className={styles.requirementItem}>
-                  <span className={styles.optionalIcon}>○</span>
-                  <span><strong>21 Optional Fields:</strong> Personal preferences, medical history, additional details</span>
-                </div>
-                <div className={styles.requirementItem}>
-                  <span className={styles.recommendedIcon}>!</span>
-                  <span><strong>Conditional Fields:</strong> Some fields become recommended based on your answers</span>
-                </div>
+          </p>
+
+          <div className={styles.requirementSummary}>
+            <h3>
+              <ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Form Requirements
+            </h3>
+            <div className={styles.requirementGrid}>
+              <div className={styles.requirementItem}>
+                <span className={styles.requiredIcon}>*</span>
+                <span>
+                  <strong>9 Required Fields:</strong> Emergency contact, referral source, presenting concerns, therapy
+                  goals, consent & signature
+                </span>
+              </div>
+              <div className={styles.requirementItem}>
+                <span className={styles.optionalIcon}>○</span>
+                <span>
+                  <strong>21 Optional Fields:</strong> Personal preferences, medical history, additional details
+                </span>
+              </div>
+              <div className={styles.requirementItem}>
+                <span className={styles.recommendedIcon}>!</span>
+                <span>
+                  <strong>Conditional Fields:</strong> Some fields become recommended based on your answers
+                </span>
               </div>
             </div>
           </div>
+        </header>
 
-          <form onSubmit={handleSubmit(onSubmit)} className={styles.intakeForm}>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.intakeForm}>
             <div className={styles.progressIndicator}>
               <div className={styles.progressBar}>
                 <div 
@@ -1216,8 +1225,7 @@ export const PatientIntakeFormPage: React.FC = () => {
                 </Button>
               )}
             </div>
-          </form>
-        </div>
+        </form>
       </div>
     </Layout>
   );

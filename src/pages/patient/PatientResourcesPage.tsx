@@ -16,6 +16,7 @@ import {
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import styles from './PatientPages.module.scss';
+import shell from './PatientShellChrome.module.scss';
 
 export const PatientResourcesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -100,9 +101,11 @@ export const PatientResourcesPage: React.FC = () => {
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.pageContainer}>
         <div className="container">
-          <div className={styles.pageHeader}>
-            <h1>Mental Health Resources</h1>
-            <p>Educational materials and support resources for your mental health journey</p>
+          <div className={shell.pageHeader}>
+            <h1 className={shell.welcomeTitle}>Mental Health Resources</h1>
+            <p className={shell.welcomeSubtitle}>
+              Educational materials and support resources for your mental health journey
+            </p>
           </div>
 
           {/* Emergency Contacts */}

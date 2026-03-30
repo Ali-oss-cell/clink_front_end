@@ -8,6 +8,8 @@ import { DocumentIcon, CreditCardIcon, ClockIcon } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import { Select } from '../../components/ui/select';
 import styles from './PatientPages.module.scss';
+import shell from './PatientShellChrome.module.scss';
+import invoiceStyles from './PatientInvoicesPage.module.scss';
 
 export const PatientInvoicesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -98,18 +100,33 @@ export const PatientInvoicesPage: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusChipColors = (status: string) => {
     switch (status.toLowerCase()) {
       case 'paid':
-        return '#2e7d42';
+        return {
+          bg: 'var(--cs-secondary-container)',
+          color: 'var(--cs-on-secondary-fixed-variant)',
+        };
       case 'pending':
-        return '#d4841a';
+        return {
+          bg: 'var(--cs-tertiary-fixed)',
+          color: 'var(--cs-on-tertiary-fixed-variant)',
+        };
       case 'overdue':
-        return '#c0392b';
+        return {
+          bg: 'var(--cs-error-container)',
+          color: 'var(--cs-on-error-container)',
+        };
       case 'cancelled':
-        return '#7a7b7a';
+        return {
+          bg: 'var(--cs-surface-variant)',
+          color: 'var(--cs-on-surface-variant)',
+        };
       default:
-        return '#7a7b7a';
+        return {
+          bg: 'var(--cs-surface-variant)',
+          color: 'var(--cs-on-surface-variant)',
+        };
     }
   };
 
@@ -148,9 +165,9 @@ export const PatientInvoicesPage: React.FC = () => {
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.pageContainer}>
         <div className="container">
-          <div className={styles.pageHeader}>
-            <h1>My Invoices</h1>
-            <p>View and download your invoices</p>
+          <div className={shell.pageHeader}>
+            <h1 className={shell.welcomeTitle}>My Invoices</h1>
+            <p className={shell.welcomeSubtitle}>View and download your invoices</p>
           </div>
 
           {error && (
@@ -174,52 +191,52 @@ export const PatientInvoicesPage: React.FC = () => {
             marginBottom: '2rem'
           }}>
             <div style={{
-              background: 'white',
+              background: 'var(--cs-surface-lowest)',
               padding: '1.5rem',
-              borderRadius: '12px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              borderRadius: 'var(--cs-radius-2xl)',
+              boxShadow: 'var(--cs-shadow-atmospheric)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4d5a48' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-primary)' }}>
                 {formatCurrency(totals.total)}
               </div>
-              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Invoiced</div>
+              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Total Invoiced</div>
             </div>
             <div style={{
-              background: 'white',
+              background: 'var(--cs-surface-lowest)',
               padding: '1.5rem',
-              borderRadius: '12px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              borderRadius: 'var(--cs-radius-2xl)',
+              boxShadow: 'var(--cs-shadow-atmospheric)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d42' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-on-secondary-fixed-variant)' }}>
                 {formatCurrency(totals.paid)}
               </div>
-              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Paid</div>
+              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Paid</div>
             </div>
             <div style={{
-              background: 'white',
+              background: 'var(--cs-surface-lowest)',
               padding: '1.5rem',
-              borderRadius: '12px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              borderRadius: 'var(--cs-radius-2xl)',
+              boxShadow: 'var(--cs-shadow-atmospheric)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d4841a' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-on-tertiary-fixed-variant)' }}>
                 {formatCurrency(totals.pending)}
               </div>
-              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Pending</div>
+              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Pending</div>
             </div>
             <div style={{
-              background: 'white',
+              background: 'var(--cs-surface-lowest)',
               padding: '1.5rem',
-              borderRadius: '12px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              borderRadius: 'var(--cs-radius-2xl)',
+              boxShadow: 'var(--cs-shadow-atmospheric)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-primary)' }}>
                 {invoices.length}
               </div>
-              <div style={{ color: '#7a7b7a', marginTop: '0.5rem' }}>Total Invoices</div>
+              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Total Invoices</div>
             </div>
           </div>
 
@@ -318,8 +335,8 @@ export const PatientInvoicesPage: React.FC = () => {
                             borderRadius: '12px',
                             fontSize: '0.875rem',
                             fontWeight: '600',
-                            backgroundColor: getStatusColor(invoice.status) + '20',
-                            color: getStatusColor(invoice.status)
+                            backgroundColor: getStatusChipColors(invoice.status).bg,
+                            color: getStatusChipColors(invoice.status).color
                           }}
                         >
                           {invoice.status?.toUpperCase() || 'N/A'}
@@ -333,17 +350,7 @@ export const PatientInvoicesPage: React.FC = () => {
                           <Button
                             onClick={() => handleDownloadPDF(invoice.id)}
                             disabled={downloadingId === invoice.id}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              background: downloadingId === invoice.id ? '#7a7b7a' : '#364539',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '6px',
-                              cursor: downloadingId === invoice.id ? 'not-allowed' : 'pointer',
-                              fontSize: '0.875rem',
-                              fontWeight: '500',
-                              opacity: downloadingId === invoice.id ? 0.6 : 1
-                            }}
+                            className={invoiceStyles.downloadButton}
                             title="Download Invoice PDF"
                           >
                             {downloadingId === invoice.id ? (
@@ -361,16 +368,7 @@ export const PatientInvoicesPage: React.FC = () => {
                           {invoice.status !== 'paid' && invoice.status !== 'cancelled' && (
                             <Button
                               onClick={() => navigate(`/appointments/payment?invoice=${invoice.id}`)}
-                              style={{
-                                padding: '0.5rem 1rem',
-                                background: '#2e7d42',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontSize: '0.875rem',
-                                fontWeight: '500'
-                              }}
+                              className={invoiceStyles.payButton}
                               title="Pay Invoice"
                             >
                               <CreditCardIcon size="sm" style={{ marginRight: '6px' }} />

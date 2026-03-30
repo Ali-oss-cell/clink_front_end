@@ -23,6 +23,7 @@ import {
 import { Button } from '../../components/ui/button';
 import pageStyles from './PatientPages.module.scss';
 import d from './PatientDashboard.module.scss';
+import shell from './PatientShellChrome.module.scss';
 
 const RING_R = 58;
 const RING_C = 2 * Math.PI * RING_R;
@@ -167,10 +168,10 @@ export const PatientDashboardPage: React.FC = () => {
 
   return (
     <Layout {...layoutProps}>
-      <div className={d.wrap}>
-        <header className={d.pageHeader}>
-          <h1 className={d.welcomeTitle}>Welcome back, {user.first_name}.</h1>
-          <p className={d.welcomeSubtitle}>
+      <div className={shell.wrap}>
+        <header className={shell.pageHeader}>
+          <h1 className={shell.welcomeTitle}>Welcome back, {user.first_name}.</h1>
+          <p className={shell.welcomeSubtitle}>
             Your journey to well-being is our priority. Here is an overview of your care with us.
           </p>
         </header>
