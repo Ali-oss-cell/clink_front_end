@@ -363,7 +363,7 @@ export const Homepage: React.FC = () => {
                 backgroundRepeat: slide.backgroundImage ? 'no-repeat' : undefined,
               }}
             >
-              <div className="container">
+              <div className={styles.heroContainer}>
                 <div className={styles.heroContent}>
                   <h1 className={styles.heroTitle}>
                     {slide.title}

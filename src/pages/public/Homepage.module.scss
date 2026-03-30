@@ -241,8 +241,15 @@ $home-glow-deep: rgba(54, 69, 57, 0.14);
     }
   }
 
+.heroContainer {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+}
+
   .heroContent {
-    max-width: 800px;
+    max-width: min(920px, 100%);
     margin: 0 auto;
     position: relative;
     z-index: 2;
