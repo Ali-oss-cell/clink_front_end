@@ -5,6 +5,7 @@ import PhoneInput from 'react-phone-number-input';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import 'react-phone-number-input/style.css';
 import { Layout } from '../../components/common/Layout/Layout';
+import { authService } from '../../services/api/auth';
 import { intakeService } from '../../services/api/intake';
 import { validateIntakeForm } from '../../utils/validation';
 import { normalizeToE164 } from '../../utils/phoneE164';
@@ -24,6 +25,20 @@ export const PatientIntakeFormPage: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const user = authService.getStoredUser() || {
+    id: 1,
+    email: 'patient@example.com',
+    username: 'patient',
+    first_name: 'Patient',
+    last_name: '',
+    full_name: 'Patient',
+    role: 'patient' as const,
+    phone_number: '',
+    date_of_birth: '',
+    age: 0,
+    is_verified: true,
+    created_at: new Date().toISOString(),
+  };
   
   // Get pre-filled data from login
   const preFilledData = intakeService.getPreFilledData();
@@ -1127,20 +1142,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
   return (
     <Layout 
-      user={{
-        id: 1,
-        first_name: 'John',
-        last_name: 'Smith',
-        full_name: 'John Smith',
-        username: 'john.smith',
-        role: 'patient' as const,
-        email: 'john@example.com',
-        phone_number: '+61400123456',
-        date_of_birth: '1990-01-01',
-        age: 34,
-        is_verified: true,
-        created_at: '2024-01-01'
-      }} 
+      user={user}
       isAuthenticated={true}
       patientShell
       className={styles.patientLayout}

@@ -270,6 +270,9 @@ $shell-collapse: 900px;
 
   &:hover {
     color: var(--cs-primary);
+    background: var(--cs-surface-low);
+    border-radius: var(--cs-radius-xl);
+    padding-left: 0.5rem;
   }
 }
 

@@ -138,12 +138,6 @@
   gap: 1rem;
 }
 
-.categoryButton {
-  // Note: this class is applied to a native `button` via the shared `Button` component.
-  // Using `button.categoryButton` would beat the global `button { @include button-primary }` rule more reliably,
-  // but we keep the selector here to avoid changing markup usage.
-}
-
 button.categoryButton {
   background-color: var(--cs-surface-lowest);
   background-image: none;
@@ -292,10 +286,6 @@ button.categoryButton {
   flex: 1;
 }
 
-.resourceButton {
-  // marker for TSX class usage; actual styling lives in `button.resourceButton` to override global button styles.
-}
-
 button.resourceButton {
   background-color: var(--cs-surface-lowest);
   background-image: none;
@@ -363,10 +353,6 @@ button.resourceButton {
     color: $text-light;
     margin-bottom: 1.5rem;
   }
-}
-
-.toolButton {
-  // marker for TSX class usage; actual styling lives in `button.toolButton`.
 }
 
 button.toolButton {
@@ -2780,6 +2766,28 @@ button.submitButton {
     color: var(--cs-on-primary);
     border-radius: var(--cs-radius-xl);
     box-shadow: var(--cs-shadow-atmospheric);
+  }
+
+  button.backButton,
+  button.actionButton,
+  button.cancelButton {
+    background: var(--cs-surface-lowest);
+    color: var(--cs-primary);
+    border: none;
+    border-radius: var(--cs-radius-xl);
+    box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+
+    &::before {
+      content: none;
+      display: none;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--cs-surface-low);
+      color: var(--cs-primary);
+      transform: none;
+      box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    }
   }
 
   .appointmentContainer {
