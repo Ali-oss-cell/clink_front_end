@@ -6,6 +6,10 @@ import { CheckCircleIcon, WarningIcon, InfoIcon, CloseIcon } from '../../utils/i
 import { AHPRAInput } from '../../components/common/AHPRAInput';
 import { validateAHPRA } from '../../utils/validation';
 import { normalizeToE164 } from '../../utils/phoneE164';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
+import { Badge } from '../../components/ui/badge';
 import styles from './AdminPages.module.scss';
 
 export const UserManagementPage: React.FC = () => {
@@ -391,13 +395,17 @@ export const UserManagementPage: React.FC = () => {
     });
   };
 
-  const getRoleBadgeColor = (role: string) => {
+  const getRoleBadgeVariant = (role: string): 'default' | 'success' | 'warning' | 'danger' => {
     switch (role) {
-      case 'admin': return '#c0392b';
-      case 'psychologist': return '#6e8c6a';
-      case 'practice_manager': return '#2e7d42';
-      case 'patient': return '#7a9a80';
-      default: return '#7a7b7a';
+      case 'admin':
+        return 'danger';
+      case 'practice_manager':
+      case 'psychologist':
+        return 'success';
+      case 'patient':
+        return 'default';
+      default:
+        return 'warning';
     }
   };
 
@@ -421,12 +429,9 @@ export const UserManagementPage: React.FC = () => {
         <div className="container">
           <div className={styles.pageHeader}>
             <h1>User Management</h1>
-            <button 
-              className={styles.primaryButton}
-              onClick={() => setShowCreateModal(true)}
-            >
+            <Button onClick={() => setShowCreateModal(true)}>
               + Create User
-            </button>
+            </Button>
           </div>
 
           {error && (
@@ -438,14 +443,14 @@ export const UserManagementPage: React.FC = () => {
 
           {/* Filters */}
           <div className={styles.filtersBar}>
-            <input
+            <Input
               type="text"
               placeholder="Search by name or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.searchInput}
             />
-            <select
+            <Select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
               className={styles.filterSelect}
@@ -455,8 +460,8 @@ export const UserManagementPage: React.FC = () => {
               <option value="psychologist">Psychologists</option>
               <option value="practice_manager">Practice Managers</option>
               <option value="admin">Admins</option>
-            </select>
-            <select
+            </Select>
+            <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className={styles.filterSelect}
@@ -466,7 +471,7 @@ export const UserManagementPage: React.FC = () => {
               <option value="unverified">Unverified</option>
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
-            </select>
+            </Select>
           </div>
 
           {/* Users Table */}
@@ -495,12 +500,9 @@ export const UserManagementPage: React.FC = () => {
                       <td>{user.full_name}</td>
                       <td>{user.email}</td>
                       <td>
-                        <span 
-                          className={styles.roleBadge}
-                          style={{ backgroundColor: getRoleBadgeColor(user.role) }}
-                        >
+                        <Badge variant={getRoleBadgeVariant(user.role)}>
                           {user.role.replace('_', ' ')}
-                        </span>
+                        </Badge>
                       </td>
                       <td>
                         <div className={styles.statusCell}>
@@ -525,18 +527,12 @@ export const UserManagementPage: React.FC = () => {
                       <td>{formatDate(user.created_at)}</td>
                       <td>
                         <div className={styles.actionButtons}>
-                          <button 
-                            className={styles.editButton}
-                            onClick={() => openEditModal(user)}
-                          >
+                          <Button variant="outline" size="sm" onClick={() => openEditModal(user)}>
                             Edit
-                          </button>
-                          <button 
-                            className={styles.deleteButton}
-                            onClick={() => handleDeleteUser(user.id)}
-                          >
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteUser(user.id)}>
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -749,12 +745,12 @@ export const UserManagementPage: React.FC = () => {
                     </>
                   )}
                   <div className={styles.modalActions}>
-                    <button type="button" onClick={() => setShowCreateModal(false)}>
+                    <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)}>
                       Cancel
-                    </button>
-                    <button type="submit" className={styles.primaryButton}>
+                    </Button>
+                    <Button type="submit">
                       Create User
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>
@@ -963,12 +959,12 @@ export const UserManagementPage: React.FC = () => {
                     </>
                   )}
                   <div className={styles.modalActions}>
-                    <button type="button" onClick={() => setShowEditModal(false)}>
+                    <Button type="button" variant="outline" onClick={() => setShowEditModal(false)}>
                       Cancel
-                    </button>
-                    <button type="submit" className={styles.primaryButton}>
+                    </Button>
+                    <Button type="submit">
                       Update User
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>

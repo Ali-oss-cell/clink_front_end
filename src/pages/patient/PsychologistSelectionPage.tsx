@@ -18,6 +18,8 @@ import {
   EditIcon,
   GraduationIcon
 } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
+import { Select } from '../../components/ui/select';
 import {
   MATCH_PREFERENCES_STORAGE_KEY,
   parseMatchPreferences,
@@ -292,7 +294,7 @@ export const PsychologistSelectionPage: React.FC = () => {
               </div>
             </div>
             <div style={{ textAlign: 'center', padding: '3rem 0' }}>
-              <button 
+              <Button
                 className={styles.continueButton}
                 onClick={() => {
                   console.log('[PsychologistSelectionPage] Error state button clicked');
@@ -300,7 +302,7 @@ export const PsychologistSelectionPage: React.FC = () => {
                 }}
               >
                 Go to Service Selection
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -317,12 +319,12 @@ export const PsychologistSelectionPage: React.FC = () => {
       <div className={styles.psychologistSelectionContainer}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <button 
+            <Button
               className={styles.backButton}
               onClick={handleBack}
             >
               ← Back to Service Selection
-            </button>
+            </Button>
             <h1 className={styles.pageTitle}>Choose Your Psychologist</h1>
             <p className={styles.pageSubtitle}>
               All our psychologists are AHPRA registered and specialize in various areas.
@@ -334,7 +336,7 @@ export const PsychologistSelectionPage: React.FC = () => {
             <div className={styles.filtersGrid}>
               <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}><ChartIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Specialization:</label>
-                <select 
+                <Select 
                   className={styles.filterSelect}
                   value={filters.specialization}
                   onChange={(e) => handleFilterChange('specialization', e.target.value)}
@@ -345,12 +347,12 @@ export const PsychologistSelectionPage: React.FC = () => {
                   <option value="trauma">Trauma</option>
                   <option value="adhd">ADHD</option>
                   <option value="relationship">Relationship</option>
-                </select>
+                </Select>
               </div>
 
               <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}><UsersIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Gender:</label>
-                <select 
+                <Select 
                   className={styles.filterSelect}
                   value={filters.gender}
                   onChange={(e) => handleFilterChange('gender', e.target.value)}
@@ -359,12 +361,12 @@ export const PsychologistSelectionPage: React.FC = () => {
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="non-binary">Non-binary</option>
-                </select>
+                </Select>
               </div>
 
               <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}><CalendarIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Availability:</label>
-                <select 
+                <Select 
                   className={styles.filterSelect}
                   value={filters.availability}
                   onChange={(e) => handleFilterChange('availability', e.target.value)}
@@ -372,12 +374,12 @@ export const PsychologistSelectionPage: React.FC = () => {
                   <option value="any">Any time</option>
                   <option value="this-week">This week</option>
                   <option value="next-week">Next week</option>
-                </select>
+                </Select>
               </div>
 
               <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}><VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Session Type:</label>
-                <select 
+                <Select 
                   className={styles.filterSelect}
                   value={filters.sessionType}
                   onChange={(e) => handleFilterChange('sessionType', e.target.value)}
@@ -385,7 +387,7 @@ export const PsychologistSelectionPage: React.FC = () => {
                   <option value="both">Both</option>
                   <option value="in-person">In-person</option>
                   <option value="telehealth">Telehealth</option>
-                </select>
+                </Select>
               </div>
             </div>
           </div>
@@ -398,13 +400,13 @@ export const PsychologistSelectionPage: React.FC = () => {
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Psychologists</h3>
               <p>{error}</p>
-              <button 
+              <Button
                 className={styles.retryButton}
                 onClick={() => window.location.reload()}
               >
                 <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry
-              </button>
+              </Button>
             </div>
           ) : filteredPsychologists.length === 0 ? (
             <div className={styles.emptyState}>
@@ -483,11 +485,11 @@ export const PsychologistSelectionPage: React.FC = () => {
                 </div>
 
                 {psychologist.acceptingNewPatients && (
-                  <button 
+                  <Button
                     className={`${styles.selectButton} ${selectedPsychologist === psychologist.id ? styles.selectButtonSelected : ''}`}
                   >
                     {selectedPsychologist === psychologist.id ? 'SELECTED' : 'SELECT'}
-                  </button>
+                  </Button>
                 )}
               </div>
               ))}
@@ -495,21 +497,21 @@ export const PsychologistSelectionPage: React.FC = () => {
           )}
 
           <div className={styles.formActions}>
-            <button
+            <Button
               type="button"
               className={styles.cancelButton}
               onClick={handleBack}
             >
               Back to Services
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               className={styles.continueButton}
               onClick={handleContinue}
               disabled={!selectedPsychologist}
             >
               Continue to Date & Time
-            </button>
+            </Button>
           </div>
         </div>
       </div>

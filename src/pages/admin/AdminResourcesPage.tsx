@@ -3,6 +3,10 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { resourceService, type Resource, type CreateResourceRequest, type UpdateResourceRequest, type ResourceCategory } from '../../services/api/resources';
 import { DocumentIcon, CheckCircleIcon, CloseIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
+import { Badge } from '../../components/ui/badge';
 import styles from './AdminPages.module.scss';
 
 export const AdminResourcesPage: React.FC = () => {
@@ -345,7 +349,7 @@ export const AdminResourcesPage: React.FC = () => {
           {/* Filters and Actions */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
-              <input
+              <Input
                 type="text"
                 placeholder="Search resources..."
                 value={searchTerm}
@@ -355,7 +359,7 @@ export const AdminResourcesPage: React.FC = () => {
             </div>
             
             <div className={styles.filterGroup}>
-              <select
+              <Select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 className={styles.filterSelect}
@@ -364,9 +368,9 @@ export const AdminResourcesPage: React.FC = () => {
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
-              </select>
+              </Select>
 
-              <select
+              <Select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className={styles.filterSelect}
@@ -375,9 +379,9 @@ export const AdminResourcesPage: React.FC = () => {
                 {resourceTypes.map(type => (
                   <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
                 ))}
-              </select>
+              </Select>
 
-              <select
+              <Select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className={styles.filterSelect}
@@ -385,14 +389,13 @@ export const AdminResourcesPage: React.FC = () => {
                 <option value="all">All Status</option>
                 <option value="published">Published</option>
                 <option value="unpublished">Unpublished</option>
-              </select>
+              </Select>
 
-              <button
+              <Button
                 onClick={() => setShowCreateModal(true)}
-                className={styles.primaryButton}
               >
                 + Create Resource
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -434,31 +437,33 @@ export const AdminResourcesPage: React.FC = () => {
                       </td>
                       <td>{resource.category_display || resource.category}</td>
                       <td>
-                        <span className={styles.badge}>{resource.type_display || resource.type}</span>
+                        <Badge variant="default">{resource.type_display || resource.type}</Badge>
                       </td>
                       <td>{resource.difficulty_display || resource.difficulty_level}</td>
                       <td>{resource.view_count || 0}</td>
                       <td>
                         {(resource as any).is_published ? (
-                          <span className={`${styles.badge} ${styles.badgeSuccess}`}>Published</span>
+                          <Badge variant="success">Published</Badge>
                         ) : (
-                          <span className={`${styles.badge} ${styles.badgeWarning}`}>Draft</span>
+                          <Badge variant="warning">Draft</Badge>
                         )}
                       </td>
                       <td>
                         <div className={styles.actionButtons}>
-                          <button
+                          <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => openEditModal(resource)}
-                            className={styles.editButton}
                           >
                             Edit
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
                             onClick={() => handleDeleteResource(resource.id)}
-                            className={styles.deleteButton}
                           >
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -474,29 +479,14 @@ export const AdminResourcesPage: React.FC = () => {
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                   <h2>Create New Resource</h2>
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setShowCreateModal(false)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      fontSize: '1.5rem',
-                      color: '#7a7b7a',
-                      cursor: 'pointer',
-                      padding: '0.25rem',
-                      width: '32px',
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '50%',
-                      transition: 'background-color 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ebe8e3'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <CloseIcon size="sm" />
-                  </button>
+                  </Button>
                 </div>
                 <form onSubmit={handleCreateResource}>
                   <div className={styles.formGroup}>
@@ -753,12 +743,12 @@ export const AdminResourcesPage: React.FC = () => {
                   </div>
 
                   <div className={styles.modalActions}>
-                    <button type="button" onClick={() => setShowCreateModal(false)} className={styles.secondaryButton}>
+                    <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)}>
                       Cancel
-                    </button>
-                    <button type="submit" className={styles.primaryButton}>
+                    </Button>
+                    <Button type="submit">
                       Create Resource
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>
@@ -771,29 +761,14 @@ export const AdminResourcesPage: React.FC = () => {
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                   <h2>Edit Resource</h2>
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setShowEditModal(false)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      fontSize: '1.5rem',
-                      color: '#7a7b7a',
-                      cursor: 'pointer',
-                      padding: '0.25rem',
-                      width: '32px',
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '50%',
-                      transition: 'background-color 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ebe8e3'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <CloseIcon size="sm" />
-                  </button>
+                  </Button>
                 </div>
                 <form onSubmit={handleEditResource}>
                   <div className={styles.formGroup}>
@@ -1112,12 +1087,12 @@ export const AdminResourcesPage: React.FC = () => {
                   </div>
 
                   <div className={styles.modalActions}>
-                    <button type="button" onClick={() => setShowEditModal(false)} className={styles.secondaryButton}>
+                    <Button type="button" variant="outline" onClick={() => setShowEditModal(false)}>
                       Cancel
-                    </button>
-                    <button type="submit" className={styles.primaryButton}>
+                    </Button>
+                    <Button type="submit">
                       Update Resource
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>

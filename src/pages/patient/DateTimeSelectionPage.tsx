@@ -6,6 +6,7 @@ import { appointmentsService } from '../../services/api/appointments';
 import { servicesService } from '../../services/api/services';
 import type { AvailableSlotsResponse, TimeSlot } from '../../services/api/appointments';
 import { WarningIcon, EditIcon, ClipboardIcon, VideoIcon, HospitalIcon, CalendarIcon, ClockIcon } from '../../utils/icons';
+import { Button } from '../../components/ui/button';
 import styles from './DateTimeSelection.module.scss';
 
 export const DateTimeSelectionPage: React.FC = () => {
@@ -321,9 +322,9 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
-              <button className={styles.backButton} onClick={handleBack}>
+              <Button className={styles.backButton} onClick={handleBack}>
                 ← Back to Psychologist Selection
-              </button>
+              </Button>
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
@@ -334,19 +335,19 @@ export const DateTimeSelectionPage: React.FC = () => {
               <p>{error}</p>
               {isPsychologistNotFound ? (
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem' }}>
-                  <button 
+                  <Button
                     className={styles.retryButton} 
                     onClick={handleBack}
                     style={{ backgroundColor: '#4A90E2', color: 'white' }}
                   >
                     ← Select Different Psychologist
-                  </button>
+                  </Button>
                 </div>
               ) : (
-                <button className={styles.retryButton} onClick={fetchAvailableSlots}>
+                <Button className={styles.retryButton} onClick={fetchAvailableSlots}>
                   <EditIcon size="sm" style={{ marginRight: '6px' }} />
                   Retry
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -362,18 +363,18 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
-              <button className={styles.backButton} onClick={handleBack}>
+              <Button className={styles.backButton} onClick={handleBack}>
                 ← Back to Psychologist Selection
-              </button>
+              </Button>
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> No Data Available</h3>
               <p>Unable to load appointment availability. Please try again.</p>
-              <button className={styles.retryButton} onClick={fetchAvailableSlots}>
+              <Button className={styles.retryButton} onClick={fetchAvailableSlots}>
                 <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -388,18 +389,18 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
-              <button className={styles.backButton} onClick={handleBack}>
+              <Button className={styles.backButton} onClick={handleBack}>
                 ← Back to Psychologist Selection
-              </button>
+              </Button>
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> No Data Available</h3>
               <p>Unable to load appointment availability. Please try again.</p>
-              <button className={styles.retryButton} onClick={fetchAvailableSlots}>
+              <Button className={styles.retryButton} onClick={fetchAvailableSlots}>
                 <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -413,9 +414,9 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className="container">
           {/* Page Header */}
           <div className={styles.pageHeader}>
-            <button className={styles.backButton} onClick={handleBack}>
+            <Button className={styles.backButton} onClick={handleBack}>
               ← Back to Psychologist Selection
-            </button>
+            </Button>
             <h1 className={styles.pageTitle}>Select Date & Time</h1>
             <p className={styles.pageSubtitle}>
               Choose your preferred appointment time with {availabilityData.psychologist_name}
@@ -523,13 +524,13 @@ export const DateTimeSelectionPage: React.FC = () => {
                   </h2>
                   <div className={styles.timeSlotsGrid}>
                     {getSelectedDateSlots().map((slot) => (
-                      <button
+                      <Button
                         key={slot.id}
                         className={`${styles.timeSlot} ${styles.available} ${selectedSlot?.id === slot.id ? styles.selected : ''}`}
                         onClick={() => setSelectedSlot(slot)}
                       >
                         {slot.start_time_formatted}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                   
@@ -553,14 +554,14 @@ export const DateTimeSelectionPage: React.FC = () => {
 
           {/* Action Buttons */}
           <div className={styles.formActions}>
-            <button
+            <Button
               type="button"
               className={styles.cancelButton}
               onClick={handleBack}
             >
               ← Back
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               className={styles.continueButton}
               onClick={handleBookAppointment}
@@ -574,7 +575,7 @@ export const DateTimeSelectionPage: React.FC = () => {
               ) : (
                 'Continue to Payment →'
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -3,6 +3,9 @@ import { VideoIcon, HospitalIcon, CloseIcon } from '../../utils/icons';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type AdminAppointment } from '../../services/api/admin';
+import { Select } from '../../components/ui/select';
+import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
 import styles from './AdminPages.module.scss';
 
 export const AdminAppointmentsPage: React.FC = () => {
@@ -90,6 +93,21 @@ export const AdminAppointmentsPage: React.FC = () => {
     }
   };
 
+  const getStatusBadgeVariant = (status: string): 'default' | 'success' | 'warning' | 'danger' => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+      case 'scheduled':
+      case 'confirmed':
+        return 'success';
+      case 'cancelled':
+        return 'danger';
+      case 'pending':
+        return 'warning';
+      default:
+        return 'default';
+    }
+  };
+
   if (loading) {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
@@ -118,13 +136,13 @@ export const AdminAppointmentsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
+              <Button variant="ghost" size="sm" onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
             </div>
           )}
 
           {/* Filters */}
           <div className={styles.filtersBar}>
-            <select
+            <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className={styles.filterSelect}
@@ -135,8 +153,8 @@ export const AdminAppointmentsPage: React.FC = () => {
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
               <option value="pending">Pending</option>
-            </select>
-            <select
+            </Select>
+            <Select
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
               className={styles.filterSelect}
@@ -145,7 +163,7 @@ export const AdminAppointmentsPage: React.FC = () => {
               <option value="today">Today</option>
               <option value="week">This Week</option>
               <option value="month">This Month</option>
-            </select>
+            </Select>
           </div>
 
           {/* Appointments Table */}
@@ -192,12 +210,13 @@ export const AdminAppointmentsPage: React.FC = () => {
                         </span>
                       </td>
                       <td>
-                        <span 
+                        <Badge
+                          variant={getStatusBadgeVariant(appointment.status)}
                           className={styles.statusBadge}
                           style={{ backgroundColor: getStatusColor(appointment.status) }}
                         >
                           {appointment.status_display || appointment.status}
-                        </span>
+                        </Badge>
                       </td>
                       <td>{appointment.duration_minutes || 0} min</td>
                     </tr>

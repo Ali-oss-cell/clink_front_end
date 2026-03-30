@@ -1,0 +1,123 @@
+@use '../../assets/styles/variables' as *;
+
+.tp-ui-btn {
+  border-radius: 10px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.tp-ui-btn--sm {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.tp-ui-btn--md {
+  padding: 0.62rem 1rem;
+  font-size: 0.92rem;
+}
+
+.tp-ui-btn--lg {
+  padding: 0.8rem 1.15rem;
+  font-size: 1rem;
+}
+
+.tp-ui-btn--default {
+  background: #435343;
+  border-color: rgba(#435343, 0.5);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #394736;
+    transform: translateY(-1px);
+  }
+}
+
+.tp-ui-btn--outline {
+  background: #fff;
+  border-color: $border-medium;
+  color: $text-dark;
+
+  &:hover:not(:disabled) {
+    border-color: #435343;
+    color: #435343;
+  }
+}
+
+.tp-ui-btn--destructive {
+  background: $error-red;
+  border-color: rgba($error-red, 0.45);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: darken($error-red, 6%);
+    transform: translateY(-1px);
+  }
+}
+
+.tp-ui-btn--ghost {
+  background: transparent;
+  color: $text-dark;
+
+  &:hover:not(:disabled) {
+    background: rgba(#435343, 0.08);
+  }
+}
+
+.tp-ui-input,
+.tp-ui-select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid $border-light;
+  border-radius: 10px;
+  background: #fff;
+  color: $text-dark;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #435343;
+    box-shadow: 0 0 0 3px rgba(#435343, 0.12);
+  }
+}
+
+.tp-ui-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  border-radius: 9999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.tp-ui-badge--default {
+  background: rgba(#435343, 0.12);
+  color: #435343;
+}
+
+.tp-ui-badge--success {
+  background: rgba($success-green, 0.12);
+  color: $success-green;
+}
+
+.tp-ui-badge--warning {
+  background: rgba(#6f8367, 0.16);
+  color: #435343;
+}
+
+.tp-ui-badge--danger {
+  background: rgba($error-red, 0.12);
+  color: $error-red;
+}
