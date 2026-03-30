@@ -167,6 +167,8 @@ $home-glow-deep: rgba(54, 69, 57, 0.14);
 // Band reserved under fixed nav + iOS safe area (must match slider pull-up in `.sliderContainer`).
 $home-hero-nav-band: 5.75rem;
 $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
+// Hero imagery fills most of the first viewport (replaces fixed 520px cap).
+$home-hero-body-min: clamp(36rem, 90dvh, 60rem);
 
 .homepage {
   overflow-x: clip;
@@ -207,7 +209,7 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
   // Allow slider to extend upward behind the fixed header; clip horizontally only.
   overflow-x: clip;
   overflow-y: visible;
-  min-height: calc(520px + env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
+  min-height: calc(#{$home-hero-body-min} + env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
   display: flex;
   align-items: center;
 }
@@ -218,7 +220,7 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
   left: 0;
   right: 0;
   width: 100%;
-  min-height: calc(520px + env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
+  min-height: calc(#{$home-hero-body-min} + env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
   overflow: hidden;
 }
 
@@ -228,7 +230,7 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
   left: 0;
   width: 100%;
   height: 100%;
-  min-height: 520px;
+  min-height: $home-hero-body-min;
   display: flex;
   align-items: center;
   opacity: 0;
