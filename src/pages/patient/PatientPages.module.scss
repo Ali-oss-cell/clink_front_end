@@ -1656,6 +1656,26 @@ button.toolButton {
   }
 }
 
+.select {
+  min-height: 48px;
+  line-height: 1.35;
+  padding-right: 2.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: $background-white;
+  color: $text-dark;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 16 16'%3E%3Cpath fill='%23555f5b' d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 14px;
+
+  option {
+    color: $text-dark;
+    background: $background-white;
+  }
+}
+
 .textarea {
   resize: vertical;
   min-height: 100px;
@@ -1950,8 +1970,14 @@ button.navButton {
     box-shadow 0.15s ease,
     transform 0.15s ease;
 
+  &::before {
+    content: none;
+    display: none;
+  }
+
   &:hover:not(:disabled) {
     background-color: var(--cs-surface-low);
+    color: var(--cs-primary);
     transform: none;
     box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
   }
@@ -1974,8 +2000,14 @@ button.submitButton {
   transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
   box-shadow: var(--cs-shadow-atmospheric);
 
+  &::before {
+    content: none;
+    display: none;
+  }
+
   &:hover:not(:disabled) {
     filter: saturate(1.08);
+    color: var(--cs-on-primary);
     transform: none;
     box-shadow: var(--cs-shadow-atmospheric);
   }
