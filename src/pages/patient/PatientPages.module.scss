@@ -329,17 +329,16 @@ button.resourceButton {
 }
 
 .toolCard {
-  background: linear-gradient(135deg, white 0%, $background-light 100%);
-  border-radius: 16px;
+  @include glass-card(patient, $glass-blur-sm, true);
+  border-radius: var(--cs-radius-2xl);
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid $border-light;
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
   text-align: center;
   transition: all 0.3s ease;
   
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(25, 28, 29, 0.12);
   }
   
   h3 {
@@ -356,14 +355,17 @@ button.resourceButton {
 }
 
 button.toolButton {
-  background-color: var(--cs-surface-high);
-  color: var(--cs-on-surface-variant);
-  border: none;
+  background: color-mix(in srgb, var(--cs-surface-lowest) 88%, white 12%);
+  color: var(--cs-primary);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
   border-radius: var(--cs-radius-xl);
   padding: 0.75rem 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
   cursor: not-allowed;
-  box-shadow: none;
+  box-shadow: 0 8px 18px rgba(25, 28, 29, 0.06);
+  opacity: 1;
 
   &::before {
     content: none;
@@ -390,17 +392,16 @@ button.toolButton {
 }
 
 .supportCard {
-  background: white;
-  border-radius: 16px;
+  @include glass-card(patient, $glass-blur-sm, true);
+  border-radius: var(--cs-radius-2xl);
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid $border-light;
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
   transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba($patient-primary, 0.15);
-    border-color: $patient-primary;
+    box-shadow: 0 14px 30px rgba(25, 28, 29, 0.12);
+    border-color: color-mix(in srgb, var(--cs-primary) 22%, transparent);
   }
   
   h3 {
