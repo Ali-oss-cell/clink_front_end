@@ -52,7 +52,15 @@ When token/theme values change, update:
 - `Homepage.module.scss` fixes the header (`> header { position: fixed }`) and offsets the hero slider upward so background imagery meets the top of the viewport under the nav (safe-area aware). The hero block uses `min-height: 100dvh` (with `100svh` fallback) and the slider uses `bottom: 0` so backgrounds meet the bottom of the viewport without a white gap. Other public routes keep the default sticky, full-glass header.
 - `Layout.module.scss` applies shared top clearance to `.main` for fixed-header pages; complex surfaces that manage overlap directly (homepage hero, auth split layouts) should explicitly set `padding-top: 0` in their page scopes.
 
-## 7) PR Checklist for Styling Work
+## 7) Homepage sectioning and rich text hierarchy
+
+- Major homepage content sections should use a shared full-section shell (`min-height` with `dvh/svh` and centered content) so sections read as intentional chapters.
+- Keep transitional strips (for example, compact benefit bands) shorter to avoid scroll fatigue between full sections.
+- Alternate subtle section surface treatments/borders to reinforce separation without harsh color jumps.
+- For richer copy, enforce kicker/title/lead hierarchy with constrained line-lengths (`~60-70ch`) and relaxed line-height for readability.
+- Preserve CTA route structure while expanding copy; content changes should not alter navigation semantics.
+
+## 8) PR Checklist for Styling Work
 
 - [ ] Uses existing tokens (no new raw palette in feature modules)
 - [ ] No duplicate pattern introduced when a shared option exists

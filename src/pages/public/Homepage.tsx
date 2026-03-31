@@ -421,8 +421,11 @@ export const Homepage: React.FC = () => {
           <div className={styles.quickMatchCard}>
             <div className={styles.quickMatchIntro}>
               <p className="tp-brand-kicker">Find your fit faster</p>
-              <h2>Start with preferences and we&apos;ll pre-fill booking.</h2>
-              <p>Choose what matters most now. You can still adjust everything later before confirming.</p>
+              <h2>Start with your preferences and move forward with confidence.</h2>
+              <p>
+                We use these details to shape your booking path early so you can see suitable options faster, with less
+                rework later. You stay in control and can update everything before final confirmation.
+              </p>
             </div>
             <div className={styles.quickMatchFields}>
               <label className={styles.quickMatchField}>
@@ -472,20 +475,20 @@ export const Homepage: React.FC = () => {
         <div className="container">
           <div className={styles.costClarityHeading}>
             <p className="tp-brand-kicker">Pricing clarity</p>
-            <h2>Know costs before you book</h2>
+            <h2>Understand fees and rebates before you commit</h2>
           </div>
           <div className={styles.costClarityGrid}>
             <article className={styles.costCard} data-home-stagger-item>
               <h3>Session fee</h3>
-              <p>Fees vary by clinician, service type, and session length.</p>
+              <p>Fees vary by clinician, service format, and appointment length, and are shown before checkout.</p>
             </article>
             <article className={styles.costCard} data-home-stagger-item>
               <h3>Medicare rebate (if eligible)</h3>
-              <p>With a valid GP Mental Health Treatment Plan, rebates may apply to eligible sessions.</p>
+              <p>With a valid GP Mental Health Treatment Plan, eligible sessions can be claimed through Medicare.</p>
             </article>
             <article className={styles.costCard} data-home-stagger-item>
               <h3>Estimated out-of-pocket</h3>
-              <p>We help you understand likely out-of-pocket costs before your first appointment.</p>
+              <p>We help you estimate out-of-pocket costs upfront so there are fewer surprises once care begins.</p>
             </article>
           </div>
           <Link to="/medicare-rebates" className={styles.costClarityLink}>
@@ -502,7 +505,8 @@ export const Homepage: React.FC = () => {
               Why Choose Tailored Psychology?
             </h2>
             <p className="tp-brand-lead">
-              Evidence-based care from registered psychologists—clear, respectful, and shaped to your goals.
+              Evidence-based care from AHPRA-registered psychologists, delivered with clear communication, practical
+              planning, and treatment aligned to your goals.
             </p>
           </div>
           <div className={styles.featureGrid}>
@@ -533,8 +537,9 @@ export const Homepage: React.FC = () => {
               <p className="tp-brand-kicker">Between sessions</p>
               <h2 className={styles.resourcesTeaserTitle}>Support beyond the session</h2>
               <p className={styles.resourcesTeaserText}>
-                Articles, worksheets, and tools to complement your care—educational only, and not a substitute for
-                crisis support or one-to-one therapy.
+                Access practical guides, worksheets, and self-help tools to support progress between sessions.
+                Everything is educational and designed to complement clinical care, not replace one-to-one treatment or
+                emergency support pathways.
               </p>
               <Link to="/resources" className={styles.resourcesTeaserLink}>
                 Explore resources
@@ -562,7 +567,8 @@ export const Homepage: React.FC = () => {
               How It Works
             </h2>
             <p className="tp-brand-lead" data-home-how-sub>
-              From booking to your first session—telehealth or in person—with a path that stays simple and transparent.
+              From booking to your first session, each step is designed to stay transparent, clinically appropriate,
+              and easy to follow across telehealth or in-person care.
             </p>
           </div>
           <div className={styles.stepsContainer}>
@@ -573,7 +579,8 @@ export const Homepage: React.FC = () => {
               <p className={styles.stepMeta}>2 min</p>
               <h3 className={styles.stepTitle}>Book Your Appointment</h3>
               <p className={styles.stepDescription}>
-                Choose a convenient time and select your preferred psychologist. Book online in minutes, 24/7.
+                Choose a suitable time, review clinician options, and confirm online with clear pricing and service
+                details.
               </p>
             </div>
 
@@ -584,7 +591,7 @@ export const Homepage: React.FC = () => {
               <p className={styles.stepMeta}>5 min</p>
               <h3 className={styles.stepTitle}>Complete Intake Form</h3>
               <p className={styles.stepDescription}>
-                Fill out a brief intake form to help us understand your needs and prepare for your first session.
+                Complete a structured intake form so your clinician has key context before session one.
               </p>
             </div>
 
@@ -595,7 +602,8 @@ export const Homepage: React.FC = () => {
               <p className={styles.stepMeta}>45-50 min</p>
               <h3 className={styles.stepTitle}>Attend Your Session</h3>
               <p className={styles.stepDescription}>
-                Join your session via secure video call or visit our clinic. Your psychologist will guide you through evidence-based therapy.
+                Join via secure telehealth or attend in person. Your psychologist guides a care plan grounded in
+                evidence-based methods.
               </p>
             </div>
 
@@ -606,7 +614,8 @@ export const Homepage: React.FC = () => {
               <p className={styles.stepMeta}>Ongoing</p>
               <h3 className={styles.stepTitle}>Track Your Progress</h3>
               <p className={styles.stepDescription}>
-                Monitor your journey with progress notes, session summaries, and personalized resources in your dashboard.
+                Monitor progress with session notes, care milestones, and practical resources available in your
+                dashboard.
               </p>
             </div>
           </div>
@@ -637,8 +646,8 @@ export const Homepage: React.FC = () => {
               <p className="tp-brand-kicker">How you access care</p>
               <h2 className={styles.spotlightTitle}>Therapy that fits how you live</h2>
               <p className={styles.spotlightLead}>
-                Video or clinic—you get the same considered, professional care. We help with tech checks and privacy so
-                telehealth feels straightforward, not stressful.
+                Whether you choose video or clinic appointments, care standards stay consistent. We provide clear
+                telehealth guidance, privacy-first workflows, and practical setup support so access feels reliable.
               </p>
               <ul className={styles.spotlightList}>
                 <li>
@@ -686,7 +695,8 @@ export const Homepage: React.FC = () => {
                   <p className="tp-brand-kicker">Trust &amp; standards</p>
                   <h2 className={styles.trustBandTitle}>Built for safe, accountable care</h2>
                   <p className={styles.trustBandLead}>
-                    Registration, privacy, and booking—designed around how real healthcare works in Australia.
+                    Registration standards, privacy expectations, and booking transparency are embedded into daily
+                    operations, not added as an afterthought.
                   </p>
                   <div className={styles.trustBandLabels} aria-label="Trust highlights">
                     <span>AHPRA aligned</span>
@@ -700,21 +710,21 @@ export const Homepage: React.FC = () => {
                       <OutlineCredentialIcon size="lg" aria-hidden />
                     </div>
                     <h3>Registered clinicians</h3>
-                    <p>Psychology services delivered by professionals who meet Australian registration standards.</p>
+                    <p>Care delivered by clinicians who meet Australian registration and professional practice standards.</p>
                   </div>
                   <div className={styles.trustCard}>
                     <div className={styles.trustIconWrap}>
                       <OutlinePrivacyShieldIcon size="lg" aria-hidden />
                     </div>
                     <h3>Privacy-conscious platform</h3>
-                    <p>Designed with healthcare privacy in mind for booking, records, and video sessions.</p>
+                    <p>Booking, communication, and telehealth designed with healthcare privacy and confidentiality in mind.</p>
                   </div>
                   <div className={styles.trustCard}>
                     <div className={styles.trustIconWrap}>
                       <OutlineScheduleIcon size="lg" aria-hidden />
                     </div>
                     <h3>Booking that respects your schedule</h3>
-                    <p>See available times online and choose a session that works across telehealth or clinic visits.</p>
+                    <p>View live availability and choose appointments that fit telehealth or in-person preferences.</p>
                   </div>
                 </div>
               </div>
@@ -746,8 +756,8 @@ export const Homepage: React.FC = () => {
               <h2 className={styles.accessHeading}>Making care accessible</h2>
               <p>
                 Session costs vary by clinician and appointment type. Private health extras may cover part of
-                psychology in some cases—check with your fund. If cost is a barrier, talk to us about options when you
-                reach out.
+                psychology in some cases—check with your fund. If cost is a barrier, contact us early so we can discuss
+                practical options.
               </p>
               <Link to="/contact" className={styles.accessLink}>
                 Contact us with questions
@@ -762,27 +772,27 @@ export const Homepage: React.FC = () => {
           <div className={styles.testimonialsIntroBlock} data-home-reveal>
             <h2 className={styles.testimonialsTitle}>What clients often value</h2>
             <p className={styles.testimonialsIntro}>
-              Everyone&apos;s experience is different; these are common themes people share about working with us.
+              Everyone&apos;s experience is individual; these are common themes people share about clarity, respect, and
+              practical support.
             </p>
           </div>
           <div className={styles.testimonialsGrid} data-home-reveal>
             <blockquote className={styles.testimonialCard} data-home-stagger-item>
               <span className={styles.testimonialAccent} aria-hidden />
               <p>
-                &ldquo;Straightforward booking and clear communication before the first appointment made it easier to
-                take the first step.&rdquo;
+                &ldquo;The booking flow was clear, and I understood costs and next steps before my first appointment.&rdquo;
               </p>
             </blockquote>
             <blockquote className={styles.testimonialCard} data-home-stagger-item>
               <span className={styles.testimonialAccent} aria-hidden />
               <p>
-                &ldquo;I felt listened to and the telehealth format actually suited my work hours really well.&rdquo;
+                &ldquo;I felt listened to, and the telehealth process was structured enough to fit around work without added stress.&rdquo;
               </p>
             </blockquote>
             <blockquote className={styles.testimonialCard} data-home-stagger-item>
               <span className={styles.testimonialAccent} aria-hidden />
               <p>
-                &ldquo;Having Medicare rebates explained upfront helped me plan sessions without surprises.&rdquo;
+                &ldquo;Medicare rebate guidance upfront helped me plan care confidently and avoid unexpected costs.&rdquo;
               </p>
             </blockquote>
           </div>
@@ -793,8 +803,8 @@ export const Homepage: React.FC = () => {
         <div className="container">
           <h2 className={styles.bottomCtaTitle}>Ready to connect with a psychologist?</h2>
           <p className={styles.bottomCtaText}>
-            Create an account to book, or use our matching flow to narrow your preferences before you choose a
-            clinician.
+            Create an account to book directly, or use matching to narrow preferences first. Either way, you can move
+            forward with clearer expectations around timing, format, and next steps.
           </p>
           <div className={styles.bottomCtaActions}>
             <Link to="/register" className={styles.bottomCtaPrimary}>

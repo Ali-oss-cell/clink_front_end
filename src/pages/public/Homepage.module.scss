@@ -167,6 +167,22 @@ $home-glow-deep: rgba(54, 69, 57, 0.14);
 // Band reserved under fixed nav + iOS safe area (must match slider pull-up in `.sliderContainer`).
 $home-hero-nav-band: 5.75rem;
 $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
+$home-section-min-desktop: calc(100dvh - #{$home-hero-nav-band});
+$home-section-min-mobile: clamp(38rem, 86svh, 52rem);
+
+// Major homepage sections should read as visual chapters.
+%homeFullSection {
+  min-height: $home-section-min-desktop;
+  display: flex;
+  align-items: center;
+  padding: clamp(2.75rem, 6vh, 5rem) 0;
+  scroll-margin-top: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
+
+  @media (max-width: #{$desktop - 1px}) {
+    min-height: $home-section-min-mobile;
+    padding: clamp(2.1rem, 4.8vh, 3.5rem) 0;
+  }
+}
 
 .homepage {
   overflow-x: clip;
@@ -194,6 +210,27 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
       radial-gradient(ellipse 90% 55% at 50% -8%, rgba(174, 191, 178, 0.2), transparent 58%),
       radial-gradient(ellipse 55% 45% at 95% 25%, rgba(157, 170, 150, 0.12), transparent 52%),
       radial-gradient(ellipse 50% 40% at 5% 60%, rgba(200, 208, 194, 0.16), transparent 48%);
+  }
+
+  :global(.tp-brand-headingBlock) {
+    max-width: min(68rem, 100%);
+    margin: 0 auto clamp(1.25rem, 2.8vh, 2.1rem);
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  :global(.tp-brand-kicker) {
+    font-size: 0.8rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  :global(.tp-brand-lead) {
+    max-width: 66ch;
+    line-height: 1.68;
+    font-size: clamp(1rem, 1.5vw, 1.1rem);
+    color: rgba($text-dark, 0.9);
   }
 }
 
@@ -507,12 +544,14 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── Quick match selector ─────────────────────────────────────────────────
 .quickMatch {
+  @extend %homeFullSection;
   padding: clamp(1.35rem, 2.4vw, 2rem) 0 $home-section-y;
-  background: $background-white;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 246, 0.96) 100%);
+  border-top: 1px solid rgba(157, 170, 150, 0.16);
 
   .quickMatchCard {
     @extend %homeGlowCard;
-    max-width: $home-content-max;
+    max-width: min($home-content-max, 100%);
     margin: 0 auto;
     padding: clamp(1.35rem, 3vw, 2.25rem);
     display: grid;
@@ -638,12 +677,18 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── Cost clarity ─────────────────────────────────────────────────────────
 .costClarity {
+  @extend %homeFullSection;
   padding: 0 0 $home-section-y;
-  background: $background-white;
+  background: linear-gradient(180deg, rgba(245, 247, 243, 0.9) 0%, rgba(255, 255, 255, 0.96) 100%);
+  border-top: 1px solid rgba(157, 170, 150, 0.14);
 
   .costClarityHeading {
     max-width: $home-content-max;
     margin: 0 auto 1.1rem;
+
+    p {
+      max-width: 66ch;
+    }
 
     h2 {
       margin: 0;
@@ -708,8 +753,10 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── Features ────────────────────────────────────────────────────────────
 .features {
+  @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: $background-white;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 247, 243, 0.94) 100%);
+  border-top: 1px solid rgba(157, 170, 150, 0.14);
 
   .sectionTitle {
     text-align: center;
@@ -783,9 +830,10 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── Resources teaser ────────────────────────────────────────────────────
 .resourcesTeaser {
+  @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: $background-white;
-  border-top: 1px solid $border-light;
+  background: linear-gradient(180deg, rgba(247, 249, 245, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-top: 1px solid rgba(157, 170, 150, 0.16);
 
   .resourcesTeaserInner {
     display: grid;
@@ -886,9 +934,10 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── How It Works ────────────────────────────────────────────────────────
 .howItWorks {
+  @extend %homeFullSection;
   padding: $home-section-y 0;
   position: relative;
-  background: $background-white;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 248, 244, 0.95) 100%);
   overflow: hidden;
 
   &::before {
@@ -1082,6 +1131,7 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── Spotlight (split) ───────────────────────────────────────────────────
 .spotlight {
+  @extend %homeFullSection;
   padding: $home-section-y 0;
   position: relative;
   background: linear-gradient(180deg, rgba(246, 239, 231, 0.85) 0%, rgba(255, 255, 255, 0.65) 100%);
@@ -1265,8 +1315,10 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── Trust band ──────────────────────────────────────────────────────────
 .trustBand {
+  @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: $background-white;
+  background: linear-gradient(180deg, rgba(246, 248, 244, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-top: 1px solid rgba(157, 170, 150, 0.15);
 
   .trustBandLayout {
     display: grid;
@@ -1632,10 +1684,17 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
   }
 }
 
+.accessFunding {
+  @extend %homeFullSection;
+  border-top: 1px solid rgba(157, 170, 150, 0.14);
+}
+
 // ── Testimonials ─────────────────────────────────────────────────────────
 .testimonials {
+  @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: $background-white;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 248, 244, 0.95) 100%);
+  border-top: 1px solid rgba(157, 170, 150, 0.15);
 
   .testimonialsIntroBlock {
     max-width: $home-content-max;
@@ -1658,11 +1717,11 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
   .testimonialsIntro {
     text-align: center;
-    max-width: 36rem;
+    max-width: 52ch;
     margin: 0 auto;
     color: $text-light;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.04rem;
+    line-height: 1.7;
   }
 
   .testimonialsGrid {
@@ -1710,6 +1769,7 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 // ── Bottom CTA ──────────────────────────────────────────────────────────
 .bottomCta {
+  @extend %homeFullSection;
   padding: $home-section-y 0 calc(#{$home-section-y} + 0.5rem);
   position: relative;
   text-align: center;
