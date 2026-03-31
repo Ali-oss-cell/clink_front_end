@@ -2807,6 +2807,27 @@ button.submitButton {
     box-shadow: var(--cs-shadow-atmospheric);
   }
 
+  // Intake-form visual language applied to shared patient surfaces
+  .intakeForm,
+  .preferenceSection,
+  .resourceCard,
+  .dashboardCard {
+    background: color-mix(in srgb, var(--cs-surface-lowest) 88%, white 12%);
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
+    border-radius: var(--cs-radius-2xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .formSection,
+  .consentSection {
+    background: color-mix(in srgb, var(--cs-surface-lowest) 92%, white 8%);
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 10%, transparent);
+    border-radius: var(--cs-radius-xl);
+    padding: clamp(1rem, 1.8vw, 1.35rem);
+  }
+
   .categoriesSection h2,
   .resourcesSection h2 {
     color: var(--cs-primary);
