@@ -528,8 +528,8 @@ export const Homepage: React.FC = () => {
               Why Choose Tailored Psychology?
             </h2>
             <p className="tp-brand-lead">
-              Evidence-based care from AHPRA-registered psychologists, delivered with clear communication, practical
-              planning, and treatment aligned to your goals.
+              AHPRA-registered psychologists delivering evidence-based care with clear communication, practical planning,
+              and treatment tailored to your goals.
             </p>
           </div>
           <div className={styles.featureGrid}>
@@ -590,8 +590,8 @@ export const Homepage: React.FC = () => {
               How It Works
             </h2>
             <p className="tp-brand-lead" data-home-how-sub>
-              From booking to your first session, each step is designed to stay transparent, clinically appropriate,
-              and easy to follow across telehealth or in-person care.
+              From booking to your first session, every step is transparent, clinically appropriate, and easy to follow
+              whether you choose telehealth or in-person care.
             </p>
           </div>
           <div className={styles.stepsContainer}>

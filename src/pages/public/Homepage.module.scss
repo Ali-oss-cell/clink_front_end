@@ -770,7 +770,7 @@ $home-section-color-2: #f5f8f2;
 
   .costClarityGrid {
     max-width: $home-content-max;
-    margin: 0 auto;
+    margin: 0 auto 1.35rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
@@ -802,8 +802,12 @@ $home-section-color-2: #f5f8f2;
 
   .costClarityLink {
     @include button-base;
-    display: inline-block;
-    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    margin-top: 0;
     color: $primary-dark;
     background: rgba($primary-color, 0.3);
     border: 1px solid rgba($primary-dark, 0.2);
