@@ -5,7 +5,7 @@ import styles from './AuthPages.module.scss';
 
 export const RegisterPage: React.FC = () => {
   return (
-    <Layout className={styles.authLayout} showFooter={false}>
+    <Layout className={styles.authLayout} showFooter={false} overlayPublicHeader>
       <div className={styles.registerPageContainer}>
         <div className={styles.registerImageSection} style={{ backgroundImage: `url(${registerImage})` }}>
           <div className={styles.imageOverlay}>

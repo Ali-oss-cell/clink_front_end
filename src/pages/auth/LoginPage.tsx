@@ -35,7 +35,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onAuthUpdate }) => {
   }, []);
 
   return (
-    <Layout className={styles.authLayout} showFooter={false}>
+    <Layout className={styles.authLayout} showFooter={false} overlayPublicHeader>
       <div className={styles.loginPageContainer}>
         <div className={styles.loginImageSection} style={{ backgroundImage: `url(${loginImage})` }}>
           <div className={styles.imageOverlay}>
