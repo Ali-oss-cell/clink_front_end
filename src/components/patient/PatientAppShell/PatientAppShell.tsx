@@ -94,27 +94,27 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
         <nav className={styles.nav} aria-label="Patient">
           <NavLink to="/patient/dashboard" className={navClass} onClick={closeMenu}>
             <DashboardIcon size="sm" className={styles.navIcon} />
-            Dashboard
+            <span className={styles.navText}>Dashboard</span>
           </NavLink>
           <NavLink to="/patient/appointments" className={navClass} onClick={closeMenu}>
             <CalendarIcon size="sm" className={styles.navIcon} />
-            Appointments
+            <span className={styles.navText}>Appointments</span>
           </NavLink>
           <NavLink to="/patient/intake-form" className={navClass} onClick={closeMenu}>
             <ClipboardIcon size="sm" className={styles.navIcon} />
-            Intake form
+            <span className={styles.navText}>Intake form</span>
           </NavLink>
           <NavLink to="/patient/invoices" className={navClass} onClick={closeMenu}>
             <DollarIcon size="sm" className={styles.navIcon} />
-            Invoices
+            <span className={styles.navText}>Invoices</span>
           </NavLink>
           <NavLink to="/patient/resources" className={navClass} onClick={closeMenu}>
             <BookIcon size="sm" className={styles.navIcon} />
-            Resources
+            <span className={styles.navText}>Resources</span>
           </NavLink>
           <NavLink to="/recordings" className={navClass} onClick={closeMenu}>
             <VideoIcon size="sm" className={styles.navIcon} />
-            Recordings
+            <span className={styles.navText}>Recordings</span>
           </NavLink>
         </nav>
 

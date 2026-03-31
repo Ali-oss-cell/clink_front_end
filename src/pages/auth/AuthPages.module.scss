@@ -93,12 +93,16 @@
     padding: 2rem $spacing-md;
     min-height: auto;
   }
+
+  @media (max-width: 1024px) {
+    padding: 2rem $spacing-md;
+  }
 }
 
 // Auth Container
 .authContainer {
   width: 100%;
-  max-width: 550px;
+  max-width: 36rem;
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -155,6 +159,10 @@
     padding: 2rem $spacing-md;
     min-height: auto;
   }
+
+  @media (max-width: 1024px) {
+    padding: 2rem $spacing-md;
+  }
 }
 
 // Registration Form Container
@@ -189,28 +197,32 @@
 
 // Auth Card
 .authCard {
-  background: white;
-  border-radius: 20px;
-  padding: 3rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  @include glass-card(default, $glass-blur-md, true);
+  border-radius: var(--tp-surface-radius-lg, 20px);
+  padding: var(--tp-card-padding-lg, 1.5rem);
+  border: 1px solid rgba($btn-admin-primary, 0.2);
   text-align: center;
   transition: all 0.3s ease;
   width: 100%;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12);
+    box-shadow: $glass-shadow-hover;
   }
 
   @include mobile {
     padding: 2rem;
   }
+
+  @media (max-width: 380px) {
+    padding: 1.15rem;
+    border-radius: 14px;
+  }
 }
 
 // Auth Title
 .authTitle {
-  font-size: 2.5rem;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
   font-weight: 800;
   background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   -webkit-background-clip: text;
@@ -218,6 +230,8 @@
   background-clip: text;
   margin-bottom: 0.75rem;
   letter-spacing: -0.5px;
+  line-height: 1.2;
+  text-wrap: balance;
 
   @include mobile {
     font-size: 2rem;
@@ -229,21 +243,22 @@
   color: $text-light;
   margin-bottom: 2.5rem;
   line-height: 1.6;
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  text-wrap: pretty;
 }
 
 // Placeholder
 .placeholder {
-  background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border: 2px dashed $border-medium;
+  @include glass-card(default, $glass-blur-sm, true);
+  border: 1px dashed rgba($btn-admin-primary, 0.34);
   border-radius: 16px;
   padding: 2rem;
   margin: 2rem 0;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: $primary-color;
-    background: linear-gradient(135deg, white 0%, rgba($primary-color, 0.02) 100%);
+    border-color: rgba($btn-admin-primary, 0.5);
+    box-shadow: $glass-shadow;
   }
 
   p {
@@ -271,6 +286,9 @@
   }
 
   .authLink {
+    min-height: $min-touch-target;
+    display: inline-flex;
+    align-items: center;
     color: $primary-color;
     font-weight: 700;
     text-decoration: none;

@@ -1,6 +1,7 @@
 import { Header } from '../Header/Header';
 import { Footer } from '../Footer/Footer';
 import { PatientAppShell } from '../../patient/PatientAppShell/PatientAppShell';
+import { RoleAppShell } from '../../role/RoleAppShell/RoleAppShell';
 import type { User } from '../../../types/simple-auth';
 import styles from './Layout.module.scss';
 
@@ -29,6 +30,10 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
   const usePatientShell =
     patientShell && isAuthenticated && user?.role === 'patient';
+  const useRoleShell =
+    isAuthenticated &&
+    !!user &&
+    (user.role === 'admin' || user.role === 'psychologist' || user.role === 'practice_manager');
 
   if (usePatientShell) {
     return (
@@ -37,6 +42,14 @@ export const Layout: React.FC<LayoutProps> = ({
         data-patient-shell=""
       >
         <PatientAppShell user={user}>{children}</PatientAppShell>
+      </div>
+    );
+  }
+
+  if (useRoleShell && user) {
+    return (
+      <div className={`${styles.layout} ${className}`}>
+        <RoleAppShell user={user}>{children}</RoleAppShell>
       </div>
     );
   }

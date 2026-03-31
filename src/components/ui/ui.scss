@@ -23,18 +23,22 @@
 
 .tp-ui-btn--default {
   @include btn.dashboard-role-admin-primary;
+  @include mx.glass-hover(admin);
 }
 
 .tp-ui-btn--outline {
   @include btn.dashboard-role-admin-outline;
+  @include mx.glass-hover(admin);
 }
 
 .tp-ui-btn--destructive {
   @include btn.dashboard-button-primary($error-red, darken($error-red, 6%));
+  @include mx.glass-hover(admin);
 }
 
 .tp-ui-btn--ghost {
   @include btn.dashboard-button-ghost($text-dark, $btn-admin-ghost-hover);
+  @include mx.glass-hover(admin);
 }
 
 .tp-ui-input,
@@ -137,6 +141,7 @@
 .tp-ui-glass-card {
   @include mx.glass-card(default);
   border-radius: $border-radius-lg;
+  @include mx.glass-hover(default);
 }
 
 .tp-ui-glass-panel {

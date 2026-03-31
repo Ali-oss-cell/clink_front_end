@@ -23,7 +23,16 @@
 
   .container {
     @include glass-card(admin, $glass-blur-sm, true);
+    // Keep left side tinted; avoid washed-out white edge.
+    background:
+      linear-gradient(
+        120deg,
+        rgba($btn-admin-primary, 0.34) 0%,
+        rgba($btn-admin-primary, 0.24) 46%,
+        rgba(255, 255, 255, 0.22) 100%
+      );
     border-bottom: 1px solid rgba($btn-admin-primary, 0.18);
+    border-top: 1px solid rgba($btn-admin-primary, 0.24);
     border-radius: 14px;
     width: min(98%, 1280px);
     margin: 0 auto;

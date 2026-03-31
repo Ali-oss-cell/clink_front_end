@@ -1,11 +1,14 @@
 @use 'variables' as *;
+@use 'mixins' as *;
 
 @mixin dashboard-button-base {
   border-radius: $btn-radius;
   font-weight: $btn-font-weight;
-  border: 1px solid transparent;
+  border: 1px solid rgba($glass-admin-tint, 0.24);
   cursor: pointer;
   transition: $btn-transition;
+  backdrop-filter: blur($glass-blur-sm);
+  -webkit-backdrop-filter: blur($glass-blur-sm);
 
   &:focus {
     outline: none;
@@ -29,39 +32,74 @@
 
 @mixin dashboard-button-primary($bg, $bg-hover, $text: $text-white) {
   @include dashboard-button-base;
-  background: linear-gradient(135deg, $bg 0%, $bg-hover 100%);
+  background: linear-gradient(
+    135deg,
+    rgba($bg, 0.88) 0%,
+    rgba($bg-hover, 0.9) 100%
+  );
   color: $text;
-  border-color: rgba($bg, 0.5);
-  box-shadow: 0 4px 14px rgba($bg, 0.24);
+  border-color: rgba($bg, 0.42);
+  box-shadow:
+    0 8px 20px rgba($bg, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 
   &:hover:not(:disabled) {
-    background: linear-gradient(135deg, $bg-hover 0%, $bg-hover 100%);
+    background: linear-gradient(
+      135deg,
+      rgba($bg-hover, 0.92) 0%,
+      rgba($bg-hover, 0.86) 100%
+    );
     transform: translateY(-1px);
-    box-shadow: 0 7px 18px rgba($bg, 0.32);
+    box-shadow:
+      0 12px 26px rgba($bg, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
   }
 }
 
 @mixin dashboard-button-outline($color, $hover-bg: rgba($color, 0.1)) {
   @include dashboard-button-base;
-  background: $background-white;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba($color, 0.16) 100%
+  );
   color: $color;
-  border-color: rgba($color, 0.55);
+  border-color: rgba($color, 0.38);
+  box-shadow:
+    0 7px 18px rgba($color, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
 
   &:hover:not(:disabled) {
-    background: $hover-bg;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.84) 0%,
+      rgba($color, 0.22) 100%
+    );
     border-color: $color;
     transform: translateY(-1px);
+    box-shadow:
+      0 10px 22px rgba($color, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.52);
   }
 }
 
 @mixin dashboard-button-ghost($text-color, $hover-bg) {
   @include dashboard-button-base;
-  background: transparent;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.64) 0%,
+    rgba($text-color, 0.08) 100%
+  );
   color: $text-color;
-  border-color: transparent;
+  border-color: rgba($text-color, 0.15);
 
   &:hover:not(:disabled) {
-    background: $hover-bg;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.74) 0%,
+      rgba($text-color, 0.14) 100%
+    );
+    box-shadow: 0 8px 18px rgba($text-color, 0.12);
   }
 }
 

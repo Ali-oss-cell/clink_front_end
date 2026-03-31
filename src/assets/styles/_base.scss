@@ -14,6 +14,15 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  --tp-page-gutter: #{$page-gutter-inline};
+  --tp-page-gutter-lg: #{$page-gutter-inline-lg};
+  --tp-card-padding: #{$card-padding};
+  --tp-card-padding-lg: #{$card-padding-lg};
+  --tp-surface-radius: #{$surface-radius};
+  --tp-surface-radius-lg: #{$surface-radius-lg};
+}
+
 // Reduce motion for accessibility
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -131,8 +140,21 @@ input, textarea, select, button {
   font-size: inherit;
 }
 
+button,
+[role='button'],
+a,
+input,
+select,
+textarea {
+  &:focus-visible {
+    outline: 2px solid rgba($primary-dark, 0.8);
+    outline-offset: 2px;
+  }
+}
+
 input:not([type="radio"]):not([type="checkbox"]), textarea, select {
   @include input-base;
+  min-height: $min-touch-target;
 }
 
 textarea {

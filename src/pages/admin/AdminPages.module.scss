@@ -848,6 +848,57 @@ $admin-accent: #6f8367;
   }
 }
 
+// Normalized dashboard rhythm layer
+.dashboardContainer {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding-inline: var(--tp-page-gutter, 1rem);
+}
+
+.dashboardGrid {
+  gap: clamp(0.9rem, 1.8vw, 1.25rem);
+}
+
+.dashboardCard,
+.statCard,
+.tableContainer {
+  border-radius: var(--tp-surface-radius-lg, 20px);
+  padding: var(--tp-card-padding-lg, 1.5rem);
+}
+
+.primaryButton,
+.actionButton,
+.secondaryButton {
+  min-height: $min-touch-target;
+}
+
+@media (max-width: 1024px) {
+  .dashboardCard,
+  .statCard,
+  .tableContainer {
+    padding: var(--tp-card-padding, 1rem);
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboardContainer {
+    padding-inline: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcomeTitle {
+    font-size: clamp(1.35rem, 5.8vw, 1.9rem);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .welcomeSubtitle {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+}
+
 .editButton {
   padding: 0.5rem 1rem;
   background: $primary-dark;
@@ -1584,5 +1635,38 @@ $admin-accent: #6f8367;
 .quickActionCard,
 .analyticsCard {
   @include glass-hover(admin);
+}
+
+// Full-role glass harmonization (admin pages)
+.systemHealthCard,
+.statCard,
+.secondaryStatCard,
+.dashboardCard,
+.quickActionCard,
+.analyticsCard,
+.tableContainer,
+.modal,
+.modalContent {
+  @include glass-card(admin, $glass-blur-md, true);
+  border: 1px solid rgba($btn-admin-primary, 0.22);
+}
+
+.editButton,
+.secondaryButton,
+.deleteButton,
+.searchButton,
+.primaryButton,
+.actionButton {
+  @include btn.dashboard-button-base;
+  @include glass-card(admin, $glass-blur-sm, true);
+  border-radius: 12px;
+  color: $text-dark;
+  border: 1px solid rgba($btn-admin-primary, 0.26);
+  box-shadow: 0 8px 18px rgba($btn-admin-primary, 0.14);
+
+  &:hover:not(:disabled) {
+    @include glass-hover(admin);
+    color: $text-dark;
+  }
 }
 

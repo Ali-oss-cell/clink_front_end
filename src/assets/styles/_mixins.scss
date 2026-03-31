@@ -244,6 +244,28 @@
   }
 }
 
+@mixin page-shell {
+  width: 100%;
+  max-width: 90rem;
+  margin: 0 auto;
+  padding-inline: $page-gutter-inline;
+}
+
+@mixin page-section-stack {
+  display: grid;
+  gap: $section-stack-gap;
+}
+
+@mixin card-surface($role: default, $strong: false) {
+  @include glass-card($role, $glass-blur-md, $strong);
+  border-radius: $surface-radius-lg;
+  padding: $card-padding-lg;
+}
+
+@mixin control-min-target {
+  min-height: $min-touch-target;
+}
+
 @function glass-tint($role) {
   @if $role == patient {
     @return $glass-patient-tint;

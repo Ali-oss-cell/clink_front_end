@@ -804,6 +804,56 @@
   }
 }
 
+// Normalized dashboard rhythm layer
+.dashboardContainer {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding-inline: var(--tp-page-gutter, 1rem);
+}
+
+.dashboardGrid {
+  gap: clamp(0.9rem, 1.8vw, 1.25rem);
+}
+
+.dashboardCard,
+.statCard,
+.tableContainer {
+  border-radius: var(--tp-surface-radius-lg, 20px);
+  padding: var(--tp-card-padding-lg, 1.5rem);
+}
+
+.actionButton,
+.primaryButton {
+  min-height: $min-touch-target;
+}
+
+@media (max-width: 1024px) {
+  .dashboardCard,
+  .statCard,
+  .tableContainer {
+    padding: var(--tp-card-padding, 1rem);
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboardContainer {
+    padding-inline: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcomeTitle {
+    font-size: clamp(1.35rem, 5.8vw, 1.9rem);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .welcomeSubtitle {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+}
+
 // Dashboard button consistency layer
 .actionButton,
 .primaryButton {
@@ -850,5 +900,31 @@
 .dashboardCard,
 .statBox {
   @include glass-hover(manager);
+}
+
+// Full-role glass harmonization (practice manager pages)
+.statCard,
+.secondaryStatCard,
+.dashboardCard,
+.statBox,
+.tableContainer,
+.modal {
+  @include glass-card(manager, $glass-blur-md, true);
+  border: 1px solid rgba($primary-color, 0.24);
+}
+
+.actionButton,
+.primaryButton {
+  @include btn.dashboard-button-base;
+  @include glass-card(manager, $glass-blur-sm, true);
+  border-radius: 12px;
+  border: 1px solid rgba($primary-color, 0.28);
+  color: $text-dark;
+  box-shadow: 0 8px 18px rgba($primary-color, 0.14);
+
+  &:hover:not(:disabled) {
+    @include glass-hover(manager);
+    color: $text-dark;
+  }
 }
 

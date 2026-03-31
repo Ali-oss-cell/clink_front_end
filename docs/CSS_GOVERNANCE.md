@@ -71,3 +71,16 @@ When token/theme values change, update:
 - [ ] Card-like containers use centralized glass mixins/tokens (role-mapped where possible)
 - [ ] If changing homepage hero/header stacking, keep `overlayPublicHeader` + `heroOverlay` paired and safe-area calcs in sync (`Homepage.module.scss`, `Header.module.scss`)
 - [ ] Public/legal/info cards and auth form shells prefer shared `glass-card`/`glass-hover` primitives over manual white card shadows
+
+## 9) Role dashboard glass rollout
+
+- Admin, psychologist, and practice-manager dashboard surfaces should follow the same glass baseline used in patient surfaces.
+- Apply changes via shared role modules first (`AdminPages.module.scss`, `PsychologistPages.module.scss`, `ManagerPages.module.scss`) before per-page exceptions.
+- Track cross-page completion in `docs/ROLE_DASHBOARD_GLASS_ROLLOUT.md` so scope remains explicit and auditable.
+
+## 10) Website-wide scaling and accessibility rhythm
+
+- Use shared sizing tokens from `src/assets/styles/_variables.scss` (`$page-gutter-inline`, `$card-padding-lg`, `$surface-radius-lg`, `$min-touch-target`) for page rhythm before adding per-page values.
+- Keep shell parity between `PatientAppShell` and `RoleAppShell` for collapse breakpoint, main-content padding, nav row density, and minimum control target size.
+- TSX inline style blocks for spacing/typography are disallowed for static UI; move them to module classes and reuse shared rhythm helpers.
+- Public/auth/dashboard pages should align to the same vertical density baseline so route transitions feel consistent.

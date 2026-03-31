@@ -194,7 +194,7 @@ export const PsychologistDashboardPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h3>
+              <h3><WarningIcon size="md" className={styles.inlineIcon} /> Error Loading Dashboard</h3>
               <p>{error}</p>
             </div>
           </div>
@@ -275,7 +275,7 @@ export const PsychologistDashboardPage: React.FC = () => {
           <div ref={dashboardGridRef} className={styles.dashboardGrid}>
             {/* Video Sessions Card - Prominent */}
             <div className={`${styles.dashboardCard} ${styles.videoSessionsCard}`}>
-              <h3><VideoIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Video Sessions</h3>
+              <h3><VideoIcon size="lg" className={styles.inlineIcon} /> Video Sessions</h3>
               <div className={styles.cardContent}>
                 {videoCallAppointments.length > 0 ? (
                   <div className={styles.videoSessionsList}>
@@ -317,7 +317,7 @@ export const PsychologistDashboardPage: React.FC = () => {
                               : 'Join video session'
                           }
                         >
-                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                          <VideoIcon size="sm" className={styles.inlineIcon} />
                           {
                             appointment.can_join_session === false 
                               ? 'Not Available' 
@@ -337,8 +337,8 @@ export const PsychologistDashboardPage: React.FC = () => {
 
             {/* Recent Notes Card */}
             <div className={styles.dashboardCard}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3><NotesIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Progress Notes</h3>
+              <div className={styles.dashboardCardHeader}>
+                <h3><NotesIcon size="lg" className={styles.inlineIcon} /> Recent Progress Notes</h3>
                 <Button className={styles.viewAllButton} onClick={handleViewNotes}>
                   View All →
                 </Button>
@@ -375,18 +375,18 @@ export const PsychologistDashboardPage: React.FC = () => {
 
             {/* Quick Stats Card */}
             <div className={styles.dashboardCard}>
-              <h3><ChartIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> This Month</h3>
-              <div style={{ marginTop: '1rem' }}>
-                <div style={{ marginBottom: '1rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <h3><ChartIcon size="lg" className={styles.inlineIcon} /> This Month</h3>
+              <div className={styles.dashboardMetaStack}>
+                <div className={styles.dashboardMetaStack}>
+                  <div className={styles.dashboardInlineStatRow}>
                     <span>Total Appointments:</span>
                     <strong>{dashboardData.stats.total_appointments_this_month}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <div className={styles.dashboardInlineStatRow}>
                     <span>Sessions Completed (Week):</span>
                     <strong>{dashboardData.stats.sessions_completed_this_week}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className={styles.dashboardInlineStatRow}>
                     <span>Total Patients:</span>
                     <strong>{dashboardData.total_patients_count}</strong>
                   </div>
@@ -396,18 +396,18 @@ export const PsychologistDashboardPage: React.FC = () => {
 
             {/* Quick Actions Card */}
             <div className={styles.dashboardCard}>
-              <h3><BoltIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Quick Actions</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1rem' }}>
+              <h3><BoltIcon size="md" className={styles.inlineIcon} /> Quick Actions</h3>
+              <div className={styles.dashboardMetaStack}>
                 <Button className={styles.actionButton} onClick={handleViewPatients}>
-                  <UsersIcon size="sm" style={{ marginRight: '6px' }} />
+                  <UsersIcon size="sm" className={styles.inlineIcon} />
                   Manage Patients
                 </Button>
                 <Button className={styles.actionButton} onClick={handleViewSchedule}>
-                  <CalendarIcon size="sm" style={{ marginRight: '6px' }} />
+                  <CalendarIcon size="sm" className={styles.inlineIcon} />
                   View Schedule
                 </Button>
                 <Button className={styles.actionButton} onClick={handleViewNotes}>
-                  <NotesIcon size="sm" style={{ marginRight: '6px' }} />
+                  <NotesIcon size="sm" className={styles.inlineIcon} />
                   Write Progress Note
                 </Button>
               </div>
@@ -415,9 +415,9 @@ export const PsychologistDashboardPage: React.FC = () => {
 
             {/* Overview Card */}
             <div className={styles.dashboardCard}>
-              <h3><HospitalIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Practice Overview</h3>
-              <div style={{ marginTop: '1rem' }}>
-                <p style={{ fontSize: '0.9rem', color: '#7a7b7a', lineHeight: '1.6' }}>
+              <h3><HospitalIcon size="lg" className={styles.inlineIcon} /> Practice Overview</h3>
+              <div className={styles.dashboardMetaStack}>
+                <p className={styles.dashboardBodyText}>
                   You have <strong>{dashboardData.today_appointments_count}</strong> appointment{dashboardData.today_appointments_count !== 1 ? 's' : ''} today
                   {dashboardData.pending_notes_count > 0 && (
                     <> and <strong>{dashboardData.pending_notes_count}</strong> note{dashboardData.pending_notes_count !== 1 ? 's' : ''} pending.</>
