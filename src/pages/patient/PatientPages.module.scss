@@ -2834,3 +2834,115 @@ button.submitButton {
     font-family: var(--cs-font-headline);
   }
 }
+
+// Unified patient form refinements (intake-inspired) for all form-like patient pages
+:global(.patientShell) {
+  .pageHeader {
+    @include glass-card(patient, $glass-blur-sm, true);
+    border-radius: var(--cs-radius-2xl);
+    padding: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .intakeForm,
+  .appointmentForm,
+  .appointmentDetailsForm,
+  .paymentForm,
+  .filtersSection,
+  .summaryCard,
+  .selectionSummary {
+    @include glass-card(patient, $glass-blur-sm, true);
+    border-radius: var(--cs-radius-2xl);
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 14%, transparent);
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+
+  .formNavigation,
+  .formActions,
+  .paymentActions {
+    border-top: 1px solid color-mix(in srgb, var(--cs-primary) 16%, transparent);
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  button.navButton,
+  .cancelButton {
+    background: color-mix(in srgb, var(--cs-surface-lowest) 86%, white 14%);
+    color: var(--cs-primary);
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
+    border-radius: var(--cs-radius-xl);
+    box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  }
+
+  button.submitButton,
+  .continueButton,
+  .payButton {
+    background-image: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+    color: var(--cs-on-primary);
+    border: none;
+    border-radius: var(--cs-radius-xl);
+    box-shadow: var(--cs-shadow-atmospheric);
+    filter: saturate(1.05);
+  }
+}
+
+// Intake intro and requirements card (classes used in PatientIntakeFormPage.tsx)
+.requirementSummary {
+  @include glass-card(patient, $glass-blur-sm, true);
+  border-radius: 18px;
+  border: 1px solid rgba($patient-primary, 0.18);
+  padding: clamp(1rem, 2vw, 1.35rem);
+  margin-top: 1.1rem;
+
+  h3 {
+    margin: 0 0 0.8rem 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--cs-primary);
+    display: flex;
+    align-items: center;
+  }
+}
+
+.requirementGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.requirementItem {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.72rem 0.8rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--cs-surface-lowest) 84%, white 16%);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: $text-dark;
+}
+
+.requiredIcon,
+.optionalIcon,
+.recommendedIcon {
+  display: inline-flex;
+  width: 1.2rem;
+  min-width: 1.2rem;
+  justify-content: center;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.requiredIcon { color: $error-red; }
+.optionalIcon { color: $text-muted; }
+.recommendedIcon { color: $warning-orange; }
+
+.intakeKicker {
+  margin: 0 0 0.45rem 0;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--cs-primary);
+  opacity: 0.82;
+}

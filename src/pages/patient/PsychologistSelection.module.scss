@@ -765,3 +765,25 @@ button.continueButton {
     box-shadow: var(--cs-shadow-atmospheric);
   }
 }
+
+// Intake-aligned form polish
+.pageHeader,
+.filtersSection,
+.psychologistCard {
+  @include glass-card(patient, $glass-blur-sm, true);
+}
+
+.pageHeader,
+.filtersSection {
+  border-radius: var(--cs-radius-2xl);
+}
+
+.psychologistCard {
+  border-radius: var(--cs-radius-xl);
+  @include glass-hover(patient);
+}
+
+.filterSelect {
+  background-color: color-mix(in srgb, var(--cs-surface-lowest) 90%, white 10%);
+  border-color: color-mix(in srgb, var(--cs-primary) 16%, transparent);
+}

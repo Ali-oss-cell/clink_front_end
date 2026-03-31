@@ -586,3 +586,18 @@ button.submitButton {
     box-shadow: var(--cs-shadow-atmospheric);
   }
 }
+
+// Intake-aligned form polish
+.pageHeader,
+.summaryCard,
+.appointmentDetailsForm {
+  @include glass-card(patient, $glass-blur-sm, true);
+  border-radius: var(--cs-radius-2xl);
+}
+
+.formSection {
+  background: color-mix(in srgb, var(--cs-surface-lowest) 92%, white 8%);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
+  border-radius: var(--cs-radius-xl);
+  padding: clamp(0.95rem, 1.6vw, 1.25rem);
+}

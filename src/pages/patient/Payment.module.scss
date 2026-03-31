@@ -537,3 +537,17 @@ button.payButton {
     box-shadow: var(--cs-shadow-atmospheric);
   }
 }
+
+// Intake-aligned form polish
+.pageHeader,
+.paymentSummary .summaryCard,
+.summaryCard,
+.paymentForm {
+  @include glass-card(patient, $glass-blur-sm, true);
+  border-radius: var(--cs-radius-2xl);
+}
+
+.paymentMethodCard {
+  background: color-mix(in srgb, var(--cs-surface-lowest) 92%, white 8%);
+  border-color: color-mix(in srgb, var(--cs-primary) 14%, transparent);
+}

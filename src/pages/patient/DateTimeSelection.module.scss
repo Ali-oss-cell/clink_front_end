@@ -785,3 +785,20 @@ button.continueButton {
     box-shadow: var(--cs-shadow-atmospheric);
   }
 }
+
+// Intake-aligned form polish
+.pageHeader,
+.selectionSummary,
+.summaryCard {
+  @include glass-card(patient, $glass-blur-sm, true);
+}
+
+.pageHeader,
+.summaryCard {
+  border-radius: var(--cs-radius-2xl);
+}
+
+.timeSlot {
+  border-color: color-mix(in srgb, var(--cs-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--cs-surface-lowest) 90%, white 10%);
+}

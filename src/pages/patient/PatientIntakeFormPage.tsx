@@ -1149,6 +1149,7 @@ export const PatientIntakeFormPage: React.FC = () => {
     >
       <div className={shell.wrap}>
         <header className={shell.pageHeader}>
+          <p className={styles.intakeKicker}>Intake form</p>
           <h1 className={shell.welcomeTitle}>New Client Intake Form</h1>
           <p className={shell.welcomeSubtitle}>
               Welcome to Tailored Psychology! To ensure we provide you with the best possible care, 
