@@ -42,6 +42,9 @@
 .contentSection {
   max-width: 800px;
   margin: 0 auto;
+  @include glass-card(default, $glass-blur-sm, true);
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 2rem);
   
   h2 {
     color: $text-dark;
@@ -91,9 +94,11 @@
 .policyIframe {
   width: 100%;
   min-height: 800px;
-  border: 1px solid $border-light;
+  border: 1px solid rgba($btn-admin-primary, 0.2);
   border-radius: $border-radius;
-  background: $background-white;
+  background: rgba($background-white, 0.72);
+  backdrop-filter: blur($glass-blur-sm);
+  -webkit-backdrop-filter: blur($glass-blur-sm);
 
   @include mobile {
     min-height: 600px;
@@ -106,6 +111,7 @@
   padding: $spacing-2xl;
   margin: $spacing-2xl 0;
   border-radius: $border-radius;
+  @include glass-card(default, $glass-blur-sm, true);
 }
 
 .loadingState {
@@ -113,9 +119,9 @@
 }
 
 .errorAlert {
-  background-color: rgba($error-color, 0.1);
+  background-color: rgba($error-color, 0.08);
   color: $error-color;
-  border: 1px solid $error-color;
+  border: 1px solid rgba($error-color, 0.35);
 }
 
 .resourceSection {
@@ -149,11 +155,10 @@
 }
 
 .highlightCard {
-  background: $background-white;
-  border: 1px solid $border-light;
+  @include glass-card(default);
   border-radius: $border-radius-lg;
   padding: $spacing-xl;
-  box-shadow: $shadow-sm;
+  @include glass-hover(default);
 
   h2 {
     margin-bottom: $spacing-sm;
@@ -184,11 +189,10 @@
 }
 
 .resourceCard {
-  background: $background-white;
-  border: 1px solid $border-light;
+  @include glass-card(default);
   border-radius: $border-radius-lg;
   padding: $spacing-xl;
-  box-shadow: $shadow-sm;
+  @include glass-hover(default);
   display: flex;
   flex-direction: column;
   gap: $spacing-md;

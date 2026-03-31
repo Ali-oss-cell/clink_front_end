@@ -61,3 +61,4 @@ When token/theme values change, update:
 - [ ] Dashboard button classes map to shared role variants (`patient`, `psychologist`, `admin`, `manager`)
 - [ ] Card-like containers use centralized glass mixins/tokens (role-mapped where possible)
 - [ ] If changing homepage hero/header stacking, keep `overlayPublicHeader` + `heroOverlay` paired and safe-area calcs in sync (`Homepage.module.scss`, `Header.module.scss`)
+- [ ] Public/legal/info cards and auth form shells prefer shared `glass-card`/`glass-hover` primitives over manual white card shadows
