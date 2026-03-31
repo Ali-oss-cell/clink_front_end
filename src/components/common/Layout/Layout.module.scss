@@ -12,8 +12,9 @@
   display: flex;
   flex-direction: column;
   
-  // Ensure main content area has minimum height
-  min-height: calc(100vh - #{$header-height} - #{$footer-height});
+  // Header is fixed overlay globally; main no longer reserves navbar height.
+  min-height: calc(100vh - #{$footer-height});
+  min-height: calc(100dvh - #{$footer-height});
 }
 
 // Layout variants for different page types
@@ -21,7 +22,8 @@
   .main {
     @include flex-center;
     background: linear-gradient(135deg, $background-light 0%, $background-gray 100%);
-    min-height: calc(100vh - #{$header-height});
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 }
 

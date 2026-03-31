@@ -7,8 +7,7 @@ interface HeaderProps {
   userRole?: 'patient' | 'psychologist' | 'practice_manager' | 'admin';
   userName?: string;
   /**
-   * Marketing homepage: outer header is a full-width transparent track so the hero can sit underneath;
-   * glass styling moves to the inner `.container` pill.
+   * Legacy compatibility flag. Header uses overlay shell globally; class toggle is retained for safety.
    */
   heroOverlay?: boolean;
 }

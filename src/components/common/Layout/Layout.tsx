@@ -13,7 +13,7 @@ interface LayoutProps {
   /** Patient-only: sidebar shell matching in-app design (no marketing header/footer). */
   patientShell?: boolean;
   /**
-   * Public marketing homepage only: fixed header layered above the hero (see Homepage styles).
+   * Legacy flag kept for compatibility; header now overlays globally on non-patient layouts.
    */
   overlayPublicHeader?: boolean;
 }
