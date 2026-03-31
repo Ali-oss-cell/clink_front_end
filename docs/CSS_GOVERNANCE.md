@@ -55,9 +55,10 @@ When token/theme values change, update:
 ## 7) Homepage sectioning and rich text hierarchy
 
 - Major homepage content sections should use a shared full-section shell (`min-height` with `dvh/svh` and centered content) so sections read as intentional chapters.
-- Keep transitional strips (for example, compact benefit bands) shorter to avoid scroll fatigue between full sections.
+- For the current homepage chapter set (`benefitsStrip`, `quickMatch`, `costClarity`, `features`, `resourcesTeaser`, `howItWorks`, `spotlight`, `trustBand`, `accessFunding`, `testimonials`, `bottomCta`), keep all sections on the shared full-section shell for consistent narrative rhythm.
 - Alternate subtle section surface treatments/borders to reinforce separation without harsh color jumps.
 - For richer copy, enforce kicker/title/lead hierarchy with constrained line-lengths (`~60-70ch`) and relaxed line-height for readability.
+- Section media should be intentional and curated (not decorative filler): keep consistent aspect treatment, meaningful `alt` text, and balanced copy/media density across breakpoints.
 - Preserve CTA route structure while expanding copy; content changes should not alter navigation semantics.
 
 ## 8) PR Checklist for Styling Work
