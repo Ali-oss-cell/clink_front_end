@@ -169,6 +169,8 @@ $home-hero-nav-band: 5.75rem;
 $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band});
 $home-section-min-desktop: calc(100dvh - #{$home-hero-nav-band});
 $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
+$home-section-color-1: #f8f4ee;
+$home-section-color-2: #f5f8f2;
 
 // Major homepage sections should read as visual chapters.
 %homeFullSection {
@@ -468,7 +470,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
   @extend %homeFullSection;
   padding: $home-section-y 0;
   position: relative;
-  background: linear-gradient(135deg, rgba(246, 239, 231, 0.95) 0%, rgba(231, 235, 228, 0.88) 50%, rgba(244, 246, 242, 0.92) 100%);
+  background: $home-section-color-1;
   border-top: 1px solid rgba(157, 170, 150, 0.2);
   border-bottom: 1px solid rgba(157, 170, 150, 0.15);
   overflow: hidden;
@@ -613,7 +615,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 .quickMatch {
   @extend %homeFullSection;
   padding: clamp(1.35rem, 2.4vw, 2rem) 0 $home-section-y;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 246, 0.96) 100%);
+  background: $home-section-color-2;
   border-top: 1px solid rgba(157, 170, 150, 0.16);
 
   .quickMatchCard {
@@ -746,7 +748,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 .costClarity {
   @extend %homeFullSection;
   padding: 0 0 $home-section-y;
-  background: linear-gradient(180deg, rgba(245, 247, 243, 0.9) 0%, rgba(255, 255, 255, 0.96) 100%);
+  background: $home-section-color-1;
   border-top: 1px solid rgba(157, 170, 150, 0.14);
 
   .costClarityHeading {
@@ -822,7 +824,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 .features {
   @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 247, 243, 0.94) 100%);
+  background: $home-section-color-2;
   border-top: 1px solid rgba(157, 170, 150, 0.14);
 
   .sectionTitle {
@@ -899,7 +901,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 .resourcesTeaser {
   @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: linear-gradient(180deg, rgba(247, 249, 245, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  background: $home-section-color-1;
   border-top: 1px solid rgba(157, 170, 150, 0.16);
 
   .resourcesTeaserInner {
@@ -1004,7 +1006,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
   @extend %homeFullSection;
   padding: $home-section-y 0;
   position: relative;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 248, 244, 0.95) 100%);
+  background: $home-section-color-2;
   overflow: hidden;
 
   &::before {
@@ -1201,7 +1203,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
   @extend %homeFullSection;
   padding: $home-section-y 0;
   position: relative;
-  background: linear-gradient(180deg, rgba(246, 239, 231, 0.85) 0%, rgba(255, 255, 255, 0.65) 100%);
+  background: $home-section-color-1;
   overflow-x: clip;
 
   &::before {
@@ -1384,7 +1386,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 .trustBand {
   @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: linear-gradient(180deg, rgba(246, 248, 244, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  background: $home-section-color-2;
   border-top: 1px solid rgba(157, 170, 150, 0.15);
 
   .trustBandLayout {
@@ -1606,8 +1608,8 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 .accessFunding {
   padding: $home-section-y 0;
   position: relative;
-  background: linear-gradient(165deg, color.scale($hero-bg, $lightness: -4%) 0%, $hero-bg 40%, color.scale($hero-bg, $lightness: 6%) 100%);
-  color: $text-white;
+  background: $home-section-color-1;
+  color: $text-dark;
   overflow: hidden;
 
   &::before {
@@ -1648,11 +1650,11 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
     isolation: isolate;
     border-radius: $home-card-radius;
     padding: 2rem 2.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(157, 170, 150, 0.28);
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.2),
-      0 0 60px rgba(174, 191, 178, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      0 8px 32px rgba(54, 69, 57, 0.14),
+      0 0 60px rgba(174, 191, 178, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.44);
     backdrop-filter: blur(12px);
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease, border-color 0.35s ease;
 
@@ -1663,7 +1665,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
       border-radius: inherit;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255, 255, 255, 0.14), transparent 55%);
+      background: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255, 255, 255, 0.4), transparent 55%);
     }
 
     & > * {
@@ -1673,11 +1675,11 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 
     &:hover {
       transform: translateY(-6px);
-      border-color: rgba(255, 255, 255, 0.42);
+      border-color: rgba(157, 170, 150, 0.42);
       box-shadow:
-        0 20px 48px rgba(0, 0, 0, 0.28),
-        0 0 80px rgba(200, 220, 200, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        0 20px 48px rgba(54, 69, 57, 0.2),
+        0 0 80px rgba(200, 220, 200, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1688,32 +1690,32 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
   }
 
   .accessCard {
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.58);
   }
 
   .accessCardMuted {
-    background: rgba(0, 0, 0, 0.18);
+    background: rgba(245, 248, 242, 0.86);
   }
 
   .accessHeading {
     font-size: 1.45rem;
     font-weight: 700;
     margin: 0 0 1rem;
-    color: $text-white;
+    color: $text-dark;
   }
 
   .accessCard p,
   .accessCardMuted p {
     margin: 0 0 1.25rem;
     line-height: 1.65;
-    color: rgba($text-white, 0.92);
+    color: rgba($text-dark, 0.88);
     font-size: 1rem;
   }
 
   .accessList {
     margin: 0 0 1.5rem;
     padding-left: 1.25rem;
-    color: rgba($text-white, 0.92);
+    color: rgba($text-dark, 0.88);
     line-height: 1.6;
     font-size: 0.95rem;
 
@@ -1760,7 +1762,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
 .testimonials {
   @extend %homeFullSection;
   padding: $home-section-y 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 248, 244, 0.95) 100%);
+  background: $home-section-color-2;
   border-top: 1px solid rgba(157, 170, 150, 0.15);
 
   .testimonialsIntroBlock {
@@ -1841,7 +1843,7 @@ $home-section-min-mobile: clamp(38rem, 86svh, 52rem);
   position: relative;
   text-align: center;
   border-top: 1px solid rgba(157, 170, 150, 0.2);
-  background: linear-gradient(180deg, rgba(246, 239, 231, 0.95) 0%, rgba(255, 255, 255, 1) 50%, rgba(244, 246, 242, 0.5) 100%);
+  background: $home-section-color-1;
   overflow: hidden;
 
   &::before {
