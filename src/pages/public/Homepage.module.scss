@@ -228,7 +228,7 @@ $home-hero-under-nav: calc(env(safe-area-inset-top, 0px) + #{$home-hero-nav-band
 
 .slide {
   position: absolute;
-  top: 0;
+  top: 0; 
   left: 0;
   width: 100%;
   height: 100%;
