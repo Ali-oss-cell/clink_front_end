@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon, WarningIcon, CloseIcon } from '../../utils/icons';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
@@ -16,6 +17,7 @@ export const AdminStaffPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const user = authService.getStoredUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStaff();
@@ -49,15 +51,20 @@ export const AdminStaffPage: React.FC = () => {
     });
   };
 
-  const filteredPsychologists = psychologists.filter(p => 
-    p.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredPsychologists = psychologists.filter((p) => {
+    const q = searchTerm.toLowerCase();
+    const name = (p.full_name || '').toLowerCase();
+    const email = (p.email || '').toLowerCase();
+    const ahpra = (p.psychologist_profile?.ahpra_registration_number || '').toLowerCase();
+    return name.includes(q) || email.includes(q) || ahpra.includes(q);
+  });
 
-  const filteredManagers = practiceManagers.filter(m => 
-    m.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    m.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredManagers = practiceManagers.filter((m) => {
+    const q = searchTerm.toLowerCase();
+    const name = (m.full_name || '').toLowerCase();
+    const email = (m.email || '').toLowerCase();
+    return name.includes(q) || email.includes(q);
+  });
 
   if (loading) {
     return (
@@ -84,6 +91,15 @@ export const AdminStaffPage: React.FC = () => {
             <div className={styles.statsSummary}>
               <span>Psychologists: {psychologists.length}</span>
               <span>Managers: {practiceManagers.length}</span>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  navigate('/admin/users', { state: { openCreatePsychologist: true } })
+                }
+              >
+                Add psychologist
+              </Button>
             </div>
           </div>
 
@@ -129,15 +145,25 @@ export const AdminStaffPage: React.FC = () => {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  {activeTab === 'psychologists' && (
+                    <>
+                      <th>AHPRA</th>
+                      <th>Accepting patients</th>
+                    </>
+                  )}
                   <th>Status</th>
                   <th>Joined</th>
                   <th>Last Login</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {currentStaff.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className={styles.emptyCell}>
+                    <td
+                      colSpan={activeTab === 'psychologists' ? 9 : 7}
+                      className={styles.emptyCell}
+                    >
                       No {activeTab} found
                     </td>
                   </tr>
@@ -146,7 +172,19 @@ export const AdminStaffPage: React.FC = () => {
                     <tr key={staff.id}>
                       <td>{staff.full_name}</td>
                       <td>{staff.email}</td>
-                      <td>{staff.phone || 'N/A'}</td>
+                      <td>{staff.phone || staff.phone_number || 'N/A'}</td>
+                      {activeTab === 'psychologists' && (
+                        <>
+                          <td>
+                            {staff.psychologist_profile?.ahpra_registration_number || '—'}
+                          </td>
+                          <td>
+                            {staff.psychologist_profile?.is_accepting_new_patients === false
+                              ? 'No'
+                              : 'Yes'}
+                          </td>
+                        </>
+                      )}
                       <td>
                         <div className={styles.statusCell}>
                           <span className={staff.is_verified ? styles.verified : styles.unverified}>
@@ -169,6 +207,17 @@ export const AdminStaffPage: React.FC = () => {
                       </td>
                       <td>{formatDate(staff.created_at)}</td>
                       <td>{staff.last_login ? formatDate(staff.last_login) : 'Never'}</td>
+                      <td>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() =>
+                            navigate('/admin/users', { state: { openUserId: staff.id } })
+                          }
+                        >
+                          Manage
+                        </Button>
+                      </td>
                     </tr>
                   ))
                 )}

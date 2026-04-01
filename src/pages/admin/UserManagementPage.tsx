@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type User, type CreateUserRequest, type UpdateUserRequest } from '../../services/api/admin';
@@ -59,12 +60,16 @@ export const UserManagementPage: React.FC = () => {
     qualifications: '',
     years_experience: 0,
     consultation_fee: '180.00',
+    medicare_rebate_amount: '87.45',
     medicare_provider_number: '',
     bio: '',
     is_accepting_new_patients: true
   });
 
   const user = authService.getStoredUser();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const routeIntentHandledKey = useRef<string | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -335,14 +340,14 @@ export const UserManagementPage: React.FC = () => {
     }
   };
 
-  const openEditModal = async (user: User) => {
-    setSelectedUser(user);
+  const openEditModal = useCallback(async (userRow: User) => {
+    setSelectedUser(userRow);
     
     // Fetch full user data including psychologist profile if needed
-    let fullUserData = user;
-    if (user.role === 'psychologist' && !user.psychologist_profile) {
+    let fullUserData = userRow;
+    if (userRow.role === 'psychologist' && !userRow.psychologist_profile) {
       try {
-        fullUserData = await adminService.getUserById(user.id);
+        fullUserData = await adminService.getUserById(userRow.id);
       } catch (err) {
         console.error('Failed to fetch user details:', err);
         // Continue with basic user data if fetch fails
@@ -366,6 +371,7 @@ export const UserManagementPage: React.FC = () => {
       qualifications: profile?.qualifications || '',
       years_experience: profile?.years_experience || 0,
       consultation_fee: profile?.consultation_fee || '180.00',
+      medicare_rebate_amount: profile?.medicare_rebate_amount || '87.45',
       medicare_provider_number: profile?.medicare_provider_number || '',
       bio: profile?.bio || '',
       is_accepting_new_patients: profile?.is_accepting_new_patients ?? true,
@@ -378,12 +384,55 @@ export const UserManagementPage: React.FC = () => {
         : undefined
     });
     setShowEditModal(true);
-  };
+  }, []);
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = 
-      user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+  useEffect(() => {
+    if (loading) return;
+    const st = location.state as { openUserId?: number; openCreatePsychologist?: boolean } | null;
+    if (!st) {
+      routeIntentHandledKey.current = null;
+      return;
+    }
+
+    const intentKey = st.openCreatePsychologist
+      ? 'create-psych'
+      : st.openUserId != null
+        ? `open-${st.openUserId}`
+        : '';
+    if (!intentKey || routeIntentHandledKey.current === intentKey) return;
+    routeIntentHandledKey.current = intentKey;
+
+    if (st.openCreatePsychologist) {
+      setRoleFilter('psychologist');
+      setCreateForm((prev) => ({ ...prev, role: 'psychologist' }));
+      setShowCreateModal(true);
+      navigate(location.pathname, { replace: true, state: {} });
+      return;
+    }
+
+    if (st.openUserId == null) return;
+    const openUserId = st.openUserId;
+
+    (async () => {
+      try {
+        let target = users.find((u) => u.id === openUserId);
+        if (!target) {
+          target = await adminService.getUserById(openUserId);
+        }
+        await openEditModal(target);
+      } catch {
+        setError('Could not open that user for editing.');
+      } finally {
+        navigate(location.pathname, { replace: true, state: {} });
+      }
+    })();
+  }, [loading, location.state, location.pathname, users, navigate, openEditModal]);
+
+  const filteredUsers = users.filter((u) => {
+    const q = searchTerm.toLowerCase();
+    const name = (u.full_name || '').toLowerCase();
+    const email = (u.email || '').toLowerCase();
+    const matchesSearch = name.includes(q) || email.includes(q);
     return matchesSearch;
   });
 
@@ -923,6 +972,16 @@ export const UserManagementPage: React.FC = () => {
                           placeholder="180.00"
                           value={editForm.consultation_fee || '180.00'}
                           onChange={(e) => setEditForm({ ...editForm, consultation_fee: e.target.value })}
+                        />
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label>Medicare rebate (AUD)</label>
+                        <input
+                          type="text"
+                          placeholder="87.45"
+                          value={editForm.medicare_rebate_amount || '87.45'}
+                          onChange={(e) => setEditForm({ ...editForm, medicare_rebate_amount: e.target.value })}
                         />
                       </div>
 

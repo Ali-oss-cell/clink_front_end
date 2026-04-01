@@ -11,6 +11,7 @@ export interface PsychologistProfile {
   qualifications?: string;
   years_experience?: number;
   consultation_fee?: string;
+  medicare_rebate_amount?: string;
   medicare_provider_number?: string;
   bio?: string;
   is_accepting_new_patients?: boolean;
@@ -90,6 +91,7 @@ export interface UpdateUserRequest {
   qualifications?: string;
   years_experience?: number;
   consultation_fee?: string; // Decimal as string
+  medicare_rebate_amount?: string;
   medicare_provider_number?: string;
   bio?: string;
   is_accepting_new_patients?: boolean;
@@ -378,6 +380,9 @@ export class AdminService {
       if (userData.qualifications !== undefined) cleanedData.qualifications = userData.qualifications.trim();
       if (userData.years_experience !== undefined) cleanedData.years_experience = userData.years_experience;
       if (userData.consultation_fee !== undefined) cleanedData.consultation_fee = userData.consultation_fee;
+      if (userData.medicare_rebate_amount !== undefined) {
+        cleanedData.medicare_rebate_amount = userData.medicare_rebate_amount;
+      }
       if (userData.medicare_provider_number !== undefined) {
         cleanedData.medicare_provider_number = userData.medicare_provider_number.trim();
       }
