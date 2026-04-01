@@ -49,6 +49,7 @@ When token/theme values change, update:
 ## 6) Marketing homepage: hero under fixed nav
 
 - Public marketing `Header` inner `.container` pill uses a **dark sage gradient** (not a light glass wash) so the mark and nav links stay legible; logo uses a light lift via `filter` for contrast.
+- Primary nav CTA (`.registerButton`, e.g. “Start booking”) uses a **solid sage gradient** on tokens (`$btn-admin-primary` / `$primary-color`), not `glass-card`, so it does not read as metallic/silver on the dark bar.
 - `Layout` exposes `overlayPublicHeader` (used only on `Homepage`). That sets `Header` `heroOverlay`, moving glass styling to the inner `.container` pill so the outer `<header>` is a full-width transparent track.
 - `Homepage.module.scss` fixes the header (`> header { position: fixed }`) and offsets the hero slider upward so background imagery meets the top of the viewport under the nav (safe-area aware). The hero block uses `min-height: 100dvh` (with `100svh` fallback) and the slider uses `bottom: 0` so backgrounds meet the bottom of the viewport without a white gap. Other public routes keep the default sticky, full-glass header.
 - `Layout.module.scss` applies shared top clearance to `.main` for fixed-header pages; complex surfaces that manage overlap directly (homepage hero, auth split layouts) should explicitly set `padding-top: 0` in their page scopes.
