@@ -33,7 +33,10 @@ export interface AvailableSlotsResponse {
   };
   available_dates: AvailableDate[];
   total_available_slots?: number; // Optional, may not always be present
-  message?: string; // Present if not accepting new patients
+  message?: string; // Present if not accepting new patients or schedule missing
+  /** False when clinician has no weekly hours (cannot generate slots). */
+  schedule_configured?: boolean;
+  schedule_message_code?: string | null;
 }
 
 export interface CalendarViewResponse {

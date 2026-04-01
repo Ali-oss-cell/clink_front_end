@@ -320,6 +320,7 @@ export const PsychologistSelectionPage: React.FC = () => {
     >
       <div className={styles.psychologistSelectionContainer}>
         <div className="container">
+          <div className={styles.bookingFlowMain}>
           <div className={styles.pageHeader}>
             <Button
               className={styles.backButton}
@@ -497,8 +498,9 @@ export const PsychologistSelectionPage: React.FC = () => {
               ))}
             </div>
           )}
+          </div>
 
-          <div className={styles.formActions}>
+          <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
             <Button
               type="button"
               className={styles.cancelButton}

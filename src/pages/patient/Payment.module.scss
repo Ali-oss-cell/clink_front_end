@@ -413,6 +413,7 @@
   display: flex;
   gap: $spacing-md;
   justify-content: center;
+  flex-wrap: wrap;
   margin-top: $spacing-xl;
   padding-top: $spacing-lg;
   border-top: 1px solid $border-light;

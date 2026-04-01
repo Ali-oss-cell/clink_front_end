@@ -290,7 +290,7 @@ export const AppointmentDetailsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className={styles.formActions}>
+            <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
               <Button
                 type="button"
                 variant="outline"

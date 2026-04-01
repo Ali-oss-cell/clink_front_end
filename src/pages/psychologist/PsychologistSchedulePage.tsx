@@ -22,6 +22,7 @@ import {
   CloseIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
@@ -99,12 +100,12 @@ export const PsychologistSchedulePage: React.FC = () => {
           today.setHours(0, 0, 0, 0);
           const tomorrow = new Date(today);
           tomorrow.setDate(tomorrow.getDate() + 1);
-          params.start_date = today.toISOString().split('T')[0];
-          params.end_date = tomorrow.toISOString().split('T')[0];
+          params.start_date = formatLocalDateYYYYMMDD(today);
+          params.end_date = formatLocalDateYYYYMMDD(tomorrow);
         } else if (filterStatus === 'upcoming') {
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-          params.start_date = today.toISOString().split('T')[0];
+          params.start_date = formatLocalDateYYYYMMDD(today);
         }
       }
 

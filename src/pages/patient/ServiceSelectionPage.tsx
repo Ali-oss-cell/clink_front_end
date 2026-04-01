@@ -200,8 +200,9 @@ export const ServiceSelectionPage: React.FC = () => {
       patientShell
       className={styles.patientLayout}
     >
-      <div className={styles.serviceSelectionContainer}>
+      <div className={`${styles.serviceSelectionContainer} ${styles.bookingFlowLayout}`}>
         <div className="container">
+          <div className={styles.bookingFlowMain}>
           <div className={styles.pageHeader}>
             <Button className={styles.backButton} onClick={handleBack}>
               ← Back to Dashboard
@@ -338,8 +339,9 @@ export const ServiceSelectionPage: React.FC = () => {
               </div>
             </div>
           </div>
+          </div>
 
-          <div className={styles.formActions}>
+          <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
             <Button type="button" variant="outline" className={styles.cancelButton} onClick={handleBack}>
               Cancel
             </Button>

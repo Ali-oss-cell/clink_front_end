@@ -34,6 +34,11 @@ Objective: apply the same modern glass style language used in patient surfaces a
 - [x] `ManagerBillingPage`
 - [x] `ManagerResourcesPage`
 
+## Booking flow (2026-04-02)
+
+- Sticky primary actions + scrollable main: `bookingFlowMain` / `formActionsSticky` on patient booking steps (`ServiceSelection`, `PsychologistSelection`, `DateTimeSelection`, `AppointmentDetails`).
+- Date/time API params: `formatLocalDateYYYYMMDD` from `src/utils/dateLocal.ts`.
+
 ## Implementation notes
 
 - Shared glass button behavior is centralized in:

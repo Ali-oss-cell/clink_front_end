@@ -27,8 +27,37 @@
 // Psychologist Selection Page Styles
 .psychologistSelectionContainer {
   padding: 3rem 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(135deg, $background-light 0%, $patient-bg-gradient-end 100%);
+  display: flex;
+  flex-direction: column;
+
+  > .container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.bookingFlowMain {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.formActionsSticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  margin-top: auto;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(
+    180deg,
+    rgba($patient-bg-gradient-end, 0) 0%,
+    rgba($patient-bg-gradient-end, 0.97) 28%,
+    $patient-bg-gradient-end 100%
+  );
+  border-top: 1px solid rgba($patient-primary, 0.12);
 }
 
 // Filters Section
@@ -592,7 +621,7 @@
   gap: 1.5rem;
   justify-content: center;
   margin-top: 3rem;
-  padding: 2rem 0;
+  padding: 2rem 0 0;
 }
 
 .cancelButton {

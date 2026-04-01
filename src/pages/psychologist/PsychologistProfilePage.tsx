@@ -9,6 +9,15 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 
+function profileNeedsSchedule(p: PsychologistProfile): boolean {
+  const wd = p.working_days as string | string[] | undefined;
+  const hasDays =
+    typeof wd === 'string'
+      ? wd.trim().length > 0
+      : Array.isArray(wd) && wd.length > 0;
+  return !hasDays || !p.start_time || !p.end_time;
+}
+
 export const PsychologistProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<PsychologistProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -226,6 +235,15 @@ export const PsychologistProfilePage: React.FC = () => {
               Manage your professional profile and practice information.
             </p>
           </div>
+
+          {profileNeedsSchedule(profile) && (
+            <div className={styles.scheduleWarningBanner} role="status">
+              <p>
+                <strong>Weekly availability required for online bookings.</strong>{' '}
+                Set working days and start/end times under Working Hours below so patients can book appointment slots.
+              </p>
+            </div>
+          )}
 
           {/* Profile Card */}
           <div className={styles.profileCard}>

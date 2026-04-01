@@ -11,6 +11,7 @@ import { VideoIcon, BuildingIcon, CreditCardIcon, PhoneIcon, LockIcon, WarningIc
 import { Button } from '../../components/ui/button';
 import { Checkbox } from '../../components/ui/checkbox';
 import styles from './Payment.module.scss';
+import bookingFlow from './PatientPages.module.scss';
 
 type PaymentMethodUi = 'card' | 'phone' | 'in-person';
 
@@ -304,8 +305,9 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-      <div className={styles.paymentContainer}>
+      <div className={`${styles.paymentContainer} ${bookingFlow.bookingFlowLayout}`}>
         <div className="container">
+          <div className={bookingFlow.bookingFlowMain}>
           <div className={styles.pageHeader}>
             <Button className={styles.backButton} onClick={handleBack}>
               ← Back to Appointment Details
@@ -519,41 +521,42 @@ export const PaymentPage: React.FC = () => {
                   )}
                 </div>
               )}
-
-              <div className={styles.paymentActions}>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className={styles.cancelButton}
-                  onClick={handleBack}
-                  disabled={isProcessing || isPreparingIntent}
-                >
-                  Back to Details
-                </Button>
-
-                {paymentMethod === 'card' && !stripeClientSecret && (
-                  <Button
-                    type="button"
-                    className={styles.payButton}
-                    onClick={prepareCardCheckout}
-                    disabled={!agreedToTerms || isPreparingIntent || isProcessing}
-                  >
-                    {isPreparingIntent ? 'Preparing secure checkout…' : 'Continue to secure payment'}
-                  </Button>
-                )}
-
-                {paymentMethod !== 'card' && (
-                  <Button
-                    type="button"
-                    className={styles.payButton}
-                    onClick={handleNonCardPayment}
-                    disabled={!agreedToTerms || isProcessing}
-                  >
-                    {isProcessing ? 'Processing…' : `Confirm & Pay $${totalAmount.toFixed(2)}`}
-                  </Button>
-                )}
-              </div>
             </div>
+          </div>
+          </div>
+
+          <div className={`${styles.paymentActions} ${bookingFlow.formActionsSticky}`}>
+            <Button
+              type="button"
+              variant="outline"
+              className={styles.cancelButton}
+              onClick={handleBack}
+              disabled={isProcessing || isPreparingIntent}
+            >
+              Back to Details
+            </Button>
+
+            {paymentMethod === 'card' && !stripeClientSecret && (
+              <Button
+                type="button"
+                className={styles.payButton}
+                onClick={prepareCardCheckout}
+                disabled={!agreedToTerms || isPreparingIntent || isProcessing}
+              >
+                {isPreparingIntent ? 'Preparing secure checkout…' : 'Continue to secure payment'}
+              </Button>
+            )}
+
+            {paymentMethod !== 'card' && (
+              <Button
+                type="button"
+                className={styles.payButton}
+                onClick={handleNonCardPayment}
+                disabled={!agreedToTerms || isProcessing}
+              >
+                {isProcessing ? 'Processing…' : `Confirm & Pay $${totalAmount.toFixed(2)}`}
+              </Button>
+            )}
           </div>
         </div>
       </div>

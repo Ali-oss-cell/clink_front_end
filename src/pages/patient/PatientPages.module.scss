@@ -2131,6 +2131,40 @@ button.submitButton {
   border-top: 2px solid $background-light;
 }
 
+// Booking flow: keep primary actions visible without excessive scroll (patient shell)
+.bookingFlowLayout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.bookingFlowLayout > :global(.container) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.bookingFlowMain {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.formActionsSticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  margin-top: auto;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(
+    180deg,
+    rgba($patient-bg-gradient-end, 0) 0%,
+    rgba($patient-bg-gradient-end, 0.96) 22%,
+    $patient-bg-gradient-end 100%
+  );
+  border-top: 2px solid rgba($patient-primary, 0.12);
+}
+
 .cancelButton {
   padding: 1rem 2rem;
   border: 2px solid $border-light;
@@ -2157,8 +2191,9 @@ button.submitButton {
 // Service Selection Page
 .serviceSelectionContainer {
   padding: 3rem 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(135deg, $patient-bg-gradient-start 0%, $patient-bg-gradient-end 100%);
+
 }
 
 .servicesGrid {

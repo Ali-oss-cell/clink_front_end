@@ -86,3 +86,5 @@ When token/theme values change, update:
 - Keep shell parity between `PatientAppShell` and `RoleAppShell` for collapse breakpoint, main-content padding, nav row density, and minimum control target size.
 - TSX inline style blocks for spacing/typography are disallowed for static UI; move them to module classes and reuse shared rhythm helpers.
 - Public/auth/dashboard pages should align to the same vertical density baseline so route transitions feel consistent.
+- Patient booking flow: use `bookingFlowMain` + `formActionsSticky` (see `PatientPages.module.scss`, `DateTimeSelection.module.scss`) so Continue/Back stays reachable on small viewports; use shared `Badge` for unavailable session-type labels, not ad-hoc badge divs.
+- For API query params that represent a **local calendar date** (e.g. `start_date`), use `src/utils/dateLocal.ts` `formatLocalDateYYYYMMDD` instead of `toISOString().split('T')[0]` to avoid UTC day boundary drift.

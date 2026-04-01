@@ -7,6 +7,8 @@ import { servicesService } from '../../services/api/services';
 import type { AvailableSlotsResponse, TimeSlot } from '../../services/api/appointments';
 import { WarningIcon, EditIcon, ClipboardIcon, VideoIcon, HospitalIcon, CalendarIcon, ClockIcon } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/ui/badge';
+import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import styles from './DateTimeSelection.module.scss';
 
 export const DateTimeSelectionPage: React.FC = () => {
@@ -136,14 +138,12 @@ export const DateTimeSelectionPage: React.FC = () => {
         throw new Error('Invalid service ID. Please select a service again.');
       }
 
-      // ✅ Set start date to today
       const today = new Date();
-      const startDate = today.toISOString().split('T')[0];
-      
-      // ✅ Set end date to 30 days from today
-      const endDate = new Date();
+      const startDate = formatLocalDateYYYYMMDD(today);
+
+      const endDate = new Date(today);
       endDate.setDate(today.getDate() + 30);
-      const endDateStr = endDate.toISOString().split('T')[0];
+      const endDateStr = formatLocalDateYYYYMMDD(endDate);
       
       console.log('[DateTimeSelectionPage] Fetching available slots with:', {
         psychologistId,
@@ -162,15 +162,30 @@ export const DateTimeSelectionPage: React.FC = () => {
       });
       
       console.log('[DateTimeSelectionPage] Available slots loaded:', data);
-      
-      setAvailabilityData(data);
-      
-      // Auto-select first available date
-      if (data.available_dates.length > 0) {
-        setSelectedDate(data.available_dates[0].date);
+
+      if (data.schedule_configured === false) {
+        setAvailabilityData(data);
+        setSelectedDate(null);
+        setSelectedSlot(null);
+        setError(
+          data.message ||
+            'This clinician has not set their weekly availability yet. Please choose another psychologist or contact the practice.'
+        );
+        return;
+      }
+
+      const datesWithSlots = (data.available_dates || []).filter(
+        (d) => d.slots && d.slots.length > 0
+      );
+      const normalized: typeof data = { ...data, available_dates: datesWithSlots };
+      setAvailabilityData(normalized);
+
+      if (datesWithSlots.length > 0) {
+        setSelectedDate(datesWithSlots[0].date);
       } else if (!data.is_accepting_new_patients) {
-        // Show message if psychologist is not accepting new patients
         setError(data.message || 'This psychologist is not currently accepting new patients.');
+      } else {
+        setSelectedDate(null);
       }
     } catch (err) {
       console.error('[DateTimeSelectionPage] Failed to load available slots:', err);
@@ -316,6 +331,7 @@ export const DateTimeSelectionPage: React.FC = () => {
     // Check if error is about psychologist not found
     const isPsychologistNotFound = error.toLowerCase().includes('psychologist') && 
                                    error.toLowerCase().includes('not found');
+    const isNoSchedule = availabilityData?.schedule_configured === false;
     
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
@@ -332,7 +348,11 @@ export const DateTimeSelectionPage: React.FC = () => {
                 <span className={styles.errorStateIcon} aria-hidden>
                   <WarningIcon size="md" />
                 </span>
-                {isPsychologistNotFound ? 'Psychologist not available' : 'Unable to load available slots'}
+                {isPsychologistNotFound
+                  ? 'Psychologist not available'
+                  : isNoSchedule
+                    ? 'No booking hours yet'
+                    : 'Unable to load available slots'}
               </h3>
               {isPsychologistNotFound ? (
                 <>
@@ -340,6 +360,15 @@ export const DateTimeSelectionPage: React.FC = () => {
                     This clinician may not be bookable anymore, or your link is out of date. Choose another psychologist to keep your booking.
                   </p>
                   <p className={styles.errorTechnical}>{error}</p>
+                  <div className={styles.errorCtaRow}>
+                    <Button type="button" className={styles.continueButton} onClick={handleBack}>
+                      ← Choose another psychologist
+                    </Button>
+                  </div>
+                </>
+              ) : isNoSchedule ? (
+                <>
+                  <p className={styles.errorFriendly}>{error}</p>
                   <div className={styles.errorCtaRow}>
                     <Button type="button" className={styles.continueButton} onClick={handleBack}>
                       ← Choose another psychologist
@@ -434,6 +463,7 @@ export const DateTimeSelectionPage: React.FC = () => {
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
       <div className={styles.dateTimeSelectionContainer}>
         <div className="container">
+          <div className={styles.bookingFlowMain}>
           {/* Page Header */}
           <div className={styles.pageHeader}>
             <Button className={styles.backButton} onClick={handleBack}>
@@ -489,7 +519,9 @@ export const DateTimeSelectionPage: React.FC = () => {
                   <p>Convenient and private</p>
                 </div>
                 {!availabilityData.telehealth_available && (
-                  <div className={styles.unavailableBadge}>Not Available</div>
+                  <div className={styles.sessionTypeBadgeWrap}>
+                    <Badge variant="danger">Not available</Badge>
+                  </div>
                 )}
               </div>
 
@@ -504,7 +536,9 @@ export const DateTimeSelectionPage: React.FC = () => {
                   <p>Traditional consultation</p>
                 </div>
                 {!availabilityData.in_person_available && (
-                  <div className={styles.unavailableBadge}>Not Available</div>
+                  <div className={styles.sessionTypeBadgeWrap}>
+                    <Badge variant="danger">Not available</Badge>
+                  </div>
                 )}
               </div>
             </div>
@@ -573,9 +607,10 @@ export const DateTimeSelectionPage: React.FC = () => {
               <p>Try selecting a different session type or psychologist.</p>
             </div>
           )}
+          </div>
 
           {/* Action Buttons */}
-          <div className={styles.formActions}>
+          <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
             <Button
               type="button"
               className={styles.cancelButton}

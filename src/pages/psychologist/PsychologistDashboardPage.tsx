@@ -18,6 +18,7 @@ import {
   BoltIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import { Button } from '../../components/ui/button';
 
 export const PsychologistDashboardPage: React.FC = () => {
@@ -72,7 +73,7 @@ export const PsychologistDashboardPage: React.FC = () => {
   const loadVideoCallAppointments = async () => {
     try {
       const response = await appointmentsService.getPsychologistSchedule({
-        start_date: new Date().toISOString().split('T')[0]
+        start_date: formatLocalDateYYYYMMDD(new Date())
       });
       
       // Filter for telehealth appointments that can be joined

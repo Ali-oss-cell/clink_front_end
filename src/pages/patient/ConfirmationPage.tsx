@@ -20,6 +20,7 @@ import {
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import styles from './Confirmation.module.scss';
+import bookingFlow from './PatientPages.module.scss';
 
 export const ConfirmationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -127,8 +128,9 @@ export const ConfirmationPage: React.FC = () => {
       patientShell
       className={styles.patientLayout}
     >
-      <div className={styles.confirmationContainer}>
+      <div className={`${styles.confirmationContainer} ${bookingFlow.bookingFlowLayout}`}>
         <div className="container">
+          <div className={bookingFlow.bookingFlowMain}>
           <div className={styles.successMessage}>
             <div className={styles.successIcon}>🎉</div>
             <h1 className={styles.successTitle}>Appointment Confirmed!</h1>
@@ -257,17 +259,6 @@ export const ConfirmationPage: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.navigationActions}>
-            <Button className={styles.navButton} onClick={handleReturnToDashboard}>
-              <HomeIcon size="sm" style={{ marginRight: '6px' }} />
-              Return to Dashboard
-            </Button>
-            <Button className={styles.navButton} onClick={handleBookAnother}>
-              <CalendarIcon size="sm" style={{ marginRight: '6px' }} />
-              Book Another Appointment
-            </Button>
-          </div>
-
           <div className={styles.emergencyInfo}>
             <div className={styles.emergencyBox}>
               <div className={styles.emergencyIcon}><WarningIcon size="xl" /></div>
@@ -277,6 +268,18 @@ export const ConfirmationPage: React.FC = () => {
                 <p><strong>Emergency Contact:</strong> (03) 9xxx-xxxx</p>
               </div>
             </div>
+          </div>
+          </div>
+
+          <div className={`${styles.navigationActions} ${bookingFlow.formActionsSticky}`}>
+            <Button className={styles.navButton} onClick={handleReturnToDashboard}>
+              <HomeIcon size="sm" style={{ marginRight: '6px' }} />
+              Return to Dashboard
+            </Button>
+            <Button className={styles.navButton} onClick={handleBookAnother}>
+              <CalendarIcon size="sm" style={{ marginRight: '6px' }} />
+              Book Another Appointment
+            </Button>
           </div>
         </div>
       </div>

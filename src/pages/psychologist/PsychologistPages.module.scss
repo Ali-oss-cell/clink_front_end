@@ -15,6 +15,21 @@
   margin: 0 auto;
 }
 
+.scheduleWarningBanner {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: rgba($warning-orange, 0.1);
+  border: 1px solid rgba($warning-orange, 0.35);
+  color: $text-dark;
+  font-size: 0.95rem;
+  line-height: 1.45;
+
+  strong {
+    color: $psychologist-primary;
+  }
+}
+
 // Profile Header
 .profileHeader {
   text-align: center;

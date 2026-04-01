@@ -374,6 +374,20 @@
   border-top: 1px solid $border-light;
 }
 
+.formActionsSticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  margin-top: auto;
+  padding-bottom: max($spacing-md, env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(
+    180deg,
+    rgba($background-light, 0) 0%,
+    rgba($background-light, 0.96) 22%,
+    $background-light 100%
+  );
+}
+
 .cancelButton {
   padding: $spacing-md $spacing-lg;
   border: 2px solid $border-light;
