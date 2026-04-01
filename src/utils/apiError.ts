@@ -1,3 +1,5 @@
+import { isAxiosError } from 'axios';
+
 type UnknownRecord = Record<string, unknown>;
 
 interface ApiEnvelope {
@@ -44,5 +46,22 @@ export function extractApiErrorMessage(error: unknown, fallback: string): string
     (response && typeof response.statusText === 'string' && response.statusText);
 
   return directMessage || fallback;
+}
+
+/** True for client timeouts, network drops, and similar transient Axios failures. */
+export function isAxiosTimeoutOrNetworkError(error: unknown): boolean {
+  if (!isAxiosError(error)) return false;
+  const code = error.code;
+  if (code === 'ECONNABORTED' || code === 'ERR_NETWORK') return true;
+  const msg = (error.message || '').toLowerCase();
+  if (msg.includes('timeout')) return true;
+  return false;
+}
+
+export function extractApiErrorMessageWithTimeoutHint(error: unknown, fallback: string): string {
+  if (isAxiosTimeoutOrNetworkError(error)) {
+    return 'Connection was slow or interrupted. Please try again.';
+  }
+  return extractApiErrorMessage(error, fallback);
 }
 

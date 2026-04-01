@@ -1,6 +1,12 @@
 // Appointments API service
 import axiosInstance from './axiosInstance';
-import { extractApiErrorMessage } from '../../utils/apiError';
+import {
+  extractApiErrorMessage,
+  extractApiErrorMessageWithTimeoutHint,
+  isAxiosTimeoutOrNetworkError,
+} from '../../utils/apiError';
+
+const APPOINTMENT_DETAILS_PATCH_TIMEOUT_MS = 60000;
 
 export interface TimeSlot {
   id: number;
@@ -387,12 +393,30 @@ export class AppointmentsService {
     appointmentId: number,
     payload: AppointmentDetailsUpdateRequest
   ): Promise<{ message?: string }> {
+    const url = `/appointments/${appointmentId}/details/`;
+    const config = { timeout: APPOINTMENT_DETAILS_PATCH_TIMEOUT_MS };
+
+    const patchOnce = () => axiosInstance.patch(url, payload, config);
+
     try {
-      const response = await axiosInstance.patch(`/appointments/${appointmentId}/details/`, payload);
+      const response = await patchOnce();
       return response.data;
     } catch (error) {
+      if (isAxiosTimeoutOrNetworkError(error)) {
+        try {
+          const response = await patchOnce();
+          return response.data;
+        } catch (retryError) {
+          console.error('Failed to update appointment details (after retry):', retryError);
+          throw new Error(
+            extractApiErrorMessageWithTimeoutHint(retryError, 'Failed to save appointment details')
+          );
+        }
+      }
       console.error('Failed to update appointment details:', error);
-      throw new Error(extractApiErrorMessage(error, 'Failed to save appointment details'));
+      throw new Error(
+        extractApiErrorMessageWithTimeoutHint(error, 'Failed to save appointment details')
+      );
     }
   }
 

@@ -62,10 +62,10 @@
 
 // Filters Section
 .filtersSection {
-  background: white;
+  background: color-mix(in srgb, $background-gray 92%, $patient-dark 8%);
   border-radius: 14px;
-  padding: 2rem;
-  margin-bottom: 3rem;
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
   border: 1px solid rgba($border-medium, 0.45);
   animation: fadeInDown 0.6s ease-out;
@@ -80,10 +80,10 @@
 }
 
 .filtersTitle {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: $text-dark;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -94,7 +94,7 @@
 .filtersGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  gap: 1rem;
   
   @media (max-width: $tablet) {
     grid-template-columns: 1fr;
@@ -109,13 +109,13 @@
 .filterGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.45rem;
   width: 100%;
   min-width: 0; // Prevent grid overflow
 }
 
 .filterLabel {
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: $text-dark;
   white-space: nowrap;
@@ -127,13 +127,13 @@
   width: 100%;
   min-width: 0;
   height: auto;
-  min-height: 3.25rem;
-  padding: 0.875rem 3rem 0.875rem 1.25rem; // More right padding for arrow (3rem)
+  min-height: 2.65rem;
+  padding: 0.55rem 2.75rem 0.55rem 0.85rem; // More right padding for arrow (3rem)
   border: 2px solid $border-light;
   border-radius: 12px;
   background: white;
   color: $text-dark;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   line-height: 1.5;
   cursor: pointer;
@@ -201,8 +201,8 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(300px, 1fr));
   max-width: 1100px;
-  gap: 1.25rem;
-  margin-bottom: 3rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
   margin-left: auto;
   margin-right: auto;
 
@@ -219,10 +219,10 @@
 
 // Psychologist Card
 .psychologistCard {
-  background: white;
-  border: 1px solid rgba($border-medium, 0.65);
+  background: color-mix(in srgb, $background-white 94%, $background-gray 6%);
+  border: 1px solid rgba($border-medium, 0.75);
   border-radius: 14px;
-  padding: 1.35rem;
+  padding: 1.05rem;
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   position: relative;
@@ -330,7 +330,7 @@
 }
 
 .psychologistName {
-  font-size: 1.28rem;
+  font-size: 1.12rem;
   font-weight: 700;
   color: $text-dark;
   margin: 0 0 0.5rem 0;
@@ -349,33 +349,32 @@
   flex-shrink: 0;
 }
 
-.statusAvailable {
-  color: $success-green;
-  font-size: 0.95rem;
-  font-weight: 600;
-  background: rgba($success-green, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  display: inline-block;
+// Badge + .statusBadge (darker chips than default tp-ui-badge)
+.statusBadge {
+  text-transform: none !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  padding: 0.28rem 0.72rem !important;
+  letter-spacing: 0.02em;
+  gap: 0.35rem;
+  background: color-mix(in srgb, $success-green 24%, transparent) !important;
+  color: color-mix(in srgb, $success-green 15%, #14331c 85%) !important;
+  border: 1px solid color-mix(in srgb, $success-green 35%, transparent);
 }
 
-.statusUnavailable {
-  color: $error-red;
-  font-size: 0.95rem;
-  font-weight: 600;
-  background: rgba($error-red, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  display: inline-block;
+.statusBadge:global(.tp-ui-badge--danger) {
+  background: color-mix(in srgb, $error-red 18%, transparent) !important;
+  color: color-mix(in srgb, $error-red 10%, #3d1210 90%) !important;
+  border-color: color-mix(in srgb, $error-red 32%, transparent);
 }
 
 // Psychologist Details
 .psychologistDetails {
-  background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border: 1px solid rgba($border-medium, 0.5);
+  background: color-mix(in srgb, $background-gray 88%, $patient-primary 12%);
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 0.85rem;
+  border: 1px solid color-mix(in srgb, $patient-primary 18%, $border-medium 82%);
   transition: all 0.3s ease;
 
   &:hover {
@@ -697,7 +696,7 @@
 }
 
 .pageTitle {
-  font-size: 3rem;
+  font-size: 1.65rem;
   font-weight: 800;
   background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
   -webkit-background-clip: text;
@@ -709,7 +708,7 @@
 
 .pageSubtitle {
   color: $text-light;
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   max-width: 700px;
   margin: 0 auto;
   font-weight: 400;
@@ -733,10 +732,12 @@
     background: none;
     -webkit-text-fill-color: unset;
     color: var(--cs-primary);
-    font-family: var(--cs-font-headline);
+    font-family: var(--cs-font-body);
     text-align: left;
     margin-left: 0;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   .pageSubtitle {

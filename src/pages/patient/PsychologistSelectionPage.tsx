@@ -19,6 +19,7 @@ import {
   GraduationIcon
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/ui/badge';
 import { Select } from '../../components/ui/select';
 import {
   MATCH_PREFERENCES_STORAGE_KEY,
@@ -442,9 +443,15 @@ export const PsychologistSelectionPage: React.FC = () => {
                   </div>
                   <div className={styles.psychologistStatus}>
                     {psychologist.acceptingNewPatients ? (
-                      <span className={styles.statusAvailable}><CheckCircleIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Accepting new patients</span>
+                      <Badge variant="success" className={styles.statusBadge}>
+                        <CheckCircleIcon size="sm" aria-hidden />
+                        Accepting new patients
+                      </Badge>
                     ) : (
-                      <span className={styles.statusUnavailable}><ErrorCircleIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Not accepting new patients</span>
+                      <Badge variant="danger" className={styles.statusBadge}>
+                        <ErrorCircleIcon size="sm" aria-hidden />
+                        Not accepting new patients
+                      </Badge>
                     )}
                   </div>
                 </div>
