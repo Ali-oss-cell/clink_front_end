@@ -16,6 +16,7 @@ import {
   CloseIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 
@@ -213,21 +214,13 @@ export const PsychologistPatientsPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
       <div className={styles.patientsContainer}>
-        <div className="container">
-          {/* Page Header */}
-          <div className={styles.pageHeader}>
-            <div className={styles.headerContent}>
-              <div className={styles.headerText}>
-                <h1 className={styles.pageTitle}>
-                  <span className={styles.titleIcon}><UsersIcon size="lg" /></span>
-                  My Patients
-                </h1>
-                <p className={styles.pageSubtitle}>
-                  Manage your patient list and track therapy progress
-                </p>
-              </div>
-            </div>
-          </div>
+        <div className={shell.wrap}>
+          <header className={shell.pageHeader}>
+            <h1 className={shell.welcomeTitle}>My patients</h1>
+            <p className={shell.welcomeSubtitle}>
+              Manage your patient list and track therapy progress
+            </p>
+          </header>
 
           {/* Statistics Cards */}
           <div className={styles.statsGrid}>

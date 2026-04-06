@@ -290,3 +290,86 @@ $collapse: $shell-collapse;
     max-width: 9rem;
   }
 }
+
+// Psychologist portal — Clinical Sanctuary (tokens from Layout `.clinicalShell`)
+.role_psychologist .root {
+  background: var(--cs-surface-low);
+}
+
+.role_psychologist .sidebar {
+  background: var(--cs-glass-bg);
+  border-right-color: var(--cs-glass-border);
+  box-shadow: var(--cs-glass-shadow);
+}
+
+.role_psychologist .brandLink {
+  font-family: var(--cs-font-headline);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--cs-primary);
+}
+
+.role_psychologist .welcomeLabel {
+  color: var(--cs-primary);
+}
+
+.role_psychologist .profileName {
+  color: var(--cs-on-surface-variant);
+}
+
+.role_psychologist .avatar {
+  border-color: var(--cs-glass-border);
+  color: var(--cs-primary);
+  background: var(--cs-glass-bg-strong);
+}
+
+.role_psychologist .navLink {
+  border-radius: var(--cs-radius-xl) 0 0 var(--cs-radius-xl);
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cs-surface-lowest) 78%, white 22%) 0%,
+      color-mix(in srgb, var(--cs-primary-container) 12%, var(--cs-surface-lowest) 88%) 100%
+    );
+    border-color: color-mix(in srgb, var(--cs-primary) 18%, transparent);
+    color: var(--cs-primary);
+  }
+}
+
+.role_psychologist .navLinkActive {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--cs-primary) 18%, var(--cs-surface-lowest) 82%) 0%,
+    color-mix(in srgb, var(--cs-primary-container) 20%, var(--cs-surface-lowest) 80%) 100%
+  );
+  color: var(--cs-primary);
+  border-color: color-mix(in srgb, var(--cs-primary) 22%, transparent);
+  box-shadow: var(--cs-glass-shadow);
+}
+
+.role_psychologist .navIcon {
+  color: inherit;
+}
+
+.role_psychologist .menuToggle {
+  border-color: var(--cs-glass-border);
+  color: var(--cs-primary);
+  background: var(--cs-glass-bg-strong);
+  box-shadow: var(--cs-glass-shadow);
+}
+
+.role_psychologist .logoutBtn {
+  border-color: var(--cs-glass-border);
+  background: var(--cs-glass-bg);
+  color: var(--cs-on-surface);
+
+  &:hover {
+    color: var(--cs-primary);
+  }
+}
+
+.role_psychologist .main {
+  background: var(--cs-surface);
+  max-width: 90rem;
+}

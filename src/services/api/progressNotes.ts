@@ -165,6 +165,76 @@ class ProgressNotesService {
   }
 
   /**
+   * Download a progress note as PDF (triggers browser save; same auth as retrieve).
+   */
+  async downloadNotePdf(noteId: number): Promise<void> {
+    try {
+      const response = await axiosInstance.get(`/auth/progress-notes/${noteId}/pdf/`, {
+        responseType: 'blob',
+      });
+      const blob = response.data as Blob;
+      if (blob.type.includes('application/json')) {
+        const text = await blob.text();
+        const data = JSON.parse(text) as { detail?: string; error?: string; message?: string };
+        const msg =
+          typeof data.detail === 'string'
+            ? data.detail
+            : typeof data.error === 'string'
+              ? data.error
+              : typeof data.message === 'string'
+                ? data.message
+                : 'Download failed.';
+        throw new Error(msg);
+      }
+      let filename = `progress-note-${noteId}.pdf`;
+      const cd = response.headers['content-disposition'] as string | undefined;
+      if (cd) {
+        const utf8 = /filename\*=UTF-8''([^;]+)/i.exec(cd);
+        const ascii = /filename="([^"]+)"/i.exec(cd);
+        const raw = utf8?.[1]?.trim() || ascii?.[1]?.trim();
+        if (raw) {
+          try {
+            filename = decodeURIComponent(raw);
+          } catch {
+            filename = raw;
+          }
+        }
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading progress note PDF:', error);
+      if (axios.isAxiosError(error) && error.response?.data instanceof Blob) {
+        const errBlob = error.response.data as Blob;
+        if (errBlob.type.includes('application/json') || errBlob.size < 8192) {
+          try {
+            const text = await errBlob.text();
+            const data = JSON.parse(text) as { detail?: string; error?: string };
+            if (typeof data.detail === 'string') {
+              throw new Error(data.detail);
+            }
+            if (typeof data.error === 'string') {
+              throw new Error(data.error);
+            }
+          } catch (e) {
+            if (e instanceof Error && !axios.isAxiosError(e)) {
+              throw e;
+            }
+          }
+        }
+      }
+      throw this.handleError(error);
+    }
+  }
+
+  /**
    * Get all progress notes for a specific patient
    * @param patientId - ID of the patient
    * @returns List of progress notes for the patient

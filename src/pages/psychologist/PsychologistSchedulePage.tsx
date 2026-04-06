@@ -22,6 +22,7 @@ import {
   CloseIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -322,7 +323,7 @@ export const PsychologistSchedulePage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
         <div className={styles.dashboardContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.loadingState}>
               <p>Loading schedule...</p>
             </div>
@@ -336,7 +337,7 @@ export const PsychologistSchedulePage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
         <div className={styles.dashboardContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.errorState}>
               <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Schedule</h2>
               <p>{error}</p>
@@ -354,39 +355,33 @@ export const PsychologistSchedulePage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
       <div className={styles.scheduleContainer}>
-        <div className="container">
-          {/* Page Header with Gradient */}
-          <div className={styles.pageHeader}>
-            <div className={styles.headerContent}>
-              <div className={styles.headerText}>
-                <h1 className={styles.pageTitle}>
-                  <span className={styles.titleIcon}><CalendarIcon size="lg" /></span>
-                  My Schedule
-                </h1>
-                <p className={styles.pageSubtitle}>
+        <div className={shell.wrap}>
+          <header className={shell.pageHeader}>
+            <div className={styles.shellHeaderRow}>
+              <div>
+                <h1 className={shell.welcomeTitle}>My schedule</h1>
+                <p className={shell.welcomeSubtitle}>
                   Manage your appointments and sessions
                 </p>
               </div>
-              <div className={styles.headerActions}>
-                <div className={styles.viewToggle}>
-                  <Button
-                    className={viewMode === 'list' ? styles.active : ''}
-                    onClick={() => setViewMode('list')}
-                  >
-                    <span><ClipboardIcon size="sm" /></span>
-                    <span className={styles.buttonText}>List View</span>
-                  </Button>
-                  <Button
-                    className={viewMode === 'calendar' ? styles.active : ''}
-                    onClick={() => setViewMode('calendar')}
-                  >
-                    <span><CalendarIcon size="sm" /></span>
-                    <span className={styles.buttonText}>Calendar</span>
-                  </Button>
-                </div>
+              <div className={styles.viewToggle}>
+                <Button
+                  className={viewMode === 'list' ? styles.active : ''}
+                  onClick={() => setViewMode('list')}
+                >
+                  <span><ClipboardIcon size="sm" /></span>
+                  <span className={styles.buttonText}>List</span>
+                </Button>
+                <Button
+                  className={viewMode === 'calendar' ? styles.active : ''}
+                  onClick={() => setViewMode('calendar')}
+                >
+                  <span><CalendarIcon size="sm" /></span>
+                  <span className={styles.buttonText}>Calendar</span>
+                </Button>
               </div>
             </div>
-          </div>
+          </header>
 
           {/* Stats Cards */}
           <div className={styles.statsGrid}>

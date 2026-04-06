@@ -10,9 +10,11 @@ import {
   WarningIcon,
   EyeIcon,
   ClipboardIcon,
-  CloseIcon
+  CloseIcon,
+  DownloadIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Select } from '../../components/ui/select';
@@ -29,6 +31,7 @@ export const PsychologistNotesPage: React.FC = () => {
   const [selectedNote, setSelectedNote] = useState<ProgressNote | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState<number | null>(null);
+  const [pdfLoadingNoteId, setPdfLoadingNoteId] = useState<number | null>(null);
 
   const user = authService.getStoredUser();
 
@@ -116,6 +119,18 @@ export const PsychologistNotesPage: React.FC = () => {
     setNoteToDelete(null);
   };
 
+  const handleDownloadPdf = async (noteId: number) => {
+    try {
+      setPdfLoadingNoteId(noteId);
+      await progressNotesService.downloadNotePdf(noteId);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to download PDF';
+      alert(message);
+    } finally {
+      setPdfLoadingNoteId(null);
+    }
+  };
+
   const filteredNotes = notes.filter(note => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -147,27 +162,20 @@ export const PsychologistNotesPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
       <div className={styles.notesContainer}>
-        <div className="container">
-          {/* Page Header */}
-          <div className={styles.pageHeader}>
-            <div className={styles.headerContent}>
-              <div className={styles.headerText}>
-                <h1 className={styles.pageTitle}>
-                  <span className={styles.titleIcon}><NotesIcon size="lg" /></span>
-                  Progress Notes
-                </h1>
-                <p className={styles.pageSubtitle}>
+        <div className={shell.wrap}>
+          <header className={shell.pageHeader}>
+            <div className={styles.shellHeaderRow}>
+              <div>
+                <h1 className={shell.welcomeTitle}>Progress notes</h1>
+                <p className={shell.welcomeSubtitle}>
                   Manage SOAP notes and track patient progress
                 </p>
               </div>
-              <Button
-                className={styles.primaryButton}
-                onClick={handleCreateNote}
-              >
+              <Button className={styles.primaryButton} onClick={handleCreateNote}>
                 + New Note
               </Button>
             </div>
-          </div>
+          </header>
 
           {/* Search and Filters */}
           <div className={styles.searchFilterSection}>
@@ -297,6 +305,14 @@ export const PsychologistNotesPage: React.FC = () => {
                       View Full
                     </Button>
                     <Button
+                      className={styles.secondaryButton}
+                      disabled={pdfLoadingNoteId === note.id}
+                      onClick={() => handleDownloadPdf(note.id)}
+                    >
+                      <DownloadIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                      {pdfLoadingNoteId === note.id ? 'Downloading…' : 'Download PDF'}
+                    </Button>
+                    <Button
                       className={styles.editButton}
                       onClick={() => handleEditNote(note.id)}
                     >
@@ -393,6 +409,14 @@ export const PsychologistNotesPage: React.FC = () => {
             <div className={styles.modalActions}>
               <Button className={styles.secondaryButton} onClick={handleCloseNote}>
                 Close
+              </Button>
+              <Button
+                className={styles.secondaryButton}
+                disabled={pdfLoadingNoteId === selectedNote.id}
+                onClick={() => handleDownloadPdf(selectedNote.id)}
+              >
+                <DownloadIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                {pdfLoadingNoteId === selectedNote.id ? 'Downloading…' : 'Download PDF'}
               </Button>
               <Button
                 className={styles.primaryButton}

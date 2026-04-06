@@ -2,10 +2,66 @@
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/buttonSystem' as btn;
 
-// Psychologist Layout - GREEN THEME
+// Psychologist Layout — default green marketing-style shell; transparent under Clinical Sanctuary
 .psychologistLayout {
   min-height: 100vh;
   background: linear-gradient(135deg, $psychologist-bg-gradient-start 0%, $psychologist-bg-gradient-end 100%);
+
+  &:global(.clinicalShell) {
+    background: transparent;
+  }
+}
+
+// Clinical Sanctuary psychologist portal: tighten main column width and soften legacy cards
+.psychologistLayout:global(.clinicalShell) .scheduleContainer,
+.psychologistLayout:global(.clinicalShell) .notesContainer,
+.psychologistLayout:global(.clinicalShell) .profileContainer {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.psychologistLayout:global(.clinicalShell) .profileCard,
+.psychologistLayout:global(.clinicalShell) .statCard,
+.psychologistLayout:global(.clinicalShell) .noteCard {
+  background: var(--cs-glass-bg);
+  border: 1px solid var(--cs-glass-border);
+  box-shadow: var(--cs-glass-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.psychologistLayout:global(.clinicalShell) .pageTitle {
+  background: none;
+  -webkit-text-fill-color: unset;
+  color: var(--cs-primary);
+  font-family: var(--cs-font-headline);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.psychologistLayout:global(.clinicalShell) .pageSubtitle {
+  color: var(--cs-on-surface-variant);
+  font-size: 1rem;
+}
+
+.shellHeaderRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.psychologistLayout:global(.clinicalShell) .notesContainer,
+.psychologistLayout:global(.clinicalShell) .patientsContainer {
+  padding-top: 0;
+  padding-bottom: 1.5rem;
+  min-height: 0;
 }
 
 // Profile Container

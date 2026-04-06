@@ -30,6 +30,8 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
   const usePatientShell =
     patientShell && isAuthenticated && user?.role === 'patient';
+  const useClinicalShell =
+    isAuthenticated && user?.role === 'psychologist';
   const useRoleShell =
     isAuthenticated &&
     !!user &&
@@ -48,7 +50,10 @@ export const Layout: React.FC<LayoutProps> = ({
 
   if (useRoleShell && user) {
     return (
-      <div className={`${styles.layout} ${className}`}>
+      <div
+        className={`${styles.layout} ${className} ${useClinicalShell ? 'clinicalShell' : ''}`}
+        {...(useClinicalShell ? { 'data-clinical-shell': '' } : {})}
+      >
         <RoleAppShell user={user}>{children}</RoleAppShell>
       </div>
     );

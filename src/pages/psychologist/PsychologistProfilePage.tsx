@@ -5,6 +5,7 @@ import { authService } from '../../services/api/auth';
 import type { PsychologistProfile } from '../../services/api/psychologist';
 import { StarIcon } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
@@ -159,11 +160,11 @@ export const PsychologistProfilePage: React.FC = () => {
         className={styles.psychologistLayout}
       >
         <div className={styles.profileContainer}>
-          <div className="container">
-            <div className={styles.pageHeader}>
-              <h1 className={styles.pageTitle}>My Profile</h1>
-              <p className={styles.pageSubtitle}>Loading your profile...</p>
-            </div>
+          <div className={shell.wrap}>
+            <header className={shell.pageHeader}>
+              <h1 className={shell.welcomeTitle}>My profile</h1>
+              <p className={shell.welcomeSubtitle}>Loading your profile…</p>
+            </header>
             <div className={styles.loadingState}>
               <p>Loading profile data...</p>
             </div>
@@ -181,11 +182,11 @@ export const PsychologistProfilePage: React.FC = () => {
         className={styles.psychologistLayout}
       >
         <div className={styles.profileContainer}>
-          <div className="container">
-            <div className={styles.pageHeader}>
-              <h1 className={styles.pageTitle}>My Profile</h1>
-              <p className={styles.pageSubtitle}>Error loading profile</p>
-            </div>
+          <div className={shell.wrap}>
+            <header className={shell.pageHeader}>
+              <h1 className={shell.welcomeTitle}>My profile</h1>
+              <p className={shell.welcomeSubtitle}>We could not load your profile</p>
+            </header>
             <div className={styles.errorState}>
               <h3>Unable to Load Profile</h3>
               <p><strong>Error:</strong> {error}</p>
@@ -210,11 +211,11 @@ export const PsychologistProfilePage: React.FC = () => {
         className={styles.psychologistLayout}
       >
         <div className={styles.profileContainer}>
-          <div className="container">
-            <div className={styles.pageHeader}>
-              <h1 className={styles.pageTitle}>My Profile</h1>
-              <p className={styles.pageSubtitle}>No profile data available</p>
-            </div>
+          <div className={shell.wrap}>
+            <header className={shell.pageHeader}>
+              <h1 className={shell.welcomeTitle}>My profile</h1>
+              <p className={shell.welcomeSubtitle}>No profile data available</p>
+            </header>
           </div>
         </div>
       </Layout>
@@ -228,13 +229,13 @@ export const PsychologistProfilePage: React.FC = () => {
       className={styles.psychologistLayout}
     >
       <div className={styles.profileContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1 className={styles.pageTitle}>My Profile</h1>
-            <p className={styles.pageSubtitle}>
+        <div className={shell.wrap}>
+          <header className={shell.pageHeader}>
+            <h1 className={shell.welcomeTitle}>My profile</h1>
+            <p className={shell.welcomeSubtitle}>
               Manage your professional profile and practice information.
             </p>
-          </div>
+          </header>
 
           {profileNeedsSchedule(profile) && (
             <div className={styles.scheduleWarningBanner} role="status">

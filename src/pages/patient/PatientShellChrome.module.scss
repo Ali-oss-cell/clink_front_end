@@ -1,5 +1,5 @@
-// Shared “patient shell” page chrome (header + CTAs)
-// Tokens come from `.patientShell` (see `_clinicalSanctuary.scss`), so this file should only be used inside `Layout patientShell`.
+// Shared Clinical Sanctuary page chrome (header + CTAs)
+// Tokens from `.patientShell` or `.clinicalShell` (see `_clinicalSanctuary.scss`).
 
 .wrap {
   max-width: 80rem;

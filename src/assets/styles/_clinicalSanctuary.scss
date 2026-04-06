@@ -1,7 +1,8 @@
 // "Clinical Sanctuary" tokens — scoped under .patientShell (see PatientAppShell)
+// and .clinicalShell (psychologist portal via Layout + RoleAppShell).
 // Reference: new/DESIGN.md (not the Tailwind HTML prototype)
 
-.patientShell {
+@mixin clinical-sanctuary-tokens {
   --cs-primary: #003441;
   --cs-primary-container: #0f4c5c;
   --cs-on-primary: #ffffff;
@@ -32,13 +33,27 @@
   --cs-radius-2xl: 1rem;
   --cs-font-headline: 'Public Sans', system-ui, sans-serif;
   --cs-font-body: 'Inter', system-ui, sans-serif;
+}
 
+.patientShell {
+  @include clinical-sanctuary-tokens;
+  font-family: var(--cs-font-body);
+  color: var(--cs-on-surface);
+}
+
+.clinicalShell {
+  @include clinical-sanctuary-tokens;
   font-family: var(--cs-font-body);
   color: var(--cs-on-surface);
 }
 
 // Layout root when patient sidebar shell is active (any CSS-module `patientLayout` hash)
 [data-patient-shell] {
+  background: transparent;
+  min-height: 100vh;
+}
+
+[data-clinical-shell] {
   background: transparent;
   min-height: 100vh;
 }

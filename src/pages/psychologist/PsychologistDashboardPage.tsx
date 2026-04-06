@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
@@ -10,16 +10,20 @@ import {
   CalendarIcon,
   UsersIcon,
   NotesIcon,
-  CheckCircleIcon,
-  StarIcon,
   VideoIcon,
-  ChartIcon,
   HospitalIcon,
-  BoltIcon
 } from '../../utils/icons';
 import styles from './PsychologistPages.module.scss';
+import d from './PsychologistDashboard.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
-import { Button } from '../../components/ui/button';
+
+function timeGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
 
 export const PsychologistDashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -27,11 +31,6 @@ export const PsychologistDashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [videoCallAppointments, setVideoCallAppointments] = useState<any[]>([]);
-  
-  // Refs for scroll-triggered animations
-  const statsGridRef = useRef<HTMLDivElement>(null);
-  const dashboardGridRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
 
   const user = authService.getStoredUser();
 
@@ -58,9 +57,9 @@ export const PsychologistDashboardPage: React.FC = () => {
         setError(null);
         const data = await dashboardService.getPsychologistDashboard();
         setDashboardData(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to load dashboard:', err);
-        setError(err.message || 'Failed to load dashboard data');
+        setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
       } finally {
         setLoading(false);
       }
@@ -69,18 +68,16 @@ export const PsychologistDashboardPage: React.FC = () => {
     fetchDashboardData();
   }, []);
 
-  // Load video call appointments
   const loadVideoCallAppointments = async () => {
     try {
       const response = await appointmentsService.getPsychologistSchedule({
-        start_date: formatLocalDateYYYYMMDD(new Date())
+        start_date: formatLocalDateYYYYMMDD(new Date()),
       });
-      
-      // Filter for telehealth appointments that can be joined
-      const eligibleAppointments = response.results.filter((apt: any) => 
+
+      const eligibleAppointments = response.results.filter((apt: any) =>
         videoCallService.isVideoCallAvailable(apt)
       );
-      
+
       setVideoCallAppointments(eligibleAppointments);
     } catch (err) {
       console.error('Failed to load video call appointments:', err);
@@ -91,79 +88,12 @@ export const PsychologistDashboardPage: React.FC = () => {
     loadVideoCallAppointments();
   }, []);
 
-  // Auto-refresh video call appointments every 30 seconds to update timer values
   useEffect(() => {
     const interval = setInterval(() => {
       loadVideoCallAppointments();
-    }, 30000); // 30 seconds
-
+    }, 30000);
     return () => clearInterval(interval);
   }, []);
-
-  // Intersection Observer for scroll-triggered animations
-  useEffect(() => {
-    if (loading || !dashboardData) return;
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px 0px -80px 0px', // Trigger when element is 80px from bottom of viewport
-      threshold: 0.1
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add(styles.isVisible);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    // Small delay to ensure DOM is fully rendered
-    const setupObserver = () => {
-      // Observe all sections
-      const sections = [
-        headerRef.current,
-        statsGridRef.current,
-        dashboardGridRef.current
-      ].filter(Boolean) as Element[];
-
-      sections.forEach((section) => {
-        observer.observe(section);
-        // Check if element is already visible and trigger animation immediately
-        const rect = section.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          section.classList.add(styles.isVisible);
-        }
-      });
-
-      // Observe individual cards
-      const statCards = statsGridRef.current?.querySelectorAll(`.${styles.statCard}`);
-      const dashboardCards = dashboardGridRef.current?.querySelectorAll(`.${styles.dashboardCard}`);
-      const noteItems = dashboardGridRef.current?.querySelectorAll(`.${styles.noteItem}`);
-      
-      [statCards, dashboardCards, noteItems].forEach((nodeList) => {
-        nodeList?.forEach((element) => {
-          observer.observe(element);
-          // Check if element is already visible
-          const rect = element.getBoundingClientRect();
-          if (rect.top < window.innerHeight && rect.bottom > 0) {
-            element.classList.add(styles.isVisible);
-          }
-        });
-      });
-    };
-
-    // Setup immediately and also after a small delay for any dynamic content
-    setupObserver();
-    const timeoutId = setTimeout(setupObserver, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      observer.disconnect();
-    };
-  }, [loading, dashboardData]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-AU', {
@@ -171,19 +101,16 @@ export const PsychologistDashboardPage: React.FC = () => {
       month: 'short',
       year: 'numeric',
       hour: 'numeric',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   if (loading) {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
-        <div className={styles.dashboardContainer}>
-          <div className="container">
-            <div className={styles.loadingState}>
-              <p>Loading dashboard...</p>
-            </div>
-          </div>
+        <div className={d.loadingBox}>
+          <div className={d.spinner} />
+          <p>Loading your dashboard…</p>
         </div>
       </Layout>
     );
@@ -192,13 +119,15 @@ export const PsychologistDashboardPage: React.FC = () => {
   if (error) {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
-        <div className={styles.dashboardContainer}>
-          <div className="container">
-            <div className={styles.errorState}>
-              <h3><WarningIcon size="md" className={styles.inlineIcon} /> Error Loading Dashboard</h3>
-              <p>{error}</p>
-            </div>
-          </div>
+        <div className={d.errorBox}>
+          <h2>
+            <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Error loading dashboard
+          </h2>
+          <p>{error}</p>
+          <button type="button" className={`${d.actionBtn} ${d.actionBtnPrimary}`} onClick={() => window.location.reload()}>
+            Try again
+          </button>
         </div>
       </Layout>
     );
@@ -209,89 +138,63 @@ export const PsychologistDashboardPage: React.FC = () => {
   }
 
   const averageRating = dashboardData?.stats?.average_rating;
+  const firstName = user?.first_name || 'there';
+
+  const statItems = [
+    { value: dashboardData.today_appointments_count, label: "Today's sessions" },
+    { value: dashboardData.upcoming_appointments_this_week, label: 'This week' },
+    { value: dashboardData.active_patients_count, label: 'Active patients' },
+    { value: dashboardData.pending_notes_count, label: 'Pending notes' },
+    { value: dashboardData.completed_sessions_today, label: 'Done today' },
+    {
+      value: typeof averageRating === 'number' ? averageRating.toFixed(1) : '—',
+      label: 'Avg rating',
+    },
+  ];
 
   return (
-    <Layout 
-      user={user} 
-      isAuthenticated={true}
-      className={styles.psychologistLayout}
-    >
-      <div className={styles.dashboardContainer}>
-        <div className="container">
-          <div ref={headerRef} className={styles.dashboardHeader}>
-            <h1 className={styles.welcomeTitle}>Good morning, {user?.first_name || 'User'}!</h1>
-            <p className={styles.welcomeSubtitle}>
-              Here's your overview and quick access to key areas.
+    <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
+      <div className={d.root}>
+        <div className={d.inner}>
+          <header className={shell.pageHeader}>
+            <h1 className={shell.welcomeTitle}>
+              {timeGreeting()}, {firstName}.
+            </h1>
+            <p className={shell.welcomeSubtitle}>
+              Your practice at a glance — sessions, notes, and quick actions in one place.
             </p>
+          </header>
+
+          <div className={d.statsStrip} aria-label="Key metrics">
+            {statItems.map((s) => (
+              <div key={s.label} className={d.statChip}>
+                <div className={d.statChipValue}>{s.value}</div>
+                <div className={d.statChipLabel}>{s.label}</div>
+              </div>
+            ))}
           </div>
 
-          {/* Stats Cards */}
-          <div ref={statsGridRef} className={styles.statsGrid}>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
-              <div className={styles.statContent}>
-                <div className={styles.statValue}>{dashboardData.today_appointments_count}</div>
-                <div className={styles.statLabel}>Today's Appointments</div>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
-              <div className={styles.statContent}>
-                <div className={styles.statValue}>{dashboardData.upcoming_appointments_this_week}</div>
-                <div className={styles.statLabel}>This Week</div>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}><UsersIcon size="xl" /></div>
-              <div className={styles.statContent}>
-                <div className={styles.statValue}>{dashboardData.active_patients_count}</div>
-                <div className={styles.statLabel}>Active Patients</div>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}><NotesIcon size="xl" /></div>
-              <div className={styles.statContent}>
-                <div className={styles.statValue}>{dashboardData.pending_notes_count}</div>
-                <div className={styles.statLabel}>Pending Notes</div>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}><CheckCircleIcon size="xl" /></div>
-              <div className={styles.statContent}>
-                <div className={styles.statValue}>{dashboardData.completed_sessions_today}</div>
-                <div className={styles.statLabel}>Completed Today</div>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}><StarIcon size="xl" /></div>
-              <div className={styles.statContent}>
-                <div className={styles.statValue}>
-                  {typeof averageRating === 'number' ? averageRating.toFixed(1) : '—'}
-                </div>
-                <div className={styles.statLabel}>Avg Rating</div>
-              </div>
-            </div>
-          </div>
-
-          <div ref={dashboardGridRef} className={styles.dashboardGrid}>
-            {/* Video Sessions Card - Prominent */}
-            <div className={`${styles.dashboardCard} ${styles.videoSessionsCard}`}>
-              <h3><VideoIcon size="lg" className={styles.inlineIcon} /> Video Sessions</h3>
-              <div className={styles.cardContent}>
-                {videoCallAppointments.length > 0 ? (
-                  <div className={styles.videoSessionsList}>
-                    {videoCallAppointments.map((appointment) => (
-                      <div key={appointment.id} className={styles.videoSessionItem}>
-                        <div className={styles.videoSessionInfo}>
-                          <div className={styles.videoSessionHeader}>
-                            <span className={styles.videoSessionPatient}>
-                              {appointment.patient_name}
-                            </span>
-                            <span className={styles.videoSessionTime}>
+          <div className={d.bento}>
+            <section className={`${d.card} ${d.videoHero} ${d.span8}`}>
+              <span className={d.decoIcon} aria-hidden>
+                <VideoIcon size="lg" />
+              </span>
+              <h2 className={d.cardTitle}>Video sessions</h2>
+              {videoCallAppointments.length > 0 ? (
+                <div className={d.scrollList}>
+                  {videoCallAppointments.map((appointment) => {
+                    const canJoin =
+                      appointment.can_join_session === undefined ? true : appointment.can_join_session;
+                    return (
+                      <div key={appointment.id} className={d.videoRow}>
+                        <div className={d.videoRowInfo}>
+                          <div className={d.videoRowTop}>
+                            <span className={d.patientName}>{appointment.patient_name}</span>
+                            <span className={d.timeChip}>
                               {videoCallService.getTimeUntilAppointment(appointment)}
                             </span>
                           </div>
-                          <div className={styles.videoSessionDetails}>
+                          <div className={d.videoRowDetail}>
                             <span>{appointment.formatted_date}</span>
                             <span>•</span>
                             <span>{appointment.formatted_time}</span>
@@ -299,133 +202,108 @@ export const PsychologistDashboardPage: React.FC = () => {
                             <span>{appointment.duration_minutes} min</span>
                           </div>
                         </div>
-                        <Button
-                          className={`${styles.actionButton} ${styles.videoJoinButton} ${
-                            appointment.can_join_session === false ? styles.disabledButton : ''
-                          }`}
-                          onClick={() => {
-                            const canJoin = appointment.can_join_session !== undefined 
-                              ? appointment.can_join_session 
-                              : true; // Default to true if not specified
-                            if (canJoin) {
-                              handleJoinVideoCall(appointment.id);
-                            }
-                          }}
-                          disabled={appointment.can_join_session === false}
+                        <button
+                          type="button"
+                          className={d.joinBtn}
+                          disabled={!canJoin}
                           title={
-                            appointment.can_join_session === false 
-                              ? 'Video call is not available at this time' 
-                              : 'Join video session'
+                            !canJoin ? 'Video call is not available at this time' : 'Join video session'
                           }
+                          onClick={() => canJoin && handleJoinVideoCall(appointment.id)}
                         >
-                          <VideoIcon size="sm" className={styles.inlineIcon} />
-                          {
-                            appointment.can_join_session === false 
-                              ? 'Not Available' 
-                              : 'Join Now'
-                          }
-                        </Button>
+                          <VideoIcon size="sm" />
+                          {!canJoin ? 'Not available' : 'Join now'}
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className={styles.placeholder}>
-                    <p>No upcoming video sessions</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Recent Notes Card */}
-            <div className={styles.dashboardCard}>
-              <div className={styles.dashboardCardHeader}>
-                <h3><NotesIcon size="lg" className={styles.inlineIcon} /> Recent Progress Notes</h3>
-                <Button className={styles.viewAllButton} onClick={handleViewNotes}>
-                  View All →
-                </Button>
-              </div>
-              {dashboardData.recent_notes.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <p>No recent notes</p>
+                    );
+                  })}
                 </div>
               ) : (
-                <div className={styles.notesList}>
+                <p className={d.placeholder}>No telehealth sessions to join today in the current window.</p>
+              )}
+            </section>
+
+            <section className={`${d.card} ${d.span4}`}>
+              <div className={d.progressHead}>
+                <h2 className={d.progressTitle}>Recent notes</h2>
+                <button type="button" className={d.linkSubtle} onClick={handleViewNotes}>
+                  View all
+                </button>
+              </div>
+              {dashboardData.recent_notes.length === 0 ? (
+                <p className={d.placeholder}>No recent progress notes.</p>
+              ) : (
+                <div className={d.scrollList}>
                   {dashboardData.recent_notes.map((note) => (
-                    <div 
-                      key={note.id} 
-                      className={styles.noteItem}
-                    >
-                      <div className={styles.noteItemHeader}>
-                        <span className={styles.notePatient}>{note.patient_name}</span>
-                        {note.progress_rating && (
-                          <span className={styles.noteRating}>
-                            {note.progress_rating}/10
-                          </span>
-                        )}
+                    <div key={note.id} className={d.noteRow}>
+                      <div className={d.noteRowTop}>
+                        <span className={d.notePatient}>{note.patient_name}</span>
+                        {note.progress_rating != null ? (
+                          <span className={d.noteRating}>{note.progress_rating}/10</span>
+                        ) : null}
                       </div>
-                      <div className={styles.noteItemMeta}>
-                        <span>Session #{note.session_number}</span>
-                        <span>•</span>
-                        <span>{formatDate(note.session_date)}</span>
+                      <div className={d.noteMeta}>
+                        Session #{note.session_number} · {formatDate(note.session_date)}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
+            </section>
 
-            {/* Quick Stats Card */}
-            <div className={styles.dashboardCard}>
-              <h3><ChartIcon size="lg" className={styles.inlineIcon} /> This Month</h3>
-              <div className={styles.dashboardMetaStack}>
-                <div className={styles.dashboardMetaStack}>
-                  <div className={styles.dashboardInlineStatRow}>
-                    <span>Total Appointments:</span>
-                    <strong>{dashboardData.stats.total_appointments_this_month}</strong>
-                  </div>
-                  <div className={styles.dashboardInlineStatRow}>
-                    <span>Sessions Completed (Week):</span>
-                    <strong>{dashboardData.stats.sessions_completed_this_week}</strong>
-                  </div>
-                  <div className={styles.dashboardInlineStatRow}>
-                    <span>Total Patients:</span>
-                    <strong>{dashboardData.total_patients_count}</strong>
-                  </div>
+            <section className={`${d.card} ${d.span4Row2}`}>
+              <h2 className={d.cardTitle}>This month</h2>
+              <div className={d.metaStack}>
+                <div className={d.metaRow}>
+                  <span>Appointments</span>
+                  <strong>{dashboardData.stats.total_appointments_this_month}</strong>
+                </div>
+                <div className={d.metaRow}>
+                  <span>Sessions completed (week)</span>
+                  <strong>{dashboardData.stats.sessions_completed_this_week}</strong>
+                </div>
+                <div className={d.metaRow}>
+                  <span>Total patients</span>
+                  <strong>{dashboardData.total_patients_count}</strong>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Quick Actions Card */}
-            <div className={styles.dashboardCard}>
-              <h3><BoltIcon size="md" className={styles.inlineIcon} /> Quick Actions</h3>
-              <div className={styles.dashboardMetaStack}>
-                <Button className={styles.actionButton} onClick={handleViewPatients}>
-                  <UsersIcon size="sm" className={styles.inlineIcon} />
-                  Manage Patients
-                </Button>
-                <Button className={styles.actionButton} onClick={handleViewSchedule}>
-                  <CalendarIcon size="sm" className={styles.inlineIcon} />
-                  View Schedule
-                </Button>
-                <Button className={styles.actionButton} onClick={handleViewNotes}>
-                  <NotesIcon size="sm" className={styles.inlineIcon} />
-                  Write Progress Note
-                </Button>
+            <section className={`${d.card} ${d.span4Row2}`}>
+              <h2 className={d.cardTitle}>Quick actions</h2>
+              <div className={d.actionsStack}>
+                <button type="button" className={`${d.actionBtn} ${d.actionBtnPrimary}`} onClick={handleViewPatients}>
+                  <UsersIcon size="sm" />
+                  Manage patients
+                </button>
+                <button type="button" className={d.actionBtn} onClick={handleViewSchedule}>
+                  <CalendarIcon size="sm" />
+                  View schedule
+                </button>
+                <button type="button" className={d.actionBtn} onClick={handleViewNotes}>
+                  <NotesIcon size="sm" />
+                  Write progress note
+                </button>
               </div>
-            </div>
+            </section>
 
-            {/* Overview Card */}
-            <div className={styles.dashboardCard}>
-              <h3><HospitalIcon size="lg" className={styles.inlineIcon} /> Practice Overview</h3>
-              <div className={styles.dashboardMetaStack}>
-                <p className={styles.dashboardBodyText}>
-                  You have <strong>{dashboardData.today_appointments_count}</strong> appointment{dashboardData.today_appointments_count !== 1 ? 's' : ''} today
-                  {dashboardData.pending_notes_count > 0 && (
-                    <> and <strong>{dashboardData.pending_notes_count}</strong> note{dashboardData.pending_notes_count !== 1 ? 's' : ''} pending.</>
-                  )}
-                </p>
-              </div>
-            </div>
+            <section className={`${d.card} ${d.span4Row2}`}>
+              <h2 className={d.cardTitle}>Practice overview</h2>
+              <p className={d.bodyText}>
+                <HospitalIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                You have <strong>{dashboardData.today_appointments_count}</strong> appointment
+                {dashboardData.today_appointments_count !== 1 ? 's' : ''} today
+                {dashboardData.pending_notes_count > 0 ? (
+                  <>
+                    {' '}
+                    and <strong>{dashboardData.pending_notes_count}</strong> note
+                    {dashboardData.pending_notes_count !== 1 ? 's' : ''} pending attention.
+                  </>
+                ) : (
+                  <>.</>
+                )}
+              </p>
+            </section>
           </div>
         </div>
       </div>

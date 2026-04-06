@@ -7,7 +7,7 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 - Sass design tokens: `src/assets/styles/_variables.scss`
 - Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
 - Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
-- Scoped patient CSS variables: `src/assets/styles/_clinicalSanctuary.scss`
+- Scoped Clinical Sanctuary CSS variables: `src/assets/styles/_clinicalSanctuary.scss` (`.patientShell` for the patient app shell; `.clinicalShell` + `[data-clinical-shell]` on `Layout` for the psychologist portal)
 - Shared/global primitives: `src/assets/styles/*`, `src/components/ui/ui.scss`
 - Feature styles: `src/**/*.module.scss`
 
