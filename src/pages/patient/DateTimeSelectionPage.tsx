@@ -5,9 +5,8 @@ import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import { servicesService } from '../../services/api/services';
 import type { AvailableSlotsResponse, TimeSlot } from '../../services/api/appointments';
-import { WarningIcon, EditIcon, ClipboardIcon, VideoIcon, HospitalIcon, CalendarIcon, ClockIcon } from '../../utils/icons';
+import { WarningIcon, EditIcon, CalendarIcon, ClockIcon } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import styles from './DateTimeSelection.module.scss';
 
@@ -244,6 +243,16 @@ export const DateTimeSelectionPage: React.FC = () => {
     fetchAvailableSlots();
   }, [selectedPsychologist, sessionType, serviceId, selectedService, navigate, fetchAvailableSlots]); // ✅ Include fetchAvailableSlots in deps
 
+  // No session-type UI: align booking mode with what the clinician offers (refetch via sessionType dep).
+  useEffect(() => {
+    if (!availabilityData) return;
+    const th = availabilityData.telehealth_available;
+    const ip = availabilityData.in_person_available;
+    if (!th && ip) setSessionType('in_person');
+    else if (th && !ip) setSessionType('telehealth');
+    else if (th && ip) setSessionType('telehealth');
+  }, [availabilityData]);
+
   const handleBookAppointment = async () => {
     // Validation
     if (!selectedSlot) {
@@ -320,14 +329,28 @@ export const DateTimeSelectionPage: React.FC = () => {
   if (loading) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.dateTimeSelectionContainer}>
+        <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
-            <div className={styles.pageHeader}>
-              <h1 className={styles.pageTitle}>Select Date & Time</h1>
-              <p className={styles.pageSubtitle}>Loading available appointments...</p>
-            </div>
-            <div className={styles.loadingState}>
-              <p>Loading available time slots...</p>
+            <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderRow}>
+                <div className={styles.pageHeaderStart}>
+                  <Button
+                    type="button"
+                    className={styles.backButton}
+                    onClick={handleBack}
+                    aria-label="Back to psychologist selection"
+                  >
+                    ← Back
+                  </Button>
+                </div>
+                <h1 className={styles.pageTitle}>Select Date & Time</h1>
+                <div className={styles.pageHeaderEnd} aria-hidden />
+              </div>
+            </header>
+            <div className={styles.bookingFlowMain}>
+              <div className={styles.loadingState}>
+                <p>Loading available time slots…</p>
+              </div>
             </div>
           </div>
         </div>
@@ -345,19 +368,25 @@ export const DateTimeSelectionPage: React.FC = () => {
     
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.dateTimeSelectionContainer}>
+        <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
-            <div className={styles.pageHeader}>
-              <Button
-                type="button"
-                className={styles.backButton}
-                onClick={handleBack}
-                aria-label="Back to psychologist selection"
-              >
-                ← Back
-              </Button>
-              <h1 className={styles.pageTitle}>Select Date & Time</h1>
-            </div>
+            <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderRow}>
+                <div className={styles.pageHeaderStart}>
+                  <Button
+                    type="button"
+                    className={styles.backButton}
+                    onClick={handleBack}
+                    aria-label="Back to psychologist selection"
+                  >
+                    ← Back
+                  </Button>
+                </div>
+                <h1 className={styles.pageTitle}>Select Date & Time</h1>
+                <div className={styles.pageHeaderEnd} aria-hidden />
+              </div>
+            </header>
+            <div className={styles.bookingFlowMain}>
             <div className={styles.errorState}>
               <h3 className={styles.errorStateHeading}>
                 <span className={styles.errorStateIcon} aria-hidden>
@@ -402,6 +431,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                 </>
               )}
             </div>
+            </div>
           </div>
         </div>
       </Layout>
@@ -412,33 +442,40 @@ export const DateTimeSelectionPage: React.FC = () => {
   if (!loading && !availabilityData && !error) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.dateTimeSelectionContainer}>
+        <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
-            <div className={styles.pageHeader}>
-              <Button
-                type="button"
-                className={styles.backButton}
-                onClick={handleBack}
-                aria-label="Back to psychologist selection"
-              >
-                ← Back
-              </Button>
-              <h1 className={styles.pageTitle}>Select Date & Time</h1>
-            </div>
-            <div className={styles.errorState}>
-              <h3 className={styles.errorStateHeading}>
-                <span className={styles.errorStateIcon} aria-hidden>
-                  <WarningIcon size="md" />
-                </span>
-                No data available
-              </h3>
-              <p className={styles.errorMessage}>Unable to load appointment availability. Please try again.</p>
-              <Button type="button" className={styles.retryButton} onClick={fetchAvailableSlots}>
-                <span className={styles.retryIcon} aria-hidden>
-                  <EditIcon size="sm" />
-                </span>
-                Retry
-              </Button>
+            <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderRow}>
+                <div className={styles.pageHeaderStart}>
+                  <Button
+                    type="button"
+                    className={styles.backButton}
+                    onClick={handleBack}
+                    aria-label="Back to psychologist selection"
+                  >
+                    ← Back
+                  </Button>
+                </div>
+                <h1 className={styles.pageTitle}>Select Date & Time</h1>
+                <div className={styles.pageHeaderEnd} aria-hidden />
+              </div>
+            </header>
+            <div className={styles.bookingFlowMain}>
+              <div className={styles.errorState}>
+                <h3 className={styles.errorStateHeading}>
+                  <span className={styles.errorStateIcon} aria-hidden>
+                    <WarningIcon size="md" />
+                  </span>
+                  No data available
+                </h3>
+                <p className={styles.errorMessage}>Unable to load appointment availability. Please try again.</p>
+                <Button type="button" className={styles.retryButton} onClick={fetchAvailableSlots}>
+                  <span className={styles.retryIcon} aria-hidden>
+                    <EditIcon size="sm" />
+                  </span>
+                  Retry
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -450,33 +487,40 @@ export const DateTimeSelectionPage: React.FC = () => {
   if (!availabilityData) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.dateTimeSelectionContainer}>
+        <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
-            <div className={styles.pageHeader}>
-              <Button
-                type="button"
-                className={styles.backButton}
-                onClick={handleBack}
-                aria-label="Back to psychologist selection"
-              >
-                ← Back
-              </Button>
-              <h1 className={styles.pageTitle}>Select Date & Time</h1>
-            </div>
-            <div className={styles.errorState}>
-              <h3 className={styles.errorStateHeading}>
-                <span className={styles.errorStateIcon} aria-hidden>
-                  <WarningIcon size="md" />
-                </span>
-                No data available
-              </h3>
-              <p className={styles.errorMessage}>Unable to load appointment availability. Please try again.</p>
-              <Button type="button" className={styles.retryButton} onClick={fetchAvailableSlots}>
-                <span className={styles.retryIcon} aria-hidden>
-                  <EditIcon size="sm" />
-                </span>
-                Retry
-              </Button>
+            <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderRow}>
+                <div className={styles.pageHeaderStart}>
+                  <Button
+                    type="button"
+                    className={styles.backButton}
+                    onClick={handleBack}
+                    aria-label="Back to psychologist selection"
+                  >
+                    ← Back
+                  </Button>
+                </div>
+                <h1 className={styles.pageTitle}>Select Date & Time</h1>
+                <div className={styles.pageHeaderEnd} aria-hidden />
+              </div>
+            </header>
+            <div className={styles.bookingFlowMain}>
+              <div className={styles.errorState}>
+                <h3 className={styles.errorStateHeading}>
+                  <span className={styles.errorStateIcon} aria-hidden>
+                    <WarningIcon size="md" />
+                  </span>
+                  No data available
+                </h3>
+                <p className={styles.errorMessage}>Unable to load appointment availability. Please try again.</p>
+                <Button type="button" className={styles.retryButton} onClick={fetchAvailableSlots}>
+                  <span className={styles.retryIcon} aria-hidden>
+                    <EditIcon size="sm" />
+                  </span>
+                  Retry
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -484,175 +528,121 @@ export const DateTimeSelectionPage: React.FC = () => {
     );
   }
 
+  const outOfPocket =
+    typeof availabilityData.patient_cost_after_rebate === 'string'
+      ? parseFloat(availabilityData.patient_cost_after_rebate).toFixed(2)
+      : availabilityData.patient_cost_after_rebate.toFixed(2);
+
   return (
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-      <div className={styles.dateTimeSelectionContainer}>
+      <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
         <div className="container">
-          <div className={styles.bookingFlowMain}>
-          {/* Page Header */}
-          <div className={styles.pageHeader}>
-            <Button
-              type="button"
-              className={styles.backButton}
-              onClick={handleBack}
-              aria-label="Back to psychologist selection"
-            >
-              ← Back
-            </Button>
-            <h1 className={styles.pageTitle}>Select Date & Time</h1>
-            <p className={styles.pageSubtitle}>
-              Choose your preferred appointment time with{' '}
+          <header className={styles.pageHeader}>
+            <div className={styles.pageHeaderRow}>
+              <div className={styles.pageHeaderStart}>
+                <Button
+                  type="button"
+                  className={styles.backButton}
+                  onClick={handleBack}
+                  aria-label="Back to psychologist selection"
+                >
+                  ← Back
+                </Button>
+              </div>
+              <h1 className={styles.pageTitle}>Select Date & Time</h1>
+              <div className={styles.pageHeaderEnd} aria-hidden />
+            </div>
+          </header>
+
+          <div
+            className={styles.summaryBar}
+            role="region"
+            aria-label="Booking summary"
+          >
+            <span className={styles.summaryBarStrong}>
               {formatPersonDisplayName(availabilityData.psychologist_name)}
-            </p>
+            </span>
+            <span className={styles.summaryBarSep} aria-hidden>
+              ·
+            </span>
+            <span>Fee ${availabilityData.consultation_fee}</span>
+            <span className={styles.summaryBarSep} aria-hidden>
+              ·
+            </span>
+            <span>Rebate −${availabilityData.medicare_rebate_amount}</span>
+            <span className={styles.summaryBarSep} aria-hidden>
+              ·
+            </span>
+            <span>
+              Out-of-pocket <strong className={styles.summaryBarEm}>${outOfPocket}</strong>
+            </span>
           </div>
 
-          {/* Booking Summary */}
-          <div className={styles.selectionSummary}>
-            <div className={styles.summaryCard}>
-              <h3><ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Booking Summary</h3>
-              <div className={styles.summaryItem}>
-                <span className={styles.summaryLabel}>Psychologist:</span>
-                <span className={styles.summaryValue}>
-                  {formatPersonDisplayName(availabilityData.psychologist_name)}
-                </span>
-              </div>
-              <div className={styles.summaryItem}>
-                <span className={styles.summaryLabel}>Consultation Fee:</span>
-                <span className={styles.summaryValue}>${availabilityData.consultation_fee}</span>
-              </div>
-              <div className={styles.summaryItem}>
-                <span className={styles.summaryLabel}>Medicare Rebate:</span>
-                <span className={styles.summaryValue}>-${availabilityData.medicare_rebate_amount}</span>
-              </div>
-              <div className={styles.summaryItem}>
-                <span className={styles.summaryLabel}>Your Cost:</span>
-                <span className={styles.summaryValue}>
-                  <strong>$
-                    {typeof availabilityData.patient_cost_after_rebate === 'string'
-                      ? parseFloat(availabilityData.patient_cost_after_rebate).toFixed(2)
-                      : availabilityData.patient_cost_after_rebate.toFixed(2)}
-                  </strong>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Session Type Selection */}
-          <div className={styles.sessionTypeSection}>
-            <h2 className={styles.sessionTypeTitle}><VideoIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Session Type</h2>
-            <div className={styles.sessionTypeOptions}>
-              <div 
-                className={`${styles.sessionTypeCard} ${sessionType === 'telehealth' ? styles.selected : ''} ${!availabilityData.telehealth_available ? styles.disabled : ''}`}
-                onClick={() => availabilityData.telehealth_available && setSessionType('telehealth')}
-              >
-                <div className={styles.sessionTypeIcon}><VideoIcon size="xl" /></div>
-                <div className={styles.sessionTypeContent}>
-                  <h4>Telehealth</h4>
-                  <p>Video consultation from home</p>
-                  <p>Convenient and private</p>
-                </div>
-                {!availabilityData.telehealth_available && (
-                  <div className={styles.sessionTypeBadgeWrap}>
-                    <Badge variant="danger">Not available</Badge>
-                  </div>
-                )}
-              </div>
-
-              <div 
-                className={`${styles.sessionTypeCard} ${sessionType === 'in_person' ? styles.selected : ''} ${!availabilityData.in_person_available ? styles.disabled : ''}`}
-                onClick={() => availabilityData.in_person_available && setSessionType('in_person')}
-              >
-                <div className={styles.sessionTypeIcon}><HospitalIcon size="xl" /></div>
-                <div className={styles.sessionTypeContent}>
-                  <h4>In-Person</h4>
-                  <p>Face-to-face at clinic</p>
-                  <p>Traditional consultation</p>
-                </div>
-                {!availabilityData.in_person_available && (
-                  <div className={styles.sessionTypeBadgeWrap}>
-                    <Badge variant="danger">Not available</Badge>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Calendar Section */}
-          {availabilityData.available_dates.length > 0 ? (
-            <>
-              <div className={styles.calendarSection}>
-                <h2 className={styles.calendarTitle}><CalendarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Select a Date</h2>
-                <div className={styles.calendarGrid}>
-                  {availabilityData.available_dates.map((dateObj) => (
-                    <div
-                      key={dateObj.date}
-                      className={`${styles.calendarDay} ${styles.available} ${selectedDate === dateObj.date ? styles.selected : ''}`}
-                      onClick={() => {
-                        setSelectedDate(dateObj.date);
-                        setSelectedSlot(null); // Reset selected slot
-                      }}
-                    >
-                      <div className={styles.dayName}>{dateObj.day_name}</div>
-                      <div className={styles.dayNumber}>
-                        {new Date(dateObj.date).getDate()}
-                      </div>
-                      <div className={styles.availabilityIndicator}>
-                        {dateObj.slots.length} slots
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Time Slots Section */}
-              {selectedDate && (
-                <div className={styles.timeSelectionSection}>
-                  <h2 className={styles.timeSectionTitle}>
-                    <ClockIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    Available Times - {formatDate(selectedDate)}
+          <div className={styles.bookingFlowMain}>
+            {availabilityData.available_dates.length > 0 ? (
+              <>
+                <div className={styles.calendarSection}>
+                  <h2 className={styles.calendarTitle}>
+                    <CalendarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    Select a date
                   </h2>
-                  <div className={styles.timeSlotsGrid}>
-                    {getSelectedDateSlots().map((slot) => (
-                      <Button
-                        key={slot.id}
-                        className={`${styles.timeSlot} ${styles.available} ${selectedSlot?.id === slot.id ? styles.selected : ''}`}
-                        onClick={() => setSelectedSlot(slot)}
+                  <div className={styles.calendarGrid}>
+                    {availabilityData.available_dates.map((dateObj) => (
+                      <div
+                        key={dateObj.date}
+                        className={`${styles.calendarDay} ${styles.available} ${selectedDate === dateObj.date ? styles.selected : ''}`}
+                        onClick={() => {
+                          setSelectedDate(dateObj.date);
+                          setSelectedSlot(null);
+                        }}
                       >
-                        {slot.start_time_formatted}
-                      </Button>
+                        <div className={styles.dayName}>{dateObj.day_name}</div>
+                        <div className={styles.dayNumber}>{new Date(dateObj.date).getDate()}</div>
+                        <div className={styles.availabilityIndicator}>{dateObj.slots.length} slots</div>
+                      </div>
                     ))}
                   </div>
-                  
-                  {getSelectedDateSlots().length === 0 && (
-                    <p className={styles.noSlotsMessage}>
-                      No available time slots for this date. Please select another date.
-                    </p>
-                  )}
                 </div>
-              )}
-            </>
-          ) : (
-            <div className={styles.emptyState}>
-              <h3>No Available Appointments</h3>
-              <p>
-                {formatPersonDisplayName(availabilityData.psychologist_name)} has no available appointments in
-                the next 30 days for {sessionType} sessions.
-              </p>
-              <p>Try selecting a different session type or psychologist.</p>
-            </div>
-          )}
+
+                {selectedDate && (
+                  <div className={styles.timeSelectionSection}>
+                    <h2 className={styles.timeSectionTitle}>
+                      <ClockIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                      Times — {formatDate(selectedDate)}
+                    </h2>
+                    <div className={styles.timeSlotsGrid}>
+                      {getSelectedDateSlots().map((slot) => (
+                        <Button
+                          key={slot.id}
+                          className={`${styles.timeSlot} ${styles.available} ${selectedSlot?.id === slot.id ? styles.selected : ''}`}
+                          onClick={() => setSelectedSlot(slot)}
+                        >
+                          {slot.start_time_formatted}
+                        </Button>
+                      ))}
+                    </div>
+
+                    {getSelectedDateSlots().length === 0 && (
+                      <p className={styles.noSlotsMessage}>
+                        No available time slots for this date. Please select another date.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className={styles.emptyState}>
+                <h3>No available appointments</h3>
+                <p>
+                  {formatPersonDisplayName(availabilityData.psychologist_name)} has no openings in the next 30
+                  days for the selected visit type.
+                </p>
+                <p>Try another psychologist or check back later.</p>
+              </div>
+            )}
           </div>
 
-          {/* Action Buttons */}
           <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
-            <Button
-              type="button"
-              className={styles.cancelButton}
-              onClick={handleBack}
-              aria-label="Back to psychologist selection"
-            >
-              ← Back
-            </Button>
             <Button
               type="button"
               className={styles.continueButton}

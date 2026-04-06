@@ -50,7 +50,17 @@
 // Layout root when patient sidebar shell is active (any CSS-module `patientLayout` hash)
 [data-patient-shell] {
   background: transparent;
-  min-height: 100vh;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-patient-shell] > * {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 [data-clinical-shell] {

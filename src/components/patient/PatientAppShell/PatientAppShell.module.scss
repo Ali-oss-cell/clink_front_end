@@ -319,6 +319,7 @@ $shell-collapse: 900px;
   flex: 1;
   margin-left: $sidebar-w;
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 2.5rem clamp(1rem, 4vw, 2.5rem) 3rem;
   max-width: 90rem;
   width: 100%;
@@ -330,6 +331,21 @@ $shell-collapse: 900px;
   @media (max-width: #{$shell-collapse - 1px}) {
     margin-left: 0;
     padding-top: 4rem;
+  }
+
+  // Date/time booking: no document scroll — only the page body scrolls
+  &:has([data-patient-booking-viewport]) {
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 1.15rem;
+    padding-bottom: 0.5rem;
+
+    @media (max-width: #{$shell-collapse - 1px}) {
+      padding-top: 3.35rem;
+    }
   }
 }
 
