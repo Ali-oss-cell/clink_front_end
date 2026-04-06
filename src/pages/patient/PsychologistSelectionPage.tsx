@@ -26,6 +26,8 @@ import {
   parseMatchPreferences,
 } from '../../constants/matchPreferences';
 import styles from './PsychologistSelection.module.scss';
+import bookingFlow from './PatientPages.module.scss';
+import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 
 interface Psychologist {
   id: number;
@@ -92,14 +94,6 @@ export const PsychologistSelectionPage: React.FC = () => {
     }
   }, []);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[PsychologistSelectionPage] Component mounted/updated');
-    console.log('[PsychologistSelectionPage] selectedService from URL:', selectedService);
-    console.log('[PsychologistSelectionPage] Current URL:', window.location.href);
-    console.log('[PsychologistSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
-  }, [selectedService, searchParams]);
-
   // Fetch psychologists from backend
   useEffect(() => {
     // Don't fetch if no service is selected (will redirect)
@@ -114,24 +108,15 @@ export const PsychologistSelectionPage: React.FC = () => {
         
         // Fetch all psychologists - API service handles response format automatically
         const psychologistsData = await psychologistService.getAllPsychologists();
-        
-        console.log('[PsychologistSelectionPage] Raw psychologists from API:', psychologistsData);
-        console.log('[PsychologistSelectionPage] Psychologist IDs:', psychologistsData.map((p: PsychologistProfile) => p.id));
-        
-        // ✅ Filter out psychologists without profiles (no AHPRA number = no profile)
+
         const psychologistsWithProfiles = psychologistsData.filter((psych: PsychologistProfile) => {
-          const hasProfile = psych.ahpra_registration_number && 
-                            psych.ahpra_registration_number.trim() !== '' &&
-                            psych.is_active_practitioner !== false;
-          if (!hasProfile) {
-            console.warn(`[PsychologistSelectionPage] Filtering out psychologist ID ${psych.id} - no profile`);
-          }
+          const hasProfile =
+            psych.ahpra_registration_number &&
+            psych.ahpra_registration_number.trim() !== '' &&
+            psych.is_active_practitioner !== false;
           return hasProfile;
         });
-        
-        console.log('[PsychologistSelectionPage] Psychologists with profiles:', psychologistsWithProfiles.length);
-        console.log('[PsychologistSelectionPage] Valid psychologist IDs:', psychologistsWithProfiles.map((p: PsychologistProfile) => p.id));
-        
+
         // Transform backend data to frontend format
         const transformedData: Psychologist[] = psychologistsWithProfiles.map((psych: PsychologistProfile) => ({
           id: psych.id,
@@ -158,8 +143,6 @@ export const PsychologistSelectionPage: React.FC = () => {
         }));
         
         setPsychologists(transformedData);
-        console.log('[PsychologistSelectionPage] Transformed psychologists (with profiles only):', transformedData);
-        console.log('[PsychologistSelectionPage] Available psychologist IDs for selection:', transformedData.map(p => p.id));
       } catch (err) {
         console.error('Failed to load psychologists:', err);
         const errorMessage = err instanceof Error ? err.message : 'Failed to load psychologists. Please try again.';
@@ -225,42 +208,24 @@ export const PsychologistSelectionPage: React.FC = () => {
   });
 
   const handlePsychologistSelect = (psychologistId: number) => {
-    console.log('[PsychologistSelectionPage] handlePsychologistSelect called with ID:', psychologistId);
-    console.log('[PsychologistSelectionPage] Psychologist ID type:', typeof psychologistId);
     setSelectedPsychologist(psychologistId);
-    console.log('[PsychologistSelectionPage] selectedPsychologist state updated to:', psychologistId);
   };
 
   const handleContinue = () => {
-    console.log('[PsychologistSelectionPage] handleContinue called');
-    console.log('[PsychologistSelectionPage] selectedPsychologist:', selectedPsychologist);
-    console.log('[PsychologistSelectionPage] selectedService:', selectedService);
-    
     if (!selectedPsychologist) {
       alert('Please select a psychologist to continue.');
       return;
     }
-    
+
     if (!selectedService) {
-      console.error('[PsychologistSelectionPage] No service selected! Redirecting to service selection.');
       navigate('/appointments/book-appointment', { replace: true });
       return;
     }
-    
-    // Store psychologist selection and navigate
-    console.log('[PsychologistSelectionPage] About to navigate with psychologist ID:', selectedPsychologist);
-    console.log('[PsychologistSelectionPage] Psychologist ID type:', typeof selectedPsychologist);
-    console.log('[PsychologistSelectionPage] Service:', selectedService);
-    
-    const targetUrl = `/appointments/date-time?service=${selectedService}&psychologist=${selectedPsychologist}`;
-    console.log('[PsychologistSelectionPage] Navigating to:', targetUrl);
-    console.log('[PsychologistSelectionPage] Full URL will be:', window.location.origin + targetUrl);
-    navigate(targetUrl);
+
+    navigate(`/appointments/date-time?service=${selectedService}&psychologist=${selectedPsychologist}`);
   };
 
   const handleBack = () => {
-    // Navigate back without service param to allow fresh selection
-    console.log('[PsychologistSelectionPage] handleBack called, navigating to service selection');
     navigate('/appointments/book-appointment', { replace: true });
   };
 
@@ -271,39 +236,23 @@ export const PsychologistSelectionPage: React.FC = () => {
     }));
   };
 
-  // Show error and redirect button if no service is selected
   if (!selectedService) {
-    console.warn('[PsychologistSelectionPage] No service selected, showing error state');
     return (
-      <Layout 
-        user={user}
-        isAuthenticated={true}
-        patientShell
-        className={styles.patientLayout}
-      >
+      <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.psychologistSelectionContainer}>
           <div className="container">
+            <BookingFlowProgress currentStep={2} />
             <div className={styles.pageHeader}>
-              <h1 className={styles.pageTitle}>Service Selection Required</h1>
-              <p className={styles.pageSubtitle}>
-                Please select a service before choosing a psychologist.
-              </p>
-              <div style={{ marginTop: '1rem', padding: '1rem', background: '#f6efe7', borderRadius: '8px', fontSize: '0.9rem' }}>
-                <strong>Debug Info:</strong>
-                <br />Current URL: {window.location.href}
-                <br />Service param: {selectedService || 'MISSING'}
-                <br />All params: {JSON.stringify(Object.fromEntries(searchParams.entries()))}
-              </div>
+              <h1 className={styles.pageTitle}>Service selection required</h1>
+              <p className={styles.pageSubtitle}>Please select a service before choosing a psychologist.</p>
             </div>
-            <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
               <Button
+                type="button"
                 className={styles.continueButton}
-                onClick={() => {
-                  console.log('[PsychologistSelectionPage] Error state button clicked');
-                  navigate('/appointments/book-appointment', { replace: true });
-                }}
+                onClick={() => navigate('/appointments/book-appointment', { replace: true })}
               >
-                Go to Service Selection
+                Go to service selection
               </Button>
             </div>
           </div>
@@ -313,31 +262,18 @@ export const PsychologistSelectionPage: React.FC = () => {
   }
 
   return (
-    <Layout 
-      user={user}
-      isAuthenticated={true}
-      patientShell
-      className={styles.patientLayout}
-    >
+    <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
       <div className={styles.psychologistSelectionContainer}>
         <div className="container">
-          <div className={styles.bookingFlowMain}>
-          <div className={styles.pageHeader}>
-            <Button
-              className={styles.backButton}
-              onClick={handleBack}
-            >
-              ← Back to Service Selection
-            </Button>
-            <h1 className={styles.pageTitle}>Choose Your Psychologist</h1>
-            <p className={styles.pageSubtitle}>
-              All our psychologists are AHPRA registered and specialize in various areas.
-            </p>
-          </div>
-
-          <div className={styles.filtersSection}>
-            <h3 className={styles.filtersTitle}>Filter Psychologists:</h3>
-            <div className={styles.filtersGrid}>
+          <BookingFlowProgress currentStep={2} />
+          <div className={styles.bookingSplit}>
+            <aside className={styles.bookingSidebar} aria-label="Filters">
+              <Button type="button" className={styles.backButton} onClick={handleBack}>
+                ← Back to service selection
+              </Button>
+              <div className={styles.filtersSection}>
+                <h3 className={styles.filtersTitle}>Filter psychologists</h3>
+                <div className={styles.filtersGrid}>
               <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}><ChartIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Specialization:</label>
                 <Select 
@@ -394,7 +330,17 @@ export const PsychologistSelectionPage: React.FC = () => {
                 </Select>
               </div>
             </div>
-          </div>
+              </div>
+            </aside>
+
+            <main className={styles.bookingMainCanvas}>
+              <header className={styles.editorialHeader}>
+                <p className={styles.stepKicker}>Step 2 of 5</p>
+                <h1 className={styles.editorialTitle}>Choose your psychologist</h1>
+                <p className={styles.editorialLead}>
+                  All our psychologists are AHPRA registered and specialize in various areas.
+                </p>
+              </header>
 
           {loading ? (
             <div className={styles.loadingState}>
@@ -505,9 +451,12 @@ export const PsychologistSelectionPage: React.FC = () => {
               ))}
             </div>
           )}
+            </main>
           </div>
 
-          <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
+          <div
+            className={`${bookingFlow.formActions} ${bookingFlow.formActionsSticky} ${bookingFlow.bookingFlowActionsRow}`}
+          >
             <Button
               type="button"
               className={styles.cancelButton}

@@ -2165,6 +2165,17 @@ button.submitButton {
   border-top: 2px solid rgba($patient-primary, 0.12);
 }
 
+// Stitch-style booking footer: back (ghost) + primary CTA, space-between
+.bookingFlowActionsRow {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-top: 1px solid rgba($border-medium, 0.4);
+  padding-top: 2rem;
+  margin-top: 2rem;
+}
+
 .cancelButton {
   padding: 1rem 2rem;
   border: 2px solid $border-light;
@@ -2196,33 +2207,257 @@ button.submitButton {
 
 }
 
-.servicesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
+.bookingFlowNavRow {
+  max-width: 64rem;
+  margin: 0 auto 0.5rem;
+  width: 100%;
 }
 
-.serviceCard {
-  background: white;
-  border: 3px solid $border-light;
-  border-radius: 20px;
-  padding: 2rem;
-  cursor: pointer;
-  transition: all 0.4s ease;
+.bookingFlowCanvas {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.bookingFlowHeroCenter {
+  text-align: center;
+  margin-bottom: 3rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bookingFlowKicker {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, $secondary-color 55%, $patient-dark 45%);
+  margin-bottom: 0.85rem;
+}
+
+.bookingFlowHeroTitle {
+  font-size: clamp(2.125rem, 5.5vw, 3rem);
+  font-weight: 800;
+  color: $text-dark;
+  margin: 0 0 1rem;
+  font-family: $font-family-base;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+.bookingFlowHeroLead {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: $text-light;
+  margin: 0 auto;
+  max-width: 42rem;
+}
+
+.serviceSearchWrap {
+  max-width: 36rem;
+  margin: 0 auto 4rem;
   position: relative;
-  animation: fadeInUp 0.8s ease-out;
-  
-  &:hover {
-    border-color: $patient-primary;
-    transform: translateY(-8px);
-    box-shadow: 0 15px 40px rgba($patient-primary, 0.2);
+}
+
+.serviceSearchInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.05rem 1.25rem 1.05rem 3rem;
+  border-radius: 999px;
+  border: none;
+  background: white;
+  font-size: 1rem;
+  color: $text-dark;
+  box-shadow:
+    0 1px 0 rgba($border-medium, 0.5),
+    0 8px 28px rgba(25, 28, 29, 0.06);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+
+  &:focus {
+    outline: none;
+    box-shadow:
+      0 0 0 2px rgba($patient-primary, 0.45),
+      0 12px 32px rgba($patient-primary, 0.1);
   }
-  
+
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+.serviceSearchIcon {
+  position: absolute;
+  left: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $text-muted;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// Stitch reference: tall soft cards, icon well, body copy, compact pricing, text CTA row + left pillar.
+.serviceCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  background: white;
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  padding: 2rem 2rem 1.75rem calc(2rem + 10px);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+  position: relative;
+  animation: fadeInUp 0.55s ease-out both;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(25, 28, 29, 0.06);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 22%;
+    bottom: 22%;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: transparent;
+    transition: background 0.25s ease;
+  }
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 24px 48px rgba($patient-primary, 0.1);
+
+    &::before {
+      background: linear-gradient(180deg, rgba($patient-primary, 0.4), rgba($patient-light, 0.55));
+    }
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
   &.serviceCardSelected {
-    border-color: $patient-primary;
-    background: linear-gradient(135deg, white 0%, rgba($patient-primary, 0.03) 100%);
-    box-shadow: 0 10px 30px rgba($patient-primary, 0.2);
+    box-shadow:
+      0 0 0 2px rgba($patient-primary, 0.85),
+      0 24px 48px rgba($patient-primary, 0.12);
+    background: linear-gradient(165deg, white 0%, rgba($patient-primary, 0.06) 100%);
+
+    &::before {
+      background: linear-gradient(180deg, $patient-primary, $patient-light);
+    }
+  }
+}
+
+.serviceCardIconWell {
+  width: 3rem;
+  height: 3rem;
+  border-radius: $border-radius-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.35rem;
+  flex-shrink: 0;
+  color: $patient-dark;
+  background: color-mix(in srgb, $patient-primary 12%, white 88%);
+}
+
+.serviceCardTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.serviceCardDescription {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: $text-light;
+  margin: 0 0 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.serviceCardMeta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $text-muted;
+  margin-bottom: 1rem;
+}
+
+.servicePricingCompact {
+  width: 100%;
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  background: color-mix(in srgb, $background-light 75%, white 25%);
+  border: 1px solid rgba($border-medium, 0.35);
+}
+
+.servicePricingCompactRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: $text-dark;
+  margin-bottom: 0.35rem;
+
+  &:last-child {
+    margin-bottom: 0;
+    padding-top: 0.35rem;
+    margin-top: 0.35rem;
+    border-top: 1px dashed rgba($border-medium, 0.55);
+    font-weight: 700;
+    color: $patient-dark;
+    font-size: 0.88rem;
+  }
+}
+
+.serviceCardCta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: $text-muted;
+  transition: color 0.2s ease;
+
+  .serviceCard:hover & {
+    color: $patient-primary;
+  }
+
+  .serviceCardSelected & {
+    color: $patient-primary;
   }
 }
 
@@ -2865,26 +3100,94 @@ button.submitButton {
     min-height: 0;
   }
 
-  .serviceCard {
+  .bookingFlowHeroTitle {
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+  }
+
+  .bookingFlowKicker {
+    color: var(--cs-on-surface-variant);
+    opacity: 1;
+  }
+
+  .bookingFlowHeroLead {
+    color: var(--cs-on-surface-variant);
+  }
+
+  .serviceSearchInput {
     background: var(--cs-surface-lowest);
     border: none;
     box-shadow: var(--cs-shadow-atmospheric);
-    border-radius: var(--cs-radius-2xl);
+
+    &:focus {
+      box-shadow:
+        0 0 0 2px color-mix(in srgb, var(--cs-primary) 42%, transparent),
+        0 12px 36px color-mix(in srgb, var(--cs-primary) 12%, transparent);
+    }
+  }
+
+  .serviceCard {
+    background: var(--cs-surface-lowest);
+    border: none;
+    border-radius: 2rem;
+    box-shadow: var(--cs-shadow-atmospheric);
+    padding-left: calc(clamp(1.25rem, 2.2vw, 2rem) + 10px);
 
     &:hover {
-      border-color: transparent;
-      box-shadow: 0 24px 48px rgba(25, 28, 29, 0.08);
+      box-shadow: 0 28px 52px rgba(25, 28, 29, 0.1);
+
+      &::before {
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--cs-primary) 45%, transparent),
+          color-mix(in srgb, var(--cs-primary-container) 55%, transparent)
+        );
+      }
     }
 
     &.serviceCardSelected {
-      box-shadow: var(--cs-shadow-atmospheric);
-      background: var(--cs-surface-low);
+      box-shadow:
+        0 0 0 2px var(--cs-primary),
+        0 28px 52px color-mix(in srgb, var(--cs-primary) 14%, transparent);
+      background: color-mix(in srgb, var(--cs-surface-low) 90%, var(--cs-primary) 5%);
+
+      &::before {
+        background: linear-gradient(180deg, var(--cs-primary), var(--cs-primary-container));
+      }
     }
+  }
+
+  .serviceCardIconWell {
+    background: color-mix(in srgb, var(--cs-primary) 10%, var(--cs-surface-lowest) 90%);
+    color: var(--cs-primary);
+  }
+
+  .serviceCardTitle {
+    color: var(--cs-on-surface);
+    font-family: var(--cs-font-headline);
+  }
+
+  .serviceCardCta {
+    color: var(--cs-on-surface-variant);
+
+    .serviceCard:hover &,
+    .serviceCardSelected & {
+      color: var(--cs-primary);
+    }
+  }
+
+  .servicePricingCompact {
+    background: var(--cs-surface-low);
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 10%, transparent);
   }
 
   .serviceName {
     color: var(--cs-primary);
     font-family: var(--cs-font-headline);
+  }
+
+  .bookingFlowActionsRow {
+    border-top: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
   }
 
   .continueButton,

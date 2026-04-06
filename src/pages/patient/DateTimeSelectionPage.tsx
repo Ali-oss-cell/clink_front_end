@@ -10,6 +10,7 @@ import { Button } from '../../components/ui/button';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import styles from './DateTimeSelection.module.scss';
 import bookingFlow from './PatientPages.module.scss';
+import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 
 /** Title-case each word for headings and summaries (e.g. API display names). */
 function formatPersonDisplayName(name: string): string {
@@ -279,6 +280,7 @@ export const DateTimeSelectionPage: React.FC = () => {
       <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
+            <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
@@ -318,6 +320,7 @@ export const DateTimeSelectionPage: React.FC = () => {
       <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
+            <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
@@ -392,6 +395,7 @@ export const DateTimeSelectionPage: React.FC = () => {
       <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
+            <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
@@ -437,6 +441,7 @@ export const DateTimeSelectionPage: React.FC = () => {
       <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
+            <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
@@ -485,6 +490,7 @@ export const DateTimeSelectionPage: React.FC = () => {
     <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
       <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
         <div className="container">
+          <BookingFlowProgress currentStep={3} />
           <header className={styles.pageHeader}>
             <div className={styles.pageHeaderRow}>
               <div className={styles.pageHeaderStart}>
@@ -502,30 +508,30 @@ export const DateTimeSelectionPage: React.FC = () => {
             </div>
           </header>
 
-          <div
-            className={styles.summaryBar}
-            role="region"
-            aria-label="Booking summary"
-          >
-            <span className={styles.summaryBarStrong}>
-              {formatPersonDisplayName(availabilityData.psychologist_name)}
-            </span>
-            <span className={styles.summaryBarSep} aria-hidden>
-              ·
-            </span>
-            <span>Fee ${availabilityData.consultation_fee}</span>
-            <span className={styles.summaryBarSep} aria-hidden>
-              ·
-            </span>
-            <span>Rebate −${availabilityData.medicare_rebate_amount}</span>
-            <span className={styles.summaryBarSep} aria-hidden>
-              ·
-            </span>
-            <span>
-              Out-of-pocket <strong className={styles.summaryBarEm}>${outOfPocket}</strong>
-            </span>
-          </div>
+          <div className={styles.bookingDatetimeSplit}>
+            <aside className={styles.bookingSummaryAside} aria-label="Booking summary">
+              <p className={styles.stepKickerDt}>Step 3 of 5</p>
+              <div className={styles.summaryAsideName}>
+                {formatPersonDisplayName(availabilityData.psychologist_name)}
+              </div>
+              <div className={styles.summaryAsideRow}>
+                <span className={styles.summaryAsideLabel}>Consultation fee</span>
+                <span>${availabilityData.consultation_fee}</span>
+              </div>
+              <div className={styles.summaryAsideRow}>
+                <span className={styles.summaryAsideLabel}>Medicare rebate</span>
+                <span>−${availabilityData.medicare_rebate_amount}</span>
+              </div>
+              <div className={styles.summaryAsideRow}>
+                <span className={styles.summaryAsideLabel}>Out-of-pocket</span>
+                <span className={styles.summaryAsideEm}>${outOfPocket}</span>
+              </div>
+              <p className={styles.summaryAsideHint}>
+                Scroll the date and time rows sideways if you need more options, then continue to confirm your booking.
+              </p>
+            </aside>
 
+            <div className={styles.bookingDatetimeMain}>
           <div className={`${bookingFlow.bookingFlowMain} ${styles.bookingMainLock}`}>
             {availabilityData.available_dates.length > 0 ? (
               <>
@@ -597,6 +603,8 @@ export const DateTimeSelectionPage: React.FC = () => {
                 <p>Try another psychologist or check back later.</p>
               </div>
             )}
+          </div>
+            </div>
           </div>
 
           <div className={`${bookingFlow.formActionsSticky} ${styles.footerBar}`}>

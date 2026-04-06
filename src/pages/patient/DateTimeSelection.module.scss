@@ -72,6 +72,122 @@
   background: transparent;
 }
 
+.bookingDatetimeSplit {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: pc.$portal-gap * 0.55;
+  overflow: hidden;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+}
+
+.bookingSummaryAside {
+  flex-shrink: 0;
+  @include pc.compact-surface;
+  border-radius: 14px;
+  padding: pc.$portal-gap * 0.55 pc.$portal-gap * 0.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+
+  @media (min-width: 1024px) {
+    width: 14.5rem;
+    max-width: 100%;
+    align-self: stretch;
+  }
+}
+
+.stepKickerDt {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $patient-primary;
+  margin: 0 0 0.15rem;
+}
+
+.summaryAsideName {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: $text-dark;
+  font-family: $font-family-base;
+  line-height: 1.25;
+  margin-bottom: 0.15rem;
+}
+
+.summaryAsideRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: $text-dark;
+  font-size: 0.78rem;
+}
+
+.summaryAsideLabel {
+  color: $text-light;
+  font-size: 0.72rem;
+}
+
+.summaryAsideEm {
+  font-weight: 700;
+  color: $patient-primary;
+}
+
+.summaryAsideHint {
+  font-size: 0.68rem;
+  color: $text-light;
+  line-height: 1.45;
+  margin: 0.25rem 0 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba($border-medium, 0.35);
+}
+
+.bookingDatetimeMain {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+:global(.patientShell) .bookingSummaryAside {
+  background: var(--cs-surface-lowest);
+  box-shadow: var(--cs-shadow-atmospheric);
+  border: none;
+}
+
+:global(.patientShell) .stepKickerDt {
+  color: var(--cs-primary);
+}
+
+:global(.patientShell) .summaryAsideName {
+  color: var(--cs-primary);
+  font-family: var(--cs-font-headline);
+}
+
+:global(.patientShell) .summaryAsideLabel,
+:global(.patientShell) .summaryAsideHint {
+  color: var(--cs-on-surface-variant);
+}
+
+:global(.patientShell) .summaryAsideRow {
+  color: var(--cs-on-surface);
+}
+
+:global(.patientShell) .summaryAsideEm {
+  color: var(--cs-primary);
+}
+
 // Augments PatientPages `.bookingFlowMain`: no vertical scroll on happy path.
 .bookingMainLock {
   display: flex;

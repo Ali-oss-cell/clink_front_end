@@ -41,6 +41,86 @@
   }
 }
 
+.bookingSplit {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+}
+
+.bookingSidebar {
+  width: 100%;
+  flex-shrink: 0;
+
+  @media (min-width: 900px) {
+    width: 17.5rem;
+    max-width: 100%;
+    position: sticky;
+    top: 0.75rem;
+    align-self: flex-start;
+  }
+
+  .backButton {
+    width: 100%;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+  }
+
+  .filtersSection {
+    margin-bottom: 0;
+  }
+}
+
+.bookingMainCanvas {
+  flex: 1;
+  min-width: 0;
+
+  .psychologistsGrid {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.editorialHeader {
+  margin-bottom: 1.35rem;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+.stepKicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $patient-primary;
+  margin: 0 0 0.45rem;
+}
+
+.editorialTitle {
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  font-weight: 800;
+  color: $text-dark;
+  margin: 0 0 0.65rem;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.editorialLead {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: $text-light;
+  margin: 0;
+  max-width: 36rem;
+}
+
 .bookingFlowMain {
   flex: 1 1 auto;
   min-height: 0;
@@ -200,21 +280,16 @@
 // Psychologists Grid
 .psychologistsGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(280px, 1fr));
-  max-width: 1100px;
-  gap: 0.8rem;
-  margin-bottom: 1rem;
-  margin-left: auto;
-  margin-right: auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
 
   @media (max-width: #{$desktop - 1px}) {
     grid-template-columns: 1fr;
-    max-width: 680px;
   }
 
   @include mobile {
     grid-template-columns: 1fr;
-    max-width: none;
   }
 }
 
@@ -222,8 +297,8 @@
 .psychologistCard {
   @include pc.compact-surface;
   border: 1px solid rgba($border-medium, 0.52);
-  border-radius: 14px;
-  padding: 0.8rem;
+  border-radius: 1.75rem;
+  padding: 1.15rem 1.15rem 1.15rem 1.35rem;
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   position: relative;
@@ -233,22 +308,24 @@
   &::before {
     content: '';
     position: absolute;
-    top: 0;
     left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, $patient-primary, $patient-light);
-    transform: scaleX(0);
-    transition: transform 0.4s ease;
+    top: 12%;
+    bottom: 12%;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, $patient-primary, $patient-light);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
   }
-  
+
   &:hover {
     border-color: $patient-primary;
     transform: translateY(-1px);
     box-shadow: var(--cs-glass-shadow, 0 8px 18px rgba($patient-primary, 0.11));
 
     &::before {
-      transform: scaleX(1);
+      transform: scaleY(1);
     }
 
     .profilePicture {
@@ -260,28 +337,28 @@
       color: $patient-primary;
     }
   }
-  
+
   &.psychologistCardSelected {
     border-color: rgba($patient-primary, 0.9);
     background: linear-gradient(135deg, white 0%, rgba($patient-primary, 0.03) 100%);
     box-shadow: 0 10px 24px rgba($patient-primary, 0.16);
 
     &::before {
-      transform: scaleX(1);
+      transform: scaleY(1);
     }
   }
-  
+
   &.psychologistCardUnavailable {
     opacity: 0.6;
     cursor: not-allowed;
-    
+
     &:hover {
       transform: none;
       box-shadow: none;
       border-color: $border-light;
 
       &::before {
-        transform: scaleX(0);
+        transform: scaleY(0);
       }
     }
   }
@@ -720,6 +797,19 @@
     background: transparent;
     padding: 0;
     min-height: 0;
+  }
+
+  .stepKicker {
+    color: var(--cs-primary);
+  }
+
+  .editorialTitle {
+    color: var(--cs-primary);
+    font-family: var(--cs-font-headline);
+  }
+
+  .editorialLead {
+    color: var(--cs-on-surface-variant);
   }
 
   .filtersSection {

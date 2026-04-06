@@ -1,12 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
 import { servicesService, type Service as APIService } from '../../services/api/services';
-import { InfoIcon, VideoIcon, PhoneIcon } from '../../utils/icons';
+import {
+  InfoIcon,
+  VideoIcon,
+  PhoneIcon,
+  SearchIcon,
+  OutlineIndividualCareIcon,
+  ChatIcon,
+  ClipboardIcon,
+  StethoscopeIcon,
+  HeartbeatIcon,
+  ForwardIcon,
+  CheckCircleIcon,
+} from '../../utils/icons';
 import { Button } from '../../components/ui/button';
+import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 import styles from './PatientPages.module.scss';
+
+const SERVICE_BOOKING_ICONS = [
+  OutlineIndividualCareIcon,
+  VideoIcon,
+  ChatIcon,
+  ClipboardIcon,
+  StethoscopeIcon,
+  HeartbeatIcon,
+] as const;
 
 interface Service {
   id: string;
@@ -32,18 +54,10 @@ export const ServiceSelectionPage: React.FC = () => {
   const [apiServices, setApiServices] = useState<APIService[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
   const [servicesError, setServicesError] = useState<string | null>(null);
-  
+  const [serviceSearch, setServiceSearch] = useState('');
+
   // Get user data from auth service
   const user = authService.getStoredUser();
-
-  // Debug logging
-  useEffect(() => {
-    console.log('[ServiceSelectionPage] Component mounted/updated');
-    console.log('[ServiceSelectionPage] serviceFromUrl:', serviceFromUrl);
-    console.log('[ServiceSelectionPage] selectedService state:', selectedService);
-    console.log('[ServiceSelectionPage] Current URL:', window.location.href);
-    console.log('[ServiceSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
-  }, [serviceFromUrl, selectedService, searchParams]);
 
   // ✅ Fetch services from backend API
   useEffect(() => {
@@ -52,14 +66,10 @@ export const ServiceSelectionPage: React.FC = () => {
         setServicesLoading(true);
         setServicesError(null);
         
-        console.log('[ServiceSelectionPage] Fetching services from API...');
         const services = await servicesService.getAllServices();
-        console.log('[ServiceSelectionPage] Services from API:', services);
-        console.log('[ServiceSelectionPage] Service IDs:', services.map(s => s.id));
-        
+
         // Only show active services
         const activeServices = services.filter(s => s.is_active);
-        console.log('[ServiceSelectionPage] Active services:', activeServices.length);
         
         setApiServices(activeServices);
         
@@ -69,11 +79,7 @@ export const ServiceSelectionPage: React.FC = () => {
           if (!isNaN(serviceId)) {
             const foundService = activeServices.find(s => s.id === serviceId);
             if (foundService) {
-              console.log('[ServiceSelectionPage] Valid service ID from URL:', serviceId);
               setSelectedService(serviceId.toString());
-            } else {
-              console.warn('[ServiceSelectionPage] Service ID from URL not found:', serviceId);
-              console.warn('[ServiceSelectionPage] Available service IDs:', activeServices.map(s => s.id));
             }
           }
         }
@@ -93,11 +99,10 @@ export const ServiceSelectionPage: React.FC = () => {
     if (serviceFromUrl && serviceFromUrl !== selectedService) {
       const serviceId = parseInt(serviceFromUrl);
       if (!isNaN(serviceId) && apiServices.find(s => s.id === serviceId)) {
-        console.log('[ServiceSelectionPage] Restoring service ID from URL:', serviceId);
         setSelectedService(serviceId.toString());
       }
     }
-  }, [serviceFromUrl, apiServices]); // Depend on apiServices to ensure they're loaded
+  }, [serviceFromUrl, apiServices]);
 
   useEffect(() => {
     const loadConsent = async () => {
@@ -139,16 +144,20 @@ export const ServiceSelectionPage: React.FC = () => {
     };
   });
 
+  const filteredServices = useMemo(() => {
+    const q = serviceSearch.trim().toLowerCase();
+    if (!q) return services;
+    return services.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
+    );
+  }, [services, serviceSearch]);
+
   const handleServiceSelect = (serviceId: number) => {
-    console.log('[ServiceSelectionPage] handleServiceSelect called with service ID:', serviceId);
-    console.log('[ServiceSelectionPage] Previous selectedService:', selectedService);
     setSelectedService(serviceId.toString());
-    console.log('[ServiceSelectionPage] New selectedService will be:', serviceId.toString());
   };
 
   const handleContinue = () => {
-    console.log('[ServiceSelectionPage] handleContinue called, selectedService:', selectedService);
-    
     if (!selectedService) {
       alert('Please select a service to continue.');
       return;
@@ -157,15 +166,12 @@ export const ServiceSelectionPage: React.FC = () => {
     // ✅ Find service by ID (numeric)
     const serviceId = parseInt(selectedService);
     if (isNaN(serviceId)) {
-      console.error('[ServiceSelectionPage] Invalid service ID:', selectedService);
       alert('Invalid service selection. Please select a service again.');
       return;
     }
 
     const selectedServiceMeta = apiServices.find((service) => service.id === serviceId);
     if (!selectedServiceMeta) {
-      console.error('[ServiceSelectionPage] Service not found for ID:', serviceId);
-      console.error('[ServiceSelectionPage] Available service IDs:', apiServices.map(s => s.id));
       alert('Service not found. Please select a service again.');
       return;
     }
@@ -183,10 +189,7 @@ export const ServiceSelectionPage: React.FC = () => {
     }
     
     // ✅ Navigate with service ID (number) not slug
-    const targetUrl = `/appointments/psychologist-selection?service=${serviceId}`;
-    console.log('[ServiceSelectionPage] Navigating with service ID:', serviceId);
-    console.log('[ServiceSelectionPage] Target URL:', targetUrl);
-    navigate(targetUrl);
+    navigate(`/appointments/psychologist-selection?service=${serviceId}`);
   };
 
   const handleBack = () => {
@@ -202,16 +205,40 @@ export const ServiceSelectionPage: React.FC = () => {
     >
       <div className={`${styles.serviceSelectionContainer} ${styles.bookingFlowLayout}`}>
         <div className="container">
+          <BookingFlowProgress currentStep={1} />
           <div className={styles.bookingFlowMain}>
-          <div className={styles.pageHeader}>
-            <Button className={styles.backButton} onClick={handleBack}>
-              ← Back to Dashboard
-            </Button>
-            <h1 className={styles.pageTitle}>Book Your Appointment</h1>
-            <p className={styles.pageSubtitle}>
-              Choose the service that best fits your needs. All sessions include Medicare rebates for eligible patients.
-            </p>
-          </div>
+            <div className={styles.bookingFlowNavRow}>
+              <Button type="button" className={styles.backButton} onClick={handleBack}>
+                ← Back to Dashboard
+              </Button>
+            </div>
+
+            <div className={styles.bookingFlowCanvas}>
+              <div className={styles.bookingFlowHeroCenter}>
+                <span className={styles.bookingFlowKicker}>Step 1 of 5</span>
+                <h1 className={styles.bookingFlowHeroTitle}>How can we help today?</h1>
+                <p className={styles.bookingFlowHeroLead}>
+                  Choose the service that best fits your needs. All sessions include Medicare rebates for eligible
+                  patients.
+                </p>
+              </div>
+
+              {!servicesLoading && !servicesError && services.length > 0 && (
+                <div className={styles.serviceSearchWrap}>
+                  <span className={styles.serviceSearchIcon} aria-hidden>
+                    <SearchIcon size="sm" />
+                  </span>
+                  <input
+                    type="search"
+                    className={styles.serviceSearchInput}
+                    placeholder="Search services by name or description…"
+                    value={serviceSearch}
+                    onChange={(e) => setServiceSearch(e.target.value)}
+                    aria-label="Search services"
+                  />
+                </div>
+              )}
+            </div>
 
           {!consentLoading && (!telehealthConsent || !telehealthConsent.consent_to_telehealth) && (
             <div className={styles.telehealthWarning}>
@@ -246,75 +273,80 @@ export const ServiceSelectionPage: React.FC = () => {
               <h3>No Services Available</h3>
               <p>There are currently no services available for booking. Please check back later.</p>
             </div>
+          ) : filteredServices.length === 0 ? (
+            <div className={styles.errorState}>
+              <h3>No matching services</h3>
+              <p>Try a different search term or clear the search to see all services.</p>
+              <Button type="button" className={styles.actionButton} onClick={() => setServiceSearch('')}>
+                Clear search
+              </Button>
+            </div>
           ) : (
-            <div className={styles.servicesGrid}>
-              {services.map((service) => {
+            <div className={`${styles.servicesGrid} ${styles.bookingFlowCanvas}`}>
+              {filteredServices.map((service, index) => {
                 const serviceId = parseInt(service.id);
+                const Icon = SERVICE_BOOKING_ICONS[index % SERVICE_BOOKING_ICONS.length];
+                const isSelected = selectedService === service.id;
                 return (
-                  <div 
+                  <div
                     key={service.id}
-                    className={`${styles.serviceCard} ${selectedService === service.id ? styles.serviceCardSelected : ''}`}
-                    onClick={() => {
-                      console.log('[ServiceSelectionPage] Service card clicked, ID:', serviceId);
-                      handleServiceSelect(serviceId);
+                    role="button"
+                    tabIndex={0}
+                    className={`${styles.serviceCard} ${isSelected ? styles.serviceCardSelected : ''}`}
+                    onClick={() => handleServiceSelect(serviceId)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleServiceSelect(serviceId);
+                      }
                     }}
                   >
-                <div className={styles.serviceHeader}>
-                  <h3 className={styles.serviceName}>{service.name}</h3>
-                  <div className={styles.serviceDuration}>{service.duration} minutes</div>
-                </div>
-                
-                <div className={styles.servicePricing}>
-                  <div className={styles.pricingRow}>
-                    <span>Standard Fee:</span>
-                    <span>${service.standardFee.toFixed(2)}</span>
-                  </div>
-                  {service.medicareApplicable ? (
-                    <div className={styles.pricingRow}>
-                      <span>Medicare Rebate:</span>
-                      <span className={styles.rebateAmount}>-${service.medicareRebate.toFixed(2)}</span>
+                    <div className={styles.serviceCardIconWell} aria-hidden>
+                      <Icon size="lg" />
                     </div>
-                  ) : (
-                    <div className={styles.pricingRow}>
-                      <span>Medicare Rebate:</span>
-                      <span>Not applicable</span>
+                    <h3 className={styles.serviceCardTitle}>{service.name}</h3>
+                    <p className={styles.serviceCardDescription}>{service.description}</p>
+                    <div className={styles.serviceCardMeta}>
+                      {service.duration} min session · Est. out-of-pocket ${service.yourCost.toFixed(2)}
                     </div>
-                  )}
-                  <div className={`${styles.pricingRow} ${styles.totalCost}`}>
-                    <span>Your Cost:</span>
-                    <span>${service.yourCost.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                <div className={styles.serviceSpecializations}>
-                  {service.specializations.map((spec, index) => (
-                    <div key={index} className={styles.specializationItem}>
-                      ✓ {spec}
+                    <div className={styles.servicePricingCompact}>
+                      <div className={styles.servicePricingCompactRow}>
+                        <span>Standard fee</span>
+                        <span>${service.standardFee.toFixed(2)}</span>
+                      </div>
+                      <div className={styles.servicePricingCompactRow}>
+                        <span>Medicare rebate</span>
+                        <span>
+                          {service.medicareApplicable
+                            ? `−$${service.medicareRebate.toFixed(2)}`
+                            : 'N/A'}
+                        </span>
+                      </div>
+                      <div className={styles.servicePricingCompactRow}>
+                        <span>You pay</span>
+                        <span>${service.yourCost.toFixed(2)}</span>
+                      </div>
                     </div>
-                  ))}
-                </div>
-
-                <div className={styles.serviceDescription}>
-                  {service.description}
-                </div>
-
-                    <Button
-                      className={`${styles.selectButton} ${selectedService === service.id ? styles.selectButtonSelected : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent card click from firing
-                        console.log('[ServiceSelectionPage] Select button clicked, ID:', serviceId);
-                        handleServiceSelect(serviceId);
-                      }}
-                    >
-                      {selectedService === service.id ? 'SELECTED' : 'SELECT'}
-                    </Button>
+                    <div className={styles.serviceCardCta} aria-hidden={false}>
+                      {isSelected ? (
+                        <>
+                          <span>Selected</span>
+                          <CheckCircleIcon size="sm" aria-hidden />
+                        </>
+                      ) : (
+                        <>
+                          <span>Choose this service</span>
+                          <ForwardIcon size="sm" aria-hidden />
+                        </>
+                      )}
+                    </div>
                   </div>
                 );
               })}
             </div>
           )}
 
-          <div className={styles.infoBoxes}>
+          <div className={`${styles.infoBoxes} ${styles.bookingFlowCanvas}`}>
             <div className={styles.infoBox}>
               <div className={styles.infoIcon}><InfoIcon size="lg" /></div>
               <div className={styles.infoContent}>
@@ -341,9 +373,11 @@ export const ServiceSelectionPage: React.FC = () => {
           </div>
           </div>
 
-          <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
+          <div
+            className={`${styles.formActions} ${styles.formActionsSticky} ${styles.bookingFlowActionsRow}`}
+          >
             <Button type="button" variant="outline" className={styles.cancelButton} onClick={handleBack}>
-              Cancel
+              ← Go back
             </Button>
             <Button
               type="button"
@@ -351,7 +385,7 @@ export const ServiceSelectionPage: React.FC = () => {
               onClick={handleContinue}
               disabled={!selectedService}
             >
-              Continue to Psychologist Selection
+              Next step
             </Button>
           </div>
         </div>
