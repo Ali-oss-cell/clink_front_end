@@ -1,6 +1,7 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/buttonSystem' as btn;
+@use '../../assets/styles/portalCompact' as pc;
 
 // Psychologist Layout — default green marketing-style shell; transparent under Clinical Sanctuary
 .psychologistLayout {
@@ -62,6 +63,133 @@
   padding-top: 0;
   padding-bottom: 1.5rem;
   min-height: 0;
+}
+
+.psychologistLayout:global(.clinicalShell) .appointmentsList {
+  gap: 0.9rem;
+  padding: 0 0 1rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .appointmentCard,
+.psychologistLayout:global(.clinicalShell) .patientCard,
+.psychologistLayout:global(.clinicalShell) .noteCard {
+  @include pc.compact-surface;
+  border-radius: 14px;
+}
+
+.psychologistLayout:global(.clinicalShell) .appointmentCard {
+  &::before {
+    height: 2px;
+  }
+
+  &:hover,
+  &.isVisible:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--cs-glass-shadow);
+  }
+}
+
+.psychologistLayout:global(.clinicalShell) .cardContent {
+  padding: 0.95rem 1rem;
+  gap: 0.95rem;
+
+  @media (min-width: 1100px) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "patient datetime details"
+      "notes notes notes";
+    align-items: start;
+    gap: 0.75rem;
+  }
+}
+
+.psychologistLayout:global(.clinicalShell) .patientSection {
+  grid-area: patient;
+  padding-bottom: 0.55rem;
+  border-bottom-width: 1px;
+}
+
+.psychologistLayout:global(.clinicalShell) .dateTimeSection {
+  grid-area: datetime;
+}
+
+.psychologistLayout:global(.clinicalShell) .detailsGrid {
+  grid-area: details;
+}
+
+.psychologistLayout:global(.clinicalShell) .notesSection {
+  grid-area: notes;
+}
+
+.psychologistLayout:global(.clinicalShell) .patientAvatar {
+  width: pc.$portal-avatar-size;
+  height: pc.$portal-avatar-size;
+  font-size: 0.9rem;
+  border-radius: var(--cs-radius-xl);
+  border-width: 1px;
+}
+
+.psychologistLayout:global(.clinicalShell) .patientName,
+.psychologistLayout:global(.clinicalShell) .noteTitle {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.psychologistLayout:global(.clinicalShell) .serviceName,
+.psychologistLayout:global(.clinicalShell) .noteMeta,
+.psychologistLayout:global(.clinicalShell) .noteDate,
+.psychologistLayout:global(.clinicalShell) .detailLabel {
+  font-size: 0.78rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .dateTimeItem,
+.psychologistLayout:global(.clinicalShell) .detailItem {
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+}
+
+.psychologistLayout:global(.clinicalShell) .dateTimeValue,
+.psychologistLayout:global(.clinicalShell) .detailValue {
+  font-size: 0.9rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .appointmentActions {
+  padding: 0.65rem 1rem 0.95rem;
+  gap: 0.6rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .videoCallButton,
+.psychologistLayout:global(.clinicalShell) .successButton,
+.psychologistLayout:global(.clinicalShell) .dangerButton,
+.psychologistLayout:global(.clinicalShell) .secondaryButton,
+.psychologistLayout:global(.clinicalShell) .primaryButton,
+.psychologistLayout:global(.clinicalShell) .viewButton,
+.psychologistLayout:global(.clinicalShell) .editButton,
+.psychologistLayout:global(.clinicalShell) .deleteButton {
+  min-height: 2.25rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .patientsList,
+.psychologistLayout:global(.clinicalShell) .notesList {
+  gap: 0.95rem;
+  padding: 0.8rem 0 0.8rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .patientCardBody {
+  padding: 0.9rem 1rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .patientCardHeader {
+  padding: 0.85rem 1rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .patientCardActions,
+.psychologistLayout:global(.clinicalShell) .noteActions {
+  padding: 0.75rem 1rem 0.9rem;
+  gap: 0.55rem;
 }
 
 // Profile Container

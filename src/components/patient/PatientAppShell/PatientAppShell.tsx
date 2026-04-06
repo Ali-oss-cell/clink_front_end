@@ -11,6 +11,7 @@ import {
   VideoIcon,
 } from '../../../utils/icons';
 import styles from './PatientAppShell.module.scss';
+import { ShellBrandMark } from '../../shell/ShellBrandMark';
 
 interface PatientAppShellProps {
   user: User;
@@ -64,9 +65,7 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
 
       <aside className={`${styles.sidebar} ${menuOpen ? styles.open : ''}`}>
         <div className={styles.brand}>
-          <NavLink to="/patient/dashboard" className={styles.brandLink} onClick={closeMenu}>
-            Clink
-          </NavLink>
+          <ShellBrandMark to="/patient/dashboard" onClick={closeMenu} />
         </div>
 
         <div className={styles.userBlock}>

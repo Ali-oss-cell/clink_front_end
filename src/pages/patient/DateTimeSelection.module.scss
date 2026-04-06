@@ -29,6 +29,21 @@
   }
 }
 
+:global(.patientShell) .dateTimeSelectionContainer {
+  padding-top: 0.75rem;
+}
+
+:global(.patientShell) .pageHeader {
+  margin-bottom: 0.7rem;
+}
+
+:global(.patientShell) .timeSlot,
+:global(.patientShell) .dayOption,
+:global(.patientShell) .selectedSummaryCard,
+:global(.patientShell) .calendarCard {
+  border-radius: 12px;
+}
+
 .bookingFlowMain {
   flex: 1 1 auto;
   min-height: 0;

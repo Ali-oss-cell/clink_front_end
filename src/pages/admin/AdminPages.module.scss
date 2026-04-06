@@ -9,6 +9,73 @@ $admin-accent: #6f8367;
 .adminLayout {
   min-height: 100vh;
   background: linear-gradient(180deg, $background-light 0%, #f3f1ec 100%);
+
+  &:global(.clinicalShell) {
+    background: transparent;
+  }
+}
+
+.adminLayout:global(.clinicalShell) .dashboardContainer {
+  padding-top: 0;
+}
+
+.adminLayout:global(.clinicalShell) .systemHealthCard,
+.adminLayout:global(.clinicalShell) .statCard,
+.adminLayout:global(.clinicalShell) .secondaryStatCard,
+.adminLayout:global(.clinicalShell) .dashboardCard,
+.adminLayout:global(.clinicalShell) .quickActionButton {
+  background: var(--cs-glass-bg);
+  border: 1px solid var(--cs-glass-border);
+  box-shadow: var(--cs-glass-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.adminLayout:global(.clinicalShell) .statsGrid {
+  gap: 0.75rem;
+}
+
+.adminLayout:global(.clinicalShell) .statCard {
+  padding: 0.85rem 0.95rem;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.adminLayout:global(.clinicalShell) .statIcon {
+  width: 2.35rem;
+  height: 2.35rem;
+}
+
+.adminLayout:global(.clinicalShell) .statValue {
+  font-size: 1.25rem;
+}
+
+.adminLayout:global(.clinicalShell) .secondaryStatsGrid,
+.adminLayout:global(.clinicalShell) .dashboardGrid {
+  gap: 0.8rem;
+}
+
+.adminLayout:global(.clinicalShell) .dashboardCard {
+  padding: 1rem;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--cs-glass-shadow);
+  }
+}
+
+.adminLayout:global(.clinicalShell) .dashboardHeader,
+.adminLayout:global(.clinicalShell) .statsGrid,
+.adminLayout:global(.clinicalShell) .dashboardGrid,
+.adminLayout:global(.clinicalShell) .quickActionsGrid,
+.adminLayout:global(.clinicalShell) .statCard,
+.adminLayout:global(.clinicalShell) .dashboardCard,
+.adminLayout:global(.clinicalShell) .quickActionButton {
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
 
 // Dashboard Container

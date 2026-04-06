@@ -80,29 +80,17 @@ $shell-collapse: 900px;
 }
 
 .brand {
-  padding: 0 1.5rem 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.brandLink {
-  font-family: var(--cs-font-headline);
-  font-size: 1.25rem;
-  font-weight: 700;
-  font-style: italic;
-  letter-spacing: -0.02em;
-  color: var(--cs-primary);
-  text-decoration: none;
-
-  &:hover {
-    opacity: 0.85;
-  }
+  padding: 0 1.5rem 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .userBlock {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0 1.25rem 1.5rem;
+  padding: 0 1.25rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--cs-outline) 18%, transparent);
+  margin-bottom: 0.55rem;
 }
 
 .avatarLink {
@@ -122,8 +110,8 @@ $shell-collapse: 900px;
 }
 
 .avatar {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 9999px;
   background: var(--cs-glass-bg-strong);
   border: 1px solid var(--cs-glass-border);
@@ -141,17 +129,18 @@ $shell-collapse: 900px;
 }
 
 .welcomeLabel {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--cs-primary);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  margin: 0;
 }
 
 .profileNameLink {
   display: block;
   margin-top: 0.125rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--cs-on-surface-variant);

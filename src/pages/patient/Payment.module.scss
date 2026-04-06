@@ -57,6 +57,21 @@
   background: $background-light;
 }
 
+:global(.patientShell) .paymentContainer {
+  padding: 0.85rem 0 1.25rem;
+  background: transparent;
+}
+
+:global(.patientShell) .paymentSummary .summaryCard,
+:global(.patientShell) .paymentForm .formCard {
+  border-radius: 14px;
+  border: 1px solid var(--cs-glass-border);
+  box-shadow: var(--cs-glass-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1rem 1.1rem;
+}
+
 .paymentContent {
   display: grid;
   grid-template-columns: 1fr 1fr;

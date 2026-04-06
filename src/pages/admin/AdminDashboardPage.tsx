@@ -19,6 +19,7 @@ import {
   UserPlusIcon
 } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 
 export const AdminDashboardPage: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<AdminDashboard | null>(null);
@@ -143,7 +144,7 @@ export const AdminDashboardPage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
         <div className={styles.dashboardContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.loadingState}>
               <p>Loading dashboard...</p>
             </div>
@@ -157,7 +158,7 @@ export const AdminDashboardPage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
         <div className={styles.dashboardContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.errorState}>
               <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h3>
               <p>{error}</p>
@@ -181,13 +182,11 @@ export const AdminDashboardPage: React.FC = () => {
       className={styles.adminLayout}
     >
       <div className={styles.dashboardContainer}>
-        <div className="container">
-          <div ref={headerRef} className={styles.dashboardHeader}>
-            <h1 className={styles.welcomeTitle}>Admin Dashboard</h1>
-            <p className={styles.welcomeSubtitle}>
-              System-wide overview and management
-            </p>
-          </div>
+        <div className={shell.wrap}>
+          <header ref={headerRef} className={shell.pageHeader}>
+            <h1 className={shell.welcomeTitle}>Admin dashboard</h1>
+            <p className={shell.welcomeSubtitle}>System-wide overview and management</p>
+          </header>
 
           {/* System Health Status */}
           <div className={styles.systemHealthCard}>

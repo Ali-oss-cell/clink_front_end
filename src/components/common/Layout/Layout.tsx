@@ -31,7 +31,7 @@ export const Layout: React.FC<LayoutProps> = ({
   const usePatientShell =
     patientShell && isAuthenticated && user?.role === 'patient';
   const useClinicalShell =
-    isAuthenticated && user?.role === 'psychologist';
+    isAuthenticated && !!user && (user.role === 'psychologist' || user.role === 'admin' || user.role === 'practice_manager');
   const useRoleShell =
     isAuthenticated &&
     !!user &&

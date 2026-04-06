@@ -1,0 +1,21 @@
+@use './variables' as *;
+
+$portal-avatar-size: 2.5rem;
+$portal-avatar-size-lg: 2.875rem;
+$portal-card-padding: 1rem;
+$portal-card-padding-lg: 1.25rem;
+$portal-gap: 0.75rem;
+
+@mixin compact-surface {
+  background: var(--cs-glass-bg, $background-white);
+  border: 1px solid var(--cs-glass-border, rgba($border-medium, 0.35));
+  box-shadow: var(--cs-glass-shadow, 0 10px 30px rgba(0, 0, 0, 0.08));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+@mixin compact-card {
+  @include compact-surface;
+  border-radius: 14px;
+  padding: $portal-card-padding;
+}

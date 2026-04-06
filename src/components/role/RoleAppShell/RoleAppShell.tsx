@@ -16,6 +16,7 @@ import {
   ClipboardIcon,
 } from '../../../utils/icons';
 import styles from './RoleAppShell.module.scss';
+import { ShellBrandMark } from '../../shell/ShellBrandMark';
 
 interface RoleAppShellProps {
   user: User;
@@ -104,9 +105,7 @@ export const RoleAppShell: React.FC<RoleAppShellProps> = ({ user, children }) =>
 
       <aside className={`${styles.sidebar} ${menuOpen ? styles.open : ''}`}>
         <div className={styles.brand}>
-          <NavLink to={navItems[0]?.to ?? '/'} className={styles.brandLink} onClick={closeMenu}>
-            Clink
-          </NavLink>
+          <ShellBrandMark to={navItems[0]?.to ?? '/'} onClick={closeMenu} />
         </div>
 
         <div className={styles.userBlock}>

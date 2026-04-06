@@ -8,6 +8,26 @@
   background: $background-light;
 }
 
+:global(.patientShell) .confirmationContainer {
+  padding: 0.85rem 0 1.2rem;
+  background: transparent;
+}
+
+:global(.patientShell) .successMessage,
+:global(.patientShell) .detailsCard {
+  border: 1px solid var(--cs-glass-border);
+  box-shadow: var(--cs-glass-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 1.15rem;
+}
+
+:global(.patientShell) .successIcon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+
 .successMessage {
   text-align: center;
   margin-bottom: $spacing-xl;

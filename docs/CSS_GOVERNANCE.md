@@ -8,6 +8,7 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 - Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
 - Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
 - Scoped Clinical Sanctuary CSS variables: `src/assets/styles/_clinicalSanctuary.scss` (`.patientShell` for the patient app shell; `.clinicalShell` + `[data-clinical-shell]` on `Layout` for the psychologist portal)
+- Shared compact portal sizing/surfaces: `src/assets/styles/_portalCompact.scss` (avatars, compact spacing, card mixins)
 - Shared/global primitives: `src/assets/styles/*`, `src/components/ui/ui.scss`
 - Feature styles: `src/**/*.module.scss`
 
@@ -28,6 +29,7 @@ Rule: feature modules consume tokens; they do not define new palette systems.
 - Style changes must not bypass token layers in `_variables.scss` or `_clinicalSanctuary.scss`.
 - Dashboard buttons must use shared button mixins/tokens, not per-page color/shadow inventions.
 - Card surfaces should use shared glass primitives instead of ad-hoc blur/alpha patterns.
+- Sidebar branding for authenticated shells must use `ShellBrandMark` (`src/components/shell/ShellBrandMark.tsx`) so patient/role shells stay consistent with `/logo-icon.png`.
 
 ## 4) High-Churn Decomposition Targets
 

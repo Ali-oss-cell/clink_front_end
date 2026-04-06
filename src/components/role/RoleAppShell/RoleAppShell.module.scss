@@ -291,39 +291,44 @@ $collapse: $shell-collapse;
   }
 }
 
-// Psychologist portal — Clinical Sanctuary (tokens from Layout `.clinicalShell`)
-.role_psychologist .root {
+// Authenticated portal — Clinical Sanctuary (tokens from Layout `.clinicalShell`)
+.role_psychologist .root,
+.role_admin .root,
+.role_practice_manager .root {
   background: var(--cs-surface-low);
 }
 
-.role_psychologist .sidebar {
+.role_psychologist .sidebar,
+.role_admin .sidebar,
+.role_practice_manager .sidebar {
   background: var(--cs-glass-bg);
   border-right-color: var(--cs-glass-border);
   box-shadow: var(--cs-glass-shadow);
 }
 
-.role_psychologist .brandLink {
-  font-family: var(--cs-font-headline);
-  font-weight: 700;
-  font-size: 1.25rem;
+.role_psychologist .welcomeLabel,
+.role_admin .welcomeLabel,
+.role_practice_manager .welcomeLabel {
   color: var(--cs-primary);
 }
 
-.role_psychologist .welcomeLabel {
-  color: var(--cs-primary);
-}
-
-.role_psychologist .profileName {
+.role_psychologist .profileName,
+.role_admin .profileName,
+.role_practice_manager .profileName {
   color: var(--cs-on-surface-variant);
 }
 
-.role_psychologist .avatar {
+.role_psychologist .avatar,
+.role_admin .avatar,
+.role_practice_manager .avatar {
   border-color: var(--cs-glass-border);
   color: var(--cs-primary);
   background: var(--cs-glass-bg-strong);
 }
 
-.role_psychologist .navLink {
+.role_psychologist .navLink,
+.role_admin .navLink,
+.role_practice_manager .navLink {
   border-radius: var(--cs-radius-xl) 0 0 var(--cs-radius-xl);
 
   &:hover {
@@ -337,7 +342,9 @@ $collapse: $shell-collapse;
   }
 }
 
-.role_psychologist .navLinkActive {
+.role_psychologist .navLinkActive,
+.role_admin .navLinkActive,
+.role_practice_manager .navLinkActive {
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--cs-primary) 18%, var(--cs-surface-lowest) 82%) 0%,
@@ -348,18 +355,24 @@ $collapse: $shell-collapse;
   box-shadow: var(--cs-glass-shadow);
 }
 
-.role_psychologist .navIcon {
+.role_psychologist .navIcon,
+.role_admin .navIcon,
+.role_practice_manager .navIcon {
   color: inherit;
 }
 
-.role_psychologist .menuToggle {
+.role_psychologist .menuToggle,
+.role_admin .menuToggle,
+.role_practice_manager .menuToggle {
   border-color: var(--cs-glass-border);
   color: var(--cs-primary);
   background: var(--cs-glass-bg-strong);
   box-shadow: var(--cs-glass-shadow);
 }
 
-.role_psychologist .logoutBtn {
+.role_psychologist .logoutBtn,
+.role_admin .logoutBtn,
+.role_practice_manager .logoutBtn {
   border-color: var(--cs-glass-border);
   background: var(--cs-glass-bg);
   color: var(--cs-on-surface);
@@ -369,7 +382,9 @@ $collapse: $shell-collapse;
   }
 }
 
-.role_psychologist .main {
+.role_psychologist .main,
+.role_admin .main,
+.role_practice_manager .main {
   background: var(--cs-surface);
   max-width: 90rem;
 }
