@@ -27,12 +27,14 @@
   background: linear-gradient(135deg, $background-light 0%, $patient-bg-gradient-end 100%);
   display: flex;
   flex-direction: column;
+  overscroll-behavior: none;
 
   > .container {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
   }
 }
 
@@ -52,18 +54,54 @@
   border-radius: 12px;
 }
 
+// Default: no vertical scroll (horizontal strips for dates/times). Allow scroll for tall error/loading only.
 .bookingFlowMain {
-  flex: 1 1 auto;
+  flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 0.35rem;
+  overflow: hidden;
+  overscroll-behavior: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-bottom: 0.15rem;
+
+  &:has(.errorState),
+  &:has(.loadingState),
+  &:has(.emptyState) {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 :global(.patientShell) .bookingFlowMain {
-  flex: 1;
   min-height: 0;
+}
+
+.bookingFlowMain .emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  margin: 0;
+  padding: 1.15rem 0.85rem;
+  animation: fadeInUp 0.6s ease-out;
+
+  h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.45rem;
+  }
+
+  p {
+    font-size: 0.86rem;
+    margin-bottom: 0.35rem;
+    line-height: 1.45;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .formActionsSticky {
@@ -94,7 +132,7 @@
 .pageHeader {
   flex-shrink: 0;
   text-align: center;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.25rem;
   animation: fadeInUp 0.5s ease-out;
 }
 
@@ -316,7 +354,7 @@
   line-height: 1.35;
   color: $text-dark;
   padding: 0.35rem 0.55rem;
-  margin: 0 auto 0.4rem;
+  margin: 0 auto 0.3rem;
   max-width: 100%;
   text-align: center;
 }
@@ -338,10 +376,11 @@
 
 // Calendar Section
 .calendarSection {
+  flex: 0 0 auto;
   background: color-mix(in srgb, $background-gray 92%, $patient-dark 8%);
   border-radius: 12px;
-  padding: 0.55rem 0.65rem;
-  margin-bottom: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  margin-bottom: 0;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
   border: 1px solid color-mix(in srgb, $patient-primary 14%, $border-medium 86%);
   animation: fadeInUp 0.8s ease-out;
@@ -354,16 +393,44 @@
 }
 
 .calendarTitle {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: $text-dark;
-  margin-bottom: 0.4rem;
+  margin: 0 0 0.3rem 0;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding-bottom: 0.4rem;
+  gap: 0.35rem;
+  padding-bottom: 0.25rem;
   border-bottom: 1px solid rgba($border-medium, 0.65);
   font-family: $font-family-base;
+}
+
+// Horizontal date picker (no vertical page scroll)
+.dateScrollTrack {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: stretch;
+  gap: 0.4rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  padding: 0.08rem 0 0.28rem;
+  margin: 0 -0.15rem;
+  padding-left: 0.15rem;
+  padding-right: 0.3rem;
+  scrollbar-width: thin;
+  touch-action: pan-x;
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba($patient-primary, 0.28);
+  }
 }
 
 .calendarHeader {
@@ -407,10 +474,6 @@
   letter-spacing: -0.5px;
 }
 
-.calendarGrid {
-  margin-bottom: 2rem;
-}
-
 .dayHeaders {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -428,13 +491,6 @@
   border-radius: 12px;
 }
 
-.calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
-  gap: 0.4rem;
-  max-width: 100%;
-}
-
 .calendarDays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -442,35 +498,39 @@
 }
 
 .calendarDay {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: 4.1rem;
   border: 1px solid rgba($border-medium, 0.6);
   border-radius: 10px;
-  padding: 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
   position: relative;
   background: white;
-  min-height: 58px;
-  padding: 0.45rem 0.35rem;
-  
+  min-height: 3rem;
+  padding: 0.35rem 0.28rem;
+  box-sizing: border-box;
+
   &.available {
     border-color: $border-light;
-    
+
     &:hover {
       border-color: $patient-primary;
       background: rgba($patient-primary, 0.08);
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba($patient-primary, 0.2);
+      box-shadow: 0 4px 14px rgba($patient-primary, 0.15);
     }
-    
+
     &.selected {
       border-color: $patient-primary;
       background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-      box-shadow: 0 8px 25px rgba($patient-primary, 0.3);
-      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba($patient-primary, 0.28);
 
       .dayNumber,
       .dayName,
@@ -541,10 +601,15 @@
 
 // Time Selection Section
 .timeSelectionSection {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: white;
   border-radius: 12px;
-  padding: 0.65rem 0.75rem;
-  margin-bottom: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  margin-bottom: 0;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
   border: 1px solid rgba($border-medium, 0.45);
   animation: fadeInUp 1s ease-out;
@@ -557,59 +622,100 @@
 }
 
 .timeSectionTitle {
-  font-size: 0.9rem;
+  flex: 0 0 auto;
+  font-size: 0.82rem;
   font-weight: 700;
   color: $text-dark;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.3rem 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding-bottom: 0.45rem;
+  gap: 0.35rem;
+  min-width: 0;
+  padding-bottom: 0.25rem;
   border-bottom: 1px solid rgba($border-light, 0.95);
 }
 
-.noSlotsMessage {
-  text-align: center;
-  padding: 2rem;
-  color: $text-light;
-  font-size: 1.125rem;
-  background: rgba($warning-orange, 0.1);
-  border-radius: 12px;
-  margin-top: 1rem;
+.timeSectionTitleText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.timeSlotsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
-  gap: 0.6rem;
+.noSlotsMessage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.55rem 0.45rem;
+  color: $text-light;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  background: rgba($warning-orange, 0.1);
+  border-radius: 10px;
+  margin: 0;
+}
+
+.timeScrollTrack {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  padding: 0.08rem 0 0.2rem;
+  margin: 0 -0.15rem;
+  padding-left: 0.15rem;
+  padding-right: 0.3rem;
+  scrollbar-width: thin;
+  touch-action: pan-x;
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba($patient-primary, 0.28);
+  }
 }
 
 .timeSlot {
-  padding: 0.7rem 0.55rem;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  min-width: 4.85rem;
+  padding: 0.55rem 0.65rem;
   border: 1px solid rgba($border-medium, 0.6);
   border-radius: 10px;
   background: white;
   color: $text-dark;
   font-weight: 700;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
   text-align: center;
-  
+
   &.available {
     &:hover {
       border-color: $patient-primary;
       background: rgba($patient-primary, 0.08);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba($patient-primary, 0.2);
+      box-shadow: 0 4px 14px rgba($patient-primary, 0.15);
     }
-    
+
     &.selected {
       border-color: $patient-primary;
       background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
       color: white;
-      box-shadow: 0 8px 25px rgba($patient-primary, 0.3);
-      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba($patient-primary, 0.28);
     }
   }
   

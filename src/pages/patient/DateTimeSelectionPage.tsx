@@ -582,11 +582,15 @@ export const DateTimeSelectionPage: React.FC = () => {
             {availabilityData.available_dates.length > 0 ? (
               <>
                 <div className={styles.calendarSection}>
-                  <h2 className={styles.calendarTitle}>
-                    <CalendarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    Select a date
+                  <h2 className={styles.calendarTitle} id="booking-date-label">
+                    <CalendarIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} aria-hidden />
+                    Date
                   </h2>
-                  <div className={styles.calendarGrid}>
+                  <div
+                    className={styles.dateScrollTrack}
+                    aria-labelledby="booking-date-label"
+                    aria-label="Available dates, scroll sideways for more"
+                  >
                     {availabilityData.available_dates.map((dateObj) => (
                       <div
                         key={dateObj.date}
@@ -606,25 +610,30 @@ export const DateTimeSelectionPage: React.FC = () => {
 
                 {selectedDate && (
                   <div className={styles.timeSelectionSection}>
-                    <h2 className={styles.timeSectionTitle}>
-                      <ClockIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                      Times — {formatDate(selectedDate)}
+                    <h2 className={styles.timeSectionTitle} id="booking-time-label">
+                      <ClockIcon size="md" style={{ marginRight: '6px', verticalAlign: 'middle' }} aria-hidden />
+                      <span className={styles.timeSectionTitleText}>Time · {formatDate(selectedDate)}</span>
                     </h2>
-                    <div className={styles.timeSlotsGrid}>
-                      {getSelectedDateSlots().map((slot) => (
-                        <Button
-                          key={slot.id}
-                          className={`${styles.timeSlot} ${styles.available} ${selectedSlot?.id === slot.id ? styles.selected : ''}`}
-                          onClick={() => setSelectedSlot(slot)}
-                        >
-                          {slot.start_time_formatted}
-                        </Button>
-                      ))}
-                    </div>
-
-                    {getSelectedDateSlots().length === 0 && (
+                    {getSelectedDateSlots().length > 0 ? (
+                      <div
+                        className={styles.timeScrollTrack}
+                        aria-labelledby="booking-time-label"
+                        aria-label="Available times, scroll sideways for more"
+                      >
+                        {getSelectedDateSlots().map((slot) => (
+                          <Button
+                            key={slot.id}
+                            type="button"
+                            className={`${styles.timeSlot} ${styles.available} ${selectedSlot?.id === slot.id ? styles.selected : ''}`}
+                            onClick={() => setSelectedSlot(slot)}
+                          >
+                            {slot.start_time_formatted}
+                          </Button>
+                        ))}
+                      </div>
+                    ) : (
                       <p className={styles.noSlotsMessage}>
-                        No available time slots for this date. Please select another date.
+                        No times this day — pick another date above.
                       </p>
                     )}
                   </div>
