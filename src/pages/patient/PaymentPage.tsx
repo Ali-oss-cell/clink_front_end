@@ -85,7 +85,15 @@ export const PaymentPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodUi>('card');
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [agreedTermsPrivacy, setAgreedTermsPrivacy] = useState(false);
+  const [agreedCancellationPolicy, setAgreedCancellationPolicy] = useState(false);
+  const [agreedReminderConsent, setAgreedReminderConsent] = useState(false);
+  const [agreedMedicareIfClaiming, setAgreedMedicareIfClaiming] = useState(false);
+  const paymentConsentsComplete =
+    agreedTermsPrivacy &&
+    agreedCancellationPolicy &&
+    agreedReminderConsent &&
+    agreedMedicareIfClaiming;
   const [bookingData, setBookingData] = useState<BookingSummaryResponse | null>(null);
 
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null);
@@ -182,8 +190,8 @@ export const PaymentPage: React.FC = () => {
 
   const prepareCardCheckout = async () => {
     if (!appointmentId) return;
-    if (!agreedToTerms) {
-      setPaymentError('Please agree to the terms and conditions to continue.');
+    if (!paymentConsentsComplete) {
+      setPaymentError('Please accept each item above to continue.');
       return;
     }
     if (!hasStripePublishableKey() || !stripePromise) {
@@ -219,8 +227,8 @@ export const PaymentPage: React.FC = () => {
 
   const handleNonCardPayment = async () => {
     if (!appointmentId) return;
-    if (!agreedToTerms) {
-      setPaymentError('Please agree to the terms and conditions to continue.');
+    if (!paymentConsentsComplete) {
+      setPaymentError('Please accept each item above to continue.');
       return;
     }
 
@@ -469,22 +477,34 @@ export const PaymentPage: React.FC = () => {
                 <h3>Terms & Conditions</h3>
                 <div className={styles.termsCheckboxes}>
                   <label className="tp-ui-checkboxRow">
-                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
+                    <Checkbox
+                      checked={agreedTermsPrivacy}
+                      onChange={(e) => setAgreedTermsPrivacy(e.target.checked)}
+                    />
                     I agree to the Terms of Service and Privacy Policy
                   </label>
 
                   <label className="tp-ui-checkboxRow">
-                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
+                    <Checkbox
+                      checked={agreedCancellationPolicy}
+                      onChange={(e) => setAgreedCancellationPolicy(e.target.checked)}
+                    />
                     I understand the cancellation policy (48-hour notice required)
                   </label>
 
                   <label className="tp-ui-checkboxRow">
-                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
+                    <Checkbox
+                      checked={agreedReminderConsent}
+                      onChange={(e) => setAgreedReminderConsent(e.target.checked)}
+                    />
                     I consent to receive appointment reminders via my selected method
                   </label>
 
                   <label className="tp-ui-checkboxRow">
-                    <Checkbox checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} />
+                    <Checkbox
+                      checked={agreedMedicareIfClaiming}
+                      onChange={(e) => setAgreedMedicareIfClaiming(e.target.checked)}
+                    />
                     I confirm that I have a valid Medicare card (if claiming rebate)
                   </label>
                 </div>
@@ -541,7 +561,7 @@ export const PaymentPage: React.FC = () => {
                 type="button"
                 className={styles.payButton}
                 onClick={prepareCardCheckout}
-                disabled={!agreedToTerms || isPreparingIntent || isProcessing}
+                disabled={!paymentConsentsComplete || isPreparingIntent || isProcessing}
               >
                 {isPreparingIntent ? 'Preparing secure checkout…' : 'Continue to secure payment'}
               </Button>
@@ -552,7 +572,7 @@ export const PaymentPage: React.FC = () => {
                 type="button"
                 className={styles.payButton}
                 onClick={handleNonCardPayment}
-                disabled={!agreedToTerms || isProcessing}
+                disabled={!paymentConsentsComplete || isProcessing}
               >
                 {isProcessing ? 'Processing…' : `Confirm & Pay $${totalAmount.toFixed(2)}`}
               </Button>

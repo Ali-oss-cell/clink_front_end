@@ -11,6 +11,16 @@ import { Badge } from '../../components/ui/badge';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import styles from './DateTimeSelection.module.scss';
 
+/** Title-case each word for headings and summaries (e.g. API display names). */
+function formatPersonDisplayName(name: string): string {
+  const t = name.trim();
+  if (!t) return name;
+  return t
+    .split(/\s+/)
+    .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word))
+    .join(' ');
+}
+
 export const DateTimeSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -338,8 +348,13 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
-              <Button className={styles.backButton} onClick={handleBack}>
-                ← Back to Psychologist Selection
+              <Button
+                type="button"
+                className={styles.backButton}
+                onClick={handleBack}
+                aria-label="Back to psychologist selection"
+              >
+                ← Back
               </Button>
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
@@ -400,8 +415,13 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
-              <Button className={styles.backButton} onClick={handleBack}>
-                ← Back to Psychologist Selection
+              <Button
+                type="button"
+                className={styles.backButton}
+                onClick={handleBack}
+                aria-label="Back to psychologist selection"
+              >
+                ← Back
               </Button>
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
@@ -433,8 +453,13 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className={styles.dateTimeSelectionContainer}>
           <div className="container">
             <div className={styles.pageHeader}>
-              <Button className={styles.backButton} onClick={handleBack}>
-                ← Back to Psychologist Selection
+              <Button
+                type="button"
+                className={styles.backButton}
+                onClick={handleBack}
+                aria-label="Back to psychologist selection"
+              >
+                ← Back
               </Button>
               <h1 className={styles.pageTitle}>Select Date & Time</h1>
             </div>
@@ -466,12 +491,18 @@ export const DateTimeSelectionPage: React.FC = () => {
           <div className={styles.bookingFlowMain}>
           {/* Page Header */}
           <div className={styles.pageHeader}>
-            <Button className={styles.backButton} onClick={handleBack}>
-              ← Back to Psychologist Selection
+            <Button
+              type="button"
+              className={styles.backButton}
+              onClick={handleBack}
+              aria-label="Back to psychologist selection"
+            >
+              ← Back
             </Button>
             <h1 className={styles.pageTitle}>Select Date & Time</h1>
             <p className={styles.pageSubtitle}>
-              Choose your preferred appointment time with {availabilityData.psychologist_name}
+              Choose your preferred appointment time with{' '}
+              {formatPersonDisplayName(availabilityData.psychologist_name)}
             </p>
           </div>
 
@@ -481,7 +512,9 @@ export const DateTimeSelectionPage: React.FC = () => {
               <h3><ClipboardIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Booking Summary</h3>
               <div className={styles.summaryItem}>
                 <span className={styles.summaryLabel}>Psychologist:</span>
-                <span className={styles.summaryValue}>{availabilityData.psychologist_name}</span>
+                <span className={styles.summaryValue}>
+                  {formatPersonDisplayName(availabilityData.psychologist_name)}
+                </span>
               </div>
               <div className={styles.summaryItem}>
                 <span className={styles.summaryLabel}>Consultation Fee:</span>
@@ -602,7 +635,8 @@ export const DateTimeSelectionPage: React.FC = () => {
             <div className={styles.emptyState}>
               <h3>No Available Appointments</h3>
               <p>
-                {availabilityData.psychologist_name} has no available appointments in the next 30 days for {sessionType} sessions.
+                {formatPersonDisplayName(availabilityData.psychologist_name)} has no available appointments in
+                the next 30 days for {sessionType} sessions.
               </p>
               <p>Try selecting a different session type or psychologist.</p>
             </div>
@@ -615,6 +649,7 @@ export const DateTimeSelectionPage: React.FC = () => {
               type="button"
               className={styles.cancelButton}
               onClick={handleBack}
+              aria-label="Back to psychologist selection"
             >
               ← Back
             </Button>
@@ -626,11 +661,11 @@ export const DateTimeSelectionPage: React.FC = () => {
             >
               {booking ? (
                 <>
-                  <ClockIcon size="sm" style={{ marginRight: '6px' }} />
-                  Booking...
+                  <ClockIcon size="sm" style={{ marginRight: '6px' }} aria-hidden />
+                  Booking…
                 </>
               ) : (
-                'Continue to Payment →'
+                'Continue to payment'
               )}
             </Button>
           </div>
