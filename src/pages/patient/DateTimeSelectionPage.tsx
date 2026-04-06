@@ -9,6 +9,7 @@ import { WarningIcon, EditIcon, CalendarIcon, ClockIcon } from '../../utils/icon
 import { Button } from '../../components/ui/button';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
 import styles from './DateTimeSelection.module.scss';
+import bookingFlow from './PatientPages.module.scss';
 
 /** Title-case each word for headings and summaries (e.g. API display names). */
 function formatPersonDisplayName(name: string): string {
@@ -38,22 +39,12 @@ export const DateTimeSelectionPage: React.FC = () => {
   // Get user from auth service
   const user = authService.getStoredUser();
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[DateTimeSelectionPage] Component mounted/updated');
-    console.log('[DateTimeSelectionPage] selectedService from URL:', selectedService);
-    console.log('[DateTimeSelectionPage] selectedPsychologist from URL:', selectedPsychologist);
-    console.log('[DateTimeSelectionPage] Current URL:', window.location.href);
-    console.log('[DateTimeSelectionPage] All search params:', Object.fromEntries(searchParams.entries()));
-  }, [selectedService, selectedPsychologist, searchParams]);
-
   // ✅ Convert service slug to ID on page load - dynamically fetch from API
   useEffect(() => {
     let isMounted = true; // Prevent state updates after unmount
     
     const loadServiceId = async () => {
       if (!selectedService || selectedService.trim() === '') {
-        console.warn('[DateTimeSelectionPage] No service selected, showing error state');
         if (isMounted) {
           setError('No service selected. Please go back and select a service.');
         }
@@ -64,40 +55,30 @@ export const DateTimeSelectionPage: React.FC = () => {
         // Check if it's already a numeric ID
         const numericId = parseInt(selectedService);
         if (!isNaN(numericId)) {
-          console.log('[DateTimeSelectionPage] Service is numeric ID:', numericId);
           if (isMounted) {
             setServiceId(numericId);
           }
           return;
         }
         
-        // ✅ Fetch services dynamically from API (uses cache after first call)
-        console.log('[DateTimeSelectionPage] Fetching services from API to resolve slug:', selectedService);
         const services = await servicesService.getAllServices();
-        console.log('[DateTimeSelectionPage] Available services from API:', services.map(s => ({ id: s.id, name: s.name })));
-        
+
         // Try to find service by matching slug to service name
         const matchedService = services.find(s => {
           const serviceSlug = s.name.toLowerCase().replace(/\s+/g, '-');
           const selectedSlug = selectedService.toLowerCase();
           
-          // Exact match
           if (serviceSlug === selectedSlug) {
-            console.log(`[DateTimeSelectionPage] Exact match found: "${s.name}" (ID: ${s.id})`);
             return true;
           }
-          
-          // Partial match (e.g., "individual-therapy" matches "individual-therapy-session")
+
           if (serviceSlug.includes(selectedSlug) || selectedSlug.includes(serviceSlug)) {
-            console.log(`[DateTimeSelectionPage] Partial match found: "${s.name}" (ID: ${s.id})`);
             return true;
           }
-          
-          // Remove "-session" suffix and try again
+
           const serviceBase = serviceSlug.replace(/-session$/i, '');
           const selectedBase = selectedSlug.replace(/-session$/i, '');
           if (serviceBase === selectedBase) {
-            console.log(`[DateTimeSelectionPage] Base match found (without -session): "${s.name}" (ID: ${s.id})`);
             return true;
           }
           
@@ -105,14 +86,9 @@ export const DateTimeSelectionPage: React.FC = () => {
         });
         
         if (matchedService && isMounted) {
-          console.log('[DateTimeSelectionPage] ✅ Service resolved successfully:');
-          console.log('  - Slug:', selectedService);
-          console.log('  - Service ID:', matchedService.id);
-          console.log('  - Service Name:', matchedService.name);
           setServiceId(matchedService.id);
         } else if (!matchedService && isMounted) {
-          console.error('[DateTimeSelectionPage] ❌ Service not found for slug:', selectedService);
-          console.error('[DateTimeSelectionPage] Available service names:', services.map(s => `"${s.name}"`).join(', '));
+          console.error('[DateTimeSelectionPage] Service not found for slug:', selectedService);
           setError(`Service "${selectedService}" not found. Please select a service again.`);
         }
       } catch (err) {
@@ -154,14 +130,6 @@ export const DateTimeSelectionPage: React.FC = () => {
       endDate.setDate(today.getDate() + 30);
       const endDateStr = formatLocalDateYYYYMMDD(endDate);
       
-      console.log('[DateTimeSelectionPage] Fetching available slots with:', {
-        psychologistId,
-        startDate,
-        endDate: endDateStr,
-        serviceId: serviceId || undefined,
-        sessionType
-      });
-      
       const data = await appointmentsService.getAvailableSlots({
         psychologistId,
         startDate,
@@ -169,8 +137,6 @@ export const DateTimeSelectionPage: React.FC = () => {
         serviceId: serviceId || undefined,
         sessionType
       });
-      
-      console.log('[DateTimeSelectionPage] Available slots loaded:', data);
 
       if (data.schedule_configured === false) {
         setAvailabilityData(data);
@@ -210,7 +176,6 @@ export const DateTimeSelectionPage: React.FC = () => {
   useEffect(() => {
     // Check if psychologist is missing - only redirect if truly missing
     if (!selectedPsychologist || selectedPsychologist.trim() === '') {
-      console.warn('[DateTimeSelectionPage] No psychologist selected in URL params, redirecting');
       // Redirect back to psychologist selection
       if (selectedService) {
         navigate(`/appointments/psychologist-selection?service=${selectedService}`, { replace: true });
@@ -228,18 +193,10 @@ export const DateTimeSelectionPage: React.FC = () => {
       return;
     }
 
-    // Wait for serviceId to be loaded before fetching slots
     if (!serviceId) {
-      console.log('[DateTimeSelectionPage] Waiting for serviceId to be loaded...');
       return;
     }
 
-    console.log('[DateTimeSelectionPage] All conditions met, fetching available slots:', {
-      psychologist: selectedPsychologist,
-      psychologistIdNum,
-      serviceId,
-      sessionType
-    });
     fetchAvailableSlots();
   }, [selectedPsychologist, sessionType, serviceId, selectedService, navigate, fetchAvailableSlots]); // ✅ Include fetchAvailableSlots in deps
 
@@ -280,16 +237,7 @@ export const DateTimeSelectionPage: React.FC = () => {
         session_type: sessionType,
         notes: ''
       };
-      
-      // ✅ Log booking data to verify service_id
-      console.log('[DateTimeSelectionPage] Booking appointment with data:', {
-        psychologist_id: bookingData.psychologist_id,
-        service_id: bookingData.service_id,
-        service_id_type: typeof bookingData.service_id,
-        time_slot_id: bookingData.time_slot_id,
-        session_type: bookingData.session_type
-      });
-      
+
       const response = await appointmentsService.bookAppointment(bookingData);
       
       // Navigate to appointment details page
@@ -328,7 +276,7 @@ export const DateTimeSelectionPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
             <header className={styles.pageHeader}>
@@ -347,7 +295,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                 <div className={styles.pageHeaderEnd} aria-hidden />
               </div>
             </header>
-            <div className={styles.bookingFlowMain}>
+            <div className={`${bookingFlow.bookingFlowMain} ${styles.bookingMainLock}`}>
               <div className={styles.loadingState}>
                 <p>Loading available time slots…</p>
               </div>
@@ -367,7 +315,7 @@ export const DateTimeSelectionPage: React.FC = () => {
     const isNoSchedule = availabilityData?.schedule_configured === false;
     
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
             <header className={styles.pageHeader}>
@@ -386,7 +334,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                 <div className={styles.pageHeaderEnd} aria-hidden />
               </div>
             </header>
-            <div className={styles.bookingFlowMain}>
+            <div className={`${bookingFlow.bookingFlowMain} ${styles.bookingMainLock}`}>
             <div className={styles.errorState}>
               <h3 className={styles.errorStateHeading}>
                 <span className={styles.errorStateIcon} aria-hidden>
@@ -441,7 +389,7 @@ export const DateTimeSelectionPage: React.FC = () => {
   // Show error if we finished loading but have no data and no error (shouldn't happen, but handle gracefully)
   if (!loading && !availabilityData && !error) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
             <header className={styles.pageHeader}>
@@ -460,7 +408,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                 <div className={styles.pageHeaderEnd} aria-hidden />
               </div>
             </header>
-            <div className={styles.bookingFlowMain}>
+            <div className={`${bookingFlow.bookingFlowMain} ${styles.bookingMainLock}`}>
               <div className={styles.errorState}>
                 <h3 className={styles.errorStateHeading}>
                   <span className={styles.errorStateIcon} aria-hidden>
@@ -486,7 +434,7 @@ export const DateTimeSelectionPage: React.FC = () => {
   // Final guard: if we reach here without availabilityData, something went wrong
   if (!availabilityData) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
         <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
             <header className={styles.pageHeader}>
@@ -505,7 +453,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                 <div className={styles.pageHeaderEnd} aria-hidden />
               </div>
             </header>
-            <div className={styles.bookingFlowMain}>
+            <div className={`${bookingFlow.bookingFlowMain} ${styles.bookingMainLock}`}>
               <div className={styles.errorState}>
                 <h3 className={styles.errorStateHeading}>
                   <span className={styles.errorStateIcon} aria-hidden>
@@ -534,7 +482,7 @@ export const DateTimeSelectionPage: React.FC = () => {
       : availabilityData.patient_cost_after_rebate.toFixed(2);
 
   return (
-    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
       <div className={styles.dateTimeSelectionContainer} data-patient-booking-viewport="">
         <div className="container">
           <header className={styles.pageHeader}>
@@ -578,7 +526,7 @@ export const DateTimeSelectionPage: React.FC = () => {
             </span>
           </div>
 
-          <div className={styles.bookingFlowMain}>
+          <div className={`${bookingFlow.bookingFlowMain} ${styles.bookingMainLock}`}>
             {availabilityData.available_dates.length > 0 ? (
               <>
                 <div className={styles.calendarSection}>
@@ -651,7 +599,7 @@ export const DateTimeSelectionPage: React.FC = () => {
             )}
           </div>
 
-          <div className={`${styles.formActions} ${styles.formActionsSticky}`}>
+          <div className={`${bookingFlow.formActionsSticky} ${styles.footerBar}`}>
             <Button
               type="button"
               className={styles.continueButton}

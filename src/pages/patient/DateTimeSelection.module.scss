@@ -1,18 +1,17 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/portalCompact' as pc;
 
-.patientLayout {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
+// -----------------------------------------------------------------------------
+// Patient date/time booking — single viewport (see CSS_GOVERNANCE §10).
+// Shared: PatientPages `.patientLayout`, `.bookingFlowMain`, `.formActionsSticky`.
+// This file: container, header, summary, horizontal strips, CTAs, states only.
+// -----------------------------------------------------------------------------
 
-// Animations
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -20,7 +19,33 @@
   }
 }
 
-// Date & Time Selection Page Styles
+@mixin horizontal-strip {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: stretch;
+  gap: pc.$portal-gap * 0.55;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  padding: 0.1rem 0 0.25rem;
+  margin: 0 -0.12rem;
+  padding-left: 0.12rem;
+  padding-right: 0.28rem;
+  scrollbar-width: thin;
+  touch-action: pan-x;
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba($patient-primary, 0.28);
+  }
+}
+
 .dateTimeSelectionContainer {
   padding: 1rem 0 1.5rem;
   min-height: 100dvh;
@@ -47,23 +72,14 @@
   background: transparent;
 }
 
-:global(.patientShell) .timeSlot,
-:global(.patientShell) .dayOption,
-:global(.patientShell) .selectedSummaryCard,
-:global(.patientShell) .calendarCard {
-  border-radius: 12px;
-}
-
-// Default: no vertical scroll (horizontal strips for dates/times). Allow scroll for tall error/loading only.
-.bookingFlowMain {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  overscroll-behavior: none;
+// Augments PatientPages `.bookingFlowMain`: no vertical scroll on happy path.
+.bookingMainLock {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  padding-bottom: 0.15rem;
+  gap: pc.$portal-gap * 0.6;
+  overflow: hidden;
+  overscroll-behavior: none;
+  padding-bottom: 0.1rem;
 
   &:has(.errorState),
   &:has(.loadingState),
@@ -74,28 +90,24 @@
   }
 }
 
-:global(.patientShell) .bookingFlowMain {
-  min-height: 0;
-}
-
-.bookingFlowMain .emptyState {
+.bookingMainLock .emptyState {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 0;
   margin: 0;
-  padding: 1.15rem 0.85rem;
-  animation: fadeInUp 0.6s ease-out;
+  padding: 1rem 0.75rem;
+  animation: fadeInUp 0.45s ease-out;
 
   h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.45rem;
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
   }
 
   p {
-    font-size: 0.86rem;
-    margin-bottom: 0.35rem;
+    font-size: 0.84rem;
+    margin-bottom: 0.3rem;
     line-height: 1.45;
 
     &:last-child {
@@ -104,44 +116,41 @@
   }
 }
 
-.formActionsSticky {
-  flex-shrink: 0;
-  z-index: 4;
-  margin-top: 0;
+// Augments PatientPages `.formActionsSticky`
+.footerBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
   padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
-  padding-top: 0.5rem;
-  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(
-    180deg,
-    rgba($patient-bg-gradient-end, 0) 0%,
-    rgba($patient-bg-gradient-end, 0.96) 22%,
-    $patient-bg-gradient-end 100%
-  );
-  border-top: 1px solid rgba($patient-primary, 0.12);
+  padding-top: 0.45rem;
+
+  .continueButton {
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  @media (max-width: 520px) {
+    .continueButton {
+      max-width: none;
+    }
+  }
 }
 
-.sessionTypeBadgeWrap {
-  position: absolute;
-  top: 0.65rem;
-  right: 0.65rem;
-  z-index: 1;
-}
-
-// Page Header
 .pageHeader {
   flex-shrink: 0;
-  text-align: center;
-  margin-bottom: 0.25rem;
-  animation: fadeInUp 0.5s ease-out;
+  margin-bottom: 0.2rem;
+  animation: fadeInUp 0.4s ease-out;
+  @include glass-card(patient, $glass-blur-sm, true);
+  border-radius: var(--cs-radius-2xl, 1rem);
 }
 
 .pageHeaderRow {
   display: grid;
-  grid-template-columns: minmax(4.5rem, 1fr) auto minmax(4.5rem, 1fr);
+  grid-template-columns: minmax(4.25rem, 1fr) auto minmax(4.25rem, 1fr);
   align-items: center;
   width: 100%;
-  gap: 0.35rem;
+  gap: pc.$portal-gap * 0.45;
 }
 
 .pageHeaderStart {
@@ -151,212 +160,48 @@
 .pageHeaderEnd {
   justify-self: end;
   width: 100%;
-  max-width: 5.75rem;
+  max-width: 5.5rem;
   min-height: 1px;
 }
 
 .backButton {
-  background: white;
-  border: 2px solid $border-light;
-  border-radius: 12px;
-  padding: 0.45rem 0.75rem;
+  padding: 0.4rem 0.7rem;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: $text-dark;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  line-height: 1.2;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
-  margin-bottom: 0;
-  line-height: 1.2;
-
-  &:hover {
-    background: $patient-primary;
-    color: white;
-    border-color: $patient-primary;
-    transform: translateX(-5px);
-  }
+  gap: 0.25rem;
 }
 
 .pageTitle {
-  grid-column: 2;
-  grid-row: 1;
-  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
   font-weight: 700;
-  color: $text-dark;
   font-family: $font-family-base;
   margin: 0;
   text-align: center;
   max-width: min(22rem, 88vw);
   justify-self: center;
-  animation: fadeInUp 0.6s ease-out 0.1s both;
+  animation: fadeInUp 0.45s ease-out 0.05s both;
 }
 
-.pageSubtitle {
-  font-size: 0.875rem;
-  color: $text-light;
-  margin: 0;
-  max-width: 40rem;
-  line-height: 1.45;
-  animation: fadeInUp 0.6s ease-out 0.2s both;
-}
-
-// Loading and Error States
-.loadingState {
-  text-align: center;
-  padding: 2rem 1.25rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  animation: fadeInUp 0.6s ease-out;
-
-  p {
-    font-size: 1rem;
-    color: $text-light;
-    margin: 0;
-  }
-}
-
-.errorState {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  animation: fadeInUp 0.6s ease-out;
-
-  h3 {
-    font-size: 2rem;
-    color: $text-dark;
-    margin-bottom: 1rem;
-  }
-
-  h3.errorStateHeading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    font-size: 1.65rem;
-    font-weight: 700;
-    margin: 0 0 1rem;
-    line-height: 1.3;
-  }
-
-  p {
-    font-size: 1.125rem;
-    color: $text-light;
-    margin-bottom: 2rem;
-  }
-
-  .errorStateIcon {
-    display: inline-flex;
-    flex-shrink: 0;
-    color: $warning-color;
-  }
-
-  .errorFriendly {
-    font-size: 1rem;
-    color: $text-dark;
-    max-width: 32rem;
-    margin: 0 auto 0.75rem;
-    line-height: 1.55;
-  }
-
-  .errorMessage {
-    font-size: 1.0625rem;
-    color: $text-light;
-    margin: 0 auto 2rem;
-    max-width: 36rem;
-    line-height: 1.5;
-  }
-
-  .errorTechnical {
-    font-size: 0.875rem;
-    color: $text-light;
-    margin: 0 auto 1.75rem;
-    max-width: 36rem;
-    line-height: 1.45;
-    opacity: 0.9;
-  }
-
-  .errorCtaRow {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 0.25rem;
-    flex-wrap: wrap;
-  }
-
-  .retryIcon {
-    display: inline-flex;
-    margin-right: 0.35rem;
-    vertical-align: middle;
-  }
-}
-
-.retryButton {
-  background: linear-gradient(135deg, $patient-primary 0%, $secondary-color 100%);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 1rem 2rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba($patient-primary, 0.3);
-  }
-}
-
-.emptyState {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  animation: fadeInUp 0.6s ease-out;
-  
-  h3 {
-    font-size: 2rem;
-    color: $text-dark;
-    margin-bottom: 1rem;
-  }
-  
-  p {
-    font-size: 1.125rem;
-    color: $text-light;
-    margin-bottom: 1rem;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
-
-// Compact fee line (replaces large booking summary card)
 .summaryBar {
   flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem 0.45rem;
-  font-size: 0.78rem;
+  gap: 0.2rem 0.4rem;
+  font-size: 0.76rem;
   line-height: 1.35;
   color: $text-dark;
-  padding: 0.35rem 0.55rem;
-  margin: 0 auto 0.3rem;
+  padding: pc.$portal-gap * 0.45 pc.$portal-gap * 0.55;
+  margin: 0 auto 0.25rem;
   max-width: 100%;
   text-align: center;
+  @include glass-card(patient, $glass-blur-sm, true);
+  border-radius: var(--cs-radius-xl, 0.75rem);
 }
 
 .summaryBarStrong {
@@ -374,134 +219,49 @@
   color: $patient-primary;
 }
 
-// Calendar Section
 .calendarSection {
   flex: 0 0 auto;
-  background: color-mix(in srgb, $background-gray 92%, $patient-dark 8%);
-  border-radius: 12px;
-  padding: 0.45rem 0.55rem;
-  margin-bottom: 0;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-  border: 1px solid color-mix(in srgb, $patient-primary 14%, $border-medium 86%);
-  animation: fadeInUp 0.8s ease-out;
+  @include pc.compact-surface;
+  border-radius: 14px;
+  padding: pc.$portal-gap * 0.55;
+  animation: fadeInUp 0.5s ease-out;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
     border-color: rgba($patient-primary, 0.28);
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
   }
 }
 
-.calendarTitle {
-  font-size: 0.82rem;
+.calendarTitle,
+.timeSectionTitle {
+  font-size: 0.8rem;
   font-weight: 700;
-  color: $text-dark;
-  margin: 0 0 0.3rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid rgba($border-medium, 0.65);
   font-family: $font-family-base;
-}
-
-// Horizontal date picker (no vertical page scroll)
-.dateScrollTrack {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: stretch;
-  gap: 0.4rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  padding: 0.08rem 0 0.28rem;
-  margin: 0 -0.15rem;
-  padding-left: 0.15rem;
-  padding-right: 0.3rem;
-  scrollbar-width: thin;
-  touch-action: pan-x;
-
-  &::-webkit-scrollbar {
-    height: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-    background: rgba($patient-primary, 0.28);
-  }
-}
-
-.calendarHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 2px solid $background-light;
-}
-
-.monthNavButton {
-  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 0.875rem 1.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba($patient-primary, 0.3);
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba($patient-primary, 0.4);
-  }
-
-  &:active {
-    transform: translateY(-1px);
-  }
-}
-
-.monthTitle {
-  font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 0;
-  letter-spacing: -0.5px;
-}
-
-.dayHeaders {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.dayHeader {
-  text-align: center;
-  font-weight: 700;
   color: $text-dark;
-  font-size: 1rem;
-  padding: 0.75rem;
-  background: $background-light;
-  border-radius: 12px;
+  margin: 0 0 0.28rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding-bottom: 0.22rem;
+  border-bottom: 1px solid rgba($border-medium, 0.6);
 }
 
-.calendarDays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.75rem;
+.timeSectionTitle {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.dateScrollTrack {
+  @include horizontal-strip;
 }
 
 .calendarDay {
   flex: 0 0 auto;
   scroll-snap-align: start;
-  width: 4.1rem;
-  border: 1px solid rgba($border-medium, 0.6);
+  width: 4rem;
+  min-height: $min-touch-target;
+  box-sizing: border-box;
+  border: 1px solid rgba($border-medium, 0.55);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -512,127 +272,71 @@
     border-color 0.2s ease,
     background-color 0.2s ease,
     box-shadow 0.2s ease;
-  position: relative;
   background: white;
-  min-height: 3rem;
-  padding: 0.35rem 0.28rem;
-  box-sizing: border-box;
+  padding: 0.28rem 0.22rem;
 
-  &.available {
-    border-color: $border-light;
+  &.available:hover {
+    border-color: $patient-primary;
+    background: rgba($patient-primary, 0.06);
+    box-shadow: 0 3px 12px rgba($patient-primary, 0.12);
+  }
 
-    &:hover {
-      border-color: $patient-primary;
-      background: rgba($patient-primary, 0.08);
-      box-shadow: 0 4px 14px rgba($patient-primary, 0.15);
-    }
+  &.available.selected {
+    border-color: $patient-primary;
+    background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
+    box-shadow: 0 5px 16px rgba($patient-primary, 0.25);
 
-    &.selected {
-      border-color: $patient-primary;
-      background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-      box-shadow: 0 6px 18px rgba($patient-primary, 0.28);
-
-      .dayNumber,
-      .dayName,
-      .availabilityIndicator {
-        color: white;
-      }
+    .dayNumber,
+    .dayName,
+    .availabilityIndicator {
+      color: white;
     }
   }
-  
+
   &.unavailable {
     background: $background-light;
-    border-color: $border-light;
-    cursor: not-allowed;
     opacity: 0.5;
-
-    &:hover {
-      transform: none;
-    }
+    cursor: not-allowed;
   }
 }
 
 .dayNumber {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: $text-dark;
-  transition: color 0.3s ease;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.12rem;
 }
 
 .dayName {
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   color: $text-light;
   font-weight: 600;
-  transition: color 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
 }
 
 .availabilityIndicator {
-  font-size: 0.58rem;
+  font-size: 0.54rem;
   color: $text-light;
-  margin-top: 0.25rem;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.calendarLegend {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid $background-light;
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1rem;
-  color: $text-dark;
+  margin-top: 0.12rem;
   font-weight: 600;
 }
 
-.legendIndicator {
-  font-size: 1rem;
-}
-
-// Time Selection Section
 .timeSelectionSection {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: white;
-  border-radius: 12px;
-  padding: 0.45rem 0.55rem;
-  margin-bottom: 0;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
-  border: 1px solid rgba($border-medium, 0.45);
-  animation: fadeInUp 1s ease-out;
+  @include pc.compact-surface;
+  border-radius: 14px;
+  padding: pc.$portal-gap * 0.55;
+  animation: fadeInUp 0.55s ease-out;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    border-color: rgba($patient-primary, 0.28);
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
+    border-color: rgba($patient-primary, 0.22);
   }
-}
-
-.timeSectionTitle {
-  flex: 0 0 auto;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: $text-dark;
-  margin: 0 0 0.3rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  min-width: 0;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid rgba($border-light, 0.95);
 }
 
 .timeSectionTitleText {
@@ -642,83 +346,59 @@
   white-space: nowrap;
 }
 
+.timeScrollTrack {
+  @include horizontal-strip;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+}
+
 .noSlotsMessage {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0.55rem 0.45rem;
+  padding: 0.5rem 0.4rem;
   color: $text-light;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   line-height: 1.4;
   background: rgba($warning-orange, 0.1);
   border-radius: 10px;
   margin: 0;
 }
 
-.timeScrollTrack {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 0.4rem;
-  flex: 1;
-  min-height: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  padding: 0.08rem 0 0.2rem;
-  margin: 0 -0.15rem;
-  padding-left: 0.15rem;
-  padding-right: 0.3rem;
-  scrollbar-width: thin;
-  touch-action: pan-x;
-
-  &::-webkit-scrollbar {
-    height: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-    background: rgba($patient-primary, 0.28);
-  }
-}
-
 .timeSlot {
   flex: 0 0 auto;
   scroll-snap-align: start;
-  min-width: 4.85rem;
-  padding: 0.55rem 0.65rem;
-  border: 1px solid rgba($border-medium, 0.6);
+  min-width: 4.75rem;
+  min-height: $min-touch-target;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgba($border-medium, 0.55);
   border-radius: 10px;
   background: white;
   color: $text-dark;
   font-weight: 700;
-  font-size: 0.82rem;
-  cursor: pointer;
+  font-size: 0.8rem;
+  text-align: center;
   transition:
     border-color 0.2s ease,
     background-color 0.2s ease,
     box-shadow 0.2s ease;
-  text-align: center;
 
-  &.available {
-    &:hover {
-      border-color: $patient-primary;
-      background: rgba($patient-primary, 0.08);
-      box-shadow: 0 4px 14px rgba($patient-primary, 0.15);
-    }
-
-    &.selected {
-      border-color: $patient-primary;
-      background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-      color: white;
-      box-shadow: 0 6px 18px rgba($patient-primary, 0.28);
-    }
+  &.available:hover {
+    border-color: $patient-primary;
+    background: rgba($patient-primary, 0.06);
+    box-shadow: 0 3px 12px rgba($patient-primary, 0.12);
   }
-  
+
+  &.available.selected {
+    border-color: $patient-primary;
+    background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
+    color: white;
+    box-shadow: 0 5px 16px rgba($patient-primary, 0.25);
+  }
+
   &.unavailable {
     background: $background-light;
     color: $text-light;
@@ -727,309 +407,158 @@
   }
 }
 
-// Session Type Section
-.sessionTypeSection {
-  background: color-mix(in srgb, $background-gray 92%, $patient-dark 8%);
-  border-radius: 12px;
-  padding: 0.75rem 0.85rem;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-  border: 1px solid color-mix(in srgb, $patient-primary 14%, $border-medium 86%);
-  animation: fadeInUp 1.2s ease-out;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+.loadingState {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  @include pc.compact-surface;
+  border-radius: 14px;
+  animation: fadeInUp 0.45s ease-out;
 
-  &:hover {
-    border-color: rgba($patient-primary, 0.28);
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
-  }
-}
-
-.sessionTypeTitle {
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: $text-dark;
-  margin: 0 0 0.55rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid rgba($border-medium, 0.65);
-  font-family: $font-family-base;
-}
-
-.sessionTypeOptions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.55rem;
-}
-
-.sessionTypeCard {
-  border: 1px solid rgba($border-medium, 0.75);
-  border-radius: 10px;
-  padding: 0.65rem 0.75rem;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-  position: relative;
-  background: color-mix(in srgb, $background-white 96%, $background-gray 4%);
-  
-  &:hover {
-    border-color: $patient-primary;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba($patient-primary, 0.12);
-  }
-  
-  &.selected {
-    border-color: $patient-primary;
-    background: linear-gradient(135deg, white 0%, rgba($patient-primary, 0.03) 100%);
-    box-shadow: 0 10px 30px rgba($patient-primary, 0.2);
-  }
-}
-
-.sessionTypeIcon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-   line-height: 1;
-}
-
-.sessionTypeContent {
-  flex: 1;
-  
-  h4 {
-    font-size: 0.94rem;
-    font-weight: 700;
-    color: $text-dark;
-    margin: 0 0 0.3rem 0;
-  }
-  
   p {
+    font-size: 0.92rem;
     color: $text-light;
-    font-size: 0.82rem;
-    margin: 0 0 0.22rem 0;
-    line-height: 1.35;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
+    margin: 0;
   }
 }
 
-.sessionTypeRadio {
-  flex-shrink: 0;
-  
-  input[type="radio"] {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    accent-color: $patient-primary;
-  }
-}
+.errorState {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  @include pc.compact-surface;
+  border-radius: 14px;
+  animation: fadeInUp 0.45s ease-out;
 
-// Form Actions
-.formActions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0.85rem;
-  padding-top: 0.65rem;
-  border-top: 1px solid rgba($border-light, 0.9);
-
-  &.formActionsSticky {
-    justify-content: center;
+  h3.errorStateHeading {
+    display: flex;
     align-items: center;
-    margin-top: 0;
-    padding-top: 0.5rem;
-    border-top: none;
-    width: 100%;
+    justify-content: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.65rem;
+    line-height: 1.3;
+    color: $text-dark;
+  }
+
+  .errorStateIcon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: $warning-color;
+  }
+
+  .errorFriendly {
+    font-size: 0.88rem;
+    color: $text-dark;
+    max-width: 28rem;
+    margin: 0 auto 0.5rem;
+    line-height: 1.5;
+  }
+
+  .errorMessage {
+    font-size: 0.86rem;
+    color: $text-light;
+    margin: 0 auto 1rem;
+    max-width: 32rem;
+    line-height: 1.45;
+  }
+
+  .errorTechnical {
+    font-size: 0.78rem;
+    color: $text-light;
+    margin: 0 auto 0.85rem;
+    max-width: 32rem;
+    line-height: 1.4;
+    opacity: 0.9;
+  }
+
+  .errorCtaRow {
+    display: flex;
+    gap: 0.65rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .retryIcon {
+    display: inline-flex;
+    margin-right: 0.3rem;
+    vertical-align: middle;
   }
 }
 
-.cancelButton {
-  padding: 0.65rem 1.2rem;
-  border: 2px solid $border-light;
-  background: white;
-  color: $text-dark;
-  border-radius: 50px;
+.retryButton {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  font-size: 0.875rem;
-  line-height: 1.25;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-height: 44px;
+  border-radius: var(--cs-radius-xl, 0.75rem);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-
-  &:hover {
-    border-color: $error-red;
-    color: $error-red;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba($error-red, 0.2);
-  }
-
-  &:active {
-    transform: translateY(-1px);
-  }
+  gap: 0.4rem;
 }
 
 .continueButton {
-  padding: 0.7rem 1.35rem;
-  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
-  color: white;
-  border: none;
-  border-radius: 50px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  font-size: 0.9375rem;
-  line-height: 1.25;
   letter-spacing: 0.01em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba($patient-primary, 0.3);
-  min-height: 44px;
+  border-radius: var(--cs-radius-xl, 0.75rem);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 35px rgba($patient-primary, 0.4);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(-3px);
-  }
+  gap: 0.3rem;
+  min-height: $min-touch-target;
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 4px 12px rgba($patient-primary, 0.2);
-  }
-}
-
-.formActions.formActionsSticky .continueButton {
-  width: 100%;
-  max-width: 20rem;
-}
-
-@media (max-width: 520px) {
-  .formActions.formActionsSticky .continueButton {
-    max-width: none;
   }
 }
 
 :global(.patientShell) {
-  .pageHeader {
-    margin-bottom: 0.35rem;
-  }
-
-  .backButton {
-    padding: 0.38rem 0.65rem;
-    font-size: 0.78rem;
-  }
-
   .pageTitle {
-    background: none;
-    -webkit-text-fill-color: unset;
     color: var(--cs-primary);
     font-family: var(--cs-font-body);
-    font-size: clamp(1.05rem, 2vw, 1.45rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
   }
 
   .summaryBar {
     color: var(--cs-on-surface);
-    font-size: 0.74rem;
-    margin-bottom: 0.35rem;
   }
 
   .summaryBarEm {
     color: var(--cs-primary);
   }
-
-  .pageSubtitle {
-    color: var(--cs-on-surface-variant);
-    font-size: 0.8125rem;
-    line-height: 1.5;
-  }
 }
 
-// Booking flow CTA normalization (Clinical Sanctuary)
-button.backButton,
-button.cancelButton,
-button.retryButton {
+:global(.patientShell) button.backButton,
+:global(.patientShell) button.retryButton {
   border: none;
   color: var(--cs-primary);
   background: var(--cs-surface-lowest);
   border-radius: var(--cs-radius-xl);
-  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
-  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-
-  &::before {
-    content: none;
-    display: none;
-  }
+  box-shadow: 0 6px 20px rgba(25, 28, 29, 0.06);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
 
   &:hover:not(:disabled) {
     background: var(--cs-surface-low);
-    transform: none;
-    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    box-shadow: 0 8px 22px rgba(25, 28, 29, 0.08);
     color: var(--cs-primary);
   }
 }
 
-button.continueButton {
+:global(.patientShell) button.continueButton {
   border: none;
   color: var(--cs-on-primary);
   background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
   border-radius: var(--cs-radius-xl);
   box-shadow: var(--cs-shadow-atmospheric);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  padding: 0.7rem 1.35rem;
-  min-height: 44px;
-  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
-
-  &::before {
-    content: none;
-    display: none;
-  }
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
 
   &:hover:not(:disabled) {
-    filter: saturate(1.08);
-    transform: none;
-    box-shadow: var(--cs-shadow-atmospheric);
+    filter: saturate(1.06);
   }
 }
 
-:global(.patientShell) button.cancelButton {
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0.65rem 1.2rem;
-  min-height: 44px;
-}
-
-// Intake-aligned form polish
-.pageHeader,
-.summaryBar {
-  @include glass-card(patient, $glass-blur-sm, true);
-}
-
-.pageHeader {
-  border-radius: var(--cs-radius-2xl);
-}
-
-.summaryBar {
-  border-radius: var(--cs-radius-xl);
-}
-
-.timeSlot {
+:global(.patientShell) .timeSlot {
   border-color: color-mix(in srgb, var(--cs-primary) 14%, transparent);
   background: color-mix(in srgb, var(--cs-surface-lowest) 90%, white 10%);
 }
