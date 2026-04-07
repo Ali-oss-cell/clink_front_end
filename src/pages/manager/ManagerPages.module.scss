@@ -829,6 +829,27 @@
   padding: 1.5rem;
 }
 
+:global(.clinicalShell) {
+  // Homepage-level glass intensity for manager dashboards
+  .dashboardCard,
+  .statCard,
+  .secondaryStatCard,
+  .tableContainer,
+  .statBox {
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--cs-surface-lowest) 86%, white 14%) 0%,
+      color-mix(in srgb, var(--cs-surface-low) 92%, var(--cs-primary) 8%) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
+    box-shadow:
+      var(--cs-glass-shadow),
+      inset 0 1px 0 color-mix(in srgb, var(--cs-surface-lowest) 80%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+}
+
 .actionButton,
 .primaryButton {
   min-height: $min-touch-target;

@@ -3202,6 +3202,26 @@ button.submitButton {
     font-family: var(--cs-font-headline);
   }
 
+  // Stronger homepage-like glass for patient dashboard cards/panels
+  .dashboardCard,
+  .resourceCard,
+  .preferenceSection,
+  .summaryCard,
+  .formSection,
+  .consentSection {
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--cs-surface-lowest) 86%, white 14%) 0%,
+      color-mix(in srgb, var(--cs-surface-low) 92%, var(--cs-primary) 8%) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
+    box-shadow:
+      var(--cs-glass-shadow),
+      inset 0 1px 0 color-mix(in srgb, var(--cs-surface-lowest) 80%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
   .bookingFlowActionsRow {
     border-top: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
   }

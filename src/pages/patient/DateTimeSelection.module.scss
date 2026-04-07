@@ -337,9 +337,10 @@
 
 .calendarSection {
   flex: 0 0 auto;
-  @include pc.compact-surface;
-  border-radius: var(--cs-radius-xl, 0.75rem);
-  padding: pc.$portal-gap * 0.6;
+  @include surface-primary-no-hover;
+  border-radius: var(--cs-radius-2xl, 1rem);
+  padding: 1rem 1rem 1.05rem;
+  min-height: 12.5rem;
   animation: fadeInUp 0.5s ease-out;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
@@ -350,7 +351,7 @@
 
 .calendarTitle,
 .timeSectionTitle {
-  font-size: 0.94rem;
+  font-size: 1.02rem;
   font-weight: 700;
   font-family: $font-family-base;
   color: $text-dark;
@@ -369,12 +370,12 @@
 
 .dateScrollTrack {
   @include horizontal-strip;
-  grid-template-columns: repeat(auto-fit, minmax(5.4rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(6.4rem, 1fr));
 }
 
 .calendarDay {
   width: 100%;
-  min-height: calc(#{$min-touch-target} + 0.85rem);
+  min-height: calc(#{$min-touch-target} + 1.3rem);
   box-sizing: border-box;
   border: 1px solid rgba($border-medium, 0.55);
   border-radius: var(--cs-radius-xl);
@@ -388,7 +389,7 @@
     background-color 0.2s ease,
     box-shadow 0.2s ease;
   background: white;
-  padding: 0.45rem 0.3rem;
+  padding: 0.65rem 0.45rem;
 
   &.available:hover {
     border-color: $patient-primary;

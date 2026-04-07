@@ -140,7 +140,7 @@
   border-radius: 14px;
   padding: 1.35rem 1.45rem;
   margin-bottom: 1.5rem;
-  box-shadow: var(--cs-shadow-atmospheric);
+  box-shadow: var(--cs-glass-shadow);
   border: 1px solid rgba($border-medium, 0.45);
   animation: fadeInDown 0.6s ease-out;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -208,7 +208,7 @@
   border-radius: var(--cs-radius-xl);
   background: white;
   color: $text-dark;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
   line-height: 1.5;
   cursor: pointer;
@@ -287,8 +287,8 @@
 .psychologistCard {
   @include pc.compact-surface;
   border: 1px solid rgba($border-medium, 0.35);
-  border-radius: var(--cs-radius-xl, 0.75rem);
-  padding: 1.25rem 1.35rem 1.25rem calc(1.35rem + 6px);
+  border-radius: var(--cs-radius-2xl, 1rem);
+  padding: 1.45rem 1.6rem 1.45rem calc(1.6rem + 6px);
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
   position: relative;
@@ -297,7 +297,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
+  gap: 1.2rem;
 
   &::before {
     content: '';
@@ -351,8 +351,8 @@
 // Horizontal card sections
 .psychologistAvatarWrap {
   flex-shrink: 0;
-  width: 4.25rem;
-  height: 4.25rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--cs-surface-high, $border-light);
@@ -370,7 +370,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.5rem;
 }
 
 .psychologistMetaTop {
@@ -388,7 +388,7 @@
 }
 
 .psychologistTag {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
   padding: 0.15rem 0.55rem;
   border-radius: 999px;
@@ -398,7 +398,7 @@
 }
 
 .psychologistAvailability {
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   color: $text-muted;
   display: flex;
   align-items: center;
@@ -457,7 +457,7 @@
 }
 
 .psychologistName {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--cs-on-surface, $text-dark);
   margin: 0;
@@ -473,14 +473,14 @@
 }
 
 .psychologistMetaSub {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--cs-on-surface-variant, $text-light);
   line-height: 1.35;
 }
 
 .psychologistBioSnippet {
   margin: 0.15rem 0 0;
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   color: $text-light;
   line-height: 1.4;
   display: -webkit-box;
@@ -960,7 +960,7 @@ button.continueButton {
 }
 
 .psychologistCard {
-  border-radius: var(--cs-radius-xl);
+  border-radius: var(--cs-radius-2xl, 1rem);
   @include glass-hover(patient);
 }
 

@@ -46,11 +46,17 @@ $collapse: $shell-collapse;
   padding: 1.5rem 0.75rem;
   display: flex;
   flex-direction: column;
-  background: var(--cs-glass-bg);
-  border-right: 1px solid var(--cs-glass-border);
-  box-shadow: var(--cs-glass-shadow);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--cs-surface-lowest) 82%, white 18%) 0%,
+    color-mix(in srgb, var(--cs-surface-low) 90%, var(--cs-primary) 10%) 100%
+  );
+  border-right: 1px solid color-mix(in srgb, var(--cs-primary) 16%, transparent);
+  box-shadow:
+    var(--cs-glass-shadow),
+    inset -1px 0 0 color-mix(in srgb, var(--cs-primary) 14%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .brand {
@@ -140,7 +146,7 @@ $collapse: $shell-collapse;
   border-radius: var(--cs-radius-xl) 0 0 var(--cs-radius-xl);
   color: var(--cs-on-surface-variant);
   text-decoration: none;
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 8%, transparent);
   position: relative;
   overflow: hidden;
   transition:
@@ -159,7 +165,9 @@ $collapse: $shell-collapse;
     border-color: color-mix(in srgb, var(--cs-primary) 18%, transparent);
     color: var(--cs-primary);
     transform: translateX(2px);
-    box-shadow: var(--cs-shadow-atmospheric);
+    box-shadow:
+      var(--cs-shadow-atmospheric),
+      inset 0 1px 0 color-mix(in srgb, var(--cs-surface-lowest) 80%, transparent);
   }
 
   &:active {
@@ -184,8 +192,8 @@ $collapse: $shell-collapse;
   border-color: color-mix(in srgb, var(--cs-primary) 22%, transparent);
   font-weight: 700;
   box-shadow:
-    var(--cs-glass-shadow),
-    inset 0 0 0 1px color-mix(in srgb, var(--cs-primary) 22%, transparent);
+    0 14px 34px color-mix(in srgb, var(--cs-primary) 18%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--cs-primary) 28%, transparent);
 }
 
 .navIcon {
