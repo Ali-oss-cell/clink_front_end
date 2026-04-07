@@ -355,174 +355,27 @@ export const PatientAccountPage: React.FC = () => {
               {activeTab === 'medical' && (
                 <div className={styles.tabContent}>
                   <h2 className={styles.sectionTitle}>Medical Information</h2>
-                  
-                  {intakeCompleted ? (
-                    <div className={styles.medicalInfo}>
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>Intake Form</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            Your intake form is on file.
-                          </div>
-                          <Button className={styles.editButton} onClick={() => navigate('/patient/intake-form')}>
-                            Update Intake Form
-                          </Button>
-                        </div>
-                      </div>
 
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>Current Medications</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            {medicalInfo?.currentMedications || 'Not provided'}
-                          </div>
-                          <Button 
-                            className={styles.editButton}
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>Medical Conditions</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            {medicalInfo?.medicalConditions || 'Not provided'}
-                          </div>
-                          <Button 
-                            className={styles.editButton}
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>Previous Therapy</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            {medicalInfo?.previousTherapy || 'Not provided'}
-                          </div>
-                          <Button 
-                            className={styles.editButton}
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>Other Health Professionals</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            {medicalInfo?.otherHealthProfessionals || 'Not provided'}
-                          </div>
-                          <Button 
-                            className={styles.editButton}
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>GP contact</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            {medicalInfo?.gpContact || 'Not provided'}
-                          </div>
-                          <Button 
-                            className={styles.editButton}
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-
-                      {medicalInfo?.gpProviderNumber && (
-                        <div className={styles.infoSection}>
-                          <label className={styles.label}>GP provider number</label>
-                          <div className={styles.infoDisplay}>
-                            <div className={styles.infoValue}>{medicalInfo.gpProviderNumber}</div>
-                          </div>
-                        </div>
-                      )}
-
-                      {medicalInfo?.gpReferralDate && (
-                        <div className={styles.infoSection}>
-                          <label className={styles.label}>GP referral date</label>
-                          <div className={styles.infoDisplay}>
-                            <div className={styles.infoValue}>{medicalInfo.gpReferralDate}</div>
-                          </div>
-                        </div>
-                      )}
-
-                      {medicalInfo?.gpReferralExpiry && (
-                        <div className={styles.infoSection}>
-                          <label className={styles.label}>Referral expiry</label>
-                          <div className={styles.infoDisplay}>
-                            <div className={styles.infoValue}>{medicalInfo.gpReferralExpiry}</div>
-                          </div>
-                        </div>
-                      )}
-
-                      {medicalInfo?.gpMhcpReference && (
-                        <div className={styles.infoSection}>
-                          <label className={styles.label}>MHCP / plan reference</label>
-                          <div className={styles.infoDisplay}>
-                            <div className={styles.infoValue}>{medicalInfo.gpMhcpReference}</div>
-                          </div>
-                        </div>
-                      )}
-
-                      {medicalInfo?.gpMbsItems && (
-                        <div className={styles.infoSection}>
-                          <label className={styles.label}>Related MBS items</label>
-                          <div className={styles.infoDisplay}>
-                            <div className={styles.infoValue}>{medicalInfo.gpMbsItems}</div>
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>Presenting Concerns</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            {medicalInfo?.presentingConcerns || 'Not provided'}
-                          </div>
-                          <Button 
-                            className={styles.editButton}
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.infoSection}>
-                        <label className={styles.label}>Therapy Goals</label>
-                        <div className={styles.infoDisplay}>
-                          <div className={styles.infoValue}>
-                            {medicalInfo?.therapyGoals || 'Not provided'}
-                          </div>
-                          <Button 
-                            className={styles.editButton}
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className={styles.completionNotice}>
-                      <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
-                      <h3>Complete Your Intake Form</h3>
-                      <p>To view and manage your medical information, please complete your intake form first.</p>
-                      <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
-                        Complete Intake Form
-                      </Button>
-                    </div>
-                  )}
+                  <div className={styles.completionNotice}>
+                    <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
+                    {intakeCompleted ? (
+                      <>
+                        <h3>You already completed your intake form</h3>
+                        <p>Want to update your details? Open the intake form and edit anything that changed.</p>
+                        <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
+                          Update Intake Form
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <h3>Complete Your Intake Form</h3>
+                        <p>To add your medical information, please complete your intake form first.</p>
+                        <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
+                          Complete Intake Form
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
 
