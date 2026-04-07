@@ -527,7 +527,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                 <span className={styles.summaryAsideEm}>${outOfPocket}</span>
               </div>
               <p className={styles.summaryAsideHint}>
-                Scroll the date and time rows sideways if you need more options, then continue to confirm your booking.
+                Pick any date and time below, then continue to confirm your booking.
               </p>
             </aside>
 
@@ -543,7 +543,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                   <div
                     className={styles.dateScrollTrack}
                     aria-labelledby="booking-date-label"
-                    aria-label="Available dates, scroll sideways for more"
+                    aria-label="Available dates"
                   >
                     {availabilityData.available_dates.map((dateObj) => (
                       <div
@@ -572,7 +572,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                       <div
                         className={styles.timeScrollTrack}
                         aria-labelledby="booking-time-label"
-                        aria-label="Available times, scroll sideways for more"
+                        aria-label="Available times"
                       >
                         {getSelectedDateSlots().map((slot) => (
                           <Button
