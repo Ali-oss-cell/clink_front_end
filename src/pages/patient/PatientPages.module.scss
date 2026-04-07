@@ -3412,3 +3412,44 @@ button.submitButton {
   color: var(--cs-primary);
   opacity: 0.82;
 }
+
+// Homepage palette lock (patient)
+:global(.patientShell) {
+  .pageTitle,
+  .welcomeTitle,
+  .serviceName,
+  .summaryAsideName,
+  .resourceTitle,
+  .detailValue {
+    color: var(--cs-primary) !important;
+  }
+
+  .serviceMeta,
+  .serviceDescription,
+  .pageSubtitle,
+  .summaryAsideHint,
+  .summaryAsideLabel,
+  .helpText {
+    color: var(--cs-on-surface-variant) !important;
+  }
+
+  .bookingNextButton,
+  .continueButton,
+  .submitButton,
+  .primaryButton,
+  .actionButton {
+    background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%) !important;
+    color: var(--cs-on-primary) !important;
+    border-color: color-mix(in srgb, var(--cs-primary) 30%, transparent) !important;
+  }
+
+  .bookingBackButton,
+  .cancelButton,
+  .backButton,
+  .retryButton,
+  .secondaryButton {
+    color: var(--cs-primary) !important;
+    border-color: color-mix(in srgb, var(--cs-primary) 26%, transparent) !important;
+    background: color-mix(in srgb, var(--cs-surface-lowest) 94%, white 6%) !important;
+  }
+}

@@ -935,3 +935,29 @@
   color: $text-dark;
 }
 
+// Homepage palette lock (manager)
+:global(.clinicalShell) {
+  .pageTitle,
+  .welcomeTitle,
+  .statValue,
+  .metricValue,
+  .dashboardCardTitle {
+    color: var(--cs-primary) !important;
+  }
+
+  .pageSubtitle,
+  .welcomeSubtitle,
+  .statLabel,
+  .metricLabel,
+  .dashboardCardMeta {
+    color: var(--cs-on-surface-variant) !important;
+  }
+
+  .primaryButton,
+  .actionButton {
+    background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%) !important;
+    color: var(--cs-on-primary) !important;
+    border-color: color-mix(in srgb, var(--cs-primary) 30%, transparent) !important;
+  }
+}
+

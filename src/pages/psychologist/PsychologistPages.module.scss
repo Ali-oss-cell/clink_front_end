@@ -3557,3 +3557,42 @@
     font-size: 0.6rem;
   }
 }
+
+// Homepage palette lock (psychologist)
+:global(.clinicalShell) {
+  .pageTitle,
+  .welcomeTitle,
+  .psychologistName,
+  .patientName,
+  .noteTitle,
+  .statValue {
+    color: var(--cs-primary) !important;
+  }
+
+  .pageSubtitle,
+  .welcomeSubtitle,
+  .psychologistMetaSub,
+  .patientMeta,
+  .noteMeta,
+  .availabilityText {
+    color: var(--cs-on-surface-variant) !important;
+  }
+
+  .saveButton,
+  .primaryButton,
+  .actionButton,
+  .videoJoinButton {
+    background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%) !important;
+    color: var(--cs-on-primary) !important;
+    border-color: color-mix(in srgb, var(--cs-primary) 30%, transparent) !important;
+  }
+
+  .cancelButton,
+  .secondaryButton,
+  .editButton,
+  .retryButton {
+    color: var(--cs-primary) !important;
+    border-color: color-mix(in srgb, var(--cs-primary) 26%, transparent) !important;
+    background: color-mix(in srgb, var(--cs-surface-lowest) 94%, white 6%) !important;
+  }
+}
