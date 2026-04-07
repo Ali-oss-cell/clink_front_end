@@ -28,12 +28,9 @@ import { PatientAppointmentPage } from '../pages/patient/PatientAppointmentPage'
 import { PatientAppointmentsPage } from '../pages/patient/PatientAppointmentsPage';
 import { PatientInvoicesPage } from '../pages/patient/PatientInvoicesPage';
 import { RecordingsPage } from '../pages/RecordingsPage';
-import { ServiceSelectionPage } from '../pages/patient/ServiceSelectionPage';
-import { PsychologistSelectionPage } from '../pages/patient/PsychologistSelectionPage';
-import { DateTimeSelectionPage } from '../pages/patient/DateTimeSelectionPage';
-import { AppointmentDetailsPage } from '../pages/patient/AppointmentDetailsPage';
-import { PaymentPage } from '../pages/patient/PaymentPage';
 import { ConfirmationPage } from '../pages/patient/ConfirmationPage';
+import { BookingWizardPage } from '../pages/patient/BookingWizardPage';
+import { BookingStepRedirect } from '../components/common/BookingStepRedirect/BookingStepRedirect';
 
 // Psychologist pages
 import { PsychologistDashboardPage } from '../pages/psychologist/PsychologistDashboardPage';
@@ -186,7 +183,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           user={user} 
           allowedRoles={['patient']}
         >
-          <ServiceSelectionPage />
+          <BookingWizardPage />
         </ProtectedRoute>
       } />
       
@@ -197,7 +194,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           user={user} 
           allowedRoles={['patient']}
         >
-          <PsychologistSelectionPage />
+          <BookingStepRedirect step={2} />
         </ProtectedRoute>
       } />
       
@@ -208,7 +205,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           user={user} 
           allowedRoles={['patient']}
         >
-          <DateTimeSelectionPage />
+          <BookingStepRedirect step={3} />
         </ProtectedRoute>
       } />
       
@@ -219,7 +216,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           user={user} 
           allowedRoles={['patient']}
         >
-          <AppointmentDetailsPage />
+          <BookingStepRedirect step={4} />
         </ProtectedRoute>
       } />
       
@@ -230,7 +227,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           user={user} 
           allowedRoles={['patient']}
         >
-          <PaymentPage />
+          <BookingStepRedirect step={5} />
         </ProtectedRoute>
       } />
       

@@ -503,7 +503,7 @@ export const DateTimeSelectionPage: React.FC = () => {
                   ← Back
                 </Button>
               </div>
-              <h1 className={styles.pageTitle}>Select Date & Time</h1>
+              <h1 className={styles.pageTitle}>Schedule your visit</h1>
               <div className={styles.pageHeaderEnd} aria-hidden />
             </div>
           </header>

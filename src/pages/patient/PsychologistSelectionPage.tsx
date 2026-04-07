@@ -397,12 +397,18 @@ export const PsychologistSelectionPage: React.FC = () => {
                         )}
                       </div>
                       <span className={styles.psychologistTitle}>{psychologist.title}</span>
+                      <span className={styles.psychologistMetaSub}>
+                        {psychologist.experience} years experience · AHPRA {psychologist.ahpraNumber}
+                      </span>
                       {psychologist.specializations.length > 0 && (
                         <div className={styles.psychologistMetaTags}>
                           {psychologist.specializations.slice(0, 3).map((spec) => (
                             <span key={spec.id} className={styles.psychologistTag}>{spec.name}</span>
                           ))}
                         </div>
+                      )}
+                      {psychologist.bio && (
+                        <p className={styles.psychologistBioSnippet}>{psychologist.bio}</p>
                       )}
                       <span className={styles.psychologistAvailability}>
                         <CalendarIcon size="sm" aria-hidden />
