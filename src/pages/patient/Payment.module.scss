@@ -3,7 +3,7 @@
 
 // Payment Page Styles
 .pageHeader {
-  margin-bottom: $spacing-lg;
+  margin-bottom: 1rem;
   text-align: center;
   max-width: 640px;
   margin-left: auto;
@@ -52,13 +52,13 @@
 }
 
 .paymentContainer {
-  padding: $spacing-lg 0;
+  padding: 1rem 0 0.9rem;
   min-height: 100vh;
   background: $background-light;
 }
 
 :global(.patientShell) .paymentContainer {
-  padding: 0.85rem 0 1.25rem;
+  padding: 1rem 0 1.25rem;
   background: transparent;
 }
 
@@ -75,13 +75,13 @@
 .paymentContent {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $spacing-xl;
+  gap: 1rem;
   max-width: 1200px;
   margin: 0 auto;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: $spacing-lg;
+    gap: 0.9rem;
   }
 }
 
@@ -89,7 +89,7 @@
   .summaryCard {
     background: white;
     border-radius: $border-radius-lg;
-    padding: $spacing-lg;
+    padding: clamp(1rem, 2vw, 1.25rem);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: $spacing-lg;
@@ -181,7 +181,7 @@
 .paymentForm {
   background: white;
   border-radius: $border-radius-lg;
-  padding: $spacing-xl;
+  padding: clamp(1rem, 2vw, 1.35rem);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
@@ -513,6 +513,12 @@
 // Booking flow CTA normalization (Clinical Sanctuary)
 button.backButton,
 button.cancelButton {
+  padding: 0.75rem 1.5rem;
+  min-height: $min-touch-target;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   color: var(--cs-primary);
   background: var(--cs-surface-lowest);
@@ -535,6 +541,12 @@ button.cancelButton {
 }
 
 button.payButton {
+  padding: 0.75rem 1.75rem;
+  min-height: $min-touch-target;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   color: var(--cs-on-primary);
   background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);

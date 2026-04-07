@@ -79,7 +79,7 @@ export const AppointmentDetailsPage: React.FC = () => {
         special_requests: data.specialRequests?.trim() || '',
         additional_notes: data.additionalNotes?.trim() || '',
       });
-      navigate(`/appointments/payment?appointment_id=${appointmentId}`);
+      navigate(`/appointments/book-appointment?step=5&appointment_id=${appointmentId}`);
     } catch (error: unknown) {
       console.error('Error submitting appointment details:', error);
       alert(extractApiErrorMessage(error, 'Failed to save details. Please try again.'));
@@ -89,7 +89,13 @@ export const AppointmentDetailsPage: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate(-1); // Go back to previous page
+    if (bookingData) {
+      navigate(
+        `/appointments/book-appointment?step=3&service=${bookingData.service.id}&psychologist=${bookingData.psychologist.id}`
+      );
+      return;
+    }
+    navigate('/appointments/book-appointment?step=1');
   };
 
   if (loading) {
@@ -119,7 +125,7 @@ export const AppointmentDetailsPage: React.FC = () => {
                 Unable to Load Appointment
               </h3>
               <p>{error || 'Appointment not found'}</p>
-              <Button className={styles.retryButton} onClick={() => navigate('/appointments/date-time')}>
+              <Button className={styles.retryButton} onClick={() => navigate('/appointments/book-appointment?step=1')}>
                 Go Back
               </Button>
             </div>

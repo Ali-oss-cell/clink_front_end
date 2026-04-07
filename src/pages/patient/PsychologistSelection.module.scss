@@ -27,7 +27,7 @@
 
 // Psychologist Selection Page Styles
 .psychologistSelectionContainer {
-  padding: 1rem 0 0.75rem;
+  padding: 1.1rem 0 0.9rem;
   min-height: 0;
   background: linear-gradient(135deg, $background-light 0%, $patient-bg-gradient-end 100%);
   display: flex;
@@ -44,7 +44,7 @@
 .bookingSplit {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
   flex: 1;
   min-height: 0;
   align-items: stretch;
@@ -52,7 +52,7 @@
   @media (min-width: 900px) {
     flex-direction: row;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 }
 
@@ -83,7 +83,7 @@
   flex: 1;
   min-width: 0;
   overflow-y: auto;
-  padding-right: 0.15rem;
+  padding-right: 0.25rem;
 
   .psychologistsGrid {
     max-width: none;
@@ -93,7 +93,7 @@
 }
 
 .editorialHeader {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
   animation: fadeInDown 0.5s ease-out;
 }
 
@@ -133,7 +133,7 @@
   bottom: 0;
   z-index: 4;
   margin-top: auto;
-  padding-bottom: max(0.45rem, env(safe-area-inset-bottom, 0px));
+  padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
   background: var(--cs-surface-lowest, #fff);
   border-top: 1px solid rgba($border-medium, 0.25);
 }
@@ -279,8 +279,8 @@
 .psychologistsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  gap: 1.1rem;
+  margin-bottom: 1.5rem;
 
   @media (min-width: 1180px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));

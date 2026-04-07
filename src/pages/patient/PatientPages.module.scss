@@ -2158,7 +2158,7 @@ button.submitButton {
   bottom: 0;
   z-index: 4;
   margin-top: auto;
-  padding-bottom: max(0.35rem, env(safe-area-inset-bottom, 0px));
+  padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
   background: var(--cs-surface-lowest, #fff);
   border-top: 1px solid rgba($border-medium, 0.25);
 }
@@ -2199,6 +2199,11 @@ button.submitButton {
 // Shared booking flow ghost back + gradient next buttons
 .bookingBackButton {
   padding: 0.75rem 1.5rem;
+  min-height: $min-touch-target;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--cs-outline, #70787c);
   background: transparent;
   color: var(--cs-primary, $patient-primary);
@@ -2216,6 +2221,11 @@ button.submitButton {
 
 .bookingNextButton {
   padding: 0.75rem 1.75rem;
+  min-height: $min-touch-target;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, var(--cs-primary, $patient-primary) 0%, var(--cs-primary-container, $patient-dark) 100%);
   color: var(--cs-on-primary, #ffffff);
   border: none;
@@ -2257,7 +2267,7 @@ button.submitButton {
 
 // Service Selection Page
 .serviceSelectionContainer {
-  padding: 1.25rem 0 0.75rem;
+  padding: 1rem 0 0.9rem;
   min-height: 0;
   background: linear-gradient(135deg, $patient-bg-gradient-start 0%, $patient-bg-gradient-end 100%);
 

@@ -182,10 +182,10 @@ export const PaymentPage: React.FC = () => {
 
   const handleBack = () => {
     if (!appointmentId) {
-      navigate('/appointments/book-appointment');
+      navigate('/appointments/book-appointment?step=1');
       return;
     }
-    navigate(`/appointments/details?appointment_id=${appointmentId}`);
+    navigate(`/appointments/book-appointment?step=4&appointment_id=${appointmentId}`);
   };
 
   const prepareCardCheckout = async () => {

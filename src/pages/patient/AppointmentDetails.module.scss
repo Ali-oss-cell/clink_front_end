@@ -3,14 +3,14 @@
 
 // Appointment Details Page Styles
 .appointmentDetailsContainer {
-  padding: $spacing-md 0;
+  padding: 1rem 0 0.9rem;
   min-height: 100vh;
   background: color-mix(in srgb, $patient-bg-gradient-end 85%, $background-gray 15%);
 }
 
 .pageHeader {
   text-align: center;
-  margin-bottom: $spacing-md;
+  margin-bottom: 1rem;
 }
 
 .backButton {
@@ -53,13 +53,13 @@
 }
 
 .appointmentSummary {
-  margin-bottom: $spacing-md;
+  margin-bottom: 1rem;
 }
 
 .summaryCard {
   background: color-mix(in srgb, $background-gray 88%, $patient-primary 12%);
   border-radius: $border-radius-lg;
-  padding: $spacing-md;
+  padding: clamp(1rem, 2vw, 1.25rem);
   border: 1px solid color-mix(in srgb, $patient-primary 16%, $border-medium 84%);
   box-shadow: $shadow-sm;
   max-width: 800px;
@@ -151,14 +151,14 @@
   max-width: 800px;
   margin: 0 auto;
   background: color-mix(in srgb, $background-white 94%, $background-gray 6%);
-  padding: $spacing-md $spacing-lg;
+  padding: clamp(1rem, 2vw, 1.4rem);
   border-radius: $border-radius-lg;
   border: 1px solid rgba($border-medium, 0.65);
   box-shadow: $shadow-sm;
 }
 
 .formSection {
-  margin-bottom: $spacing-xl;
+  margin-bottom: 1rem;
   
   &:last-child {
     margin-bottom: 0;
@@ -370,8 +370,8 @@
   display: flex;
   gap: $spacing-md;
   justify-content: center;
-  margin-top: $spacing-xl;
-  padding-top: $spacing-lg;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
   border-top: 1px solid $border-light;
 }
 
@@ -380,13 +380,9 @@
   bottom: 0;
   z-index: 4;
   margin-top: auto;
-  padding-bottom: max($spacing-md, env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(
-    180deg,
-    rgba($background-light, 0) 0%,
-    rgba($background-light, 0.96) 22%,
-    $background-light 100%
-  );
+  padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
+  background: var(--cs-surface-lowest, #fff);
+  border-top: 1px solid rgba($border-medium, 0.25);
 }
 
 .cancelButton {
@@ -562,6 +558,12 @@
 button.backButton,
 button.cancelButton,
 button.retryButton {
+  padding: 0.75rem 1.5rem;
+  min-height: $min-touch-target;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   color: var(--cs-primary);
   background: var(--cs-surface-lowest);
@@ -583,6 +585,12 @@ button.retryButton {
 }
 
 button.submitButton {
+  padding: 0.75rem 1.75rem;
+  min-height: $min-touch-target;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   color: var(--cs-on-primary);
   background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);

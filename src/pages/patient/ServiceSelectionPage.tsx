@@ -187,8 +187,8 @@ export const ServiceSelectionPage: React.FC = () => {
       return;
     }
     
-    // ✅ Navigate with service ID (number) not slug
-    navigate(`/appointments/psychologist-selection?service=${serviceId}`);
+    // ✅ Navigate directly to wizard step 2
+    navigate(`/appointments/book-appointment?step=2&service=${serviceId}`);
   };
 
   const handleBack = () => {

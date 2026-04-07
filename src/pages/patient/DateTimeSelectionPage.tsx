@@ -179,9 +179,9 @@ export const DateTimeSelectionPage: React.FC = () => {
     if (!selectedPsychologist || selectedPsychologist.trim() === '') {
       // Redirect back to psychologist selection
       if (selectedService) {
-        navigate(`/appointments/psychologist-selection?service=${selectedService}`, { replace: true });
+        navigate(`/appointments/book-appointment?step=2&service=${selectedService}`, { replace: true });
       } else {
-        navigate('/appointments/book-appointment', { replace: true });
+        navigate('/appointments/book-appointment?step=1', { replace: true });
       }
       return;
     }
@@ -241,8 +241,10 @@ export const DateTimeSelectionPage: React.FC = () => {
 
       const response = await appointmentsService.bookAppointment(bookingData);
       
-      // Navigate to appointment details page
-      navigate(`/appointments/details?appointment_id=${response.appointment.id}`);
+      // Navigate directly to wizard step 4
+      const svc = selectedService ? `&service=${selectedService}` : '';
+      const psy = selectedPsychologist ? `&psychologist=${selectedPsychologist}` : '';
+      navigate(`/appointments/book-appointment?step=4&appointment_id=${response.appointment.id}${svc}${psy}`);
     } catch (err) {
       console.error('Booking failed:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to book appointment.';
@@ -255,7 +257,7 @@ export const DateTimeSelectionPage: React.FC = () => {
   const handleBack = () => {
     const serviceParam = selectedService || '';
     const psychParam = selectedPsychologist || '';
-    navigate(`/appointments/psychologist-selection?service=${serviceParam}&psychologist=${psychParam}`);
+    navigate(`/appointments/book-appointment?step=2&service=${serviceParam}&psychologist=${psychParam}`);
   };
 
   const getSelectedDateSlots = (): TimeSlot[] => {

@@ -216,11 +216,13 @@ export const PsychologistSelectionPage: React.FC = () => {
       return;
     }
 
-    navigate(`/appointments/date-time?service=${selectedService}&psychologist=${selectedPsychologist}`);
+    navigate(
+      `/appointments/book-appointment?step=3&service=${selectedService}&psychologist=${selectedPsychologist}`
+    );
   };
 
   const handleBack = () => {
-    navigate('/appointments/book-appointment', { replace: true });
+    navigate('/appointments/book-appointment?step=1', { replace: true });
   };
 
   const handleFilterChange = (filterType: string, value: string) => {
@@ -244,7 +246,7 @@ export const PsychologistSelectionPage: React.FC = () => {
               <Button
                 type="button"
                 className={styles.continueButton}
-                onClick={() => navigate('/appointments/book-appointment', { replace: true })}
+                onClick={() => navigate('/appointments/book-appointment?step=1', { replace: true })}
               >
                 Go to service selection
               </Button>
