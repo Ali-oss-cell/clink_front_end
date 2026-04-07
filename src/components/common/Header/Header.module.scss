@@ -17,9 +17,26 @@
   width: 100%;
   max-width: none;
   margin: 0;
+  isolation: isolate;
   padding-top: max(0.45rem, env(safe-area-inset-top, 0px));
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
+
+  // Prevent white strip above the navbar on non-home pages.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: calc(66px + max(0.45rem, env(safe-area-inset-top, 0px)));
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 28, 21, 0.94) 0%,
+      rgba(26, 36, 28, 0.82) 58%,
+      rgba(26, 36, 28, 0) 100%
+    );
+  }
 
   .container {
     @include glass-card(admin, $glass-blur-sm, true);

@@ -3,36 +3,37 @@
 // Reference: new/DESIGN.md (not the Tailwind HTML prototype)
 
 @mixin clinical-sanctuary-tokens {
-  --cs-primary: #003441;
-  --cs-primary-container: #0f4c5c;
+  // Homepage-led warm sage palette (single source for all role pages)
+  --cs-primary: #364539;
+  --cs-primary-container: #4d5a48;
   --cs-on-primary: #ffffff;
-  --cs-primary-fixed: #b6ebfe;
-  --cs-surface: #f8fafa;
-  --cs-surface-low: #f2f4f4;
-  --cs-surface-high: #e6e8e8;
-  --cs-surface-highest: #e1e3e3;
+  --cs-primary-fixed: #c8d0c2;
+  --cs-surface: #f6efe7;
+  --cs-surface-low: #f2ece4;
+  --cs-surface-high: #ebe6dd;
+  --cs-surface-highest: #e5dfd6;
   --cs-surface-lowest: #ffffff;
-  --cs-on-surface: #191c1d;
-  --cs-on-surface-variant: #40484b;
-  --cs-secondary: #51634e;
-  --cs-secondary-container: #d1e6cb;
-  --cs-on-secondary-fixed-variant: #394b38;
+  --cs-on-surface: #1e1f1e;
+  --cs-on-surface-variant: #4a4b4a;
+  --cs-secondary: #616362;
+  --cs-secondary-container: #d8dfd3;
+  --cs-on-secondary-fixed-variant: #4d5a48;
   --cs-tertiary-fixed: #efe1c7;
   --cs-on-tertiary-fixed-variant: #4f4633;
   --cs-tertiary-fixed-dim: #d3c5ac;
   --cs-error-container: #ffdad6;
   --cs-on-error-container: #93000a;
-  --cs-outline: #70787c;
-  --cs-shadow-atmospheric: 0 20px 40px rgba(25, 28, 29, 0.06);
-  --cs-glass-bg: rgba(255, 255, 255, 0.7);
-  --cs-glass-bg-strong: rgba(255, 255, 255, 0.84);
-  --cs-glass-border: rgba(112, 120, 124, 0.22);
-  --cs-glass-highlight: rgba(255, 255, 255, 0.5);
-  --cs-glass-shadow: 0 12px 30px rgba(25, 28, 29, 0.12);
+  --cs-outline: #8a8c8b;
+  --cs-shadow-atmospheric: 0 20px 40px rgba(44, 45, 44, 0.08);
+  --cs-glass-bg: rgba(255, 255, 255, 0.74);
+  --cs-glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --cs-glass-border: rgba(97, 99, 98, 0.24);
+  --cs-glass-highlight: rgba(255, 255, 255, 0.55);
+  --cs-glass-shadow: 0 14px 32px rgba(44, 45, 44, 0.14);
   --cs-radius-xl: 0.75rem;
   --cs-radius-2xl: 1rem;
-  --cs-font-headline: 'Public Sans', system-ui, sans-serif;
-  --cs-font-body: 'Inter', system-ui, sans-serif;
+  --cs-font-headline: 'Literata', Georgia, 'Times New Roman', serif;
+  --cs-font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .patientShell {
