@@ -170,8 +170,7 @@ export const PaymentPage: React.FC = () => {
     };
   }, [appointmentId, navigate]);
 
-  useEffect(() => {
-   const handleBack = () => {
+  const handleBack = () => {
     if (!appointmentId) {
       navigate('/appointments/book-appointment?step=1');
       return;
