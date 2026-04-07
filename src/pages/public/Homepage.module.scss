@@ -1981,7 +1981,7 @@ $home-section-color-2: #f5f8f2;
 // Website-wide scaling normalization for homepage chapters
 .homepage {
   :global(section[class]) {
-    padding-inline: var(--tp-page-gutter, 1rem);
+    padding-inline: 1rem;
   }
 }
 

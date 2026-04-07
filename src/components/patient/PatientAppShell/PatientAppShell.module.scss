@@ -43,7 +43,7 @@ $shell-collapse: 900px;
     position: fixed;
     inset: 0;
     z-index: 35;
-    background: rgba(25, 28, 29, 0.35);
+    background: color-mix(in srgb, var(--cs-on-surface) 35%, transparent);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
@@ -101,7 +101,7 @@ $shell-collapse: 900px;
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 
   &:hover {
-    box-shadow: 0 0 0 2px rgba(0, 52, 65, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--cs-primary) 20%, transparent);
   }
 
   &:focus-visible {

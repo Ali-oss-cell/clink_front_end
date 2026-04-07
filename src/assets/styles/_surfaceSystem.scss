@@ -1,0 +1,88 @@
+@use './variables' as *;
+
+// ---------------------------------------------------------------------------
+// Surface System — homepage-led glass primitives for all shells and pages.
+// Source of truth: Homepage.module.scss (%homeGlowCard) + _clinicalSanctuary.scss
+// ---------------------------------------------------------------------------
+
+@mixin surface-primary {
+  position: relative;
+  isolation: isolate;
+  background: var(--cs-glass-bg-strong, rgba(255, 255, 255, 0.84));
+  border: 1px solid var(--cs-glass-border, rgba($border-medium, 0.22));
+  border-radius: var(--cs-radius-2xl, 1rem);
+  box-shadow:
+    var(--cs-glass-shadow, 0 12px 30px rgba(25, 28, 29, 0.12)),
+    inset 0 1px 0 var(--cs-glass-highlight, rgba(255, 255, 255, 0.5));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease,
+    border-color 0.35s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 100% 70% at 50% -30%,
+      rgba(174, 191, 178, 0.2),
+      transparent 58%
+    );
+    opacity: 0.8;
+  }
+
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(77, 90, 72, 0.32);
+    box-shadow:
+      0 16px 40px rgba(54, 69, 57, 0.12),
+      0 0 48px rgba(143, 159, 136, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+@mixin surface-primary-no-hover {
+  @include surface-primary;
+  transition: none;
+
+  &:hover {
+    transform: none;
+    border-color: var(--cs-glass-border, rgba($border-medium, 0.22));
+    box-shadow:
+      var(--cs-glass-shadow, 0 12px 30px rgba(25, 28, 29, 0.12)),
+      inset 0 1px 0 var(--cs-glass-highlight, rgba(255, 255, 255, 0.5));
+  }
+}
+
+@mixin surface-secondary {
+  background: var(--cs-glass-bg, rgba(255, 255, 255, 0.7));
+  border: 1px solid var(--cs-glass-border, rgba($border-medium, 0.18));
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  box-shadow: var(--cs-shadow-atmospheric, 0 20px 40px rgba(25, 28, 29, 0.06));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@mixin surface-flat {
+  background: var(--cs-surface-low, $background-light);
+  border: 1px solid var(--cs-glass-border, rgba($border-medium, 0.18));
+  border-radius: var(--cs-radius-xl, 0.75rem);
+}

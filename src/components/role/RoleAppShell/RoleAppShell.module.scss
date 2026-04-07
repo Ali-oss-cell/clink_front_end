@@ -4,27 +4,11 @@ $sidebar-w: 16rem;
 $collapse: $shell-collapse;
 
 .root {
-  --shell-tint: #435343;
-  --shell-bg: rgba(255, 255, 255, 0.78);
-  --shell-border: rgba(67, 83, 67, 0.26);
-  --shell-shadow: 0 14px 36px rgba(24, 30, 26, 0.16);
-
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background: color-mix(in srgb, var(--shell-tint) 4%, #f8f7f4);
-}
-
-.role_admin {
-  --shell-tint: #435343;
-}
-
-.role_psychologist {
-  --shell-tint: #6e8c6a;
-}
-
-.role_practice_manager {
-  --shell-tint: #7f8f79;
+  background: var(--cs-surface-low);
+  overflow-x: hidden;
 }
 
 .menuToggle {
@@ -35,14 +19,17 @@ $collapse: $shell-collapse;
   z-index: 60;
   width: 3rem;
   height: 3rem;
-  border: 1px solid var(--shell-border);
-  border-radius: 12px;
-  background: var(--shell-bg);
-  color: var(--shell-tint);
-  box-shadow: var(--shell-shadow);
+  border: 1px solid var(--cs-glass-border);
+  border-radius: var(--cs-radius-xl);
+  background: var(--cs-glass-bg-strong);
+  color: var(--cs-primary);
+  box-shadow: var(--cs-glass-shadow);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
   font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .backdrop {
@@ -59,10 +46,11 @@ $collapse: $shell-collapse;
   padding: 1.5rem 0.75rem;
   display: flex;
   flex-direction: column;
-  background: var(--shell-bg);
-  border-right: 1px solid var(--shell-border);
-  box-shadow: var(--shell-shadow);
+  background: var(--cs-glass-bg);
+  border-right: 1px solid var(--cs-glass-border);
+  box-shadow: var(--cs-glass-shadow);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .brand {
@@ -74,7 +62,7 @@ $collapse: $shell-collapse;
   font-family: $font-family-heading;
   font-weight: 700;
   font-size: 1.25rem;
-  color: var(--shell-tint);
+  color: var(--cs-primary);
   text-decoration: none;
 }
 
@@ -83,15 +71,17 @@ $collapse: $shell-collapse;
   align-items: center;
   gap: 0.75rem;
   padding: 0 1.25rem 1.35rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--cs-outline) 18%, transparent);
+  margin-bottom: 0.55rem;
 }
 
 .avatar {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 999px;
-  border: 1px solid var(--shell-border);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.55) 100%);
-  color: var(--shell-tint);
+  border: 1px solid var(--cs-glass-border);
+  background: var(--cs-glass-bg-strong);
+  color: var(--cs-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,13 +97,14 @@ $collapse: $shell-collapse;
   margin: 0;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--shell-tint);
+  color: var(--cs-primary);
+  letter-spacing: 0.03em;
 }
 
 .profileName {
   margin: 0.1rem 0 0;
   font-size: 0.75rem;
-  color: #495451;
+  color: var(--cs-on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -146,52 +137,92 @@ $collapse: $shell-collapse;
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  border-radius: 12px 0 0 12px;
-  color: #41504b;
+  border-radius: var(--cs-radius-xl) 0 0 var(--cs-radius-xl);
+  color: var(--cs-on-surface-variant);
   text-decoration: none;
   border: 1px solid transparent;
-  transition: all 0.18s ease;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
 
   &:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, color-mix(in srgb, var(--shell-tint) 12%, white) 100%);
-    color: var(--shell-tint);
-    border-color: color-mix(in srgb, var(--shell-tint) 22%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cs-surface-lowest) 78%, white 22%) 0%,
+      color-mix(in srgb, var(--cs-primary-container) 12%, var(--cs-surface-lowest) 88%) 100%
+    );
+    border-color: color-mix(in srgb, var(--cs-primary) 18%, transparent);
+    color: var(--cs-primary);
     transform: translateX(2px);
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+
+  &:active {
+    transform: translateX(1px) scale(0.995);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--cs-primary) 70%, white 30%);
+    outline-offset: 2px;
   }
 }
 
 .navLinkActive {
   margin-left: 0.75rem;
   padding-left: 1rem;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--shell-tint) 18%, white) 0%, color-mix(in srgb, var(--shell-tint) 28%, white) 100%);
-  color: var(--shell-tint);
-  border-color: color-mix(in srgb, var(--shell-tint) 28%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--cs-primary) 18%, var(--cs-surface-lowest) 82%) 0%,
+    color-mix(in srgb, var(--cs-primary-container) 20%, var(--cs-surface-lowest) 80%) 100%
+  );
+  color: var(--cs-primary);
+  border-color: color-mix(in srgb, var(--cs-primary) 22%, transparent);
   font-weight: 700;
+  box-shadow:
+    var(--cs-glass-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--cs-primary) 22%, transparent);
 }
 
 .navIcon {
   width: 1.25rem;
   height: 1.25rem;
   opacity: 0.95;
+  flex-shrink: 0;
+  color: inherit;
 }
 
 .sidebarFooter {
   margin-top: auto;
   padding: 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .logoutBtn {
   width: 100%;
-  border: 1px solid var(--shell-border);
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.84) 0%, color-mix(in srgb, var(--shell-tint) 12%, white) 100%);
-  color: #33403b;
+  border: 1px solid var(--cs-glass-border);
+  border-radius: var(--cs-radius-xl);
+  background: var(--cs-glass-bg);
+  color: var(--cs-on-surface);
   padding: 0.75rem 1rem;
   min-height: $min-touch-target;
   cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: color 0.18s ease, background 0.18s ease;
 
   &:hover {
-    color: var(--shell-tint);
+    color: var(--cs-primary);
+    background: var(--cs-glass-bg-strong);
   }
 }
 
@@ -200,8 +231,10 @@ $collapse: $shell-collapse;
   margin-left: $sidebar-w;
   min-height: 100vh;
   padding: 2.5rem clamp(1rem, 4vw, 2.5rem) 3rem;
-  width: 100%;
+  width: calc(100% - #{$sidebar-w});
+  max-width: 90rem;
   box-sizing: border-box;
+  background: var(--cs-surface);
 }
 
 @media (max-width: #{$collapse - 1px}) {
@@ -216,7 +249,7 @@ $collapse: $shell-collapse;
     position: fixed;
     inset: 0;
     z-index: 40;
-    background: rgba(17, 21, 19, 0.34);
+    background: color-mix(in srgb, var(--cs-on-surface) 35%, transparent);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
@@ -238,6 +271,7 @@ $collapse: $shell-collapse;
 
   .main {
     margin-left: 0;
+    width: 100%;
     padding-top: 4rem;
   }
 
@@ -289,102 +323,4 @@ $collapse: $shell-collapse;
   .profileName {
     max-width: 9rem;
   }
-}
-
-// Authenticated portal — Clinical Sanctuary (tokens from Layout `.clinicalShell`)
-.role_psychologist .root,
-.role_admin .root,
-.role_practice_manager .root {
-  background: var(--cs-surface-low);
-}
-
-.role_psychologist .sidebar,
-.role_admin .sidebar,
-.role_practice_manager .sidebar {
-  background: var(--cs-glass-bg);
-  border-right-color: var(--cs-glass-border);
-  box-shadow: var(--cs-glass-shadow);
-}
-
-.role_psychologist .welcomeLabel,
-.role_admin .welcomeLabel,
-.role_practice_manager .welcomeLabel {
-  color: var(--cs-primary);
-}
-
-.role_psychologist .profileName,
-.role_admin .profileName,
-.role_practice_manager .profileName {
-  color: var(--cs-on-surface-variant);
-}
-
-.role_psychologist .avatar,
-.role_admin .avatar,
-.role_practice_manager .avatar {
-  border-color: var(--cs-glass-border);
-  color: var(--cs-primary);
-  background: var(--cs-glass-bg-strong);
-}
-
-.role_psychologist .navLink,
-.role_admin .navLink,
-.role_practice_manager .navLink {
-  border-radius: var(--cs-radius-xl) 0 0 var(--cs-radius-xl);
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--cs-surface-lowest) 78%, white 22%) 0%,
-      color-mix(in srgb, var(--cs-primary-container) 12%, var(--cs-surface-lowest) 88%) 100%
-    );
-    border-color: color-mix(in srgb, var(--cs-primary) 18%, transparent);
-    color: var(--cs-primary);
-  }
-}
-
-.role_psychologist .navLinkActive,
-.role_admin .navLinkActive,
-.role_practice_manager .navLinkActive {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--cs-primary) 18%, var(--cs-surface-lowest) 82%) 0%,
-    color-mix(in srgb, var(--cs-primary-container) 20%, var(--cs-surface-lowest) 80%) 100%
-  );
-  color: var(--cs-primary);
-  border-color: color-mix(in srgb, var(--cs-primary) 22%, transparent);
-  box-shadow: var(--cs-glass-shadow);
-}
-
-.role_psychologist .navIcon,
-.role_admin .navIcon,
-.role_practice_manager .navIcon {
-  color: inherit;
-}
-
-.role_psychologist .menuToggle,
-.role_admin .menuToggle,
-.role_practice_manager .menuToggle {
-  border-color: var(--cs-glass-border);
-  color: var(--cs-primary);
-  background: var(--cs-glass-bg-strong);
-  box-shadow: var(--cs-glass-shadow);
-}
-
-.role_psychologist .logoutBtn,
-.role_admin .logoutBtn,
-.role_practice_manager .logoutBtn {
-  border-color: var(--cs-glass-border);
-  background: var(--cs-glass-bg);
-  color: var(--cs-on-surface);
-
-  &:hover {
-    color: var(--cs-primary);
-  }
-}
-
-.role_psychologist .main,
-.role_admin .main,
-.role_practice_manager .main {
-  background: var(--cs-surface);
-  max-width: 90rem;
 }

@@ -1,6 +1,8 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/portalCompact' as pc;
+@use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/wizardSystem' as *;
 
 // Animations
 @keyframes fadeInUp {
@@ -129,13 +131,7 @@
 }
 
 .formActionsSticky {
-  position: sticky;
-  bottom: 0;
-  z-index: 4;
-  margin-top: auto;
-  padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
-  background: var(--cs-surface-lowest, #fff);
-  border-top: 1px solid rgba($border-medium, 0.25);
+  @include wizard-sticky-actions;
 }
 
 // Filters Section
@@ -144,7 +140,7 @@
   border-radius: 14px;
   padding: 1.35rem 1.45rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+  box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid rgba($border-medium, 0.45);
   animation: fadeInDown 0.6s ease-out;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -153,7 +149,7 @@
 
   &:hover {
     border-color: rgba($patient-primary, 0.28);
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 }
 
@@ -209,7 +205,7 @@
   min-height: 2.9rem;
   padding: 0.65rem 2.75rem 0.65rem 0.9rem;
   border: 2px solid $border-light;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   background: white;
   color: $text-dark;
   font-size: 0.95rem;
@@ -318,7 +314,7 @@
   &:hover {
     border-color: var(--cs-primary, $patient-primary);
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0, 52, 65, 0.1);
+    box-shadow: var(--cs-shadow-atmospheric);
 
     &::before {
       background: linear-gradient(180deg, var(--cs-primary, $patient-primary), var(--cs-primary-container, $patient-light));
@@ -445,7 +441,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 9px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: all 0.3s ease;
 }
 
@@ -596,7 +592,7 @@
 // Psychologist Bio
 .psychologistBio {
   background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   padding: 1rem;
   margin-bottom: 1rem;
   border: 1px solid rgba($border-medium, 0.5);
@@ -663,8 +659,8 @@
   text-align: center;
   padding: 4rem 2rem;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: var(--cs-radius-2xl);
+  box-shadow: var(--cs-shadow-atmospheric);
   margin: 2rem 0;
   
   p {
@@ -678,8 +674,8 @@
   text-align: center;
   padding: 4rem 2rem;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: var(--cs-radius-2xl);
+  box-shadow: var(--cs-shadow-atmospheric);
   margin: 2rem 0;
   
   h3 {
@@ -717,8 +713,8 @@
   text-align: center;
   padding: 4rem 2rem;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: var(--cs-radius-2xl);
+  box-shadow: var(--cs-shadow-atmospheric);
   margin: 2rem 0;
   
   h3 {
@@ -796,12 +792,12 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 16px rgba(0, 52, 65, 0.22);
+  box-shadow: var(--cs-shadow-atmospheric);
 
   &:hover:not(:disabled) {
     filter: brightness(1.08);
     transform: translateY(-1px);
-    box-shadow: 0 6px 22px rgba(0, 52, 65, 0.3);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 
   &:disabled {
@@ -915,7 +911,7 @@ button.selectButton {
   color: var(--cs-primary);
   background: var(--cs-surface-lowest);
   border-radius: var(--cs-radius-xl);
-  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 
   &::before {
@@ -926,7 +922,7 @@ button.selectButton {
   &:hover:not(:disabled) {
     background: var(--cs-surface-low);
     transform: none;
-    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
     color: var(--cs-primary);
   }
 }

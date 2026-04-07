@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/formSystem' as *;
 
 // Auth Layout
 .authLayout {
@@ -195,29 +196,13 @@
   justify-content: flex-start;
 }
 
-// Auth Card
+// Auth Card — aligned with Register `.form` via shared form-card primitive
 .authCard {
-  @include glass-card(default, $glass-blur-md, true);
-  border-radius: var(--tp-surface-radius-lg, 20px);
-  padding: var(--tp-card-padding-lg, 1.5rem);
-  border: 1px solid rgba($btn-admin-primary, 0.2);
+  @include form-card;
+  @include glass-hover(default);
   text-align: center;
-  transition: all 0.3s ease;
   width: 100%;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: $glass-shadow-hover;
-  }
-
-  @include mobile {
-    padding: 2rem;
-  }
-
-  @media (max-width: 380px) {
-    padding: 1.15rem;
-    border-radius: 14px;
-  }
+  animation: fadeInUp 0.8s ease-out;
 }
 
 // Auth Title

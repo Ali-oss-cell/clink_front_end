@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/surfaceSystem' as *;
 
 // patientLayout: use PatientPages.module.scss (single source) on Layout className
 
@@ -117,7 +118,7 @@
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 24px 48px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 
   // Add subtle animation on mount with stagger
@@ -174,13 +175,13 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: all 0.3s ease;
   flex-shrink: 0;
 
   .appointmentCard:hover & {
     transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--cs-glass-shadow);
   }
 }
 
@@ -254,7 +255,7 @@
   font-size: 0.8125rem;
   font-weight: 600;
   text-transform: capitalize;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
 
   &.statusUpcoming {
     background: rgba($info-blue, 0.1);
@@ -552,7 +553,7 @@
   }
 
   .appointmentCard {
-    border-radius: 12px;
+    border-radius: var(--cs-radius-xl);
   }
 
   .cardContent {
@@ -618,7 +619,7 @@
   margin-top: 3rem;
   padding: $spacing-lg;
   background: white;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   box-shadow: $shadow-sm;
 }
 

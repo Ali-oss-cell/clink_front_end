@@ -1,3 +1,5 @@
+@use '../../assets/styles/surfaceSystem' as *;
+
 // Patient invoices — Clinical Sanctuary button styling (no inline styles)
 
 button.downloadButton {
@@ -9,7 +11,7 @@ button.downloadButton {
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition:
     background-color 0.15s ease,
     box-shadow 0.15s ease,
@@ -24,7 +26,7 @@ button.downloadButton {
   &:hover:not(:disabled) {
     background-color: var(--cs-surface-low);
     transform: none;
-    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 
   &:active:not(:disabled) {

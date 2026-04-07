@@ -1,6 +1,8 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/buttonSystem' as btn;
+@use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/formSystem' as *;
 
 // Manager Layout
 .managerLayout {
@@ -58,12 +60,12 @@
   background: white;
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   display: flex;
   align-items: center;
   gap: 1.5rem;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba($primary-color, 0.1);
+  border: 1px solid var(--cs-glass-border);
   position: relative;
   overflow: hidden;
   opacity: 0;
@@ -88,7 +90,7 @@
   
   &:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 40px rgba($primary-color, 0.2);
+    box-shadow: var(--cs-glass-shadow);
     border-color: $primary-color;
     
     &::before {
@@ -115,7 +117,7 @@
   background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($secondary-color, 0.1) 100%);
   border-radius: $border-radius-lg;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba($primary-color, 0.1);
+  box-shadow: var(--cs-shadow-atmospheric);
 }
 
 .statContent {
@@ -153,13 +155,13 @@
   background: white;
   border-radius: $border-radius;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid $border-light;
+  box-shadow: var(--cs-shadow-atmospheric);
+  border: 1px solid var(--cs-glass-border);
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--cs-glass-shadow);
   }
 }
 
@@ -189,9 +191,9 @@
   background: white;
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid $border-light;
+  border: 1px solid var(--cs-glass-border);
   opacity: 0;
   transform: translateY(50px);
 
@@ -202,7 +204,7 @@
 
   &:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 12px 32px rgba($primary-color, 0.2);
+    box-shadow: var(--cs-glass-shadow);
   }
   
   &.isVisible:hover {
@@ -255,7 +257,7 @@
 .appointmentStatus {
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-weight: 600;
   text-transform: uppercase;
   background: $border-light;
@@ -439,6 +441,7 @@
 }
 
 .searchInput {
+  @include form-input;
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid $border-light;
@@ -464,6 +467,7 @@
 }
 
 .filterSelect {
+  @include form-input;
   padding: 0.75rem 1rem;
   border: 1px solid $border-light;
   border-radius: $border-radius;
@@ -488,12 +492,12 @@
   background: white;
   border-radius: $border-radius;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   text-align: center;
-  border: 1px solid $border-light;
+  border: 1px solid var(--cs-glass-border);
   
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--cs-glass-shadow);
     transform: translateY(-2px);
     transition: all 0.3s ease;
   }
@@ -502,7 +506,7 @@
 .tableContainer {
   background: white;
   border-radius: $border-radius-lg;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   overflow-x: auto;
   overflow-y: visible;
   margin-top: 1.5rem;
@@ -623,7 +627,7 @@
   background: rgba($primary-color, 0.15);
   color: $primary-dark;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -633,7 +637,7 @@
   background: #d1fae5;
   color: #065f46;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -643,7 +647,7 @@
   background: #fee2e2;
   color: #991b1b;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -653,7 +657,7 @@
   background: rgba($warning-color, 0.2);
   color: $text-dark;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -663,7 +667,7 @@
   background: #d1fae5;
   color: #065f46;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -673,7 +677,7 @@
   background: rgba($warning-color, 0.2);
   color: $text-dark;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -683,7 +687,7 @@
   background: #fee2e2;
   color: #991b1b;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -727,7 +731,7 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--cs-glass-shadow);
   
   h2 {
     margin: 0 0 1.5rem 0;
@@ -740,6 +744,7 @@
   margin-bottom: 1.5rem;
   
   label {
+    @include form-label;
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
@@ -752,6 +757,7 @@
   input[type="date"],
   select,
   textarea {
+    @include form-input;
     width: 100%;
     padding: 0.75rem;
     border: 1px solid $border-light;
@@ -771,6 +777,7 @@
 }
 
 .modalActions {
+  @include form-actions;
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
@@ -808,7 +815,7 @@
 .dashboardContainer {
   max-width: 90rem;
   margin: 0 auto;
-  padding-inline: var(--tp-page-gutter, 1rem);
+  padding-inline: 1rem;
 }
 
 .dashboardGrid {
@@ -818,8 +825,8 @@
 .dashboardCard,
 .statCard,
 .tableContainer {
-  border-radius: var(--tp-surface-radius-lg, 20px);
-  padding: var(--tp-card-padding-lg, 1.5rem);
+  border-radius: var(--cs-radius-2xl);
+  padding: 1.5rem;
 }
 
 .actionButton,
@@ -831,7 +838,7 @@
   .dashboardCard,
   .statCard,
   .tableContainer {
-    padding: var(--tp-card-padding, 1rem);
+    padding: 1rem;
   }
 }
 
@@ -886,45 +893,24 @@
   }
 }
 
-// Glassmorphism card migration
-.statCard,
+// Surface system migration
 .secondaryStatCard,
-.dashboardCard,
-.statBox,
 .tableContainer,
 .modal {
-  @include glass-card(manager);
+  @include surface-primary-no-hover;
 }
 
 .statCard,
 .dashboardCard,
 .statBox {
-  @include glass-hover(manager);
-}
-
-// Full-role glass harmonization (practice manager pages)
-.statCard,
-.secondaryStatCard,
-.dashboardCard,
-.statBox,
-.tableContainer,
-.modal {
-  @include glass-card(manager, $glass-blur-md, true);
-  border: 1px solid rgba($primary-color, 0.24);
+  @include surface-primary;
 }
 
 .actionButton,
 .primaryButton {
   @include btn.dashboard-button-base;
-  @include glass-card(manager, $glass-blur-sm, true);
-  border-radius: 12px;
-  border: 1px solid rgba($primary-color, 0.28);
+  @include surface-primary;
+  border-radius: var(--cs-radius-xl);
   color: $text-dark;
-  box-shadow: 0 8px 18px rgba($primary-color, 0.14);
-
-  &:hover:not(:disabled) {
-    @include glass-hover(manager);
-    color: $text-dark;
-  }
 }
 

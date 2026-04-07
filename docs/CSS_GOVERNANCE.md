@@ -2,13 +2,18 @@
 
 This document defines the styling contract for `clink_front_end` to keep CSS clean, consistent, and maintainable.
 
+**Cross-shell refactor (homepage navbar → sidebars, homepage cards, Register-style forms, booking wizard no-scroll, all roles):** follow `docs/CROSS_SHELL_UI_REFACTOR_SPEC.md` together with `HOMEPAGE_STYLE_SYSTEM.md`, `UI_PRIMITIVES_CATALOG.md`, `RESPONSIVE_SIZE_MATRIX.md`, and `REFRACTOR_TRACKER.md`.
+
 ## 1) Authoritative Style Layers
 
 - Sass design tokens: `src/assets/styles/_variables.scss`
-- Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
+- Clinical Sanctuary CSS custom properties: `src/assets/styles/_clinicalSanctuary.scss` (`.patientShell`, `.clinicalShell`)
+- **Surface primitives:** `src/assets/styles/_surfaceSystem.scss` (`surface-primary`, `surface-secondary`, `surface-flat`)
+- **Wizard primitives:** `src/assets/styles/_wizardSystem.scss` (`wizard-step-band`, `wizard-sticky-actions`, `wizard-viewport-lock`)
+- **Form primitives:** `src/assets/styles/_formSystem.scss` (`form-card`, `form-field-cluster`, `form-input`, `form-actions`)
 - Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
-- Scoped Clinical Sanctuary CSS variables: `src/assets/styles/_clinicalSanctuary.scss` (`.patientShell` for the patient app shell; `.clinicalShell` + `[data-clinical-shell]` on `Layout` for the psychologist portal)
-- Shared compact portal sizing/surfaces: `src/assets/styles/_portalCompact.scss` (avatars, compact spacing, card mixins)
+- Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
+- Shared compact portal sizing/surfaces: `src/assets/styles/_portalCompact.scss`
 - Shared/global primitives: `src/assets/styles/*`, `src/components/ui/ui.scss`
 - Feature styles: `src/**/*.module.scss`
 
@@ -78,9 +83,10 @@ When token/theme values change, update:
 
 ## 9) Role dashboard glass rollout
 
-- Admin, psychologist, and practice-manager dashboard surfaces should follow the same glass baseline used in patient surfaces.
-- Apply changes via shared role modules first (`AdminPages.module.scss`, `PsychologistPages.module.scss`, `ManagerPages.module.scss`) before per-page exceptions.
-- Track cross-page completion in `docs/ROLE_DASHBOARD_GLASS_ROLLOUT.md` so scope remains explicit and auditable.
+- All role dashboard surfaces use `@include surface-primary` / `surface-secondary` from `_surfaceSystem.scss`.
+- Legacy systems removed: `--shell-*` (RoleAppShell), `--tp-*` (all pages), `$admin-primary/$admin-accent` (AdminPages), `glass-card(admin/manager)` calls.
+- All role shells (PatientAppShell, RoleAppShell) now use `--cs-*` tokens exclusively.
+- Track completion in `docs/REFRACTOR_TRACKER.md`.
 
 ## 10) Website-wide scaling and accessibility rhythm
 

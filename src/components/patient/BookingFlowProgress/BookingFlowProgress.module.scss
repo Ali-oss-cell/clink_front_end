@@ -1,13 +1,10 @@
 @use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/wizardSystem' as *;
 
-// Full-width tonal band like `the fix/stitch/*` (surface-container-low track).
 .progressStripe {
-  width: 100%;
+  @include wizard-step-band;
   margin: 0 0 1.25rem;
-  padding: 0.65rem clamp(1rem, 3.5vw, 2rem);
-  box-sizing: border-box;
   background: color-mix(in srgb, $background-light 88%, $patient-primary 10%);
-  border-bottom: 1px solid rgba($border-medium, 0.35);
 }
 
 :global(.patientShell) .progressStripe {
@@ -17,7 +14,7 @@
   padding-left: clamp(1rem, 3.5vw, 2rem);
   padding-right: clamp(1rem, 3.5vw, 2rem);
   background: color-mix(in srgb, var(--cs-surface-low) 92%, var(--cs-primary) 5%);
-  border-bottom: 1px solid color-mix(in srgb, var(--cs-primary) 10%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--cs-primary) 10%, transparent);
 }
 
 .track {

@@ -1,6 +1,8 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/portalCompact' as pc;
+@use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/wizardSystem' as *;
 
 // -----------------------------------------------------------------------------
 // Patient date/time booking — single viewport (see CSS_GOVERNANCE §10).
@@ -375,7 +377,7 @@
   min-height: calc(#{$min-touch-target} + 0.85rem);
   box-sizing: border-box;
   border: 1px solid rgba($border-medium, 0.55);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -486,7 +488,7 @@
   min-height: $min-touch-target;
   padding: 0.68rem 0.8rem;
   border: 1px solid rgba($border-medium, 0.55);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   background: white;
   color: $text-dark;
   font-weight: 700;
@@ -624,7 +626,7 @@
   gap: 0.3rem;
   min-height: $min-touch-target;
   line-height: 1.2;
-  box-shadow: 0 4px 14px rgba(0, 52, 65, 0.2);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: filter 0.2s ease, transform 0.15s ease;
 
   &:hover:not(:disabled) {
@@ -661,12 +663,12 @@
   color: var(--cs-primary);
   background: var(--cs-surface-lowest);
   border-radius: var(--cs-radius-xl);
-  box-shadow: 0 6px 20px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: background-color 0.15s ease, box-shadow 0.15s ease;
 
   &:hover:not(:disabled) {
     background: var(--cs-surface-low);
-    box-shadow: 0 8px 22px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
     color: var(--cs-primary);
   }
 }

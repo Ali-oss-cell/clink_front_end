@@ -14,15 +14,6 @@ html {
   scroll-behavior: smooth;
 }
 
-:root {
-  --tp-page-gutter: #{$page-gutter-inline};
-  --tp-page-gutter-lg: #{$page-gutter-inline-lg};
-  --tp-card-padding: #{$card-padding};
-  --tp-card-padding-lg: #{$card-padding-lg};
-  --tp-surface-radius: #{$surface-radius};
-  --tp-surface-radius-lg: #{$surface-radius-lg};
-}
-
 // Reduce motion for accessibility
 @media (prefers-reduced-motion: reduce) {
   *,

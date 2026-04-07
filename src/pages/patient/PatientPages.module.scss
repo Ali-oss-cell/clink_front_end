@@ -1,5 +1,7 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/wizardSystem' as *;
 
 // Patient layout: gradient when using marketing header; transparent when patient sidebar shell is active
 .patientLayout {
@@ -24,7 +26,10 @@
 
 .pageHeader {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: clamp(1rem, 2.2vw, 1.75rem);
+  border-radius: var(--cs-radius-2xl);
+  padding: 1.5rem;
+  animation: fadeInDown 0.6s ease-out;
   
   h1 {
     font-size: 2.5rem;
@@ -46,24 +51,18 @@
 .dashboardContainer {
   max-width: 90rem;
   margin: 0 auto;
-  padding-inline: var(--tp-page-gutter, 1rem);
+  padding-inline: 1rem;
 }
 
 .dashboardGrid {
   gap: clamp(0.85rem, 1.8vw, 1.25rem);
 }
 
-.pageHeader {
-  margin-bottom: clamp(1rem, 2.2vw, 1.75rem);
-  border-radius: var(--tp-surface-radius-lg, 20px);
-  padding: var(--tp-card-padding-lg, 1.5rem);
-}
-
 .resourceCard,
 .toolCard,
 .supportCard {
-  border-radius: var(--tp-surface-radius-lg, 20px);
-  padding: var(--tp-card-padding-lg, 1.5rem);
+  border-radius: var(--cs-radius-2xl);
+  padding: 1.5rem;
 }
 
 button.resourceButton,
@@ -76,7 +75,7 @@ button.toolButton {
   .toolCard,
   .supportCard,
   .pageHeader {
-    padding: var(--tp-card-padding, 1rem);
+    padding: 1rem;
   }
 }
 
@@ -104,7 +103,7 @@ button.toolButton {
 .emergencySection {
   background: linear-gradient(135deg, rgba($error-red, 0.15) 0%, rgba($error-red, 0.25) 100%);
   border: 2px solid $error-red;
-  border-radius: 16px;
+  border-radius: var(--cs-radius-2xl);
   padding: 2rem;
   margin-bottom: 3rem;
   
@@ -123,7 +122,7 @@ button.toolButton {
 
 .emergencyCard {
   @include glass-card(patient, $glass-blur-md, true);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   padding: 1.5rem;
   border: 1px solid rgba($error-red, 0.26);
   transition: all 0.3s ease;
@@ -153,7 +152,7 @@ button.toolButton {
   background: rgba($success-green, 0.2);
   color: $psychologist-dark;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
 }
@@ -208,7 +207,7 @@ button.categoryButton {
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--cs-primary);
-  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
 
   &::before {
     content: none;
@@ -218,7 +217,7 @@ button.categoryButton {
   &:hover {
     background-color: var(--cs-surface-low);
     transform: none;
-    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
     
     .categoryName {
       color: var(--cs-primary);
@@ -285,7 +284,7 @@ button.categoryButton {
 
 .resourceCard {
   @include glass-card(patient, $glass-blur-sm, true);
-  border-radius: 16px;
+  border-radius: var(--cs-radius-2xl);
   padding: 2rem;
   border: 1px solid rgba($patient-primary, 0.22);
   transition: all 0.3s ease;
@@ -330,7 +329,7 @@ button.categoryButton {
   background: rgba($patient-primary, 0.1);
   color: $patient-primary;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
@@ -351,7 +350,7 @@ button.resourceButton {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
 
   &::before {
     content: none;
@@ -365,7 +364,7 @@ button.resourceButton {
       rgba($patient-primary, 0.2) 100%
     );
     transform: none;
-    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 }
 
@@ -397,7 +396,7 @@ button.resourceButton {
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 14px 28px rgba(25, 28, 29, 0.12);
+    box-shadow: var(--cs-glass-shadow);
   }
   
   h3 {
@@ -423,7 +422,7 @@ button.toolButton {
   font-size: 0.85rem;
   letter-spacing: 0.01em;
   cursor: not-allowed;
-  box-shadow: 0 8px 18px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   opacity: 1;
 
   &::before {
@@ -459,7 +458,7 @@ button.toolButton {
   
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 14px 30px rgba(25, 28, 29, 0.12);
+    box-shadow: var(--cs-glass-shadow);
     border-color: color-mix(in srgb, var(--cs-primary) 22%, transparent);
   }
   
@@ -480,7 +479,7 @@ button.toolButton {
 .disclaimer {
   background: rgba($warning-color, 0.25);
   border: 2px solid $warning-color;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   padding: 1.5rem;
   margin-top: 3rem;
   
@@ -496,7 +495,7 @@ button.toolButton {
 .errorBanner {
   background: rgba($error-red, 0.15);
   border: 2px solid $error-red;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   padding: 1rem;
   margin-bottom: 1.5rem;
   
@@ -548,11 +547,9 @@ button.toolButton {
 }
 
 .resourceDetailHeader {
-  background: white;
-  border-radius: 16px;
+  @include surface-primary-no-hover;
   padding: 3rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   
   h1 {
     font-size: 2.5rem;
@@ -578,7 +575,7 @@ button.toolButton {
 .resourceType,
 .resourceDifficulty {
   padding: 0.5rem 1rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -676,10 +673,8 @@ button.toolButton {
 }
 
 .contentMain {
-  background: white;
-  border-radius: 16px;
+  @include surface-primary-no-hover;
   padding: 3rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .articleContent {
@@ -732,7 +727,7 @@ button.toolButton {
   iframe {
     width: 100%;
     height: 500px;
-    border-radius: 12px;
+    border-radius: var(--cs-radius-xl);
   }
   
   audio {
@@ -747,10 +742,8 @@ button.toolButton {
 }
 
 .sidebarCard {
-  background: white;
-  border-radius: 16px;
+  @include surface-primary-no-hover;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   
   h3 {
     font-size: 1.1rem;
@@ -788,7 +781,7 @@ button.toolButton {
   background: rgba($patient-primary, 0.1);
   color: $patient-primary;
   padding: 0.35rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -848,11 +841,9 @@ button.toolButton {
 }
 
 .referencesSection {
-  background: white;
-  border-radius: 16px;
+  @include surface-primary-no-hover;
   padding: 2rem;
   margin: 2rem 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   
   h2 {
     font-size: 1.5rem;
@@ -902,11 +893,8 @@ button.toolButton {
 }
 
 .relatedCard {
-  background: white;
-  border-radius: 16px;
+  @include surface-primary-no-hover;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid $border-light;
   cursor: pointer;
   transition: all 0.3s ease;
   
@@ -929,7 +917,7 @@ button.toolButton {
   background: rgba($patient-primary, 0.1);
   color: $patient-primary;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -1016,11 +1004,11 @@ button.toolButton {
 
 // Dashboard Cards
 .dashboardCard {
-  background: white;
-  border-radius: 20px;
+  background: var(--cs-glass-bg-strong, rgba(255, 255, 255, 0.84));
+  border-radius: var(--cs-radius-2xl);
   padding: 2.5rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--cs-shadow-atmospheric);
+  border: 1px solid var(--cs-glass-border, rgba($border-medium, 0.22));
   transition: all 0.3s ease;
   animation: fadeInUp 0.8s ease-out;
   position: relative;
@@ -1040,7 +1028,7 @@ button.toolButton {
 
   &:hover {
     transform: translateY(-8px);
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--cs-glass-shadow);
 
     &::before {
       transform: scaleX(1);
@@ -1309,7 +1297,7 @@ button.toolButton {
 .progressItem {
   padding: 1rem;
   background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   margin-bottom: 0.75rem;
   border: 1px solid $border-light;
   transition: all 0.3s ease;
@@ -1320,7 +1308,7 @@ button.toolButton {
 
   &:hover {
     transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
     border-color: $patient-light;
   }
 }
@@ -1351,11 +1339,9 @@ button.toolButton {
 }
 
 .errorContainer {
+  @include surface-primary-no-hover;
   text-align: center;
   padding: 3rem;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   max-width: 600px;
   margin: 0 auto;
   
@@ -1431,12 +1417,9 @@ button.toolButton {
 }
 
 .sidebar {
-  background: white;
-  border-radius: 20px;
+  @include surface-primary-no-hover;
   padding: 1.5rem;
   height: fit-content;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
   position: sticky;
   top: 2rem;
 }
@@ -1455,7 +1438,7 @@ button.toolButton {
   padding: 1rem 1.125rem;
   border: none;
   background: transparent;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
@@ -1514,11 +1497,8 @@ button.toolButton {
 }
 
 .mainContent {
-  background: white;
-  border-radius: 20px;
+  @include surface-primary-no-hover;
   padding: 2.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -1581,7 +1561,7 @@ button.toolButton {
   padding: 0.875rem;
   background: white;
   border: 2px solid $border-light;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   transition: all 0.3s ease;
   
   &:focus {
@@ -1642,7 +1622,7 @@ button.toolButton {
 
   :global(.PhoneInputCountrySelect) {
     padding: 0.35rem 0.5rem;
-    border-radius: 12px;
+    border-radius: var(--cs-radius-xl);
     border: 2px solid $border-light;
     background: $background-white;
   }
@@ -1652,7 +1632,7 @@ button.toolButton {
     min-width: 0;
     padding: 0.875rem;
     border: 2px solid $border-light;
-    border-radius: 12px;
+    border-radius: var(--cs-radius-xl);
     font-size: 1rem;
     font-family: inherit;
     transition: all 0.3s ease;
@@ -1700,7 +1680,7 @@ button.toolButton {
 .input, .textarea, .select {
   padding: 0.875rem;
   border: 2px solid $border-light;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 1rem;
   transition: all 0.3s ease;
   font-family: inherit;
@@ -1792,11 +1772,8 @@ button.toolButton {
 
 // Intake Form Styles
 .intakeForm {
-  background: white;
-  border-radius: 20px;
+  @include surface-primary-no-hover;
   padding: 2.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
   max-width: 900px;
   margin: 0 auto;
   animation: fadeInUp 0.8s ease-out;
@@ -1822,7 +1799,7 @@ button.toolButton {
   background: linear-gradient(90deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
   transition: width 0.4s ease;
   border-radius: 50px;
-  box-shadow: 0 2px 8px rgba(0, 52, 65, 0.35);
+  box-shadow: var(--cs-glass-shadow);
 }
 
 .progressText {
@@ -1845,7 +1822,7 @@ button.toolButton {
 .consentSection {
   background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
   padding: 1.5rem;
-  border-radius: 16px;
+  border-radius: var(--cs-radius-2xl);
   border: 2px solid $border-light;
 }
 
@@ -1870,7 +1847,7 @@ button.toolButton {
   font-size: 1rem;
   color: $text-dark;
   padding: 0.75rem 1.25rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   transition: all 0.3s ease;
   position: relative;
   font-weight: 500;
@@ -1899,7 +1876,7 @@ button.toolButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
 }
 
 .radioDot {
@@ -1942,7 +1919,7 @@ button.toolButton {
   font-size: 1rem;
   line-height: 1.6;
   padding: 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   transition: all 0.3s ease;
 
   &:hover {
@@ -1970,8 +1947,8 @@ button.toolButton {
 .preferenceSection {
   background: white;
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: var(--cs-radius-xl);
+  box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid $border-light;
 }
 
@@ -2024,7 +2001,7 @@ button.navButton {
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition:
     background-color 0.15s ease,
     box-shadow 0.15s ease,
@@ -2039,7 +2016,7 @@ button.navButton {
     background-color: var(--cs-surface-low);
     color: var(--cs-primary);
     transform: none;
-    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 
   &:active:not(:disabled) {
@@ -2084,12 +2061,6 @@ button.submitButton {
   background: linear-gradient(135deg, $patient-bg-gradient-start 0%, $patient-bg-gradient-end 100%);
 }
 
-.pageHeader {
-  margin-bottom: 3rem;
-  text-align: center;
-  animation: fadeInDown 0.6s ease-out;
-}
-
 .backButton {
   background: transparent;
   border: 1px solid var(--cs-outline, #70787c);
@@ -2109,12 +2080,10 @@ button.submitButton {
 }
 
 .appointmentForm {
+  @include surface-primary-no-hover;
   max-width: 900px;
   margin: 0 auto;
-  background: white;
   padding: 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -2129,11 +2098,7 @@ button.submitButton {
 
 // Booking flow: keep primary actions visible without excessive scroll (patient shell)
 .bookingFlowLayout {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  height: 100%;
-  overflow: hidden;
+  @include wizard-viewport-lock;
 }
 
 .bookingFlowLayout > :global(.container) {
@@ -2154,13 +2119,7 @@ button.submitButton {
 }
 
 .formActionsSticky {
-  position: sticky;
-  bottom: 0;
-  z-index: 4;
-  margin-top: auto;
-  padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
-  background: var(--cs-surface-lowest, #fff);
-  border-top: 1px solid rgba($border-medium, 0.25);
+  @include wizard-sticky-actions;
 }
 
 // Stitch-style booking footer: back (ghost) + primary CTA, space-between
@@ -2233,13 +2192,13 @@ button.submitButton {
   font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 52, 65, 0.22);
+  box-shadow: var(--cs-glass-shadow);
   transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 
   &:hover:not(:disabled) {
     filter: brightness(1.08);
     transform: translateY(-1px);
-    box-shadow: 0 6px 22px rgba(0, 52, 65, 0.3);
+    box-shadow: var(--cs-glass-shadow);
   }
 
   &:disabled {
@@ -2329,26 +2288,23 @@ button.submitButton {
 }
 
 .serviceSearchInput {
+  @include surface-secondary;
   width: 100%;
   box-sizing: border-box;
   padding: 1.05rem 1.25rem 1.05rem 3rem;
   border-radius: 999px;
-  border: none;
-  background: white;
   font-size: 1rem;
   color: $text-dark;
-  box-shadow:
-    0 1px 0 rgba($border-medium, 0.5),
-    0 8px 28px rgba(25, 28, 29, 0.06);
   transition:
     box-shadow 0.2s ease,
-    transform 0.15s ease;
+    border-color 0.2s ease;
 
   &:focus {
     outline: none;
+    border-color: var(--cs-primary, $patient-primary);
     box-shadow:
-      0 0 0 2px rgba($patient-primary, 0.45),
-      0 12px 32px rgba($patient-primary, 0.1);
+      0 0 0 3px color-mix(in srgb, var(--cs-primary) 18%, transparent),
+      var(--cs-glass-shadow);
   }
 
   &::placeholder {
@@ -2358,10 +2314,10 @@ button.submitButton {
 
 .serviceSearchIcon {
   position: absolute;
-  left: 1.15rem;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: $text-muted;
+  color: var(--cs-on-surface-variant, $text-muted);
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -2547,7 +2503,7 @@ button.submitButton {
   background: linear-gradient(135deg, $patient-primary 0%, $patient-light 100%);
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: var(--cs-radius-2xl);
   font-size: 0.9rem;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba($patient-primary, 0.25);
@@ -2555,7 +2511,7 @@ button.submitButton {
 
 .servicePricing {
   background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border-radius: 16px;
+  border-radius: var(--cs-radius-2xl);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   border: 1px solid $border-light;
@@ -2630,12 +2586,12 @@ button.submitButton {
   font-size: 0.9rem;
   cursor: pointer;
   transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 16px rgba(0, 52, 65, 0.22);
+  box-shadow: var(--cs-glass-shadow);
 
   &:hover:not(:disabled) {
     filter: brightness(1.08);
     transform: translateY(-1px);
-    box-shadow: 0 6px 22px rgba(0, 52, 65, 0.3);
+    box-shadow: var(--cs-glass-shadow);
   }
 
   &:disabled {
@@ -2651,7 +2607,7 @@ button.submitButton {
   margin-bottom: 2rem;
   padding: 1.5rem;
   background: rgba($patient-primary, 0.05);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   border-left: 4px solid $patient-primary;
 }
 
@@ -2663,11 +2619,9 @@ button.submitButton {
 }
 
 .dataAccessSection {
+  @include surface-primary-no-hover;
   margin-bottom: 2rem;
   padding: 2rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border: 2px solid $border-light;
 }
 
@@ -2784,7 +2738,7 @@ button.submitButton {
   margin-top: 2rem;
   padding: 1.5rem;
   background: rgba($patient-primary, 0.03);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
 }
 
 .errorAlert {
@@ -2824,13 +2778,10 @@ button.submitButton {
 
 // Data Deletion Section
 .dataDeletionSection {
+  @include surface-primary-no-hover;
   margin-top: 2rem;
   margin-bottom: 2rem;
   padding: 2rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .deletionRequestForm {
@@ -2916,7 +2867,7 @@ button.submitButton {
   margin-top: 1.5rem;
   padding: 1.5rem;
   background: rgba($patient-primary, 0.05);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   border: 1px solid rgba($patient-primary, 0.2);
 }
 
@@ -2937,7 +2888,7 @@ button.submitButton {
 
 .statusBadge {
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: var(--cs-radius-2xl);
   font-size: 0.875rem;
   font-weight: 600;
   text-transform: capitalize;
@@ -3204,7 +3155,7 @@ button.submitButton {
     padding-left: calc(clamp(0.9rem, 1.6vw, 1.1rem) + 7px);
 
     &:hover {
-      box-shadow: 0 12px 30px rgba(25, 28, 29, 0.1);
+      box-shadow: var(--cs-glass-shadow);
 
       &::before {
         background: linear-gradient(
@@ -3270,7 +3221,7 @@ button.submitButton {
     color: var(--cs-primary);
     border: none;
     border-radius: var(--cs-radius-xl);
-    box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+    box-shadow: var(--cs-shadow-atmospheric);
 
     &::before {
       content: none;
@@ -3281,7 +3232,7 @@ button.submitButton {
       background: var(--cs-surface-low);
       color: var(--cs-primary);
       transform: none;
-      box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+      box-shadow: var(--cs-shadow-atmospheric);
     }
   }
 
@@ -3365,7 +3316,7 @@ button.submitButton {
     color: var(--cs-primary);
     border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
     border-radius: var(--cs-radius-xl);
-    box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 
   button.submitButton,
@@ -3409,7 +3360,7 @@ button.submitButton {
   gap: 0.6rem;
   align-items: flex-start;
   padding: 0.72rem 0.8rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   background: color-mix(in srgb, var(--cs-surface-lowest) 84%, white 16%);
   border: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
   font-size: 0.9rem;

@@ -47,7 +47,7 @@
   margin: 0 auto;
   @include glass-card(default, $glass-blur-sm, true);
   border-radius: $border-radius-xl;
-  padding: var(--tp-card-padding-lg, 1.5rem);
+  padding: 1.5rem;
   
   h2 {
     color: $text-dark;

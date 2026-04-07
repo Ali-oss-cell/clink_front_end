@@ -1,3 +1,5 @@
+@use '../../assets/styles/surfaceSystem' as *;
+
 // Patient dashboard — bento layout (React + SCSS; reference: new/DESIGN.md / new/code.html)
 
 .wrap {
@@ -665,9 +667,5 @@ button.btnGhost {
 .cardMuted,
 .resourceTile,
 .consentBanner {
-  background: var(--cs-glass-bg);
-  border: 1px solid var(--cs-glass-border);
-  box-shadow: var(--cs-glass-shadow);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  @include surface-secondary;
 }

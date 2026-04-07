@@ -1,9 +1,8 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/buttonSystem' as btn;
-
-$admin-primary: #435343;
-$admin-accent: #6f8367;
+@use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/formSystem' as *;
 
 // Admin Layout
 .adminLayout {
@@ -103,7 +102,7 @@ $admin-accent: #6f8367;
   font-weight: 700;
   color: $text-dark;
   margin: 0 0 0.5rem 0;
-  color: $admin-primary;
+  color: var(--cs-primary);
 }
 
 .welcomeSubtitle {
@@ -118,7 +117,7 @@ $admin-accent: #6f8367;
   border-radius: $border-radius-lg;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid $border-light;
 }
 
@@ -169,12 +168,12 @@ $admin-accent: #6f8367;
   background: $background-white;
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   display: flex;
   align-items: center;
   gap: 1.5rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  border: 1px solid rgba($admin-primary, 0.14);
+  border: 1px solid var(--cs-glass-border);
   position: relative;
   overflow: hidden;
   opacity: 0;
@@ -192,15 +191,15 @@ $admin-accent: #6f8367;
     left: 0;
     width: 3px;
     height: 100%;
-    background: $admin-primary;
+    background: var(--cs-primary);
     transform: scaleY(0);
     transition: transform 0.4s ease;
   }
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 22px rgba($admin-primary, 0.14);
-    border-color: $admin-primary;
+    box-shadow: var(--cs-glass-shadow);
+    border-color: var(--cs-primary);
     
     &::before {
       transform: scaleY(1);
@@ -223,7 +222,7 @@ $admin-accent: #6f8367;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba($admin-primary, 0.08);
+  background: var(--cs-surface-low);
   border-radius: $border-radius-lg;
   transition: transform 0.25s ease;
   box-shadow: none;
@@ -236,7 +235,7 @@ $admin-accent: #6f8367;
 .statValue {
   font-size: 2.5rem;
   font-weight: 800;
-  color: $admin-primary;
+  color: var(--cs-primary);
   line-height: 1;
   margin-bottom: 0.5rem;
 }
@@ -261,13 +260,13 @@ $admin-accent: #6f8367;
   background: $background-white;
   border-radius: $border-radius;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid $border-light;
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--cs-glass-shadow);
   }
 }
 
@@ -297,7 +296,7 @@ $admin-accent: #6f8367;
   background: $background-white;
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid $border-light;
   opacity: 0;
@@ -310,7 +309,7 @@ $admin-accent: #6f8367;
 
   &:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 12px 32px rgba($error-red, 0.2);
+    box-shadow: var(--cs-glass-shadow);
   }
   
   &.isVisible:hover {
@@ -425,7 +424,7 @@ $admin-accent: #6f8367;
 .userRole {
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-weight: 600;
   text-transform: capitalize;
   background: $border-light;
@@ -447,7 +446,7 @@ $admin-accent: #6f8367;
 }
 
 .unverified {
-  color: $admin-accent;
+  color: var(--cs-secondary);
   font-weight: 600;
 }
 
@@ -549,7 +548,7 @@ $admin-accent: #6f8367;
     font-weight: 700;
     color: $text-dark;
     margin: 0;
-    color: $admin-primary;
+    color: var(--cs-primary);
   }
 }
 
@@ -563,7 +562,7 @@ $admin-accent: #6f8367;
     padding: 0.5rem 1rem;
     background: $background-white;
     border-radius: $border-radius;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--cs-shadow-atmospheric);
   }
 }
 
@@ -576,6 +575,7 @@ $admin-accent: #6f8367;
 }
 
 .filtersSection {
+  @include form-field-cluster;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -583,7 +583,7 @@ $admin-accent: #6f8367;
   padding: 1.5rem;
   background: $background-white;
   border-radius: $border-radius-lg;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--cs-shadow-atmospheric);
 }
 
 .searchBar {
@@ -591,6 +591,7 @@ $admin-accent: #6f8367;
 }
 
 .searchInput {
+  @include form-input;
   flex: 1;
   min-width: 250px;
   padding: 0.75rem 1rem;
@@ -606,6 +607,7 @@ $admin-accent: #6f8367;
 }
 
 .filterSelect {
+  @include form-input;
   padding: 0.75rem 1rem;
   border: 1px solid $border-light;
   border-radius: $border-radius;
@@ -628,9 +630,9 @@ $admin-accent: #6f8367;
 
 .searchButton {
   padding: 0.75rem 1.5rem;
-  background: $admin-primary;
+  background: var(--cs-primary);
   color: white;
-  border: 1px solid rgba($admin-primary, 0.4);
+  border: 1px solid var(--cs-glass-border);
   border-radius: $border-radius;
   font-weight: 600;
   cursor: pointer;
@@ -638,16 +640,16 @@ $admin-accent: #6f8367;
   
   &:hover {
     transform: translateY(-1px);
-    background: darken($admin-primary, 6%);
+    background: var(--cs-primary-container);
   }
 }
 
 // Buttons
 .primaryButton {
   padding: 0.75rem 1.5rem;
-  background: $admin-primary;
+  background: var(--cs-primary);
   color: white;
-  border: 1px solid rgba($admin-primary, 0.45);
+  border: 1px solid var(--cs-glass-border);
   border-radius: $border-radius;
   font-weight: 600;
   cursor: pointer;
@@ -655,13 +657,13 @@ $admin-accent: #6f8367;
   
   &:hover {
     transform: translateY(-1px);
-    background: darken($admin-primary, 6%);
+    background: var(--cs-primary-container);
   }
 }
 
 // Error Banner
 .errorBanner {
-  background: #fee2e2;
+  background: rgba($error-red, 0.1);
   border: 1px solid $error-red;
   border-radius: $border-radius;
   padding: 1rem;
@@ -692,7 +694,7 @@ $admin-accent: #6f8367;
 .tableContainer {
   background: $background-white;
   border-radius: $border-radius-lg;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   overflow-x: auto;
   overflow-y: visible;
   width: 100%;
@@ -729,7 +731,7 @@ $admin-accent: #6f8367;
   table-layout: auto; // Allow flexible column widths
   
   thead {
-    background: $admin-primary;
+    background: var(--cs-primary);
     color: white;
     
     th {
@@ -828,7 +830,7 @@ $admin-accent: #6f8367;
 }
 
 .unverified {
-  color: $admin-accent;
+  color: var(--cs-secondary);
   font-weight: 600;
   font-size: 0.85rem;
 }
@@ -878,12 +880,12 @@ $admin-accent: #6f8367;
 }
 
 .badgeSuccess {
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba($success-green, 0.15);
+  color: $success-green;
 }
 
 .badgeWarning {
-  background: rgba($admin-accent, 0.2);
+  background: var(--cs-secondary-container);
   color: $text-dark;
 }
 
@@ -919,7 +921,7 @@ $admin-accent: #6f8367;
 .dashboardContainer {
   max-width: 90rem;
   margin: 0 auto;
-  padding-inline: var(--tp-page-gutter, 1rem);
+  padding-inline: 1rem;
 }
 
 .dashboardGrid {
@@ -929,8 +931,8 @@ $admin-accent: #6f8367;
 .dashboardCard,
 .statCard,
 .tableContainer {
-  border-radius: var(--tp-surface-radius-lg, 20px);
-  padding: var(--tp-card-padding-lg, 1.5rem);
+  border-radius: var(--cs-radius-2xl);
+  padding: 1.5rem;
 }
 
 .primaryButton,
@@ -943,7 +945,7 @@ $admin-accent: #6f8367;
   .dashboardCard,
   .statCard,
   .tableContainer {
-    padding: var(--tp-card-padding, 1rem);
+    padding: 1rem;
   }
 }
 
@@ -1048,7 +1050,7 @@ $admin-accent: #6f8367;
 .modal {
   background: $background-white;
   border-radius: $border-radius-lg;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--cs-glass-shadow);
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
@@ -1058,7 +1060,7 @@ $admin-accent: #6f8367;
 .modalContent {
   background: $background-white;
   border-radius: $border-radius-lg;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--cs-glass-shadow);
   max-width: 800px;
   width: 100%;
   max-height: 90vh;
@@ -1115,6 +1117,7 @@ $admin-accent: #6f8367;
   margin-bottom: 1.5rem;
   
   label {
+    @include form-label;
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
@@ -1124,6 +1127,7 @@ $admin-accent: #6f8367;
   
   input,
   select {
+    @include form-input;
     width: 100%;
     padding: 0.75rem;
     border: 1px solid $border-light;
@@ -1149,6 +1153,7 @@ $admin-accent: #6f8367;
   }
   
   textarea {
+    @include form-input;
     width: 100%;
     padding: 0.75rem;
     border: 1px solid $border-light;
@@ -1177,6 +1182,7 @@ $admin-accent: #6f8367;
 }
 
 .modalActions {
+  @include form-actions;
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
@@ -1242,7 +1248,7 @@ $admin-accent: #6f8367;
   background: $background-white;
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid $border-light;
   cursor: pointer;
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
@@ -1252,8 +1258,8 @@ $admin-accent: #6f8367;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba($admin-primary, 0.12);
-    border-color: $admin-primary;
+    box-shadow: var(--cs-glass-shadow);
+    border-color: var(--cs-primary);
   }
 }
 
@@ -1264,8 +1270,8 @@ $admin-accent: #6f8367;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba($admin-primary, 0.12);
-  color: $admin-primary;
+  background: var(--cs-surface-low);
+  color: var(--cs-primary);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -1290,7 +1296,7 @@ $admin-accent: #6f8367;
 
 .quickActionArrow {
   font-size: 1.5rem;
-  color: $admin-primary;
+  color: var(--cs-primary);
   font-weight: bold;
   transition: transform 0.3s ease;
   
@@ -1360,9 +1366,10 @@ $admin-accent: #6f8367;
 
 // Settings Form
 .settingsForm {
+  @include form-card;
   background: $background-white;
   border-radius: $border-radius-lg;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   padding: 2rem;
 }
 
@@ -1386,6 +1393,7 @@ $admin-accent: #6f8367;
 }
 
 .formActions {
+  @include form-actions;
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
@@ -1411,7 +1419,7 @@ $admin-accent: #6f8367;
 }
 
 .successBanner {
-  background: #d1fae5;
+  background: rgba($success-green, 0.1);
   border: 1px solid $success-green;
   border-radius: $border-radius;
   padding: 1rem;
@@ -1440,6 +1448,7 @@ $admin-accent: #6f8367;
 
 // Analytics Page
 .analyticsFilters {
+  @include form-field-cluster;
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -1447,7 +1456,7 @@ $admin-accent: #6f8367;
   padding: 1.5rem;
   background: $background-white;
   border-radius: $border-radius-lg;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--cs-shadow-atmospheric);
 }
 
 .filterGroup {
@@ -1480,6 +1489,7 @@ $admin-accent: #6f8367;
 }
 
 .dateInput {
+  @include form-input;
   padding: 0.75rem;
   border: 1px solid $border-light;
   border-radius: $border-radius;
@@ -1527,7 +1537,7 @@ $admin-accent: #6f8367;
   background: $background-white;
   border-radius: $border-radius-lg;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--cs-shadow-atmospheric);
   text-align: center;
   border: 1px solid $border-light;
 }
@@ -1549,7 +1559,7 @@ $admin-accent: #6f8367;
   background: $background-white;
   border-radius: $border-radius-lg;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--cs-shadow-atmospheric);
   margin-top: 1.5rem;
   
   h3 {
@@ -1596,33 +1606,33 @@ $admin-accent: #6f8367;
 
 // Status Badge Styles for Deletion Requests
 .statusPending {
-  background: rgba(255, 193, 7, 0.2);
-  color: #856404;
-  border: 1px solid rgba(255, 193, 7, 0.4);
+  background: rgba($warning-orange, 0.15);
+  color: $warning-orange;
+  border: 1px solid rgba($warning-orange, 0.35);
 }
 
 .statusApproved {
-  background: rgba(40, 167, 69, 0.2);
-  color: #155724;
-  border: 1px solid rgba(40, 167, 69, 0.4);
+  background: rgba($success-green, 0.15);
+  color: $success-green;
+  border: 1px solid rgba($success-green, 0.35);
 }
 
 .statusRejected {
-  background: rgba(220, 53, 69, 0.2);
-  color: #721c24;
-  border: 1px solid rgba(220, 53, 69, 0.4);
+  background: rgba($error-red, 0.15);
+  color: $error-red;
+  border: 1px solid rgba($error-red, 0.35);
 }
 
 .statusCompleted {
-  background: rgba(108, 117, 125, 0.2);
-  color: #383d41;
-  border: 1px solid rgba(108, 117, 125, 0.4);
+  background: rgba($border-medium, 0.2);
+  color: $text-light;
+  border: 1px solid rgba($border-medium, 0.35);
 }
 
 .statusCancelled {
-  background: rgba(108, 117, 125, 0.2);
-  color: #383d41;
-  border: 1px solid rgba(108, 117, 125, 0.4);
+  background: rgba($border-medium, 0.2);
+  color: $text-light;
+  border: 1px solid rgba($border-medium, 0.35);
 }
 
 // Filter Section
@@ -1684,38 +1694,20 @@ $admin-accent: #6f8367;
   }
 }
 
-// Glassmorphism card migration
+// Surface system migration
 .systemHealthCard,
-.statCard,
 .secondaryStatCard,
-.dashboardCard,
-.quickActionCard,
-.analyticsCard,
 .tableContainer,
 .modal,
 .modalContent {
-  @include glass-card(admin);
+  @include surface-primary-no-hover;
 }
 
 .statCard,
 .dashboardCard,
 .quickActionCard,
 .analyticsCard {
-  @include glass-hover(admin);
-}
-
-// Full-role glass harmonization (admin pages)
-.systemHealthCard,
-.statCard,
-.secondaryStatCard,
-.dashboardCard,
-.quickActionCard,
-.analyticsCard,
-.tableContainer,
-.modal,
-.modalContent {
-  @include glass-card(admin, $glass-blur-md, true);
-  border: 1px solid rgba($btn-admin-primary, 0.22);
+  @include surface-primary;
 }
 
 .editButton,
@@ -1725,14 +1717,13 @@ $admin-accent: #6f8367;
 .primaryButton,
 .actionButton {
   @include btn.dashboard-button-base;
-  @include glass-card(admin, $glass-blur-sm, true);
-  border-radius: 12px;
+  @include surface-secondary;
+  border-radius: var(--cs-radius-xl);
   color: $text-dark;
-  border: 1px solid rgba($btn-admin-primary, 0.26);
-  box-shadow: 0 8px 18px rgba($btn-admin-primary, 0.14);
 
   &:hover:not(:disabled) {
-    @include glass-hover(admin);
+    transform: translateY(-2px);
+    box-shadow: var(--cs-glass-shadow);
     color: $text-dark;
   }
 }

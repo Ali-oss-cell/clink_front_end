@@ -1,5 +1,8 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/formSystem' as *;
+@use '../../assets/styles/wizardSystem' as *;
 
 // Appointment Details Page Styles
 .appointmentDetailsContainer {
@@ -16,7 +19,7 @@
 .backButton {
   background: white;
   border: 2px solid $border-light;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   padding: 0.62rem 1.15rem;
   font-size: 0.92rem;
   font-weight: 600;
@@ -148,13 +151,10 @@
 }
 
 .appointmentDetailsForm {
+  @include form-card;
   max-width: 800px;
   margin: 0 auto;
-  background: color-mix(in srgb, $background-white 94%, $background-gray 6%);
   padding: clamp(1rem, 2vw, 1.4rem);
-  border-radius: $border-radius-lg;
-  border: 1px solid rgba($border-medium, 0.65);
-  box-shadow: $shadow-sm;
 }
 
 .formSection {
@@ -199,38 +199,21 @@
 }
 
 .input {
-  padding: $spacing-md;
-  border: 1px solid $border-light;
-  border-radius: $border-radius;
+  @include form-input;
   font-size: 0.9rem;
-  transition: border-color 0.2s ease;
-  
-  &:focus {
-    outline: none;
-    border-color: $patient-primary;
-  }
 }
 
 .textarea {
-  padding: $spacing-md $spacing-md;
-  border: 1px solid $border-light;
-  border-radius: $border-radius;
+  @include form-input;
   font-size: 0.9375rem;
   font-family: inherit;
   line-height: 1.5;
   resize: vertical;
   min-height: 108px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &::placeholder {
     color: $text-light;
     opacity: 0.72;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: $patient-primary;
-    box-shadow: 0 0 0 3px rgba($patient-primary, 0.12);
   }
 }
 
@@ -367,22 +350,12 @@
 }
 
 .formActions {
-  display: flex;
-  gap: $spacing-md;
+  @include form-actions;
   justify-content: center;
-  margin-top: 1rem;
-  padding-top: 0.9rem;
-  border-top: 1px solid $border-light;
 }
 
 .formActionsSticky {
-  position: sticky;
-  bottom: 0;
-  z-index: 4;
-  margin-top: auto;
-  padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
-  background: var(--cs-surface-lowest, #fff);
-  border-top: 1px solid rgba($border-medium, 0.25);
+  @include wizard-sticky-actions;
 }
 
 .cancelButton {
@@ -445,7 +418,7 @@
   border-radius: $border-radius-lg;
   max-width: 500px;
   margin: 0 auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--cs-shadow-atmospheric);
 
   h3 {
     color: $error-red;
@@ -568,7 +541,7 @@ button.retryButton {
   color: var(--cs-primary);
   background: var(--cs-surface-lowest);
   border-radius: var(--cs-radius-xl);
-  box-shadow: 0 8px 24px rgba(25, 28, 29, 0.06);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 
   &::before {
@@ -579,7 +552,7 @@ button.retryButton {
   &:hover:not(:disabled) {
     background: var(--cs-surface-low);
     transform: none;
-    box-shadow: 0 10px 28px rgba(25, 28, 29, 0.08);
+    box-shadow: var(--cs-shadow-atmospheric);
     color: var(--cs-primary);
   }
 }

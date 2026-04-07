@@ -2,6 +2,8 @@
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/buttonSystem' as btn;
 @use '../../assets/styles/portalCompact' as pc;
+@use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/formSystem' as *;
 
 // Psychologist Layout — default green marketing-style shell; transparent under Clinical Sanctuary
 .psychologistLayout {
@@ -252,18 +254,18 @@
 
 // Profile Card
 .profileCard {
-  background: white;
-  border-radius: 20px;
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-2xl);
   padding: 3rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--cs-shadow-atmospheric);
+  border: 1px solid var(--cs-glass-border);
   margin-bottom: 2rem;
   animation: fadeInUp 0.8s ease-out;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--cs-glass-shadow);
   }
 }
 
@@ -322,12 +324,12 @@
   border-radius: 50%;
   object-fit: cover;
   border: 5px solid white;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--cs-glass-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--cs-glass-shadow);
   }
 }
 
@@ -342,14 +344,14 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.4s ease;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
 
   &:hover {
     border-color: $psychologist-primary;
     border-style: solid;
     background: linear-gradient(135deg, rgba($psychologist-primary, 0.1) 0%, rgba($psychologist-light, 0.15) 100%);
     transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--cs-glass-shadow);
   }
 }
 
@@ -486,7 +488,7 @@
   background: $success-green;
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: var(--cs-radius-2xl);
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
@@ -508,7 +510,7 @@
 .detailSection {
   padding: 2rem;
   background: linear-gradient(135deg, $background-white 0%, $background-light 100%);
-  border-radius: 16px;
+  border-radius: var(--cs-radius-2xl);
   border: 1px solid $border-light;
   transition: all 0.3s ease;
   position: relative;
@@ -528,7 +530,7 @@
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--cs-glass-shadow);
     border-color: $psychologist-light;
 
     &::before {
@@ -688,7 +690,7 @@
   background: $psychologist-primary;
   color: white;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-size: 0.8rem;
   font-weight: 500;
 }
@@ -722,7 +724,7 @@
   text-align: center;
   padding: 2rem 1.5rem;
   background: linear-gradient(135deg, white 0%, $background-light 100%);
-  border-radius: 16px;
+  border-radius: var(--cs-radius-2xl);
   border: 2px solid $border-light;
   transition: all 0.3s ease;
   position: relative;
@@ -742,7 +744,7 @@
 
   &:hover {
     transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--cs-glass-shadow);
     border-color: $psychologist-primary;
 
     &::before {
@@ -783,6 +785,7 @@
 }
 
 .editableInput {
+  @include form-input;
   width: 100%;
   padding: 0.75rem;
   border: 1px solid $border-light;
@@ -797,6 +800,7 @@
 }
 
 .editableTextarea {
+  @include form-input;
   width: 100%;
   padding: 0.75rem;
   border: 1px solid $border-light;
@@ -814,6 +818,7 @@
 
 // Action Buttons
 .profileActions {
+  @include form-actions;
   display: flex;
   gap: 1.5rem;
   justify-content: center;
@@ -930,7 +935,7 @@
 .errorState {
   text-align: center;
   padding: 3rem;
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: 8px;
   border: 1px solid $border-light;
 }
@@ -1048,10 +1053,10 @@
 }
 
 .dashboardCard {
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid $border-light;
   opacity: 0;
@@ -1139,9 +1144,9 @@
   padding: 4rem 2rem;
   text-align: center;
   min-height: 400px;
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: $border-radius-lg;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   max-width: 600px;
   margin: 2rem auto;
   
@@ -1276,7 +1281,7 @@
   backdrop-filter: blur(10px);
   padding: 0.5rem;
   border-radius: $border-radius-lg;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--cs-glass-shadow);
   border: 1px solid rgba(255, 255, 255, 0.18);
   
   button {
@@ -1296,7 +1301,7 @@
     &.active {
       background: white;
       color: $psychologist-primary;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: var(--cs-glass-shadow);
       transform: translateY(-2px);
     }
     
@@ -1326,10 +1331,10 @@
 }
 
 .statCard {
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -1418,7 +1423,7 @@
   button {
     padding: 1rem 2rem;
     border: 2px solid $border-light;
-    background: white;
+    background: var(--cs-surface-lowest);
     border-radius: $border-radius-lg;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1468,11 +1473,11 @@
 }
 
 .appointmentCard {
-  background: $background-white;
-  border-radius: 16px;
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-2xl);
   padding: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
+  border: 1px solid var(--cs-glass-border);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -1490,7 +1495,7 @@
   }
   
   &:hover {
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--cs-glass-shadow);
     transform: translateY(-4px);
     border-color: rgba($psychologist-primary, 0.3);
     
@@ -1530,7 +1535,7 @@
   align-items: center;
   gap: $spacing-md;
   padding-bottom: $spacing-lg;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid var(--cs-glass-border);
 }
 
 .patientDetails {
@@ -1625,12 +1630,12 @@
   align-items: flex-start;
   gap: $spacing-sm;
   padding: $spacing-md;
-  background: rgba(0, 0, 0, 0.02);
+  background: var(--cs-surface-low);
   border-radius: $border-radius;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--cs-surface-high);
     transform: translateY(-2px);
   }
 }
@@ -1674,7 +1679,7 @@
 
 .notesSection {
   padding: $spacing-md;
-  background: rgba(0, 0, 0, 0.02);
+  background: var(--cs-surface-low);
   border-radius: $border-radius;
   border-left: 3px solid $psychologist-primary;
 }
@@ -1716,8 +1721,8 @@
   gap: $spacing-md;
   flex-wrap: wrap;
   padding: $spacing-lg $spacing-xl;
-  border-top: 2px solid rgba(0, 0, 0, 0.05);
-  background: rgba(0, 0, 0, 0.01);
+  border-top: 2px solid var(--cs-glass-border);
+  background: var(--cs-surface-low);
   margin-top: $spacing-lg;
 }
 
@@ -1778,10 +1783,10 @@
 }
 
 .secondaryButton {
-  background: white;
+  background: var(--cs-surface-lowest);
   color: $psychologist-primary;
   border: 2px solid $psychologist-primary;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--cs-shadow-atmospheric);
   
   &:hover {
     background: $psychologist-primary;
@@ -1806,13 +1811,13 @@
   background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   border: none;
   color: white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--cs-primary-container) 30%, transparent);
   cursor: pointer;
   
   &:hover:not(:disabled) {
     background: linear-gradient(135deg, $primary-dark 0%, $primary-dark 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--cs-primary-container) 40%, transparent);
   }
   
   &:active:not(:disabled) {
@@ -1826,7 +1831,7 @@
     
     &:hover {
       transform: none;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--cs-primary-container) 30%, transparent);
     }
   }
   
@@ -1840,7 +1845,7 @@
   grid-column: 1 / -1; // Full width
   background: linear-gradient(135deg, $patient-bg-gradient-start 0%, $patient-bg-gradient-end 100%);
   border: 2px solid $primary-color;
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--cs-primary-container) 20%, transparent);
   
   h3 {
     color: $primary-dark;
@@ -1860,14 +1865,14 @@
   justify-content: space-between;
   align-items: center;
   padding: $spacing-md;
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: $border-radius;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid color-mix(in srgb, var(--cs-primary-container) 20%, transparent);
   transition: all $transition-normal ease;
   
   &:hover {
     border-color: $primary-color;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--cs-primary-container) 15%, transparent);
     transform: translateY(-2px);
   }
 }
@@ -1917,7 +1922,7 @@
   padding: $spacing-sm $spacing-lg;
   font-weight: 600;
   font-size: 1rem;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--cs-primary-container) 30%, transparent);
   white-space: nowrap;
   cursor: pointer;
   border-radius: $border-radius;
@@ -1926,7 +1931,7 @@
   &:hover {
     background: linear-gradient(135deg, $primary-dark 0%, $primary-dark 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--cs-primary-container) 40%, transparent);
   }
   
   &:active {
@@ -1935,11 +1940,11 @@
 }
 
 .emptyState {
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: $border-radius-lg;
   padding: 4rem 2rem;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   margin: 0 2rem 2rem 2rem;
   border: 2px dashed $border-light;
 }
@@ -1967,7 +1972,7 @@
 }
 
 .modal {
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: $border-radius-lg;
   padding: 2.5rem;
   max-width: 600px;
@@ -2002,6 +2007,7 @@
 }
 
 .notesTextarea {
+  @include form-input;
   width: 100%;
   padding: 1.25rem;
   border: 2px solid $border-light;
@@ -2021,6 +2027,7 @@
 }
 
 .modalActions {
+  @include form-actions;
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
@@ -2200,7 +2207,7 @@
 .placeholderUploadButton {
   @include btn.dashboard-button-base;
   @include glass-card(psychologist, $glass-blur-sm, true);
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   border: 1px solid rgba($psychologist-primary, 0.3);
   color: $text-dark;
   box-shadow: 0 8px 18px rgba($psychologist-primary, 0.14);
@@ -2247,13 +2254,14 @@
 }
 
 .searchInput {
+  @include form-input;
   width: 100%;
   padding: 1rem 1rem 1rem 3.5rem;
   border: 2px solid $border-light;
   border-radius: $border-radius-lg;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: white;
+  background: var(--cs-surface-lowest);
   
   &:focus {
     outline: none;
@@ -2275,10 +2283,10 @@
 }
 
 .patientCard {
-  background: white;
+  background: var(--cs-surface-lowest);
   border-radius: $border-radius-lg;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid $border-light;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -2619,15 +2627,15 @@
 }
 
 .noteCard {
-  background: white;
-  border-radius: 12px;
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-xl);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cs-shadow-atmospheric);
   transition: all 0.2s;
   border: 1px solid $border-light;
 
   &:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--cs-glass-shadow);
     transform: translateY(-2px);
   }
 }
@@ -2754,7 +2762,7 @@
 }
 
 .viewButton {
-  background: white;
+  background: var(--cs-surface-lowest);
   color: $primary-color;
   border: 1px solid $primary-color;
 
@@ -2764,7 +2772,7 @@
 }
 
 .editButton {
-  background: white;
+  background: var(--cs-surface-lowest);
   color: $success-green;
   border: 1px solid $success-green;
 
@@ -2774,7 +2782,7 @@
 }
 
 .deleteButton {
-  background: white;
+  background: var(--cs-surface-lowest);
   color: $error-red;
   border: 1px solid $error-red;
 
@@ -2847,8 +2855,8 @@
 
 // Confirmation Modal
 .confirmModal {
-  background: white;
-  border-radius: 12px;
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-xl);
   padding: 2rem;
   max-width: 450px;
   width: 90%;
@@ -2868,6 +2876,7 @@
 }
 
 .confirmActions {
+  @include form-actions;
   display: flex;
   gap: 1rem;
   justify-content: center;
@@ -2910,6 +2919,7 @@
 }
 
 .filterSelect {
+  @include form-input;
   padding: 0.5rem 1rem;
   border: 1px solid $border-medium;
   border-radius: 8px;
@@ -2920,7 +2930,7 @@
   &:focus {
     outline: none;
     border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cs-primary-container) 10%, transparent);
   }
 }
 
@@ -2979,7 +2989,7 @@
   &:hover {
     background: $background-gray;
     transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--cs-glass-shadow);
   }
   
   &.isVisible:hover {
@@ -3015,7 +3025,7 @@
   width: 100%;
   padding: 0.75rem;
   margin-top: 0.5rem;
-  background: white;
+  background: var(--cs-surface-lowest);
   border: 1px solid $border-medium;
   border-radius: 8px;
   color: $primary-color;
@@ -3033,7 +3043,7 @@
 .dashboardContainer {
   max-width: 90rem;
   margin: 0 auto;
-  padding-inline: var(--tp-page-gutter, 1rem);
+  padding-inline: 1rem;
 }
 
 .dashboardHeader {
@@ -3057,8 +3067,8 @@
 
 .statCard,
 .dashboardCard {
-  padding: var(--tp-card-padding-lg, 1.5rem);
-  border-radius: var(--tp-surface-radius-lg, 20px);
+  padding: 1.5rem;
+  border-radius: var(--cs-radius-2xl);
 }
 
 .dashboardCardHeader,
@@ -3108,7 +3118,7 @@
 @media (max-width: 1024px) {
   .statCard,
   .dashboardCard {
-    padding: var(--tp-card-padding, 1rem);
+    padding: 1rem;
   }
 }
 
@@ -3240,7 +3250,7 @@
 
   &:hover {
     border-color: $primary-color;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--cs-primary-container) 10%, transparent);
   }
 }
 
@@ -3261,7 +3271,7 @@
   background: rgba($primary-color, 0.1);
   color: $primary-color;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-weight: 700;
   font-size: 0.9rem;
 }
@@ -3297,9 +3307,9 @@
 
 // Calendar Styles
 .calendarContainer {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: var(--cs-surface-lowest);
+  border-radius: var(--cs-radius-2xl);
+  box-shadow: var(--cs-shadow-atmospheric);
   padding: 2rem;
   margin-top: 2rem;
 }
@@ -3318,7 +3328,7 @@
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -3327,7 +3337,7 @@
   &:hover {
     background: $psychologist-dark;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--cs-primary-container) 30%, transparent);
   }
 
   &:active {
@@ -3372,12 +3382,12 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 1px;
   background: $background-gray;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl);
   overflow: hidden;
 }
 
 .calendarDay {
-  background: white;
+  background: var(--cs-surface-lowest);
   min-height: 120px;
   padding: 0.75rem;
   border: 1px solid $border-light;
