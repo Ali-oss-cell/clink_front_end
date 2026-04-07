@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/buttonSystem' as btn;
@@ -870,7 +871,7 @@
 }
 
 .saveButton {
-  background: linear-gradient(135deg, $success-green 0%, darken($success-green, 10%) 100%);
+  background: linear-gradient(135deg, $success-green 0%, color.adjust($success-green, $lightness: -10%) 100%);
   color: white;
   border: none;
   padding: 1rem 3rem;
@@ -898,7 +899,7 @@
 }
 
 .cancelButton {
-  background: linear-gradient(135deg, $psychologist-accent 0%, darken($psychologist-accent, 10%) 100%);
+  background: linear-gradient(135deg, $psychologist-accent 0%, color.adjust($psychologist-accent, $lightness: -10%) 100%);
   color: white;
   border: none;
   padding: 1rem 3rem;
@@ -953,7 +954,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: darken($psychologist-primary, 10%);
+    background: color.adjust($psychologist-primary, $lightness: -10%);
   }
 }
 
@@ -1711,7 +1712,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    color: darken($psychologist-primary, 10%);
+    color: color.adjust($psychologist-primary, $lightness: -10%);
     gap: 0.5rem;
   }
 }

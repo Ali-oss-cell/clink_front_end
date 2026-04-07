@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/buttonSystem' as btn;
 @use '../../assets/styles/mixins' as mx;
@@ -32,7 +33,7 @@
 }
 
 .tp-ui-btn--destructive {
-  @include btn.dashboard-button-primary($error-red, darken($error-red, 6%));
+  @include btn.dashboard-button-primary($error-red, color.adjust($error-red, $lightness: -6%));
   @include mx.glass-hover(admin);
 }
 

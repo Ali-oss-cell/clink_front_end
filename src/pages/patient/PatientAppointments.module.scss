@@ -90,7 +90,7 @@
 
 .appointmentsList {
   display: grid;
-  gap: $spacing-md;
+  gap: $spacing-sm;
   padding: $spacing-xs 0;
 }
 
@@ -139,10 +139,10 @@
 }
 
 .cardContent {
-  padding: $spacing-xl;
+  padding: $spacing-md;
   display: flex;
   flex-direction: column;
-  gap: $spacing-xl;
+  gap: $spacing-md;
 }
 
 @keyframes fadeInUp {
@@ -159,8 +159,8 @@
 .psychologistSection {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
-  padding-bottom: $spacing-lg;
+  gap: $spacing-sm;
+  padding-bottom: $spacing-sm;
   border-bottom: 2px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -169,8 +169,8 @@
 }
 
 .psychologistAvatar {
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid white;
@@ -185,7 +185,7 @@
 }
 
 .psychologistName {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--cs-primary);
   margin: 0 0 $spacing-xs 0;
@@ -204,8 +204,8 @@
 .dateTimeSection {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-md;
-  padding: $spacing-lg;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
   background: var(--cs-surface-low);
   border-radius: var(--cs-radius-xl);
   border: none;
@@ -239,7 +239,7 @@
 }
 
 .dateTimeValue {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: $text-dark;
   font-weight: 700;
   line-height: 1.3;
@@ -279,15 +279,15 @@
 
 .detailsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: $spacing-md;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: $spacing-sm;
 }
 
 .detailItem {
   display: flex;
   align-items: flex-start;
   gap: $spacing-sm;
-  padding: $spacing-md;
+  padding: $spacing-sm;
   background: rgba(0, 0, 0, 0.02);
   border-radius: $border-radius;
   transition: all 0.2s ease;
@@ -321,7 +321,7 @@
 }
 
 .detailValue {
-  font-size: 0.9375rem;
+  font-size: 0.86rem;
   color: $text-dark;
   font-weight: 500;
   line-height: 1.4;

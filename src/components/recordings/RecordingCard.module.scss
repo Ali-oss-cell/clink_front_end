@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../assets/styles/variables' as *;
 
 .recordingCard {
@@ -114,7 +115,7 @@
 }
 
 .downloadButton {
-  background: linear-gradient(135deg, $success-green 0%, darken($success-green, 10%) 100%);
+  background: linear-gradient(135deg, $success-green 0%, color.adjust($success-green, $lightness: -10%) 100%);
   color: white;
 
   &:hover {

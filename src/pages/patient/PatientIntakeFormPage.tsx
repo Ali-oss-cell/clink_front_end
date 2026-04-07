@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import PhoneInput from 'react-phone-number-input';
@@ -25,6 +25,8 @@ export const PatientIntakeFormPage: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingIntake, setIsLoadingIntake] = useState(true);
+  const [hasCompletedIntake, setHasCompletedIntake] = useState(false);
   const user = authService.getStoredUser() || {
     id: 1,
     email: 'patient@example.com',
@@ -49,7 +51,9 @@ export const PatientIntakeFormPage: React.FC = () => {
     handleSubmit,
     formState: { errors },
     watch,
-    setValue
+    setValue,
+    getValues,
+    reset
   } = useForm<IntakeFormData>({
     defaultValues: {
       // Pre-fill with user data from login (API field names)
@@ -126,6 +130,35 @@ export const PatientIntakeFormPage: React.FC = () => {
     null;
   const isMinor = age !== null && age < 18;
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadExistingIntake = async () => {
+      try {
+        const existing = await intakeService.getIntakeForm();
+        if (!isMounted || !existing) return;
+
+        const mergedValues = {
+          ...getValues(),
+          ...existing,
+        };
+
+        reset(mergedValues);
+        setHasCompletedIntake(Boolean(existing.intake_completed));
+      } catch (error) {
+        // If no existing intake yet, keep initial pre-filled defaults.
+        console.debug('No existing intake form found or failed to load.', error);
+      } finally {
+        if (isMounted) setIsLoadingIntake(false);
+      }
+    };
+
+    loadExistingIntake();
+    return () => {
+      isMounted = false;
+    };
+  }, [getValues, reset]);
+
   // Helper function to check if a value is truthy (handles both boolean and string)
   const isTruthy = (value: boolean | string | undefined): boolean => {
     return value === true || value === 'true';
@@ -201,8 +234,9 @@ export const PatientIntakeFormPage: React.FC = () => {
       }
 
       await intakeService.submitIntakeForm(payload);
-      
-      alert('Intake form submitted successfully!');
+      setHasCompletedIntake(true);
+
+      alert(hasCompletedIntake ? 'Intake form updated successfully!' : 'Intake form submitted successfully!');
       navigate('/patient/dashboard');
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -1150,11 +1184,17 @@ export const PatientIntakeFormPage: React.FC = () => {
       <div className={shell.wrap}>
         <header className={shell.pageHeader}>
           <p className={styles.intakeKicker}>Intake form</p>
-          <h1 className={shell.welcomeTitle}>New Client Intake Form</h1>
+          <h1 className={shell.welcomeTitle}>
+            {hasCompletedIntake ? 'Update Your Intake Form' : 'New Client Intake Form'}
+          </h1>
           <p className={shell.welcomeSubtitle}>
-              Welcome to Tailored Psychology! To ensure we provide you with the best possible care, 
-              please complete this form prior to your first appointment. All information provided is confidential.
+              {hasCompletedIntake
+                ? 'Your intake form is already on file. Review your details below and update anything that changed.'
+                : 'Welcome to Tailored Psychology! To ensure we provide you with the best possible care, please complete this form prior to your first appointment. All information provided is confidential.'}
           </p>
+          {hasCompletedIntake && (
+            <div className={styles.intakeStatusBanner}>You have previously completed this form. You are now updating it.</div>
+          )}
 
           <div className={styles.requirementSummary}>
             <h3>
@@ -1185,6 +1225,7 @@ export const PatientIntakeFormPage: React.FC = () => {
         </header>
 
         <form onSubmit={handleSubmit(onSubmit)} className={styles.intakeForm}>
+            {isLoadingIntake && <p className={styles.loadingMessage}>Loading your existing intake details...</p>}
             <div className={styles.progressIndicator}>
               <div className={styles.progressBar}>
                 <div 
@@ -1224,7 +1265,9 @@ export const PatientIntakeFormPage: React.FC = () => {
                   disabled={isSubmitting}
                   className={styles.submitButton}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Intake Form'}
+                  {isSubmitting
+                    ? (hasCompletedIntake ? 'Updating...' : 'Submitting...')
+                    : (hasCompletedIntake ? 'Update Intake Form' : 'Submit Intake Form')}
                 </Button>
               )}
             </div>

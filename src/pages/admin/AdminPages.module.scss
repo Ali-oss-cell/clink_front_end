@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/buttonSystem' as btn;
@@ -528,7 +529,7 @@
 }
 
 .deleteButton {
-  @include btn.dashboard-button-primary($error-red, darken($error-red, 6%));
+  @include btn.dashboard-button-primary($error-red, color.adjust($error-red, $lightness: -6%));
 }
 
 // Page Container (for all admin pages)
@@ -907,7 +908,7 @@
   transition: all 0.3s ease;
   
   &:hover:not(:disabled) {
-    background: darken($primary-color, 10%);
+    background: color.adjust($primary-color, $lightness: -10%);
     transform: translateY(-2px);
   }
   

@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 @use '../../assets/styles/surfaceSystem' as *;
@@ -1747,7 +1748,7 @@ button.toolButton {
 }
 
 .secondaryButton {
-  background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
+  background: linear-gradient(135deg, $secondary-color 0%, color.adjust($secondary-color, $lightness: -10%) 100%);
   color: white;
   border: none;
   padding: 1rem 2.5rem;
@@ -2445,6 +2446,7 @@ button.submitButton {
   color: $text-light;
   margin: 0 0 0.75rem;
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -3439,6 +3441,17 @@ button.submitButton {
   font-weight: 700;
   color: var(--cs-primary);
   opacity: 0.82;
+}
+
+.intakeStatusBanner {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--cs-radius-xl);
+  background: color-mix(in srgb, var(--cs-surface-lowest) 88%, var(--cs-primary) 12%);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 24%, transparent);
+  color: var(--cs-primary);
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 // Homepage palette lock (patient)
