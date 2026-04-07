@@ -64,7 +64,7 @@ $shell-collapse: 900px;
   flex-direction: column;
   width: $sidebar-w;
   height: 100vh;
-  padding: 1.5rem 0;
+  padding: 1rem 0;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--cs-surface-lowest) 82%, white 18%) 0%,
@@ -193,7 +193,7 @@ $shell-collapse: 900px;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.62rem 0.82rem;
   margin-left: 0.5rem;
   border-radius: var(--cs-radius-xl) 0 0 var(--cs-radius-xl);
   font-size: 0.875rem;
@@ -331,7 +331,7 @@ $shell-collapse: 900px;
   min-height: 100vh;
   min-height: 100dvh;
   width: calc(100% - #{$sidebar-w});
-  padding: 2.5rem clamp(1rem, 4vw, 2.5rem) 3rem;
+  padding: 1.3rem clamp(0.8rem, 2.2vw, 1.4rem) 1.6rem;
   max-width: none;
   background: var(--cs-surface);
   box-sizing: border-box;
@@ -397,7 +397,7 @@ $shell-collapse: 900px;
   }
 
   .main {
-    padding: 3.7rem 0.8rem 2rem;
+    padding: 3.2rem 0.72rem 1.25rem;
   }
 
   .profileNameLink {

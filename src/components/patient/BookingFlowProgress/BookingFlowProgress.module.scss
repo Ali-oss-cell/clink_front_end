@@ -3,8 +3,15 @@
 
 .progressStripe {
   @include wizard-step-band;
-  margin: 0 0 1.25rem;
-  background: color-mix(in srgb, $background-light 88%, $patient-primary 10%);
+  margin: 0 0 1rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--cs-surface-lowest) 88%, white 12%) 0%,
+    color-mix(in srgb, var(--cs-surface-low) 94%, var(--cs-primary) 6%) 100%
+  );
+  border-radius: var(--cs-radius-xl);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--cs-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 14%, transparent);
 }
 
 :global(.patientShell) .progressStripe {
@@ -21,14 +28,14 @@
   display: flex;
   gap: 4px;
   width: 100%;
-  max-width: 64rem;
+  max-width: 68rem;
   margin: 0 auto;
 }
 
 .segment {
   flex: 1;
-  height: 4px;
-  border-radius: 2px;
+  height: 8px;
+  border-radius: 999px;
   transition: background 0.25s ease;
 }
 
@@ -37,7 +44,7 @@
 }
 
 .segmentInactive {
-  background: $background-gray;
+  background: color-mix(in srgb, var(--cs-surface-high) 88%, var(--cs-outline) 12%);
 }
 
 :global(.patientShell) .segmentActive {
@@ -46,4 +53,42 @@
 
 :global(.patientShell) .segmentInactive {
   background: var(--cs-surface-high, #e6e8e8);
+}
+
+.metaRow {
+  max-width: 68rem;
+  margin: 0.55rem auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepCount {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cs-primary);
+}
+
+.stepLabels {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.stepLabel {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--cs-on-surface-variant);
+  opacity: 0.78;
+}
+
+.stepLabelActive {
+  color: var(--cs-primary);
+  opacity: 1;
 }

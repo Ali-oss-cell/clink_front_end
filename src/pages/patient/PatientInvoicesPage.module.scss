@@ -3,6 +3,7 @@
 // Patient invoices — Clinical Sanctuary button styling (no inline styles)
 
 button.downloadButton {
+  @include surface-compact-interactive;
   background-color: var(--cs-surface-lowest);
   color: var(--cs-primary);
   border: none;
@@ -11,7 +12,6 @@ button.downloadButton {
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: var(--cs-shadow-atmospheric);
   transition:
     background-color 0.15s ease,
     box-shadow 0.15s ease,
@@ -26,7 +26,7 @@ button.downloadButton {
   &:hover:not(:disabled) {
     background-color: var(--cs-surface-low);
     transform: none;
-    box-shadow: var(--cs-shadow-atmospheric);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--cs-primary) 12%, transparent);
   }
 
   &:active:not(:disabled) {
@@ -53,7 +53,7 @@ button.payButton {
   font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: var(--cs-shadow-atmospheric);
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--cs-primary) 14%, transparent);
   transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
 
   &::before {
@@ -64,7 +64,7 @@ button.payButton {
   &:hover:not(:disabled) {
     filter: saturate(1.08);
     transform: none;
-    box-shadow: var(--cs-shadow-atmospheric);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--cs-primary) 16%, transparent);
   }
 
   &:active:not(:disabled) {

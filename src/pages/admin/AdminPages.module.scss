@@ -1730,7 +1730,8 @@
 .dashboardCard,
 .quickActionCard,
 .analyticsCard {
-  @include surface-primary;
+  @include surface-compact;
+  padding: clamp(0.8rem, 1.2vw, 1rem);
 }
 
 .editButton,
@@ -1745,8 +1746,8 @@
   color: $text-dark;
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: var(--cs-glass-shadow);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--cs-primary) 12%, transparent);
     color: $text-dark;
   }
 }

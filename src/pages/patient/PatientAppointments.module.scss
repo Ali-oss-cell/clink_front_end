@@ -5,14 +5,14 @@
 // patientLayout: use PatientPages.module.scss (single source) on Layout className
 
 .dashboardContainer {
-  padding: 3rem 0;
+  padding: 1.5rem 0;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .dashboardHeader {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   animation: fadeInDown 0.6s ease-out;
 }
 
@@ -84,18 +84,18 @@
     background: var(--cs-surface-lowest);
     color: var(--cs-primary);
     font-weight: 700;
-    box-shadow: var(--cs-shadow-atmospheric);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--cs-primary) 10%, transparent);
   }
 }
 
 .appointmentsList {
   display: grid;
-  gap: $spacing-xl;
-  padding: $spacing-md 0;
+  gap: $spacing-md;
+  padding: $spacing-xs 0;
 }
 
 .appointmentCard {
-  @include card;
+  @include surface-compact-interactive;
   padding: 0;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   border: none;
@@ -103,7 +103,6 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--cs-radius-2xl);
-  box-shadow: var(--cs-shadow-atmospheric);
 
   &::before {
     content: '';
@@ -117,8 +116,8 @@
   }
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--cs-shadow-atmospheric);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--cs-primary) 14%, transparent);
   }
 
   // Add subtle animation on mount with stagger
@@ -462,15 +461,19 @@
 }
 
 .dangerButton {
-  @include button-ghost;
+  @include button-base;
   padding: $spacing-sm $spacing-md;
-  font-size: 0.85rem;
-  color: $error-red;
-  border-color: $error-red;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, $error-red 0%, color-mix(in srgb, $error-red 84%, #2c0f0f 16%) 100%);
+  border: 1px solid color-mix(in srgb, $error-red 75%, #2c0f0f 25%);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 
   &:hover {
-    background: rgba($error-red, 0.1);
-    color: $error-red;
+    color: #fff;
+    filter: saturate(1.05) brightness(0.98);
+    box-shadow: 0 6px 18px rgba($error-red, 0.26);
   }
 }
 
@@ -519,7 +522,8 @@
   padding: $spacing-xl;
   max-width: 500px;
   width: 100%;
-  box-shadow: var(--cs-shadow-atmospheric);
+  box-shadow: var(--cs-glass-shadow);
+  border: 1px solid var(--cs-glass-border);
 }
 
 .modal h3 {
@@ -539,6 +543,27 @@
   display: flex;
   gap: $spacing-sm;
   justify-content: flex-end;
+}
+
+.noticeBanner {
+  margin: 0 0 $spacing-lg;
+  padding: 0.8rem 1rem;
+  border-radius: var(--cs-radius-xl);
+  border: 1px solid var(--cs-glass-border);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.noticeSuccess {
+  background: color-mix(in srgb, $success-green 12%, var(--cs-surface-lowest) 88%);
+  color: color-mix(in srgb, $success-green 72%, #1d2b1e 28%);
+  border-color: color-mix(in srgb, $success-green 28%, transparent);
+}
+
+.noticeError {
+  background: color-mix(in srgb, $error-red 10%, var(--cs-surface-lowest) 90%);
+  color: color-mix(in srgb, $error-red 76%, #2c0f0f 24%);
+  border-color: color-mix(in srgb, $error-red 28%, transparent);
 }
 
 // Mobile responsiveness for appointments

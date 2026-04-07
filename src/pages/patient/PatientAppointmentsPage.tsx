@@ -35,6 +35,7 @@ export const PatientAppointmentsPage: React.FC = () => {
   const [selectedAppointment, setSelectedAppointment] = useState<PatientAppointment | null>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [notice, setNotice] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Get user data from auth service
   const user = authService.getStoredUser() || {
@@ -156,10 +157,10 @@ export const PatientAppointmentsPage: React.FC = () => {
         
         setShowCancelModal(false);
         setSelectedAppointment(null);
-        alert('Appointment cancelled successfully.');
+        setNotice({ type: 'success', message: 'Appointment cancelled successfully.' });
       } catch (err) {
         console.error('Failed to cancel appointment:', err);
-        alert('Failed to cancel appointment. Please try again.');
+        setNotice({ type: 'error', message: 'Failed to cancel appointment. Please try again.' });
       }
     }
   };
@@ -216,6 +217,11 @@ export const PatientAppointmentsPage: React.FC = () => {
             Manage your therapy sessions and view your history ({count} total).
           </p>
         </header>
+        {notice && (
+          <div className={`${styles.noticeBanner} ${notice.type === 'success' ? styles.noticeSuccess : styles.noticeError}`}>
+            {notice.message}
+          </div>
+        )}
 
           {/* Action Bar */}
           <div className={styles.actionBar}>
@@ -491,7 +497,10 @@ export const PatientAppointmentsPage: React.FC = () => {
             <div className={styles.modalActions}>
               <Button 
                 className={styles.secondaryButton}
-                onClick={() => setShowCancelModal(false)}
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setSelectedAppointment(null);
+                }}
               >
                 Keep Appointment
               </Button>

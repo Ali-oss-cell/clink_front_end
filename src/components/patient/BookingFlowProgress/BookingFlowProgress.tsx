@@ -14,6 +14,8 @@ export function BookingFlowProgress({
 }: BookingFlowProgressProps) {
   const safeTotal = Math.max(1, totalSteps);
   const clamped = Math.min(Math.max(currentStep, 1), safeTotal);
+  const defaultLabels = ['Service', 'Psychologist', 'Schedule', 'Details', 'Payment'];
+  const labels = defaultLabels.slice(0, safeTotal);
 
   return (
     <div className={styles.progressStripe}>
@@ -35,6 +37,19 @@ export function BookingFlowProgress({
             />
           );
         })}
+      </div>
+      <div className={styles.metaRow} aria-hidden>
+        <span className={styles.stepCount}>Step {clamped} of {safeTotal}</span>
+        <div className={styles.stepLabels}>
+          {labels.map((label, i) => (
+            <span
+              key={label}
+              className={`${styles.stepLabel} ${i + 1 === clamped ? styles.stepLabelActive : ''}`}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );

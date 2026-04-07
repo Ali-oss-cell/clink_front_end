@@ -13,6 +13,15 @@ Tracks migration to homepage-led, token-driven, shared-primitives styling.
 
 ## Workstreams
 
+### 0) Compact Glass Rollout (All Authenticated Dashboards)
+
+- [x] `DONE` Add compact primitives in `_surfaceSystem.scss` (`surface-compact`, `surface-compact-interactive`, `surface-compact-selected`).
+- [x] `DONE` Refactor booking service + psychologist cards to compact hover/selected behavior.
+- [x] `DONE` Compact patient dashboard/tabs (`PatientPages`, `PatientAppointments`, `PatientDashboard`, `PatientInvoicesPage`).
+- [x] `DONE` Compact psychologist/admin/manager dashboard surfaces and action states.
+- [x] `DONE` Reduce shell padding/density in `PatientAppShell` and `RoleAppShell`.
+- [x] `DONE` Update governance docs and verify build.
+
 ### 1) Shared Foundations
 
 - [x] `DONE` Define final primitives and naming map (`_surfaceSystem.scss`, `_wizardSystem.scss`, `_formSystem.scss`).
@@ -61,7 +70,7 @@ Tracks migration to homepage-led, token-driven, shared-primitives styling.
 
 ## Quality Gates
 
-- [x] Build passes (`vite build` — clean exit).
+- [x] Build passes (`vite build` — clean exit; Sass deprecation warnings remain unrelated to this rollout).
 - [x] No linter errors on new/edited files.
 - [ ] Responsive check (mobile/tablet/desktop) — visual QA pending.
 - [ ] Focus/contrast/touch-target check — visual QA pending.

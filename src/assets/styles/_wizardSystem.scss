@@ -20,11 +20,11 @@
   margin-top: auto;
   padding: 0.9rem clamp(0.75rem, 2vw, 1.25rem);
   padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 0%,
-    var(--cs-surface-lowest, rgba(255, 255, 255, 0.92)) 18%
-  );
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   display: flex;
   justify-content: space-between;
   align-items: center;

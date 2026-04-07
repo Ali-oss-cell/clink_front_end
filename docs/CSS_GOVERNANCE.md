@@ -8,7 +8,7 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 
 - Sass design tokens: `src/assets/styles/_variables.scss`
 - Clinical Sanctuary CSS custom properties: `src/assets/styles/_clinicalSanctuary.scss` (`.patientShell`, `.clinicalShell`)
-- **Surface primitives:** `src/assets/styles/_surfaceSystem.scss` (`surface-primary`, `surface-secondary`, `surface-flat`)
+- **Surface primitives:** `src/assets/styles/_surfaceSystem.scss` (`surface-primary`, `surface-secondary`, `surface-flat`, `surface-compact`, `surface-compact-interactive`, `surface-compact-selected`)
 - **Wizard primitives:** `src/assets/styles/_wizardSystem.scss` (`wizard-step-band`, `wizard-sticky-actions`, `wizard-viewport-lock`)
 - **Form primitives:** `src/assets/styles/_formSystem.scss` (`form-card`, `form-field-cluster`, `form-input`, `form-actions`)
 - Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
@@ -88,7 +88,14 @@ When token/theme values change, update:
 - All role shells (PatientAppShell, RoleAppShell) now use `--cs-*` tokens exclusively.
 - Track completion in `docs/REFRACTOR_TRACKER.md`.
 
-## 10) Website-wide scaling and accessibility rhythm
+## 10) Compact dashboard contract
+
+- Authenticated dashboards/tabs must default to compact surfaces (`surface-compact*`) over deep hover elevations.
+- Hover/click depth is capped to subtle lifts (`~1px`) and small shadows; avoid large blur stacks and dramatic jumps.
+- Selected cards/buttons must use tinted token backgrounds + token borders with readable text (no high-contrast glow-only states).
+- Shell main-content paddings should stay in compact range to increase information density without reducing touch targets.
+
+## 11) Website-wide scaling and accessibility rhythm
 
 - Use shared sizing tokens from `src/assets/styles/_variables.scss` (`$page-gutter-inline`, `$card-padding-lg`, `$surface-radius-lg`, `$min-touch-target`) for page rhythm before adding per-page values.
 - Keep shell parity between `PatientAppShell` and `RoleAppShell` for collapse breakpoint, main-content padding, nav row density, and minimum control target size.

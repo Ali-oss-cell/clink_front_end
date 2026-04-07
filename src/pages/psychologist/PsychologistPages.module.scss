@@ -3094,6 +3094,29 @@
   }
 }
 
+// Compact dashboard density lock (psychologist)
+.dashboardCard,
+.statCard,
+.upcomingAppointmentCard,
+.reportCard,
+.quickActionCard {
+  @include surface-compact;
+  padding: clamp(0.8rem, 1.2vw, 1rem);
+}
+
+.actionButton,
+.videoJoinButton,
+.viewAllButton,
+.primaryButton,
+.secondaryButton {
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--cs-primary) 10%, transparent);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--cs-primary) 13%, transparent);
+  }
+}
+
 .dashboardCardHeader,
 .dashboardInlineRow,
 .dashboardActionList,

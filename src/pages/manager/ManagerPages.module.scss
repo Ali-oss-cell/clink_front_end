@@ -924,13 +924,14 @@
 .statCard,
 .dashboardCard,
 .statBox {
-  @include surface-primary;
+  @include surface-compact;
+  padding: clamp(0.8rem, 1.2vw, 1rem);
 }
 
 .actionButton,
 .primaryButton {
   @include btn.dashboard-button-base;
-  @include surface-primary;
+  @include surface-compact-interactive;
   border-radius: var(--cs-radius-xl);
   color: $text-dark;
 }

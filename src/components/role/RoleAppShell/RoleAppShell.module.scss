@@ -43,7 +43,7 @@ $collapse: $shell-collapse;
   z-index: 50;
   width: $sidebar-w;
   height: 100vh;
-  padding: 1.5rem 0.75rem;
+  padding: 1rem 0.65rem;
   display: flex;
   flex-direction: column;
   background: linear-gradient(
@@ -138,7 +138,7 @@ $collapse: $shell-collapse;
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  padding: 0.75rem 1rem;
+  padding: 0.62rem 0.82rem;
   margin-left: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -192,8 +192,8 @@ $collapse: $shell-collapse;
   border-color: color-mix(in srgb, var(--cs-primary) 22%, transparent);
   font-weight: 700;
   box-shadow:
-    0 14px 34px color-mix(in srgb, var(--cs-primary) 18%, transparent),
-    inset 0 0 0 1px color-mix(in srgb, var(--cs-primary) 28%, transparent);
+    0 6px 14px color-mix(in srgb, var(--cs-primary) 13%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--cs-primary) 24%, transparent);
 }
 
 .navIcon {
@@ -238,7 +238,7 @@ $collapse: $shell-collapse;
   flex: 1;
   margin-left: $sidebar-w;
   min-height: 100vh;
-  padding: 2.5rem clamp(1rem, 4vw, 2.5rem) 3rem;
+  padding: 1.3rem clamp(0.8rem, 2.2vw, 1.4rem) 1.6rem;
   width: calc(100% - #{$sidebar-w});
   max-width: 90rem;
   box-sizing: border-box;
@@ -325,7 +325,7 @@ $collapse: $shell-collapse;
   }
 
   .main {
-    padding: 3.7rem 0.8rem 2rem;
+    padding: 3.2rem 0.72rem 1.25rem;
   }
 
   .profileName {
