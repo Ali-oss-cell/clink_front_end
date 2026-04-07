@@ -233,7 +233,7 @@ export const PsychologistSelectionPage: React.FC = () => {
   if (!selectedService) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
-        <div className={styles.psychologistSelectionContainer}>
+        <div className={styles.psychologistSelectionContainer} data-patient-booking-viewport="">
           <div className="container">
             <BookingFlowProgress currentStep={2} />
             <div className={styles.pageHeader}>
@@ -257,7 +257,7 @@ export const PsychologistSelectionPage: React.FC = () => {
 
   return (
     <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
-      <div className={styles.psychologistSelectionContainer}>
+      <div className={styles.psychologistSelectionContainer} data-patient-booking-viewport="">
         <div className="container">
           <BookingFlowProgress currentStep={2} />
           <div className={styles.bookingSplit}>

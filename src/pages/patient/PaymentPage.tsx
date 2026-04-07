@@ -313,7 +313,10 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-      <div className={`${styles.paymentContainer} ${bookingFlow.bookingFlowLayout}`}>
+      <div
+        className={`${styles.paymentContainer} ${bookingFlow.bookingFlowLayout}`}
+        data-patient-booking-viewport=""
+      >
         <div className="container">
           <div className={bookingFlow.bookingFlowMain}>
           <div className={styles.pageHeader}>

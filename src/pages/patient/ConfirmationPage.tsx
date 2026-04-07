@@ -128,7 +128,10 @@ export const ConfirmationPage: React.FC = () => {
       patientShell
       className={styles.patientLayout}
     >
-      <div className={`${styles.confirmationContainer} ${bookingFlow.bookingFlowLayout}`}>
+      <div
+        className={`${styles.confirmationContainer} ${bookingFlow.bookingFlowLayout}`}
+        data-patient-booking-viewport=""
+      >
         <div className="container">
           <div className={bookingFlow.bookingFlowMain}>
           <div className={styles.successMessage}>

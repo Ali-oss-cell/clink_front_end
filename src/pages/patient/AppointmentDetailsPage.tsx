@@ -95,7 +95,7 @@ export const AppointmentDetailsPage: React.FC = () => {
   if (loading) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
-        <div className={styles.appointmentDetailsContainer}>
+        <div className={styles.appointmentDetailsContainer} data-patient-booking-viewport="">
           <div className="container">
             <div className={styles.loadingState}>
               <p>Loading appointment details...</p>
@@ -109,7 +109,7 @@ export const AppointmentDetailsPage: React.FC = () => {
   if (error || !bookingData) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
-        <div className={styles.appointmentDetailsContainer}>
+        <div className={styles.appointmentDetailsContainer} data-patient-booking-viewport="">
           <div className="container">
             <div className={styles.errorState}>
               <h3 className={styles.errorStateTitle}>
@@ -136,7 +136,7 @@ export const AppointmentDetailsPage: React.FC = () => {
       patientShell
       className={patientPageStyles.patientLayout}
     >
-      <div className={styles.appointmentDetailsContainer}>
+      <div className={styles.appointmentDetailsContainer} data-patient-booking-viewport="">
         <div className="container">
           <div className={styles.pageHeader}>
             <Button className={styles.backButton} onClick={handleBack}>

@@ -202,7 +202,10 @@ export const ServiceSelectionPage: React.FC = () => {
       patientShell
       className={styles.patientLayout}
     >
-      <div className={`${styles.serviceSelectionContainer} ${styles.bookingFlowLayout}`}>
+      <div
+        className={`${styles.serviceSelectionContainer} ${styles.bookingFlowLayout}`}
+        data-patient-booking-viewport=""
+      >
         <div className="container">
           <BookingFlowProgress currentStep={1} />
           <div className={styles.bookingFlowMain}>

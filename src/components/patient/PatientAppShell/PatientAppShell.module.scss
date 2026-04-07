@@ -336,15 +336,15 @@ $shell-collapse: 900px;
   // Date/time booking: no document scroll — only the page body scrolls
   &:has([data-patient-booking-viewport]) {
     min-height: 0;
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding-top: 1.15rem;
-    padding-bottom: 0.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.35rem;
 
     @media (max-width: #{$shell-collapse - 1px}) {
-      padding-top: 3.35rem;
+      padding-top: 3.1rem;
     }
   }
 }
