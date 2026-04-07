@@ -7,6 +7,7 @@ $shell-collapse: 900px;
   min-height: 100vh;
   width: 100%;
   background: var(--cs-surface-low);
+  overflow-x: hidden;
 }
 
 .menuToggle {
@@ -320,9 +321,9 @@ $shell-collapse: 900px;
   margin-left: $sidebar-w;
   min-height: 100vh;
   min-height: 100dvh;
+  width: calc(100% - #{$sidebar-w});
   padding: 2.5rem clamp(1rem, 4vw, 2.5rem) 3rem;
-  max-width: 90rem;
-  width: 100%;
+  max-width: none;
   background: var(--cs-surface);
   box-sizing: border-box;
   display: grid;
@@ -330,6 +331,7 @@ $shell-collapse: 900px;
 
   @media (max-width: #{$shell-collapse - 1px}) {
     margin-left: 0;
+    width: 100%;
     padding-top: 4rem;
   }
 
