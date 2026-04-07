@@ -78,7 +78,6 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
             <span className={styles.avatar}>{initials}</span>
           </NavLink>
           <div className={styles.userMeta}>
-            <p className={styles.welcomeLabel}>Welcome back</p>
             <NavLink
               to="/patient/account"
               className={styles.profileNameLink}

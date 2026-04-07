@@ -24,6 +24,8 @@ export const AppointmentDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const appointmentId = searchParams.get('appointment_id');
+  const selectedService = searchParams.get('service');
+  const selectedPsychologist = searchParams.get('psychologist');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -79,7 +81,12 @@ export const AppointmentDetailsPage: React.FC = () => {
         special_requests: data.specialRequests?.trim() || '',
         additional_notes: data.additionalNotes?.trim() || '',
       });
-      navigate(`/appointments/book-appointment?step=5&appointment_id=${appointmentId}`);
+      const params = new URLSearchParams();
+      params.set('step', '5');
+      params.set('appointment_id', appointmentId);
+      if (selectedService) params.set('service', selectedService);
+      if (selectedPsychologist) params.set('psychologist', selectedPsychologist);
+      navigate(`/appointments/book-appointment?${params.toString()}`);
     } catch (error: unknown) {
       console.error('Error submitting appointment details:', error);
       alert(extractApiErrorMessage(error, 'Failed to save details. Please try again.'));

@@ -285,12 +285,19 @@ export class AppointmentsService {
     }
 
     try {
-      // ✅ CORRECT ENDPOINT: /appointments/available-slots/ (NOT /auth/appointments/...)
-      const response = await axiosInstance.get<AvailableSlotsResponse>(
-        `/appointments/available-slots/?${queryParams.toString()}`
-      );
-      
-      return response.data;
+      // Canonical route lives under /appointments; auth alias kept as fallback.
+      try {
+        const response = await axiosInstance.get<AvailableSlotsResponse>(
+          `/appointments/available-slots/?${queryParams.toString()}`
+        );
+        return response.data;
+      } catch (primaryError: any) {
+        if (primaryError?.response?.status !== 404) throw primaryError;
+        const fallback = await axiosInstance.get<AvailableSlotsResponse>(
+          `/auth/appointments/available-slots/?${queryParams.toString()}`
+        );
+        return fallback.data;
+      }
     } catch (error: any) {
       // ✅ Handle specific errors
       if (error.response?.status === 404) {
@@ -335,8 +342,14 @@ export class AppointmentsService {
       if (params.month) queryParams.append('month', params.month.toString());
       if (params.year) queryParams.append('year', params.year.toString());
       
-      const response = await axiosInstance.get(`/appointments/calendar-view/?${queryParams.toString()}`);
-      return response.data;
+      try {
+        const response = await axiosInstance.get(`/appointments/calendar-view/?${queryParams.toString()}`);
+        return response.data;
+      } catch (primaryError: any) {
+        if (primaryError?.response?.status !== 404) throw primaryError;
+        const fallback = await axiosInstance.get(`/auth/appointments/calendar-view/?${queryParams.toString()}`);
+        return fallback.data;
+      }
     } catch (error) {
       console.error('Failed to get calendar view:', error);
       throw new Error('Failed to load calendar');
@@ -348,8 +361,15 @@ export class AppointmentsService {
    */
   async bookAppointment(data: BookAppointmentRequest): Promise<BookAppointmentResponse> {
     try {
-      const response = await axiosInstance.post('/auth/appointments/book-enhanced/', data);
-      return response.data;
+      // Canonical route is /appointments/book-enhanced; auth alias retained as fallback.
+      try {
+        const response = await axiosInstance.post('/appointments/book-enhanced/', data);
+        return response.data;
+      } catch (primaryError: any) {
+        if (primaryError?.response?.status !== 404) throw primaryError;
+        const fallback = await axiosInstance.post('/auth/appointments/book-enhanced/', data);
+        return fallback.data;
+      }
     } catch (error: any) {
       console.error('Failed to book appointment:', error);
       const d = error.response?.data;
@@ -379,10 +399,18 @@ export class AppointmentsService {
    */
   async getBookingSummary(appointmentId: number): Promise<BookingSummaryResponse> {
     try {
-      const response = await axiosInstance.get(
-        `/appointments/booking-summary/?appointment_id=${appointmentId}`
-      );
-      return response.data;
+      try {
+        const response = await axiosInstance.get(
+          `/appointments/booking-summary/?appointment_id=${appointmentId}`
+        );
+        return response.data;
+      } catch (primaryError: any) {
+        if (primaryError?.response?.status !== 404) throw primaryError;
+        const fallback = await axiosInstance.get(
+          `/auth/appointments/booking-summary/?appointment_id=${appointmentId}`
+        );
+        return fallback.data;
+      }
     } catch (error) {
       console.error('Failed to get booking summary:', error);
       throw new Error(extractApiErrorMessage(error, 'Failed to load booking summary'));
@@ -504,10 +532,16 @@ export class AppointmentsService {
    */
   async cancelAppointment(appointmentId: string, reason?: string): Promise<{ message: string }> {
     try {
-      const response = await axiosInstance.post(`/appointments/appointments/${appointmentId}/cancel/`, {
-        reason: reason || 'Patient requested cancellation'
-      });
-      return response.data;
+      const payload = { notes: reason || 'Patient requested cancellation' };
+      try {
+        const response = await axiosInstance.post(`/appointments/cancel/${appointmentId}/`, payload);
+        return response.data;
+      } catch (primaryError: any) {
+        // Fallback to viewset action route in case deployment still uses it.
+        if (primaryError?.response?.status !== 404) throw primaryError;
+        const fallback = await axiosInstance.post(`/appointments/appointments/${appointmentId}/cancel/`, payload);
+        return fallback.data;
+      }
     } catch (error) {
       console.error('Failed to cancel appointment:', error);
       throw new Error('Failed to cancel appointment');
@@ -519,10 +553,15 @@ export class AppointmentsService {
    */
   async rescheduleAppointment(appointmentId: string, newDateTime: string): Promise<{ message: string }> {
     try {
-      const response = await axiosInstance.post(`/appointments/appointments/${appointmentId}/reschedule/`, {
-        new_appointment_date: newDateTime
-      });
-      return response.data;
+      const payload = { appointment_date: newDateTime };
+      try {
+        const response = await axiosInstance.post(`/appointments/reschedule/${appointmentId}/`, payload);
+        return response.data;
+      } catch (primaryError: any) {
+        if (primaryError?.response?.status !== 404) throw primaryError;
+        const fallback = await axiosInstance.post(`/appointments/appointments/${appointmentId}/reschedule/`, payload);
+        return fallback.data;
+      }
     } catch (error) {
       console.error('Failed to reschedule appointment:', error);
       throw new Error('Failed to reschedule appointment');
