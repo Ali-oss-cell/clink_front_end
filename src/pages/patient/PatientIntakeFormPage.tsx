@@ -122,6 +122,18 @@ export const PatientIntakeFormPage: React.FC = () => {
   const watchedOtherHealthProfessionals = watch('other_health_professionals');
   const watchedMedicalConditions = watch('medical_conditions');
   const watchedConsentToTelehealth = watch('consent_to_telehealth');
+
+  const normalizePhoneField = (
+    field: 'phone_number' | 'home_phone' | 'emergency_contact_phone',
+    value: string | undefined
+  ) => {
+    const raw = String(value ?? '').trim();
+    if (!raw) return;
+    const normalized = normalizeToE164(raw);
+    if (normalized) {
+      setValue(field, normalized, { shouldValidate: true, shouldDirty: true });
+    }
+  };
   
   // Calculate age for parental consent (if date_of_birth is available)
   const dateOfBirth = watch('date_of_birth');
@@ -142,6 +154,13 @@ export const PatientIntakeFormPage: React.FC = () => {
           ...getValues(),
           ...existing,
         };
+
+        mergedValues.phone_number =
+          normalizeToE164(mergedValues.phone_number) || mergedValues.phone_number;
+        mergedValues.home_phone =
+          normalizeToE164(mergedValues.home_phone) || mergedValues.home_phone;
+        mergedValues.emergency_contact_phone =
+          normalizeToE164(mergedValues.emergency_contact_phone) || mergedValues.emergency_contact_phone;
 
         reset(mergedValues);
         setHasCompletedIntake(Boolean(existing.intake_completed));
@@ -401,10 +420,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                   rules={{
                     validate: (value) => {
                       if (!value || !String(value).trim()) return true;
-                      return (
-                        isValidPhoneNumber(String(value).replace(/\s/g, '')) ||
-                        'Use a valid international number (starts with +)'
-                      );
+                      return Boolean(normalizeToE164(String(value)) || isValidPhoneNumber(String(value).replace(/\s/g, '')))
+                        || 'Use a valid phone number (you can type local format; we auto-convert)';
                     }
                   }}
                   render={({ field }) => (
@@ -420,7 +437,10 @@ export const PatientIntakeFormPage: React.FC = () => {
                         placeholder="Home phone (optional)"
                         value={field.value || undefined}
                         onChange={(v) => field.onChange(v ?? '')}
-                        onBlur={field.onBlur}
+                        onBlur={() => {
+                          field.onBlur();
+                          normalizePhoneField('home_phone', field.value);
+                        }}
                         name={field.name}
                         disabled={false}
                       />
@@ -435,7 +455,7 @@ export const PatientIntakeFormPage: React.FC = () => {
               <div className={styles.formGroup}>
                 <label className={styles.label}>Mobile Phone *</label>
                 <p className={styles.intakePhoneHint}>
-                  Choose your country, then enter your number. Stored as E.164 (e.g. +61…, +963…).
+                  Choose your country, then enter your number. Local format is accepted and auto-converted to E.164.
                 </p>
                 <Controller
                   name="phone_number"
@@ -445,10 +465,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                       if (!value || String(value).trim() === '') {
                         return 'Mobile phone is required';
                       }
-                      return (
-                        isValidPhoneNumber(String(value).replace(/\s/g, '')) ||
-                        'Enter a valid number for the selected country'
-                      );
+                      return Boolean(normalizeToE164(String(value)) || isValidPhoneNumber(String(value).replace(/\s/g, '')))
+                        || 'Enter a valid mobile number';
                     }
                   }}
                   render={({ field }) => (
@@ -464,7 +482,10 @@ export const PatientIntakeFormPage: React.FC = () => {
                         placeholder="Mobile number"
                         value={field.value || undefined}
                         onChange={(v) => field.onChange(v ?? '')}
-                        onBlur={field.onBlur}
+                        onBlur={() => {
+                          field.onBlur();
+                          normalizePhoneField('phone_number', field.value);
+                        }}
                         id="phone_number"
                         name={field.name}
                         disabled={false}
@@ -545,10 +566,8 @@ export const PatientIntakeFormPage: React.FC = () => {
                       if (!value || String(value).trim() === '') {
                         return 'Emergency contact phone is required';
                       }
-                      return (
-                        isValidPhoneNumber(String(value).replace(/\s/g, '')) ||
-                        'Enter a valid number for the selected country'
-                      );
+                      return Boolean(normalizeToE164(String(value)) || isValidPhoneNumber(String(value).replace(/\s/g, '')))
+                        || 'Enter a valid emergency contact number';
                     }
                   }}
                   render={({ field }) => (
@@ -564,7 +583,10 @@ export const PatientIntakeFormPage: React.FC = () => {
                         placeholder="Emergency contact number"
                         value={field.value || undefined}
                         onChange={(v) => field.onChange(v ?? '')}
-                        onBlur={field.onBlur}
+                        onBlur={() => {
+                          field.onBlur();
+                          normalizePhoneField('emergency_contact_phone', field.value);
+                        }}
                         name={field.name}
                         disabled={false}
                       />
