@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
 import { authService } from '../../services/api/auth';
@@ -16,6 +16,7 @@ import styles from './PatientPages.module.scss';
 type AccountTab = 'personal' | 'medical' | 'preferences' | 'security' | 'privacy';
 
 export const PatientAccountPage: React.FC = () => {
+  const navigate = useNavigate();
   // Get user data from auth service
   const user = authService.getStoredUser() || {
     id: 1,
@@ -34,6 +35,7 @@ export const PatientAccountPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<AccountTab>('personal');
   const [medicalInfo, setMedicalInfo] = useState<any>(null);
+  const [intakeCompleted, setIntakeCompleted] = useState(false);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
   const [downloadingCSV, setDownloadingCSV] = useState(false);
   const [dataDownloadError, setDataDownloadError] = useState<string | null>(null);
@@ -64,8 +66,30 @@ export const PatientAccountPage: React.FC = () => {
 
   // Load data from intake form
   useEffect(() => {
-    const medical = intakeService.getMedicalInfo();
-    setMedicalInfo(medical);
+    let isMounted = true;
+
+    const loadIntake = async () => {
+      try {
+        const intake = await intakeService.getIntakeForm();
+        if (!isMounted) return;
+
+        const isCompleted = Boolean(intake?.intake_completed || intake?.consent_to_treatment);
+        setIntakeCompleted(isCompleted);
+      } catch {
+        if (!isMounted) return;
+        setIntakeCompleted(intakeService.isIntakeFormCompleted());
+      } finally {
+        if (!isMounted) return;
+        const medical = intakeService.getMedicalInfo();
+        setMedicalInfo(medical);
+      }
+    };
+
+    loadIntake();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Load preferences when preferences tab is active
@@ -315,12 +339,12 @@ export const PatientAccountPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  {!intakeService.isIntakeFormCompleted() && (
+                  {!intakeCompleted && (
                     <div className={styles.completionNotice}>
                       <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                       <h3>Complete Your Intake Form</h3>
                       <p>Provide comprehensive information about your health and preferences.</p>
-                      <Button className={styles.primaryButton}>
+                      <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
                         Complete Intake Form
                       </Button>
                     </div>
@@ -332,8 +356,20 @@ export const PatientAccountPage: React.FC = () => {
                 <div className={styles.tabContent}>
                   <h2 className={styles.sectionTitle}>Medical Information</h2>
                   
-                  {intakeService.isIntakeFormCompleted() ? (
+                  {intakeCompleted ? (
                     <div className={styles.medicalInfo}>
+                      <div className={styles.infoSection}>
+                        <label className={styles.label}>Intake Form</label>
+                        <div className={styles.infoDisplay}>
+                          <div className={styles.infoValue}>
+                            Your intake form is on file.
+                          </div>
+                          <Button className={styles.editButton} onClick={() => navigate('/patient/intake-form')}>
+                            Update Intake Form
+                          </Button>
+                        </div>
+                      </div>
+
                       <div className={styles.infoSection}>
                         <label className={styles.label}>Current Medications</label>
                         <div className={styles.infoDisplay}>
@@ -482,7 +518,7 @@ export const PatientAccountPage: React.FC = () => {
                       <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                       <h3>Complete Your Intake Form</h3>
                       <p>To view and manage your medical information, please complete your intake form first.</p>
-                      <Button className={styles.primaryButton}>
+                      <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
                         Complete Intake Form
                       </Button>
                     </div>
