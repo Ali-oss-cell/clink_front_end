@@ -12,14 +12,8 @@ import {
   WarningIcon,
   CheckCircleIcon,
   ErrorCircleIcon,
-  ClipboardIcon,
-  StarIcon,
-  ChatIcon,
-  EditIcon,
-  GraduationIcon
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
 import { Select } from '../../components/ui/select';
 import {
   MATCH_PREFERENCES_STORAGE_KEY,
@@ -354,7 +348,6 @@ export const PsychologistSelectionPage: React.FC = () => {
                 className={styles.retryButton}
                 onClick={() => window.location.reload()}
               >
-                <EditIcon size="sm" style={{ marginRight: '6px' }} />
                 Retry
               </Button>
             </div>
@@ -367,88 +360,76 @@ export const PsychologistSelectionPage: React.FC = () => {
 
           {!loading && !error && filteredPsychologists.length > 0 && (
             <div className={styles.psychologistsGrid}>
-              {filteredPsychologists.map((psychologist) => (
-              <div 
-                key={psychologist.id}
-                className={`${styles.psychologistCard} ${selectedPsychologist === psychologist.id ? styles.psychologistCardSelected : ''} ${!psychologist.acceptingNewPatients ? styles.psychologistCardUnavailable : ''}`}
-                onClick={() => psychologist.acceptingNewPatients && handlePsychologistSelect(psychologist.id)}
-              >
-                <div className={styles.psychologistHeader}>
-                  <div className={styles.psychologistProfile}>
-                    <div className={styles.profilePicture}>
-                      <img 
-                        src={psychologist.profilePicture || '/default-psychologist.jpg'} 
-                        alt={`${psychologist.name} profile`}
+              {filteredPsychologists.map((psychologist) => {
+                const isSelected = selectedPsychologist === psychologist.id;
+                return (
+                  <div
+                    key={psychologist.id}
+                    role="button"
+                    tabIndex={psychologist.acceptingNewPatients ? 0 : -1}
+                    className={`${styles.psychologistCard} ${isSelected ? styles.psychologistCardSelected : ''} ${!psychologist.acceptingNewPatients ? styles.psychologistCardUnavailable : ''}`}
+                    onClick={() => psychologist.acceptingNewPatients && handlePsychologistSelect(psychologist.id)}
+                    onKeyDown={(e) => {
+                      if ((e.key === 'Enter' || e.key === ' ') && psychologist.acceptingNewPatients) {
+                        e.preventDefault();
+                        handlePsychologistSelect(psychologist.id);
+                      }
+                    }}
+                    aria-pressed={isSelected}
+                  >
+                    {/* Avatar */}
+                    <div className={styles.psychologistAvatarWrap} aria-hidden>
+                      <img
+                        src={psychologist.profilePicture || '/default-psychologist.jpg'}
+                        alt=""
                         className={styles.profileImage}
                       />
                     </div>
-                    <div className={styles.psychologistInfo}>
-                      <h3 className={styles.psychologistName}>{psychologist.name}</h3>
-                      <p className={styles.psychologistTitle}>{psychologist.title}</p>
+
+                    {/* Name + title + tags */}
+                    <div className={styles.psychologistMeta}>
+                      <div className={styles.psychologistMetaTop}>
+                        <span className={styles.psychologistName}>{psychologist.name}</span>
+                        {!psychologist.acceptingNewPatients && (
+                          <span className={styles.psychologistTag}>
+                            <ErrorCircleIcon size="sm" aria-hidden /> Unavailable
+                          </span>
+                        )}
+                      </div>
+                      <span className={styles.psychologistTitle}>{psychologist.title}</span>
+                      {psychologist.specializations.length > 0 && (
+                        <div className={styles.psychologistMetaTags}>
+                          {psychologist.specializations.slice(0, 3).map((spec) => (
+                            <span key={spec.id} className={styles.psychologistTag}>{spec.name}</span>
+                          ))}
+                        </div>
+                      )}
+                      <span className={styles.psychologistAvailability}>
+                        <CalendarIcon size="sm" aria-hidden />
+                        {psychologist.nextAvailable}
+                      </span>
+                    </div>
+
+                    {/* Actions */}
+                    <div className={styles.cardActions}>
+                      {psychologist.acceptingNewPatients && (
+                        <Button
+                          type="button"
+                          className={`${styles.selectButton} ${isSelected ? styles.selectButtonSelected : ''}`}
+                          tabIndex={-1}
+                          aria-hidden
+                        >
+                          {isSelected ? (
+                            <><CheckCircleIcon size="sm" aria-hidden /> Selected</>
+                          ) : (
+                            'Select'
+                          )}
+                        </Button>
+                      )}
                     </div>
                   </div>
-                  <div className={styles.psychologistStatus}>
-                    {psychologist.acceptingNewPatients ? (
-                      <Badge variant="success" className={styles.statusBadge}>
-                        <CheckCircleIcon size="sm" aria-hidden />
-                        Accepting new patients
-                      </Badge>
-                    ) : (
-                      <Badge variant="danger" className={styles.statusBadge}>
-                        <ErrorCircleIcon size="sm" aria-hidden />
-                        Not accepting new patients
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                <div className={styles.psychologistDetails}>
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}><ClipboardIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> AHPRA:</span>
-                    <span className={styles.detailValue}>{psychologist.ahpraNumber}</span>
-                  </div>
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}><GraduationIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Qualifications:</span>
-                    <span className={styles.detailValue}>{psychologist.qualifications}</span>
-                  </div>
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}><StarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Experience:</span>
-                    <span className={styles.detailValue}>{psychologist.experience} years</span>
-                  </div>
-                </div>
-
-                <div className={styles.specializationsSection}>
-                  <h4 className={styles.specializationsTitle}><ChartIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Specializations:</h4>
-                  <div className={styles.specializationsList}>
-                    {psychologist.specializations.map((spec) => (
-                      <span key={spec.id} className={styles.specializationItem}>
-                        {spec.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className={styles.psychologistBio}>
-                  <h4 className={styles.bioTitle}><ChatIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> About {psychologist.name.split(' ')[1]}:</h4>
-                  <p className={styles.bioText}>"{psychologist.bio}"</p>
-                </div>
-
-                <div className={styles.availabilitySection}>
-                  <div className={styles.availabilityRow}>
-                    <span className={styles.availabilityLabel}><CalendarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Next available:</span>
-                    <span className={styles.availabilityValue}>{psychologist.nextAvailable}</span>
-                  </div>
-                </div>
-
-                {psychologist.acceptingNewPatients && (
-                  <Button
-                    className={`${styles.selectButton} ${selectedPsychologist === psychologist.id ? styles.selectButtonSelected : ''}`}
-                  >
-                    {selectedPsychologist === psychologist.id ? 'SELECTED' : 'SELECT'}
-                  </Button>
-                )}
-              </div>
-              ))}
+                );
+              })}
             </div>
           )}
             </main>
@@ -459,18 +440,18 @@ export const PsychologistSelectionPage: React.FC = () => {
           >
             <Button
               type="button"
-              className={styles.cancelButton}
+              className={bookingFlow.bookingBackButton}
               onClick={handleBack}
             >
-              Back to Services
+              ← Back to Services
             </Button>
             <Button
               type="button"
-              className={styles.continueButton}
+              className={bookingFlow.bookingNextButton}
               onClick={handleContinue}
               disabled={!selectedPsychologist}
             >
-              Continue to Date & Time
+              Continue to Date & Time →
             </Button>
           </div>
         </div>

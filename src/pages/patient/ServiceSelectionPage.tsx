@@ -6,10 +6,9 @@ import { TelehealthService, type TelehealthConsentResponse } from '../../service
 import { servicesService, type Service as APIService } from '../../services/api/services';
 import {
   InfoIcon,
-  VideoIcon,
-  PhoneIcon,
   SearchIcon,
   OutlineIndividualCareIcon,
+  VideoIcon,
   ChatIcon,
   ClipboardIcon,
   StethoscopeIcon,
@@ -306,32 +305,14 @@ export const ServiceSelectionPage: React.FC = () => {
                     </div>
                     <h3 className={styles.serviceCardTitle}>{service.name}</h3>
                     <p className={styles.serviceCardDescription}>{service.description}</p>
-                    <div className={styles.serviceCardMeta}>
+                    <p className={styles.serviceCardMeta}>
                       {service.duration} min session · Est. out-of-pocket ${service.yourCost.toFixed(2)}
-                    </div>
-                    <div className={styles.servicePricingCompact}>
-                      <div className={styles.servicePricingCompactRow}>
-                        <span>Standard fee</span>
-                        <span>${service.standardFee.toFixed(2)}</span>
-                      </div>
-                      <div className={styles.servicePricingCompactRow}>
-                        <span>Medicare rebate</span>
-                        <span>
-                          {service.medicareApplicable
-                            ? `−$${service.medicareRebate.toFixed(2)}`
-                            : 'N/A'}
-                        </span>
-                      </div>
-                      <div className={styles.servicePricingCompactRow}>
-                        <span>You pay</span>
-                        <span>${service.yourCost.toFixed(2)}</span>
-                      </div>
-                    </div>
+                    </p>
                     <div className={styles.serviceCardCta} aria-hidden={false}>
                       {isSelected ? (
                         <>
-                          <span>Selected</span>
                           <CheckCircleIcon size="sm" aria-hidden />
+                          <span>Selected</span>
                         </>
                       ) : (
                         <>
@@ -346,46 +327,28 @@ export const ServiceSelectionPage: React.FC = () => {
             </div>
           )}
 
-          <div className={`${styles.infoBoxes} ${styles.bookingFlowCanvas}`}>
-            <div className={styles.infoBox}>
-              <div className={styles.infoIcon}><InfoIcon size="lg" /></div>
-              <div className={styles.infoContent}>
-                <h4>Medicare Information</h4>
-                <p>With a valid Mental Health Care Plan from your GP, you can claim Medicare rebates. We can process this for you at the time of payment.</p>
-              </div>
-            </div>
-
-            <div className={styles.infoBox}>
-              <div className={styles.infoIcon}><VideoIcon size="lg" /></div>
-              <div className={styles.infoContent}>
-                <h4>Telehealth Available</h4>
-                <p>All services are available via secure video call from the comfort of your home. Perfect for busy schedules or remote locations.</p>
-              </div>
-            </div>
-
-            <div className={styles.infoBox}>
-              <div className={styles.infoIcon}><PhoneIcon size="lg" /></div>
-              <div className={styles.infoContent}>
-                <h4>Need Help Choosing?</h4>
-                <p>Not sure which service is right for you? Call us on (03) 9xxx-xxxx for a free 10-minute consultation.</p>
-              </div>
-            </div>
+          <div className={`${styles.helpStrip} ${styles.bookingFlowCanvas}`}>
+            <InfoIcon size="sm" aria-hidden />
+            <span>
+              Not sure which service is right for you? Medicare rebates apply with a valid Mental Health Care Plan.{' '}
+              <strong>Call us on (03) 9xxx-xxxx</strong> for a free 10-minute consultation.
+            </span>
           </div>
           </div>
 
           <div
             className={`${styles.formActions} ${styles.formActionsSticky} ${styles.bookingFlowActionsRow}`}
           >
-            <Button type="button" variant="outline" className={styles.cancelButton} onClick={handleBack}>
+            <Button type="button" className={styles.bookingBackButton} onClick={handleBack}>
               ← Go back
             </Button>
             <Button
               type="button"
-              className={styles.continueButton}
+              className={styles.bookingNextButton}
               onClick={handleContinue}
               disabled={!selectedService}
             >
-              Next step
+              Next step →
             </Button>
           </div>
         </div>

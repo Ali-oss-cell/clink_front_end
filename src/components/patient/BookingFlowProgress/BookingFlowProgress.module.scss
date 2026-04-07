@@ -22,7 +22,7 @@
 
 .track {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
   max-width: 64rem;
   margin: 0 auto;
@@ -30,30 +30,23 @@
 
 .segment {
   flex: 1;
-  height: 6px;
-  border-radius: 3px;
-  transition:
-    background 0.25s ease,
-    transform 0.2s ease;
+  height: 4px;
+  border-radius: 2px;
+  transition: background 0.25s ease;
 }
 
 .segmentActive {
   background: linear-gradient(135deg, $patient-primary 0%, $patient-light 100%);
-  box-shadow: 0 2px 8px rgba($patient-primary, 0.28);
 }
 
 .segmentInactive {
-  background: $background-white;
-  opacity: 0.95;
-  box-shadow: inset 0 0 0 1px rgba($border-medium, 0.35);
+  background: $background-gray;
 }
 
 :global(.patientShell) .segmentActive {
   background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--cs-primary) 32%, transparent);
 }
 
 :global(.patientShell) .segmentInactive {
-  background: var(--cs-surface-lowest);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cs-primary) 12%, transparent);
+  background: var(--cs-surface-high, #e6e8e8);
 }

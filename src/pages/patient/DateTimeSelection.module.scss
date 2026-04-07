@@ -257,8 +257,12 @@
   flex-shrink: 0;
   margin-bottom: 0.2rem;
   animation: fadeInUp 0.4s ease-out;
-  @include glass-card(patient, $glass-blur-sm, true);
-  border-radius: var(--cs-radius-2xl, 1rem);
+  // Flat header — no glass/blur (matches reference)
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
 }
 
 .pageHeaderRow {
@@ -281,7 +285,7 @@
 }
 
 .backButton {
-  padding: 0.4rem 0.7rem;
+  padding: 0.5rem 0.9rem;
   font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.2;
@@ -289,17 +293,28 @@
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  border: 1px solid var(--cs-outline, rgba($border-medium, 0.6));
+  background: transparent;
+  color: var(--cs-primary, $patient-primary);
+  transition: background 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--cs-surface-low, $background-light);
+  }
 }
 
 .pageTitle {
-  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  font-size: clamp(1.35rem, 3vw, 2rem);
   font-weight: 700;
   font-family: $font-family-base;
   margin: 0;
   text-align: center;
-  max-width: min(22rem, 88vw);
+  max-width: min(24rem, 88vw);
   justify-self: center;
   animation: fadeInUp 0.45s ease-out 0.05s both;
+  color: var(--cs-on-surface, $text-dark);
+  letter-spacing: -0.025em;
 }
 
 .summaryBar {
@@ -613,20 +628,32 @@
 }
 
 .continueButton {
-  padding: 0.65rem 1.25rem;
+  padding: 0.75rem 1.75rem;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.01em;
   border-radius: var(--cs-radius-xl, 0.75rem);
+  border: none;
+  background: linear-gradient(135deg, $patient-primary 0%, $patient-dark 100%);
+  color: white;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.3rem;
   min-height: $min-touch-target;
+  box-shadow: 0 4px 14px rgba(0, 52, 65, 0.2);
+  transition: filter 0.2s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    filter: none;
+    transform: none;
   }
 }
 
