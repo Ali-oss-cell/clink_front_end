@@ -456,15 +456,17 @@ export const PsychologistSchedulePage: React.FC = () => {
               ) : (
                 filteredAppointments.map(appointment => (
                   <div key={appointment.id} className={styles.appointmentCard}>
-                    {/* Status Badge - Top Right */}
-                    <div className={styles.cardStatusBadge}>
-                      <span className={`${styles.statusBadge} ${getStatusColor(appointment.status)}`}>
-                        {getStatusIcon(appointment.status)} {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-                      </span>
-                    </div>
-
-                    {/* Main Content */}
                     <div className={styles.cardContent}>
+                      <div className={styles.cardStatusRow}>
+                        <div className={styles.cardStatusBadge}>
+                          <span className={`${styles.statusBadge} ${getStatusColor(appointment.status)}`}>
+                            {getStatusIcon(appointment.status)}{' '}
+                            {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className={styles.cardMainGrid}>
                       {/* Patient Info Section */}
                       <div className={styles.patientSection}>
                         <div className={styles.patientAvatar}>
@@ -553,6 +555,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                           <p className={styles.notesText}>{appointment.notes}</p>
                         </div>
                       )}
+                      </div>
                     </div>
 
                     {/* Session Timer */}

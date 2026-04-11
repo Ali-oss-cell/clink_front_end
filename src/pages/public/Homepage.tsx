@@ -50,9 +50,9 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    title: 'Psychology that meets you where you are',
+    title: 'For adults across Australia who want steady, evidence-based support',
     subtitle:
-      'AHPRA-registered clinicians across Australia—telehealth or in person. Evidence-based support when you are ready.',
+      'Real AHPRA-registered psychologists by secure video or in person—structured care when you are ready, not a chatbot queue.',
     primaryAction: 'Book Your Appointment',
     primaryLink: '/register',
     secondaryAction: 'Get matched',
@@ -81,18 +81,18 @@ const slides: Slide[] = [
   },
   {
     id: 4,
-    title: 'Medicare support when you are eligible',
+    title: 'Clear fees before you commit',
     subtitle:
-      'We are registered providers. With a GP mental health care plan, you may receive rebates—ask us if you are unsure.',
-    primaryAction: 'Check Eligibility',
+      'You always see session costs up front. With a GP Mental Health Treatment Plan, Medicare may rebate part of the fee—we help you understand what applies.',
+    primaryAction: 'How rebates work',
     primaryLink: '/medicare-rebates',
-    secondaryAction: 'Learn About Medicare',
-    secondaryLink: '/medicare-rebates',
+    secondaryAction: 'View services',
+    secondaryLink: '/services',
     backgroundImage: heroImage4
   }
 ];
 
-const HERO_TRUST_CHIPS = ['AHPRA-registered', 'Medicare eligible', 'Private & secure'];
+const HERO_TRUST_CHIPS = ['AHPRA-registered', 'Evidence-based care', 'Private & secure'];
 
 export const Homepage: React.FC = () => {
   const navigate = useNavigate();
@@ -400,28 +400,27 @@ export const Homepage: React.FC = () => {
           <div className={styles.benefitsStripInner}>
             <div className={styles.benefitsStripContent} data-home-stagger-item>
               <p className="tp-brand-kicker">Why people choose us</p>
-              <h2 className={styles.benefitsStripTitle}>Practical, trusted care from your first click</h2>
+              <h2 className={styles.benefitsStripTitle}>Care that respects your time and your nervous system</h2>
               <p className={styles.benefitsStripLead}>
-                We design each step to reduce friction and increase confidence, from transparent bookings to clear
-                care pathways. You can start quickly while still knowing exactly how privacy, eligibility, and service
-                options work.
+                Booking is straightforward on purpose: fewer dead ends, plain-language explanations, and clinicians who
+                show up prepared. You should always know what happens next.
               </p>
               <ul className={styles.benefitsStripList}>
                 <li data-home-stagger-item>
                   <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
-                  <span>Flexible appointments, including broader time windows where available</span>
+                  <span>AHPRA-registered psychologists using evidence-based approaches</span>
                 </li>
                 <li data-home-stagger-item>
                   <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
-                  <span>Telehealth across Australia and in-person care where offered</span>
+                  <span>Telehealth across Australia and in-person care where we offer it</span>
                 </li>
                 <li data-home-stagger-item>
                   <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
-                  <span>AHPRA-registered psychologists using evidence-based methods</span>
+                  <span>Flexible appointments and broader windows where schedules allow</span>
                 </li>
                 <li data-home-stagger-item>
                   <OutlineCircleCheckIcon size="md" className={styles.benefitsStripIcon} aria-hidden />
-                  <span>Clear Medicare rebate guidance for eligible clients and plans</span>
+                  <span>Medicare rebate guidance when you have an eligible care plan—fees shown clearly either way</span>
                 </li>
               </ul>
             </div>
@@ -434,6 +433,32 @@ export const Homepage: React.FC = () => {
                 height={900}
                 loading="lazy"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.humanVoice} aria-label="From our clinicians" data-home-reveal>
+        <div className="container">
+          <div className={styles.humanVoiceInner}>
+            <div className={styles.humanVoiceMedia} data-home-stagger-item>
+              <img
+                src={homeTrustConnection}
+                alt="Clinician and client seated in a calm therapy space, talking together."
+                className={styles.humanVoiceImage}
+                width={640}
+                height={480}
+                loading="lazy"
+              />
+            </div>
+            <div className={styles.humanVoiceContent} data-home-stagger-item>
+              <p className="tp-brand-kicker">What to expect</p>
+              <blockquote className={styles.humanVoiceQuote}>
+                Most people feel unsure in the first session—that is normal. We start gently: how you have been sleeping,
+                what brought you here, and what would feel like a small win. There is no performance needed; we are
+                building trust, not testing you.
+              </blockquote>
+              <p className={styles.humanVoiceAttribution}>— Typical first session, explained in plain language</p>
             </div>
           </div>
         </div>
@@ -528,26 +553,26 @@ export const Homepage: React.FC = () => {
               Why Choose Tailored Psychology?
             </h2>
             <p className="tp-brand-lead">
-              AHPRA-registered psychologists delivering evidence-based care with clear communication, practical planning,
-              and treatment tailored to your goals.
+              Registered clinicians, clear communication, and treatment plans that follow what research says works—not
+              generic advice.
             </p>
           </div>
           <div className={styles.featureGrid}>
             <div className={styles.featureCard} data-home-stagger-item>
-              <h3>AHPRA Registered</h3>
-              <p>All our psychologists are fully registered with the Australian Health Practitioner Regulation Agency.</p>
-            </div>
-            <div className={styles.featureCard} data-home-stagger-item>
-              <h3>Medicare Rebates</h3>
-              <p>We're approved Medicare providers, making psychology services more affordable for you.</p>
+              <h3>Evidence-Based Care</h3>
+              <p>We use proven therapeutic approaches tailored to your situation and goals—not one-size-fits-all tips.</p>
             </div>
             <div className={styles.featureCard} data-home-stagger-item>
               <h3>Telehealth Available</h3>
-              <p>Access professional psychology services from the comfort of your home via secure video sessions.</p>
+              <p>Access professional psychology from home with the same privacy and clinical standards as in clinic.</p>
             </div>
             <div className={styles.featureCard} data-home-stagger-item>
-              <h3>Evidence-Based Care</h3>
-              <p>We use proven therapeutic approaches tailored to your individual needs and goals.</p>
+              <h3>AHPRA Registered</h3>
+              <p>Every psychologist is fully registered with the Australian Health Practitioner Regulation Agency.</p>
+            </div>
+            <div className={styles.featureCard} data-home-stagger-item>
+              <h3>Medicare Rebates</h3>
+              <p>Registered Medicare providers—when you have an eligible care plan, rebates can make ongoing care easier.</p>
             </div>
           </div>
         </div>

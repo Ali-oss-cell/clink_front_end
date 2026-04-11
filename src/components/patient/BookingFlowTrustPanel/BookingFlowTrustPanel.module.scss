@@ -1,0 +1,50 @@
+@use '../../../assets/styles/variables' as *;
+
+.panel {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  border: 1px solid color-mix(in srgb, var(--cs-primary, #{$btn-admin-primary}) 14%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--cs-secondary-container, #d8dfd3) 42%, var(--cs-surface-lowest, #fff) 58%) 0%,
+    color-mix(in srgb, var(--cs-surface-low, #f2ece4) 88%, var(--cs-primary, #{$btn-admin-primary}) 12%) 100%
+  );
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--cs-on-surface, #1e1f1e) 5%, transparent);
+}
+
+.panelWide {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.title {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cs-on-surface-variant, #{$text-light});
+}
+
+.body {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--cs-on-surface, #{$text-dark});
+}
+
+.list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--cs-on-surface-variant, #{$text-light});
+
+  li {
+    margin-bottom: 0.25rem;
+  }
+}

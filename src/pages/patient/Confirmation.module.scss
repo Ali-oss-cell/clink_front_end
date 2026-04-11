@@ -79,6 +79,60 @@
   margin: 0 auto;
 }
 
+.postPaymentWarmth {
+  max-width: 800px;
+  margin: 0 auto 1.75rem;
+}
+
+.postPaymentWarmthInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.15rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid var(--cs-glass-border, rgba(157, 170, 150, 0.35));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--cs-secondary-container, #{$background-light}) 55%, #fff 45%) 0%,
+    color-mix(in srgb, var(--cs-primary, #{$primary-color}) 10%, #{$background-light} 90%) 100%
+  );
+  box-shadow: var(--cs-glass-shadow, 0 4px 24px rgba(54, 69, 57, 0.12));
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.postPaymentWarmthMedia img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+  display: block;
+}
+
+.postPaymentWarmthTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: $text-dark;
+  line-height: 1.25;
+}
+
+.postPaymentWarmthBody {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: $text-light;
+}
+
+:global(.patientShell) .postPaymentWarmthInner {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 .bookingDetails {
   margin-bottom: $spacing-xl;
 }

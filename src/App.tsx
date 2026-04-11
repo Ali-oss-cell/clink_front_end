@@ -5,6 +5,7 @@ import { store } from './store';
 import { AppRoutes } from './routes/AppRoutes';
 import { authService } from './services/api/auth';
 import type { User } from './types/simple-auth';
+import { initThirdPartyAnalytics } from './utils/analyticsBoot';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -75,6 +76,10 @@ function App() {
 
     window.addEventListener('auth:logout', handleAuthLogoutEvent);
     return () => window.removeEventListener('auth:logout', handleAuthLogoutEvent);
+  }, []);
+
+  useEffect(() => {
+    initThirdPartyAnalytics();
   }, []);
 
   // Show loading spinner while checking auth

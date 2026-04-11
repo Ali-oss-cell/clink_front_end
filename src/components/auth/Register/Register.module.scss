@@ -37,8 +37,20 @@
     color: $text-light;
     font-size: $font-size-sm;
     line-height: 1.55;
-    margin: 0 0 $spacing-lg;
+    margin: 0 0 $spacing-sm;
     max-width: 28rem;
+  }
+
+  .trustNote {
+    margin: 0 0 $spacing-lg;
+    padding: 0.65rem 0.75rem;
+    max-width: 28rem;
+    font-size: $font-size-xs;
+    line-height: 1.5;
+    color: $text-muted;
+    border-radius: 10px;
+    border: 1px solid rgba($border-medium, 0.55);
+    background: color-mix(in srgb, $patient-primary 6%, $background-white 94%);
   }
 }
 

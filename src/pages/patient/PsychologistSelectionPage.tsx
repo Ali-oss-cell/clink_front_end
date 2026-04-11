@@ -22,6 +22,8 @@ import {
 import styles from './PsychologistSelection.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
+import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
+import { trackBookingFunnelStep } from '../../utils/bookingFunnelAnalytics';
 
 interface Psychologist {
   id: number;
@@ -66,6 +68,12 @@ export const PsychologistSelectionPage: React.FC = () => {
 
   // Get user data from auth service
   const user = authService.getStoredUser();
+
+  useEffect(() => {
+    if (selectedService) {
+      trackBookingFunnelStep('psychologist');
+    }
+  }, [selectedService]);
 
   // Apply one-time filters from public "Get matched" wizard
   useEffect(() => {
@@ -334,9 +342,12 @@ export const PsychologistSelectionPage: React.FC = () => {
                 <p className={styles.stepKicker}>Step 2 of 5</p>
                 <h1 className={styles.editorialTitle}>Choose your psychologist</h1>
                 <p className={styles.editorialLead}>
-                  All our psychologists are AHPRA registered and specialize in various areas.
+                  Read a short bio, check specialties, and choose someone who feels like a fit—every profile is an
+                  AHPRA-registered clinician.
                 </p>
               </header>
+
+              <BookingFlowTrustPanel variant="psychologist" wide className={styles.bookingTrustPanel} />
 
           {loading ? (
             <div className={styles.loadingState}>

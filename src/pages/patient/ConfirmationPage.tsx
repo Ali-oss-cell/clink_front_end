@@ -22,6 +22,8 @@ import {
 import { Button } from '../../components/ui/button';
 import styles from './Confirmation.module.scss';
 import bookingFlow from './PatientPages.module.scss';
+import { trackBookingFunnelStep } from '../../utils/bookingFunnelAnalytics';
+import homeGuidedSupport from '../../assets/imges/optimized/home-guided-support.jpg';
 
 export const ConfirmationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -56,6 +58,12 @@ export const ConfirmationPage: React.FC = () => {
     };
     load();
   }, [appointmentId]);
+
+  useEffect(() => {
+    if (confirmation) {
+      trackBookingFunnelStep('confirmation');
+    }
+  }, [confirmation]);
 
   const handleAddToCalendar = () => {
     alert('Calendar invite support will be available from backend notifications.');
@@ -142,6 +150,29 @@ export const ConfirmationPage: React.FC = () => {
               Your appointment has been successfully booked and paid for. You will receive confirmation via email and WhatsApp.
             </p>
           </div>
+
+          <section className={styles.postPaymentWarmth} aria-label="What to expect before your first session">
+            <div className={styles.postPaymentWarmthInner}>
+              <div className={styles.postPaymentWarmthMedia}>
+                <img
+                  src={homeGuidedSupport}
+                  alt=""
+                  width={560}
+                  height={420}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div className={styles.postPaymentWarmthCopy}>
+                <h2 className={styles.postPaymentWarmthTitle}>What the first session usually feels like</h2>
+                <p className={styles.postPaymentWarmthBody}>
+                  Most people are a little nervous—and that is normal. Your psychologist will explain how sessions work,
+                  answer questions about privacy and goals, and move at a pace that feels safe. You do not need to have
+                  everything figured out before you arrive.
+                </p>
+              </div>
+            </div>
+          </section>
 
           <div className={styles.bookingDetails}>
             <div className={styles.detailsCard}>

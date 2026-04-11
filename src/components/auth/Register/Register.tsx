@@ -190,6 +190,10 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         <div className={styles.formHeader}>
           <h2 className={styles.title}>Create your account</h2>
           <p className={styles.subtitle}>Join Tailored Psychology as a patient — it only takes a minute.</p>
+          <p className={styles.trustNote}>
+            Care is delivered only by AHPRA-registered psychologists. Your details are used to book sessions and meet
+            clinical safety requirements—never sold to third parties.
+          </p>
 
           <div className={styles.registrationStepper} aria-label="Registration progress">
             <div className={styles.stepperTrack}>

@@ -132,10 +132,11 @@ export const ServicesPage: React.FC = () => {
       <section className={styles.hero}>
         <div className="container">
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Our Services</h1>
+            <h1 className={styles.heroTitle}>Psychology services built around you</h1>
             <p className={styles.heroSubtitle}>
-              Comprehensive psychology services tailored to your needs. 
-              Evidence-based treatments delivered by AHPRA-registered psychologists.
+              For individuals and couples who want structured, evidence-based support—in clinic or online from anywhere
+              in Australia. Each card shows session fees up front; Medicare may lower your out-of-pocket if you are
+              eligible.
             </p>
           </div>
         </div>
