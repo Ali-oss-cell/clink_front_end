@@ -17,6 +17,8 @@ import styles from './Register.module.scss';
 
 interface RegisterProps {
   onRegister?: (userData: PatientRegistrationData) => Promise<void>;
+  /** Called after successful API registration so the app shell picks up tokens/user from storage. */
+  onRegisterSuccess?: () => void;
 }
 
 interface PatientRegistrationData {
@@ -35,7 +37,7 @@ interface PatientRegistrationData {
   terms_accepted: boolean;
 }
 
-export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
+export const Register: React.FC<RegisterProps> = ({ onRegister, onRegisterSuccess }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -131,32 +133,36 @@ export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
         await onRegister(payload);
       } else {
         const response = await authService.registerPatient(payload);
-        setSuccess(response.message);
-        
-        // Store tokens and user data (if provided)
+        setSuccess(
+          response.tokens && response.user
+            ? `${response.message} Redirecting to your dashboard…`
+            : response.message
+        );
+
+        // Tokens and user are persisted by registerPatient()
         if (response.tokens) {
-          localStorage.setItem('access_token', response.tokens.access);
-          localStorage.setItem('refresh_token', response.tokens.refresh);
-          
-          // After successful registration, accept Privacy Policy
           try {
             await acceptPrivacyPolicy();
             console.log('[Register] Privacy Policy accepted successfully');
-          } catch (privacyError: any) {
-            // Log error but don't block registration
-            // User will be prompted to accept on next login or when accessing protected routes
-            console.warn('[Register] Failed to accept Privacy Policy after registration:', privacyError.message);
-            console.warn('[Register] User will be prompted to accept Privacy Policy on next login');
+          } catch (privacyError: unknown) {
+            const msg = privacyError instanceof Error ? privacyError.message : String(privacyError);
+            console.warn('[Register] Failed to accept Privacy Policy after registration:', msg);
+            console.warn('[Register] User will be prompted to accept Privacy Policy when needed');
           }
         }
-        if (response.user) {
-          localStorage.setItem('user', JSON.stringify(response.user));
+
+        const loggedIn = !!(response.tokens && response.user);
+        if (loggedIn) {
+          onRegisterSuccess?.();
         }
-        
-        // Redirect to login after successful registration
+
         setTimeout(() => {
-          navigate('/login');
-        }, 2000);
+          if (loggedIn) {
+            navigate('/patient/dashboard');
+          } else {
+            navigate('/login');
+          }
+        }, 1500);
       }
     } catch (err: any) {
       console.error('[Register] Registration error:', err);

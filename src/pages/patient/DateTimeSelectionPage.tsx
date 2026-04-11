@@ -12,7 +12,6 @@ import styles from './DateTimeSelection.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
-import { trackBookingFunnelStep } from '../../utils/bookingFunnelAnalytics';
 
 /** Title-case each word for headings and summaries (e.g. API display names). */
 function formatPersonDisplayName(name: string): string {
@@ -41,10 +40,6 @@ export const DateTimeSelectionPage: React.FC = () => {
   
   // Get user from auth service
   const user = authService.getStoredUser();
-
-  useEffect(() => {
-    trackBookingFunnelStep('datetime');
-  }, []);
 
   // ✅ Convert service slug to ID on page load - dynamically fetch from API
   useEffect(() => {

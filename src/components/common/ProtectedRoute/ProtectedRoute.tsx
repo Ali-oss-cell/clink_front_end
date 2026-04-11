@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import type { User } from '../../../types/simple-auth';
 import { getPrivacyPolicyStatus, type PrivacyPolicyStatus } from '../../../services/api/privacy';
 import { PrivacyPolicyModal } from '../PrivacyPolicyModal/PrivacyPolicyModal';
+import { getDashboardPathForRole } from '../../../utils/authRedirects';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -115,19 +116,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // If specific roles are required and user doesn't have the right role
   if (allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
-    // Redirect based on user role to their appropriate dashboard
-    switch (user.role) {
-      case 'patient':
-        return <Navigate to="/patient/dashboard" replace />;
-      case 'psychologist':
-        return <Navigate to="/psychologist/dashboard" replace />;
-      case 'practice_manager':
-        return <Navigate to="/manager/dashboard" replace />;
-      case 'admin':
-        return <Navigate to="/admin/dashboard" replace />;
-      default:
-        return <Navigate to="/" replace />;
-    }
+    return <Navigate to={getDashboardPathForRole(user.role)} replace />;
   }
 
   // If user is authenticated but trying to access auth pages, redirect to dashboard
@@ -141,18 +130,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       location.pathname === '/register' ||
       location.pathname === '/forgot-password')
   ) {
-    switch (user.role) {
-      case 'patient':
-        return <Navigate to="/patient/dashboard" replace />;
-      case 'psychologist':
-        return <Navigate to="/psychologist/dashboard" replace />;
-      case 'practice_manager':
-        return <Navigate to="/manager/dashboard" replace />;
-      case 'admin':
-        return <Navigate to="/admin/dashboard" replace />;
-      default:
-        return <Navigate to="/" replace />;
-    }
+    return <Navigate to={getDashboardPathForRole(user.role)} replace />;
   }
 
   return <>{children}</>;

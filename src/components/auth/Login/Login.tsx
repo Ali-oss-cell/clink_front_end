@@ -6,25 +6,9 @@ import { authService } from '../../../services/api/auth';
 import { getPrivacyPolicyStatus } from '../../../services/api/privacy';
 import { WarningIcon, CheckCircleIcon } from '../../../utils/icons';
 import { Button } from '../../../components/ui/button';
-import { Checkbox } from '../../../components/ui/checkbox';
 import { Input } from '../../../components/ui/input';
+import { getDashboardPathForRole } from '../../../utils/authRedirects';
 import styles from './Login.module.scss';
-
-// Helper function to get redirect path based on user role
-const getRedirectPath = (role: string): string => {
-  switch (role) {
-    case 'patient':
-      return '/patient/dashboard';
-    case 'psychologist':
-      return '/psychologist/dashboard';
-    case 'practice_manager':
-      return '/manager/dashboard';
-    case 'admin':
-      return '/admin/dashboard';
-    default:
-      return '/';
-  }
-};
 
 interface LoginProps {
   onLogin?: (credentials: LoginRequest) => Promise<void>;
@@ -36,8 +20,6 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [rememberMe, setRememberMe] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -96,8 +78,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
         
         // Small delay to show success message
         setTimeout(() => {
-          const redirectPath = getRedirectPath(user.role);
-          navigate(redirectPath);
+          navigate(getDashboardPathForRole(user.role));
         }, 1000);
       }
     } catch (err: any) {
@@ -123,7 +104,9 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.formHeader}>
           <h2 className={styles.title}>Welcome back</h2>
-          <p className={styles.subtitle}>Sign in to your patient portal to manage appointments and care.</p>
+          <p className={styles.subtitle}>
+            Sign in with the email your clinic uses for you—patients, clinicians, and staff all use this page.
+          </p>
         </div>
 
         {error && (
@@ -192,14 +175,6 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
         </div>
 
         <div className={styles.formOptions}>
-          <label className={styles.checkboxLabel}>
-            <Checkbox
-              className={styles.checkbox}
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-            <span className={styles.checkboxText}>Remember me</span>
-          </label>
           <Link to="/forgot-password" className={styles.forgotLink}>
             Forgot password?
           </Link>

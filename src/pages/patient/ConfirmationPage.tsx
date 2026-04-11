@@ -22,7 +22,6 @@ import {
 import { Button } from '../../components/ui/button';
 import styles from './Confirmation.module.scss';
 import bookingFlow from './PatientPages.module.scss';
-import { trackBookingFunnelStep } from '../../utils/bookingFunnelAnalytics';
 import homeGuidedSupport from '../../assets/imges/optimized/home-guided-support.jpg';
 
 export const ConfirmationPage: React.FC = () => {
@@ -58,12 +57,6 @@ export const ConfirmationPage: React.FC = () => {
     };
     load();
   }, [appointmentId]);
-
-  useEffect(() => {
-    if (confirmation) {
-      trackBookingFunnelStep('confirmation');
-    }
-  }, [confirmation]);
 
   const handleAddToCalendar = () => {
     alert('Calendar invite support will be available from backend notifications.');

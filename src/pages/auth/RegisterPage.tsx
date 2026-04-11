@@ -3,7 +3,11 @@ import { Register } from '../../components/auth/Register/Register';
 import registerImage from '../../assets/imges/optimized/auth-wellness.webp';
 import styles from './AuthPages.module.scss';
 
-export const RegisterPage: React.FC = () => {
+interface RegisterPageProps {
+  onRegisterSuccess?: () => void;
+}
+
+export const RegisterPage: React.FC<RegisterPageProps> = ({ onRegisterSuccess }) => {
   return (
     <Layout className={styles.authLayout} showFooter={false} overlayPublicHeader>
       <div className={styles.registerPageContainer}>
@@ -19,7 +23,7 @@ export const RegisterPage: React.FC = () => {
         </div>
         <div className={styles.registerFormSection}>
           <div className={styles.registrationForm}>
-            <Register />
+            <Register onRegisterSuccess={onRegisterSuccess} />
           </div>
         </div>
       </div>

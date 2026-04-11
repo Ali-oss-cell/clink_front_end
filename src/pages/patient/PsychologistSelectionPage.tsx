@@ -23,7 +23,6 @@ import styles from './PsychologistSelection.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
-import { trackBookingFunnelStep } from '../../utils/bookingFunnelAnalytics';
 
 interface Psychologist {
   id: number;
@@ -68,12 +67,6 @@ export const PsychologistSelectionPage: React.FC = () => {
 
   // Get user data from auth service
   const user = authService.getStoredUser();
-
-  useEffect(() => {
-    if (selectedService) {
-      trackBookingFunnelStep('psychologist');
-    }
-  }, [selectedService]);
 
   // Apply one-time filters from public "Get matched" wizard
   useEffect(() => {

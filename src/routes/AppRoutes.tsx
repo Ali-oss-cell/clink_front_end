@@ -75,10 +75,10 @@ interface AppRoutesProps {
   onAuthClear?: () => void;
 }
 
-export const AppRoutes: React.FC<AppRoutesProps> = ({ 
-  isAuthenticated = false, 
+export const AppRoutes: React.FC<AppRoutesProps> = ({
+  isAuthenticated = false,
   user = null,
-  onAuthUpdate
+  onAuthUpdate,
 }) => {
   return (
     <Routes>
@@ -119,7 +119,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           isAuthenticated={isAuthenticated} 
           user={user}
         >
-          <RegisterPage />
+          <RegisterPage onRegisterSuccess={() => onAuthUpdate?.()} />
         </ProtectedRoute>
       } />
 

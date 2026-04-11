@@ -19,7 +19,6 @@ import {
 import { Button } from '../../components/ui/button';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
-import { trackBookingFunnelStep } from '../../utils/bookingFunnelAnalytics';
 import styles from './PatientPages.module.scss';
 
 const SERVICE_BOOKING_ICONS = [
@@ -59,10 +58,6 @@ export const ServiceSelectionPage: React.FC = () => {
 
   // Get user data from auth service
   const user = authService.getStoredUser();
-
-  useEffect(() => {
-    trackBookingFunnelStep('service');
-  }, []);
 
   // ✅ Fetch services from backend API
   useEffect(() => {

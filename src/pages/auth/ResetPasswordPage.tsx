@@ -5,7 +5,7 @@ import styles from './AuthPages.module.scss';
 
 export const ResetPasswordPage: React.FC = () => {
   return (
-    <Layout className={styles.authLayout} showFooter={false}>
+    <Layout className={styles.authLayout} showFooter={false} overlayPublicHeader>
       <div className={styles.loginPageContainer}>
         <div
           className={styles.loginImageSection}
