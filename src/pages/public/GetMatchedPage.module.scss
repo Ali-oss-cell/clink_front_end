@@ -8,7 +8,11 @@
 .hero {
   background: $hero-bg;
   color: $text-white;
-  padding: clamp(2.5rem, 5vw, 3.75rem) 0 clamp(2.75rem, 5vw, 4rem);
+  margin-top: calc(-1 * (env(safe-area-inset-top, 0px) + 5.75rem));
+  padding-top: calc(clamp(2.5rem, 5vw, 3.75rem) + env(safe-area-inset-top, 0px) + 5.75rem);
+  padding-bottom: clamp(2.75rem, 5vw, 4rem);
+  padding-left: 0;
+  padding-right: 0;
   text-align: center;
 
   .heroInner {

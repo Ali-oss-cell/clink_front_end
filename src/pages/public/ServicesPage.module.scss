@@ -11,7 +11,7 @@
 .hero {
   background: $hero-bg;
   color: $text-white;
-  padding: 4rem 0;
+  @include public-fixed-header-hero-bleed(4rem, 4rem);
   text-align: center;
 
   .heroContent {

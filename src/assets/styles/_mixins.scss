@@ -44,6 +44,13 @@
   flex-direction: column;
 }
 
+/// Must stay in sync with `Layout.module.scss` `.main { padding-top: ... }`.
+/// Cancels that offset so the first sage hero meets the fixed header with no white band.
+@mixin public-fixed-header-hero-bleed($padding-top-extra: 4rem, $padding-bottom: 4rem) {
+  margin-top: calc(-1 * (env(safe-area-inset-top, 0px) + 5.75rem));
+  padding: calc(#{$padding-top-extra} + env(safe-area-inset-top, 0px) + 5.75rem) 0 #{$padding-bottom};
+}
+
 // Button styles
 @mixin button-base {
   display: inline-flex;

@@ -6,6 +6,7 @@ import { authService } from '../../services/api/auth';
 import { appointmentsService } from '../../services/api/appointments';
 import type { BookingSummaryResponse } from '../../services/api/appointments';
 import { extractApiErrorMessage } from '../../utils/apiError';
+import { formatSessionDurationMinutes } from '../../utils/formatSessionDuration';
 import { WarningIcon, CalendarIcon, BuildingIcon, VideoIcon } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import { Label } from '../../components/ui/label';
@@ -191,7 +192,9 @@ export const AppointmentDetailsPage: React.FC = () => {
                 </div>
                 <div className={styles.summaryItem}>
                   <span className={styles.summaryLabel}>Duration:</span>
-                  <span className={styles.summaryValue}>{bookingData.service.duration_minutes} minutes</span>
+                  <span className={styles.summaryValue}>
+                    {formatSessionDurationMinutes(bookingData.service.duration_minutes)}
+                  </span>
                 </div>
                 <div className={styles.summaryItem}>
                   <span className={styles.summaryLabel}>Date:</span>

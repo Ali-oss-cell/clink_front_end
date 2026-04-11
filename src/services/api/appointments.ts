@@ -43,6 +43,10 @@ export interface AvailableSlotsResponse {
   /** False when clinician has no weekly hours (cannot generate slots). */
   schedule_configured?: boolean;
   schedule_message_code?: string | null;
+  /** Server booking window; slots never extend beyond this many days from local today. */
+  booking_policy?: {
+    max_advance_booking_days: number;
+  };
 }
 
 export interface CalendarViewResponse {

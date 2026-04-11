@@ -24,6 +24,7 @@ import {
 import styles from './PsychologistPages.module.scss';
 import shell from '../patient/PatientShellChrome.module.scss';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
+import { formatSessionDurationMinutes } from '../../utils/formatSessionDuration';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
@@ -511,7 +512,9 @@ export const PsychologistSchedulePage: React.FC = () => {
                           <span className={styles.detailIcon}><ClockIcon size="sm" /></span>
                           <div className={styles.detailContent}>
                             <span className={styles.detailLabel}>Duration</span>
-                            <span className={styles.detailValue}>{appointment.duration_minutes} min</span>
+                            <span className={styles.detailValue}>
+                              {formatSessionDurationMinutes(appointment.duration_minutes)}
+                            </span>
                           </div>
                         </div>
                         

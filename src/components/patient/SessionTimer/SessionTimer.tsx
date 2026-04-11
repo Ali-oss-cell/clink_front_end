@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { PatientAppointment } from '../../../services/api/appointments';
+import { formatCountdownToStart, formatSessionDurationMinutes } from '../../../utils/formatSessionDuration';
 import { WarningIcon } from '../../../utils/icons';
 import styles from './SessionTimer.module.scss';
 
@@ -20,20 +21,7 @@ export const SessionTimer: React.FC<SessionTimerProps> = ({ appointment, onJoinS
     return () => clearInterval(interval);
   }, []);
 
-  // Format time display
-  const formatTime = (seconds: number): string => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}m ${secs}s`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${secs}s`;
-    } else {
-      return `${secs}s`;
-    }
-  };
+  const formatTime = (seconds: number): string => formatCountdownToStart(seconds);
 
   const formatTimeCompact = (seconds: number): string => {
     const hours = Math.floor(seconds / 3600);
@@ -49,8 +37,9 @@ export const SessionTimer: React.FC<SessionTimerProps> = ({ appointment, onJoinS
 
   // Calculate time values
   const calculateTimeUntilStart = (): number => {
-    if (appointment.session_start_time) {
-      const startTime = new Date(appointment.session_start_time).getTime();
+    const startIso = appointment.session_start_time || appointment.appointment_date;
+    if (startIso) {
+      const startTime = new Date(startIso).getTime();
       return Math.max(0, Math.floor((startTime - currentTime) / 1000));
     }
     if (appointment.time_until_start_seconds !== null && appointment.time_until_start_seconds !== undefined) {
@@ -150,7 +139,7 @@ export const SessionTimer: React.FC<SessionTimerProps> = ({ appointment, onJoinS
           <div className={`${styles.timerContainer} ${styles.timerEnded}`}>
             <p className={styles.timerLabel}>Session ended</p>
             <p className={styles.timerSubtitle}>
-              Duration: {appointment.duration_minutes} minutes
+              Duration: {formatSessionDurationMinutes(appointment.duration_minutes)}
             </p>
           </div>
         );
@@ -164,8 +153,13 @@ export const SessionTimer: React.FC<SessionTimerProps> = ({ appointment, onJoinS
     }
   };
 
-  // Don't render if no timer data available
-  if (!appointment.session_start_time && appointment.time_until_start_seconds === null && appointment.time_remaining_seconds === null) {
+  // Don't render if we cannot infer any countdown / remaining state
+  if (
+    !appointment.session_start_time &&
+    !appointment.appointment_date &&
+    appointment.time_until_start_seconds === null &&
+    appointment.time_remaining_seconds === null
+  ) {
     return null;
   }
 

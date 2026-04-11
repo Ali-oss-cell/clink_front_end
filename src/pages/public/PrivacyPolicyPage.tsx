@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import styles from './PublicPages.module.scss';
 
@@ -16,15 +17,34 @@ const formatDate = (value: string) =>
 export const PrivacyPolicyPage: React.FC = () => {
   return (
     <Layout className={styles.publicLayout}>
-      <div className={styles.pageContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1 className={styles.pageTitle}>Privacy Policy</h1>
-            <p className={styles.pageSubtitle}>
-              How we collect, use, disclose, and protect your personal information
+      <div className={`resourcesShell ${styles.privacyPolicyPage}`}>
+        <header className={styles.privacyHero} aria-labelledby="privacy-page-title">
+          <div className="container">
+            <p className={styles.privacyKicker}>Privacy & data</p>
+            <h1 id="privacy-page-title" className={styles.privacyTitle}>
+              Privacy Policy
+            </h1>
+            <p className={styles.privacyLead}>
+              How we collect, use, disclose, and protect your personal information in line with Australian
+              privacy law.
             </p>
+            <ul className={styles.privacyMeta} aria-label="Document information">
+              <li className={styles.privacyMetaItem}>
+                <strong>Effective</strong> {formatDate(effectiveDate)}
+              </li>
+              <li className={styles.privacyMetaItem}>
+                <strong>Last updated</strong> {formatDate(lastUpdated)}
+              </li>
+              <li className={styles.privacyMetaItem}>
+                <strong>Version</strong> {version}
+              </li>
+            </ul>
           </div>
-          <div className={styles.contentSection}>
+        </header>
+
+        <div className={styles.privacyBody}>
+          <div className="container">
+            <article className={styles.privacyContent}>
               <section>
                 <h2>1. Introduction</h2>
                 <p>
@@ -287,32 +307,33 @@ export const PrivacyPolicyPage: React.FC = () => {
                 </p>
               </section>
 
-              <section>
-                <h2>Appendix – Quick Reference</h2>
+              <section className={styles.privacyQuickRef} aria-labelledby="privacy-appendix-heading">
+                <h2 id="privacy-appendix-heading">Appendix – Quick Reference</h2>
                 <ul>
                   <li>
                     <strong>Request Your Data:</strong>{' '}
-                    <a href="/patient/account?tab=privacy">/patient/account?tab=privacy</a>
+                    <Link to="/patient/account?tab=privacy">Account → Privacy</Link>
                   </li>
                   <li>
                     <strong>Update Information:</strong>{' '}
-                    <a href="/patient/account">/patient/account</a>
+                    <Link to="/patient/account">Account settings</Link>
                   </li>
                   <li>
                     <strong>Delete Account:</strong>{' '}
-                    <a href="/patient/account?tab=privacy">Use the “Delete My Account” option</a>
+                    <Link to="/patient/account?tab=privacy">Use the “Delete My Account” option</Link>
                   </li>
                   <li>
                     <strong>Withdraw Consent:</strong>{' '}
-                    <a href="/patient/account?tab=preferences">/patient/account?tab=preferences</a>
+                    <Link to="/patient/account?tab=preferences">Account → Preferences</Link>
                   </li>
                   <li>
                     <strong>Make a Complaint:</strong>{' '}
-                    <a href="/contact">Contact form</a> or{' '}
+                    <Link to="/contact">Contact form</Link> or{' '}
                     <a href="mailto:privacy@tailoredpsychology.com.au">privacy@tailoredpsychology.com.au</a>
                   </li>
                 </ul>
               </section>
+            </article>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/surfaceSystem' as surface;
 
 .publicLayout {
   .main {
@@ -127,60 +128,203 @@
   border: 1px solid rgba($error-color, 0.35);
 }
 
-.resourceSection {
-  margin-bottom: $spacing-3xl;
+// Resource library page (scoped — see `.resourcesPage` at end of file)
+
+// ── /resources — homepage-led sage hero + compact glass surfaces ─────────
+
+.resourcesPage,
+.privacyPolicyPage {
+  min-height: 50vh;
+}
+
+.resourcesHero,
+.privacyHero {
+  background: $hero-bg;
+  color: $text-white;
+  text-align: center;
+  @include public-fixed-header-hero-bleed(2.65rem, 2.65rem);
+
+  .container {
+    max-width: min(40rem, 100%);
+  }
+}
+
+.resourcesKicker,
+.privacyKicker {
+  font-family: var(--cs-font-body, $font-family-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba($text-white, 0.88);
+  margin: 0 0 0.65rem;
+}
+
+.resourcesTitle,
+.privacyTitle {
+  font-family: var(--cs-font-headline, $font-family-heading);
+  font-size: clamp(1.85rem, 4.2vw, 2.65rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: $text-white;
+  margin: 0 0 1rem;
+}
+
+.resourcesLead,
+.privacyLead {
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
+  line-height: 1.65;
+  color: rgba($text-white, 0.92);
+  margin: 0 auto;
+  max-width: 36rem;
+}
+
+.privacyMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.privacyMetaItem {
+  margin: 0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba($text-white, 0.95);
+  font-size: 0.84rem;
+  line-height: 1.3;
+
+  strong {
+    font-weight: 700;
+    margin-right: 0.35rem;
+    color: rgba($text-white, 0.88);
+  }
+}
+
+.resourcesBody,
+.privacyBody {
+  padding: clamp(2rem, 4.5vw, 3.25rem) 0 clamp(2.5rem, 5vw, 4rem);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, $hero-bg 7%, $background-light) 0%,
+      $background-light 22%,
+      $background-light 100%
+    );
+}
+
+// Long-form legal prose (privacy policy)
+.privacyPolicyPage .privacyContent {
+  @include surface.surface-primary-no-hover;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.35rem);
+  border-radius: var(--cs-radius-2xl, 1rem);
+
+  section {
+    margin-bottom: clamp(1.75rem, 3vw, 2.25rem);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 
   h2 {
-    color: $text-dark;
-    font-size: $font-size-2xl;
-    margin-bottom: $spacing-md;
+    font-family: var(--cs-font-headline, $font-family-heading);
+    color: var(--cs-on-surface, $text-dark);
+    font-size: clamp(1.28rem, 2.2vw, 1.62rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-top: clamp(1.75rem, 3vw, 2.25rem);
+    margin-bottom: 0.85rem;
+    line-height: 1.25;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h3 {
+    color: var(--cs-on-surface, $text-dark);
+    font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+    font-weight: 700;
+    margin-top: 1.35rem;
+    margin-bottom: 0.55rem;
+    line-height: 1.35;
   }
 
   p {
-    color: $text-dark;
-    margin-bottom: $spacing-lg;
-  }
-}
+    color: var(--cs-on-surface, $text-dark);
+    line-height: 1.65;
+    margin-bottom: 0.85rem;
+    font-size: 1rem;
 
-.highlightSection {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: $spacing-xl;
-  margin-bottom: $spacing-3xl;
-
-  @include tablet {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
-  @include mobile {
-    grid-template-columns: 1fr;
-  }
-}
-
-.highlightCard {
-  @include glass-card(default);
-  border-radius: $border-radius-lg;
-  padding: $spacing-xl;
-  @include glass-hover(default);
-
-  h2 {
-    margin-bottom: $spacing-sm;
-  }
-
-  ul {
-    margin: 0;
-    padding-left: $spacing-xl;
+  ul,
+  ol {
+    color: var(--cs-on-surface, $text-dark);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+    padding-left: 1.35rem;
+    font-size: 0.98rem;
 
     li {
-      margin-bottom: $spacing-xs;
+      margin-bottom: 0.45rem;
+    }
+  }
+
+  a {
+    color: var(--cs-primary, $hero-bg);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: color-mix(in srgb, var(--cs-primary, $hero-bg) 82%, black);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--cs-primary, $hero-bg);
+      outline-offset: 2px;
+      border-radius: 4px;
     }
   }
 }
 
-.cardGrid {
+.privacyPolicyPage .privacyQuickRef {
+  margin-top: 0.5rem;
+  padding: clamp(1.15rem, 2.5vw, 1.5rem);
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--cs-surface-lowest, #fff) 90%, var(--cs-primary, $hero-bg) 10%) 0%,
+    color-mix(in srgb, var(--cs-secondary-container, #d8dfd3) 28%, var(--cs-surface-lowest, #fff) 72%) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--cs-primary, $hero-bg) 16%, transparent);
+  box-shadow:
+    0 6px 18px color-mix(in srgb, var(--cs-on-surface, #1e1f1e) 5%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  h2 {
+    margin-top: 0;
+  }
+}
+
+.resourcesPage .highlightSection {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: $spacing-xl;
+  gap: clamp(1rem, 2vw, 1.35rem);
+  margin-bottom: clamp(2.25rem, 4vw, 3rem);
 
   @include tablet {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -191,112 +335,262 @@
   }
 }
 
-.calloutSection {
-  margin-top: $spacing-3xl;
-}
-
-.resourceCard {
-  @include glass-card(default);
-  border-radius: $border-radius-lg;
-  padding: $spacing-xl;
-  @include glass-hover(default);
+.resourcesPage .highlightCard {
+  @include surface.surface-compact-interactive;
+  padding: 1.35rem 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: 0.65rem;
+  min-height: 100%;
 
-  ul {
+  h2,
+  .cardTitle {
+    font-family: var(--cs-font-headline, $font-family-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cs-on-surface, $text-dark);
     margin: 0;
-    padding-left: $spacing-xl;
+    line-height: 1.25;
+  }
+
+  .cardIntro {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--cs-on-surface-variant, $text-light);
+    margin: 0;
   }
 }
 
-.cardHeader {
+.resourcesPage .resourceSection {
+  margin-bottom: clamp(2.25rem, 4vw, 3.25rem);
+}
+
+.sectionIntro {
+  margin-bottom: 1.25rem;
+  max-width: 42rem;
+}
+
+.sectionHeading {
+  font-family: var(--cs-font-headline, $font-family-heading);
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  font-weight: 800;
+  color: var(--cs-primary, $hero-bg);
+  margin: 0 0 0.45rem;
+  letter-spacing: -0.02em;
+}
+
+.sectionDescription {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--cs-on-surface-variant, $text-light);
+}
+
+.resourcesPage .cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.35rem);
+
+  @include tablet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resourcesPage .resourceCard {
+  @include surface.surface-compact-interactive;
+  padding: 1.25rem 1.15rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: $spacing-md;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 100%;
 
   h3 {
+    font-family: var(--cs-font-headline, $font-family-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--cs-on-surface, $text-dark);
     margin: 0;
+    line-height: 1.3;
   }
 }
 
-.badge {
+.resourcesPage .crisisCard {
+  border-left: 4px solid color-mix(in srgb, var(--cs-primary, $hero-bg) 55%, transparent);
+  background: color-mix(in srgb, var(--cs-surface-lowest, #fff) 92%, var(--cs-primary, $hero-bg) 8%);
+}
+
+.resourcesPage .cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  h3 {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.resourcesPage .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 $spacing-md;
-  height: 28px;
+  padding: 0.2rem 0.65rem;
+  min-height: 28px;
   border-radius: 999px;
-  background-color: rgba($text-muted, 0.12);
-  color: $text-dark;
+  background: color-mix(in srgb, var(--cs-primary, $hero-bg) 14%, var(--cs-surface-high, #ebe6dd));
+  color: var(--cs-on-secondary-fixed-variant, $text-dark);
   font-size: $font-size-sm;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.cardLink {
-  color: $text-dark;
-  font-weight: 600;
-  text-decoration: none;
-  margin-top: auto;
-
-  &:hover {
-    color: $primary-color;
-    text-decoration: underline;
-  }
+.cardBody {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--cs-on-surface-variant, $text-light);
+  flex: 1;
 }
 
-.badge,
-.cardLink {
-  min-height: $min-touch-target;
-}
+.detailList {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--cs-on-surface-variant, $text-light);
 
-.calloutSection {
-  margin-top: $spacing-3xl;
-}
-
-.calloutCard {
-  background: $hero-bg;
-  color: $background-white;
-  border-radius: $border-radius-lg;
-  padding: $spacing-2xl;
-
-  a {
-    color: $background-white;
-    text-decoration: underline;
-  }
-}
-
-// Glassmorphism card migration
-.highlightCard,
-.resourceCard {
-  @include glass-card(manager);
-  @include glass-hover(manager);
-}
-
-.calloutCard {
-  @include glass-card(admin, $glass-blur-md, true);
-  @include glass-hover(admin);
-  color: $text-dark;
-
-  h2,
-  p,
   li {
-    color: $text-dark;
-  }
+    margin-bottom: 0.35rem;
 
-  a {
-    color: $primary-dark;
-    font-weight: 600;
-
-    &:hover {
-      color: $primary-color;
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 }
 
-.cardNote {
-  margin-top: $spacing-lg;
+.phoneLink {
+  margin-top: auto;
+  align-self: flex-start;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--cs-primary, $hero-bg);
+  text-decoration: none;
+  padding: 0.35rem 0;
+  min-height: $min-touch-target;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    text-decoration: underline;
+    color: color-mix(in srgb, var(--cs-primary, $hero-bg) 85%, black);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cs-primary, $hero-bg);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.externalLink {
+  margin-top: auto;
+  align-self: flex-start;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--cs-primary, $hero-bg);
+  text-decoration: none;
+  min-height: $min-touch-target;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  &::after {
+    content: '→';
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    text-decoration: underline;
+
+    &::after {
+      transform: translateX(3px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cs-primary, $hero-bg);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.resourcesPage .calloutSection {
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.resourcesPage .calloutCard {
+  @include surface.surface-primary-no-hover;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: var(--cs-radius-2xl, 1rem);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--cs-surface-lowest, #fff) 88%, var(--cs-primary, $hero-bg) 12%) 0%,
+    color-mix(in srgb, var(--cs-secondary-container, #d8dfd3) 35%, var(--cs-surface-lowest, #fff) 65%) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--cs-primary, $hero-bg) 18%, transparent);
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--cs-on-surface, #1e1f1e) 6%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.calloutTitle {
+  font-family: var(--cs-font-headline, $font-family-heading);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 800;
+  color: var(--cs-on-surface, $text-dark);
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.calloutLead {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--cs-on-surface-variant, $text-light);
+}
+
+.calloutList {
+  margin: 0 0 1.25rem;
+  padding-left: 1.2rem;
+  color: var(--cs-on-surface, $text-dark);
+  line-height: 1.55;
+  font-size: 0.95rem;
+
+  li {
+    margin-bottom: 0.4rem;
+  }
+}
+
+.calloutNote {
+  margin: 0;
   font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--cs-on-surface, $text-dark);
+
+  a {
+    color: var(--cs-primary, $hero-bg);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: color-mix(in srgb, var(--cs-primary, $hero-bg) 80%, black);
+    }
+  }
 }

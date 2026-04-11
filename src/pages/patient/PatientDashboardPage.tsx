@@ -24,6 +24,7 @@ import { Button } from '../../components/ui/button';
 import pageStyles from './PatientPages.module.scss';
 import d from './PatientDashboard.module.scss';
 import shell from './PatientShellChrome.module.scss';
+import { formatSessionDurationMinutes } from '../../utils/formatSessionDuration';
 
 const RING_R = 58;
 const RING_C = 2 * Math.PI * RING_R;
@@ -313,7 +314,9 @@ export const PatientDashboardPage: React.FC = () => {
                     <p className={d.nextPrimary}>{nextAppt?.formatted_date ?? 'Scheduled'}</p>
                     <p className={d.nextSecondary}>
                       {nextAppt?.formatted_time}
-                      {nextAppt?.duration_minutes != null ? ` · ${nextAppt.duration_minutes} min` : ''}
+                      {nextAppt?.duration_minutes != null
+                        ? ` · ${formatSessionDurationMinutes(nextAppt.duration_minutes)}`
+                        : ''}
                     </p>
                   </div>
                 </div>

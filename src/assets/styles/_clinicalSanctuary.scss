@@ -48,6 +48,13 @@
   color: var(--cs-on-surface);
 }
 
+// Public marketing: Resource library and similar long-form pages (homepage token parity)
+.resourcesShell {
+  @include clinical-sanctuary-tokens;
+  font-family: var(--cs-font-body);
+  color: var(--cs-on-surface);
+}
+
 // Layout root when patient sidebar shell is active (any CSS-module `patientLayout` hash)
 [data-patient-shell] {
   background: transparent;

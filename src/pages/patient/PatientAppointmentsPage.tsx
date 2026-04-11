@@ -23,6 +23,7 @@ import {
   NotesIcon
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
+import { formatSessionDurationMinutes } from '../../utils/formatSessionDuration';
 import { PatientShellPage, patientShellPageStyles } from '../../components/patient/PatientShellPage/PatientShellPage';
 import patientPageStyles from './PatientPages.module.scss';
 import styles from './PatientAppointments.module.scss';
@@ -334,7 +335,9 @@ export const PatientAppointmentsPage: React.FC = () => {
                         <span className={styles.detailIcon}><ClockIcon size="sm" /></span>
                         <div className={styles.detailContent}>
                           <span className={styles.detailLabel}>Duration</span>
-                          <span className={styles.detailValue}>{appointment.duration_minutes} min</span>
+                          <span className={styles.detailValue}>
+                            {formatSessionDurationMinutes(appointment.duration_minutes)}
+                          </span>
                         </div>
                       </div>
                       

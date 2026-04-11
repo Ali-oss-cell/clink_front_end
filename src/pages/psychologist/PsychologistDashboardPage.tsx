@@ -17,6 +17,7 @@ import styles from './PsychologistPages.module.scss';
 import d from './PsychologistDashboard.module.scss';
 import shell from '../patient/PatientShellChrome.module.scss';
 import { formatLocalDateYYYYMMDD } from '../../utils/dateLocal';
+import { formatSessionDurationMinutes } from '../../utils/formatSessionDuration';
 
 function timeGreeting(): string {
   const h = new Date().getHours();
@@ -199,7 +200,7 @@ export const PsychologistDashboardPage: React.FC = () => {
                             <span>•</span>
                             <span>{appointment.formatted_time}</span>
                             <span>•</span>
-                            <span>{appointment.duration_minutes} min</span>
+                            <span>{formatSessionDurationMinutes(appointment.duration_minutes)}</span>
                           </div>
                         </div>
                         <button

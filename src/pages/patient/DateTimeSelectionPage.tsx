@@ -531,6 +531,11 @@ export const DateTimeSelectionPage: React.FC = () => {
               <p className={styles.summaryAsideHint}>
                 Pick any date and time below, then continue to confirm your booking.
               </p>
+              {availabilityData.booking_policy?.max_advance_booking_days != null && (
+                <p className={styles.summaryAsideHint}>
+                  Bookings are open up to {availabilityData.booking_policy.max_advance_booking_days} days ahead.
+                </p>
+              )}
             </aside>
 
             <div className={styles.bookingDatetimeMain}>

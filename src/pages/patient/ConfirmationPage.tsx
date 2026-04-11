@@ -5,6 +5,7 @@ import { authService } from '../../services/api/auth';
 import { appointmentsService, type AppointmentConfirmationResponse } from '../../services/api/appointments';
 import { paymentsService } from '../../services/api/payments';
 import { extractApiErrorMessage } from '../../utils/apiError';
+import { formatSessionDurationMinutes } from '../../utils/formatSessionDuration';
 import {
   CalendarIcon,
   VideoIcon,
@@ -167,7 +168,7 @@ export const ConfirmationPage: React.FC = () => {
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Duration:</span>
                   <span className={styles.detailValue}>
-                    {confirmation.service.duration_minutes} minutes
+                    {formatSessionDurationMinutes(confirmation.service.duration_minutes)}
                   </span>
                 </div>
                 <div className={styles.detailItem}>
