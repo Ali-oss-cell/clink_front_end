@@ -77,6 +77,22 @@ export interface Patient {
   intake_completed?: boolean;
   current_goals?: string;
   average_progress_rating?: number;
+  /** List endpoint aliases */
+  status?: string;
+  gender?: string;
+  gender_identity?: string;
+  completed_sessions?: number;
+  upcoming_sessions?: number;
+  last_session_date?: string;
+  next_appointment?: string;
+  therapy_goals?: string;
+  registered_date?: string;
+  registeredDate?: string;
+  completedSessions?: number;
+  upcomingSessions?: number;
+  lastSessionDate?: string;
+  nextAppointment?: string;
+  therapyFocus?: string;
 }
 
 /**
@@ -211,6 +227,76 @@ class ProgressNotesService {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading progress note PDF:', error);
+      if (axios.isAxiosError(error) && error.response?.data instanceof Blob) {
+        const errBlob = error.response.data as Blob;
+        if (errBlob.type.includes('application/json') || errBlob.size < 8192) {
+          try {
+            const text = await errBlob.text();
+            const data = JSON.parse(text) as { detail?: string; error?: string };
+            if (typeof data.detail === 'string') {
+              throw new Error(data.detail);
+            }
+            if (typeof data.error === 'string') {
+              throw new Error(data.error);
+            }
+          } catch (e) {
+            if (e instanceof Error && !axios.isAxiosError(e)) {
+              throw e;
+            }
+          }
+        }
+      }
+      throw this.handleError(error);
+    }
+  }
+
+  /**
+   * Download aggregated patient record PDF (demographics, appointments, SOAP notes in scope).
+   */
+  async downloadPatientRecordPdf(patientId: number): Promise<void> {
+    try {
+      const response = await axiosInstance.get(`/auth/patients/${patientId}/record-pdf/`, {
+        responseType: 'blob',
+      });
+      const blob = response.data as Blob;
+      if (blob.type.includes('application/json')) {
+        const text = await blob.text();
+        const data = JSON.parse(text) as { detail?: string; error?: string; message?: string };
+        const msg =
+          typeof data.detail === 'string'
+            ? data.detail
+            : typeof data.error === 'string'
+              ? data.error
+              : typeof data.message === 'string'
+                ? data.message
+                : 'Download failed.';
+        throw new Error(msg);
+      }
+      let filename = `patient-record-${patientId}.pdf`;
+      const cd = response.headers['content-disposition'] as string | undefined;
+      if (cd) {
+        const utf8 = /filename\*=UTF-8''([^;]+)/i.exec(cd);
+        const ascii = /filename="([^"]+)"/i.exec(cd);
+        const raw = utf8?.[1]?.trim() || ascii?.[1]?.trim();
+        if (raw) {
+          try {
+            filename = decodeURIComponent(raw);
+          } catch {
+            filename = raw;
+          }
+        }
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading patient record PDF:', error);
       if (axios.isAxiosError(error) && error.response?.data instanceof Blob) {
         const errBlob = error.response.data as Blob;
         if (errBlob.type.includes('application/json') || errBlob.size < 8192) {
