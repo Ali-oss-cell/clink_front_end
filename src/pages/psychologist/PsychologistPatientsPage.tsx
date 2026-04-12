@@ -156,7 +156,10 @@ export const PsychologistPatientsPage: React.FC = () => {
     const matchesSearch =
       patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       patient.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      patient.id.toString().includes(searchQuery.toLowerCase());
+      (patient.phone || '')
+        .replace(/\s/g, '')
+        .toLowerCase()
+        .includes(searchQuery.replace(/\s/g, '').toLowerCase());
 
     const matchesStatus = statusFilter === 'all' || patient.status === statusFilter;
 
@@ -248,16 +251,18 @@ export const PsychologistPatientsPage: React.FC = () => {
           </div>
 
           <div className={styles.searchFilterSection}>
-            <div className={styles.searchBox}>
-              <span className={styles.searchIcon}>
+            <div className={styles.searchField}>
+              <span className={styles.searchIconWrap} aria-hidden>
                 <SearchIcon size="md" />
               </span>
               <Input
-                type="text"
-                placeholder="Search by name, email, or patient ID..."
+                type="search"
+                placeholder="Search by name, email, or phone…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
+                className={styles.searchInputInner}
+                autoComplete="off"
+                aria-label="Search patients"
               />
             </div>
             <div className={styles.filterTabs}>
@@ -337,7 +342,7 @@ export const PsychologistPatientsPage: React.FC = () => {
                         <div className={styles.patientDetails}>
                           <h3 className={styles.patientName}>{patient.name}</h3>
                           <p className={styles.patientMeta}>
-                            {patient.age} years • {patient.gender} • ID: {patient.id}
+                            {patient.age > 0 ? `${patient.age} years` : 'Age —'} • {patient.gender}
                           </p>
                         </div>
                       </div>

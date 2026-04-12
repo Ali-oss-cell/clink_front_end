@@ -14,6 +14,7 @@ import {
   NotesIcon,
   BriefcaseIcon,
   ClipboardIcon,
+  VideoIcon,
 } from '../../../utils/icons';
 import styles from './RoleAppShell.module.scss';
 import { ShellBrandMark } from '../../shell/ShellBrandMark';
@@ -65,6 +66,11 @@ export const RoleAppShell: React.FC<RoleAppShellProps> = ({ user, children }) =>
         { to: '/psychologist/schedule', label: 'Schedule', icon: <CalendarIcon size="sm" className={styles.navIcon} /> },
         { to: '/psychologist/patients', label: 'Patients', icon: <UsersIcon size="sm" className={styles.navIcon} /> },
         { to: '/psychologist/notes', label: 'Notes', icon: <NotesIcon size="sm" className={styles.navIcon} /> },
+        {
+          to: '/psychologist/recordings',
+          label: 'Recordings',
+          icon: <VideoIcon size="sm" className={styles.navIcon} />,
+        },
         { to: '/psychologist/profile', label: 'Profile', icon: <UserIcon size="sm" className={styles.navIcon} /> },
       ];
     }

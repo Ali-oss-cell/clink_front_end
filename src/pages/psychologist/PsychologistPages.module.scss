@@ -237,7 +237,11 @@
   font-size: 0.8rem;
 }
 
-.psychologistLayout:global(.clinicalShell) .patientsList,
+.psychologistLayout:global(.clinicalShell) .patientsList {
+  gap: 1rem;
+  padding: 0.8rem 0 0.8rem;
+}
+
 .psychologistLayout:global(.clinicalShell) .notesList {
   gap: 0.95rem;
   padding: 0.8rem 0 0.8rem;
@@ -255,6 +259,12 @@
 .psychologistLayout:global(.clinicalShell) .noteActions {
   padding: 0.75rem 1rem 0.9rem;
   gap: 0.55rem;
+}
+
+.psychologistLayout:global(.clinicalShell) .patientsList .patientAvatar {
+  width: 44px;
+  height: 44px;
+  font-size: 0.85rem;
 }
 
 // Profile Container
@@ -2330,59 +2340,86 @@
   animation: fadeInUp 0.6s ease 0.5s both;
 }
 
-.searchBox {
-  position: relative;
+// Flex row: icon never overlaps placeholder text (avoids fighting .tp-ui-input padding)
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   width: 100%;
-  max-width: 600px;
-}
-
-.searchIcon {
-  position: absolute;
-  left: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.25rem;
-  pointer-events: none;
-}
-
-.searchInput {
-  @include form-input;
-  width: 100%;
-  padding: 1rem 1rem 1rem 3.5rem;
+  max-width: 36rem;
+  padding: 0.65rem 1rem;
   border: 2px solid $border-light;
   border-radius: $border-radius-lg;
-  font-size: 1rem;
-  transition: all 0.3s ease;
   background: var(--cs-surface-lowest);
-  
-  &:focus {
-    outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-within {
     border-color: $psychologist-primary;
     box-shadow: 0 0 0 4px rgba($psychologist-primary, 0.1);
   }
-  
+}
+
+.searchIconWrap {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--cs-on-surface-variant, $text-light);
+  opacity: 0.9;
+}
+
+.searchInputInner {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0.25rem 0 !important;
+  font-size: 1rem;
+  color: $text-dark;
+
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   &::placeholder {
     color: $text-light;
   }
 }
 
-// Patients List
+// Patients List — responsive grid (3 cards per row on wide viewports)
 .patientsList {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
   padding: 0 2rem 2rem 2rem;
+
+  @media (min-width: 720px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1180px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .emptyState {
+    grid-column: 1 / -1;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .patientCard {
   background: var(--cs-surface-lowest);
   border-radius: $border-radius-lg;
-  padding: 2rem;
+  padding: 1.1rem 1.15rem;
   box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid $border-light;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   
   &::before {
     content: '';
@@ -2415,41 +2452,51 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
   border-bottom: 2px solid $border-light;
 }
 
 .patientInfo {
   display: flex;
-  gap: 1.25rem;
+  gap: 0.85rem;
   align-items: center;
+  min-width: 0;
 }
 
 .patientDetails {
   flex: 1;
+  min-width: 0;
 }
 
 .patientName {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: $text-dark;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.35rem 0;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .patientMeta {
-  font-size: 0.95rem;
+  font-size: 0.8125rem;
   color: $text-light;
   margin: 0;
+  line-height: 1.35;
 }
 
-.statusBadge {
-  padding: 0.5rem 1rem;
+.patientsList .statusBadge {
+  flex-shrink: 0;
+  padding: 0.35rem 0.65rem;
   border-radius: $border-radius;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 6.5rem;
 }
 
 .statusActive {
@@ -2471,41 +2518,47 @@
 }
 
 .patientCardBody {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.85rem;
+  flex: 1;
 }
 
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
 }
 
 .infoItem {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;
+  min-width: 0;
 }
 
 .infoLabel {
-  font-size: 0.875rem;
+  font-size: 0.72rem;
   color: $text-light;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .infoValue {
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: $text-dark;
   font-weight: 500;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .sessionStats {
   display: flex;
-  gap: 2rem;
-  padding: 1.5rem;
+  gap: 0.5rem;
+  padding: 0.65rem 0.5rem;
   background: linear-gradient(135deg, rgba($psychologist-primary, 0.05) 0%, rgba($psychologist-accent, 0.05) 100%);
   border-radius: $border-radius;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.85rem;
 }
 
 .sessionStat {
@@ -2517,7 +2570,7 @@
 }
 
 .sessionStatValue {
-  font-size: 2rem;
+  font-size: 1.35rem;
   font-weight: 800;
   background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
   -webkit-background-clip: text;
@@ -2526,17 +2579,19 @@
 }
 
 .sessionStatLabel {
-  font-size: 0.875rem;
+  font-size: 0.65rem;
   color: $text-light;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
+  text-align: center;
 }
 
 .dateInfo {
   display: flex;
-  gap: 2rem;
-  padding: 1rem 0;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.35rem 0 0;
 }
 
 .dateItem {
@@ -2546,22 +2601,180 @@
 }
 
 .dateLabel {
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   color: $text-light;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .dateValue {
-  font-size: 1rem;
+  font-size: 0.8125rem;
   color: $text-dark;
   font-weight: 600;
 }
 
 .patientCardActions {
   display: flex;
-  gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid $border-light;
+  gap: 0.65rem;
+  padding-top: 0.85rem;
+  margin-top: auto;
+  border-top: 1px solid $border-light;
+
+  button {
+    width: 100%;
+    min-height: 2.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+.patientsList .patientAvatar {
+  width: 44px;
+  height: 44px;
+  font-size: 0.85rem;
+  border-radius: var(--cs-radius-xl, 12px);
+  border-width: 2px;
+  flex-shrink: 0;
+}
+
+// Psychologist patient profile (/psychologist/patients/:id)
+.patientProfileToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.patientProfileToolbarMain {
+  flex: 1;
+  min-width: min(100%, 16rem);
+}
+
+.patientProfileBackLink {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.65rem;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cs-primary, $psychologist-primary);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.patientProfileActions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.patientProfileOverview {
+  background: var(--cs-surface-lowest, $background-white);
+  border: 1px solid var(--cs-glass-border, $border-light);
+  border-radius: var(--cs-radius-2xl, 16px);
+  box-shadow: var(--cs-shadow-atmospheric);
+  padding: 1.25rem 1.35rem;
+  margin-top: 0.5rem;
+}
+
+.patientProfileOverview .detailsGrid {
+  margin-bottom: 0;
+}
+
+.patientProfileTabs {
+  margin-top: 1.25rem;
+  border-bottom: 2px solid $border-light;
+}
+
+.patientProfileTabPanel {
+  padding: 1.5rem 0;
+}
+
+.patientProfileStats {
+  margin-top: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  max-width: 48rem;
+}
+
+.patientAppointmentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sessionAiIntro {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--cs-on-surface-variant, $text-light);
+  margin: 0 0 1.25rem;
+  max-width: 52rem;
+}
+
+.sessionAiCard {
+  border: 1px solid $border-light;
+  border-radius: var(--cs-radius-xl, 14px);
+  padding: 1rem 1.1rem;
+  background: var(--cs-surface-lowest, $background-white);
+  margin-bottom: 0.75rem;
+}
+
+.sessionAiCardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.sessionAiCardTitle {
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.sessionAiCardMeta {
+  font-size: 0.8rem;
+  color: $text-light;
+  margin: 0.2rem 0 0;
+}
+
+.sessionAiBlock {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid $border-light;
+}
+
+.sessionAiBlockTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $psychologist-primary;
+  margin: 0 0 0.4rem;
+}
+
+.sessionAiBody {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $text-dark;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.sessionAiDisclaimer {
+  font-size: 0.75rem;
+  color: $text-light;
+  margin: 0.75rem 0 0;
+  line-height: 1.45;
 }
 
 // Modal Enhancements
@@ -2666,12 +2879,13 @@
   }
   
   .patientCard {
-    padding: 1.5rem;
+    padding: 1rem;
   }
   
   .patientCardHeader {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
   }
   
   .infoGrid {
@@ -2698,7 +2912,7 @@
 }
 
 @media (max-width: 480px) {
-  .searchBox {
+  .searchField {
     max-width: 100%;
   }
 }
@@ -2706,6 +2920,237 @@
 // ===========================================
 // PROGRESS NOTES PAGE STYLES
 // ===========================================
+
+.psychologistRecordingsEmbed {
+  padding: 0 0 1.5rem;
+}
+
+.notesWorkspace {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  align-items: start;
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(15rem, 17.5rem) minmax(0, 1fr);
+  }
+}
+
+.notesPatientDirectory {
+  border-radius: var(--cs-radius-xl, 14px);
+  border: 1px solid $border-light;
+  background: var(--cs-surface-lowest, $background-white);
+  padding: 1rem 0.85rem;
+  box-shadow: var(--cs-shadow-atmospheric);
+
+  @media (min-width: 960px) {
+    position: sticky;
+    top: 0.75rem;
+    max-height: calc(100vh - 8rem);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.notesPatientDirectoryTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $text-light;
+  margin: 0 0 0.65rem;
+  padding: 0 0.35rem;
+}
+
+.notesPatientDirectorySearch {
+  margin-bottom: 0.65rem;
+}
+
+.notesPatientDirectoryField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid $border-light;
+  border-radius: $border-radius-lg;
+  background: var(--cs-surface-low, $background-light);
+
+  &:focus-within {
+    border-color: $psychologist-primary;
+    box-shadow: 0 0 0 3px rgba($psychologist-primary, 0.12);
+  }
+}
+
+.notesPatientDirectoryField input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-size: 0.875rem;
+  padding: 0.2rem 0;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.notesPatientDirectoryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.notesPatientRow {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: $border-radius-lg;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: $text-dark;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: rgba($psychologist-primary, 0.06);
+  }
+}
+
+.notesPatientRowActive {
+  border-color: rgba($psychologist-primary, 0.35);
+  background: rgba($psychologist-primary, 0.1);
+}
+
+.notesPatientRowInitials {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--cs-radius-xl, 10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(135deg, $psychologist-primary 0%, $psychologist-accent 100%);
+  flex-shrink: 0;
+}
+
+.notesPatientRowMeta {
+  min-width: 0;
+  flex: 1;
+}
+
+.notesPatientRowName {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notesPatientRowEmail {
+  font-size: 0.72rem;
+  color: $text-light;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notesMainColumn {
+  min-width: 0;
+}
+
+.notesDrawerBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.notesComposerDrawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(100%, 32rem);
+  max-width: 100vw;
+  z-index: 1001;
+  background: var(--cs-surface-lowest, $background-white);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid $border-light;
+}
+
+.notesDrawerTopBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid $border-light;
+  flex-shrink: 0;
+}
+
+.notesDrawerTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: $text-dark;
+  font-family: var(--cs-font-headline, inherit);
+}
+
+.notesDrawerSub {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: $text-light;
+  line-height: 1.4;
+}
+
+.notesDrawerBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.1rem 1.5rem;
+}
+
+.notesPickPatientList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notesPickPatientRow {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 0.85rem;
+  border-radius: $border-radius-lg;
+  border: 1px solid $border-light;
+  background: var(--cs-surface-low, $background-light);
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: $psychologist-primary;
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+}
 
 .notesContainer {
   padding: 2rem 0;

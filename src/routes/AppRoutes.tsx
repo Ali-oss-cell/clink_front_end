@@ -39,6 +39,7 @@ import { PsychologistSchedulePage } from '../pages/psychologist/PsychologistSche
 import { PsychologistPatientsPage } from '../pages/psychologist/PsychologistPatientsPage';
 import { PsychologistPatientProfilePage } from '../pages/psychologist/PsychologistPatientProfilePage';
 import { PsychologistNotesPage } from '../pages/psychologist/PsychologistNotesPage';
+import { PsychologistRecordingsPage } from '../pages/psychologist/PsychologistRecordingsPage';
 
 // Practice Manager pages
 import { 
@@ -379,6 +380,16 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['psychologist']}
         >
           <PsychologistNotesPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/psychologist/recordings" element={
+        <ProtectedRoute
+          isAuthenticated={isAuthenticated}
+          user={user}
+          allowedRoles={['psychologist']}
+        >
+          <PsychologistRecordingsPage />
         </ProtectedRoute>
       } />
 

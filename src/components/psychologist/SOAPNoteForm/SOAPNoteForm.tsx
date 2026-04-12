@@ -46,6 +46,13 @@ export const SOAPNoteForm: React.FC<SOAPNoteFormProps> = ({
     progress_rating: 5
   });
 
+  // Prewire patient when opening composer from patient directory / profile
+  useEffect(() => {
+    if (patientId && !noteId) {
+      setFormData((prev) => ({ ...prev, patient: patientId }));
+    }
+  }, [patientId, noteId]);
+
   // Load patients list for dropdown
   useEffect(() => {
     const fetchPatients = async () => {

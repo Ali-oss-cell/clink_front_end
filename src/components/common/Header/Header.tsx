@@ -115,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link to="/psychologist/patients">
                       Client roster
                     </Link>
-                    <Link to="/recordings">
+                    <Link to="/psychologist/recordings">
                       Recordings
                     </Link>
                     <Link to="/manager/resources">

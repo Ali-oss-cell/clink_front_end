@@ -3,6 +3,10 @@ import { Link, useParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { SOAPNoteForm } from '../../components/psychologist/SOAPNoteForm';
 import { progressNotesService, type ProgressNote } from '../../services/api/progressNotes';
+import {
+  fetchAppointmentTranscript,
+  type SessionTranscriptResponse,
+} from '../../services/api/sessionTranscript';
 import { authService } from '../../services/api/auth';
 import { Button } from '../../components/ui/button';
 import {
@@ -87,6 +91,17 @@ type PatientDetail = {
   }[];
 };
 
+function ageFromDob(dob: string | null | undefined): number | null {
+  if (!dob) return null;
+  const birth = new Date(dob);
+  if (Number.isNaN(birth.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age -= 1;
+  return age >= 0 ? age : null;
+}
+
 export const PsychologistPatientProfilePage: React.FC = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const user = authService.getStoredUser();
@@ -97,10 +112,15 @@ export const PsychologistPatientProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [notesLoading, setNotesLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'appointments' | 'notes'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'sessions_ai' | 'appointments' | 'notes'>('overview');
   const [pdfLoading, setPdfLoading] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [selectedNote, setSelectedNote] = useState<ProgressNote | null>(null);
+  const [transcriptsByAppointment, setTranscriptsByAppointment] = useState<
+    Record<number, SessionTranscriptResponse | null>
+  >({});
+  const [transcriptLoadingId, setTranscriptLoadingId] = useState<number | null>(null);
+  const [transcriptErrors, setTranscriptErrors] = useState<Record<number, string>>({});
 
   const loadDetail = useCallback(async () => {
     if (!Number.isFinite(idNum)) {
@@ -189,31 +209,68 @@ export const PsychologistPatientProfilePage: React.FC = () => {
     loadDetail();
   };
 
+  const loadTranscriptForAppointment = async (appointmentId: number) => {
+    setTranscriptLoadingId(appointmentId);
+    setTranscriptErrors((prev) => {
+      const next = { ...prev };
+      delete next[appointmentId];
+      return next;
+    });
+    try {
+      const data = await fetchAppointmentTranscript(appointmentId);
+      setTranscriptsByAppointment((prev) => ({ ...prev, [appointmentId]: data }));
+      if (!data) {
+        setTranscriptErrors((prev) => ({
+          ...prev,
+          [appointmentId]: 'No transcript is available for this visit yet (recording or processing may still be pending).',
+        }));
+      }
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Could not load transcript';
+      setTranscriptErrors((prev) => ({ ...prev, [appointmentId]: msg }));
+    } finally {
+      setTranscriptLoadingId(null);
+    }
+  };
+
+  const profileAge = detail ? ageFromDob(detail.patient.date_of_birth) : null;
+  const profileSubtitleLine =
+    detail &&
+    [
+      profileAge != null ? `${profileAge} years` : null,
+      detail.profile?.gender_identity?.trim() || null,
+      detail.patient.email || null,
+    ]
+      .filter(Boolean)
+      .join(' · ');
+
   return (
     <Layout user={user} isAuthenticated className={styles.psychologistLayout}>
       <div className={styles.patientsContainer}>
         <div className={shell.wrap}>
-          <div className={shell.pageHeader} style={{ alignItems: 'flex-start', gap: '1rem' }}>
-            <div>
-              <Link to="/psychologist/patients" className={styles.secondaryButton} style={{ display: 'inline-block', marginBottom: '0.75rem', textDecoration: 'none' }}>
+          <header className={styles.patientProfileToolbar}>
+            <div className={styles.patientProfileToolbarMain}>
+              <Link to="/psychologist/patients" className={styles.patientProfileBackLink}>
                 ← Back to patients
               </Link>
               <h1 className={shell.welcomeTitle}>
                 {detail?.patient?.name ?? 'Patient profile'}
               </h1>
               <p className={shell.welcomeSubtitle}>
-                Demographics, appointments, and progress notes for your caseload
+                {profileSubtitleLine || 'Demographics, appointments, and progress notes for your caseload'}
               </p>
             </div>
-            <Button
-              type="button"
-              className={styles.primaryButton}
-              disabled={pdfLoading || !Number.isFinite(idNum) || !!error}
-              onClick={handleDownloadPdf}
-            >
-              {pdfLoading ? 'Preparing PDF…' : 'Download full record (PDF)'}
-            </Button>
-          </div>
+            <div className={styles.patientProfileActions}>
+              <Button
+                type="button"
+                className={styles.primaryButton}
+                disabled={pdfLoading || !Number.isFinite(idNum) || !!error}
+                onClick={handleDownloadPdf}
+              >
+                {pdfLoading ? 'Preparing PDF…' : 'Download full record (PDF)'}
+              </Button>
+            </div>
+          </header>
 
           {loading && <p>Loading…</p>}
           {error && !loading && (
@@ -230,13 +287,20 @@ export const PsychologistPatientProfilePage: React.FC = () => {
 
           {detail && !loading && (
             <>
-              <div className={styles.tabsContainer} style={{ marginTop: '1.5rem' }}>
+              <div className={`${styles.tabsContainer} ${styles.patientProfileTabs}`}>
                 <Button
                   type="button"
                   className={`${styles.tab} ${activeTab === 'overview' ? styles.tabActive : ''}`}
                   onClick={() => setActiveTab('overview')}
                 >
                   Overview
+                </Button>
+                <Button
+                  type="button"
+                  className={`${styles.tab} ${activeTab === 'sessions_ai' ? styles.tabActive : ''}`}
+                  onClick={() => setActiveTab('sessions_ai')}
+                >
+                  Sessions &amp; AI
                 </Button>
                 <Button
                   type="button"
@@ -255,7 +319,7 @@ export const PsychologistPatientProfilePage: React.FC = () => {
               </div>
 
               {activeTab === 'overview' && (
-                <div className={styles.modalBody} style={{ maxWidth: 'none', padding: '1.5rem 0' }}>
+                <div className={styles.patientProfileOverview}>
                   <div className={styles.detailsGrid}>
                     <div className={styles.detailItem}>
                       <strong>Email</strong>
@@ -274,10 +338,6 @@ export const PsychologistPatientProfilePage: React.FC = () => {
                     <div className={styles.detailItem}>
                       <strong>Date of birth</strong>
                       <span>{formatDate(detail.patient.date_of_birth ?? undefined)}</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <strong>Patient ID</strong>
-                      <span>{detail.patient.id}</span>
                     </div>
                     <div className={styles.detailItem}>
                       <strong>Address</strong>
@@ -323,7 +383,7 @@ export const PsychologistPatientProfilePage: React.FC = () => {
                     </div>
                   )}
 
-                  <div className={styles.statsGrid} style={{ marginTop: '1.5rem' }}>
+                  <div className={`${styles.statsGrid} ${styles.patientProfileStats}`}>
                     <div className={styles.statCard}>
                       <div className={styles.statIcon}>
                         <CalendarIcon size="xl" />
@@ -356,14 +416,102 @@ export const PsychologistPatientProfilePage: React.FC = () => {
                 </div>
               )}
 
+              {activeTab === 'sessions_ai' && (
+                <div className={styles.patientProfileTabPanel}>
+                  <p className={styles.sessionAiIntro}>
+                    After consented telehealth sessions, the clinic can generate a transcript and optional AI-assisted
+                    draft notes for your review only. Open each visit to load transcript status, text, and assistant
+                    output when available. For video files, use{' '}
+                    <Link to="/psychologist/recordings" className={styles.patientProfileBackLink}>
+                      Session recordings
+                    </Link>
+                    .
+                  </p>
+                  {detail.appointment_history.length === 0 ? (
+                    <p>No completed appointments in your caseload yet.</p>
+                  ) : (
+                    [...detail.appointment_history]
+                      .sort(
+                        (a, b) =>
+                          new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime()
+                      )
+                      .map((apt) => {
+                        const t = transcriptsByAppointment[apt.id];
+                        const err = transcriptErrors[apt.id];
+                        const loading = transcriptLoadingId === apt.id;
+                        return (
+                          <div key={apt.id} className={styles.sessionAiCard}>
+                            <div className={styles.sessionAiCardHead}>
+                              <div>
+                                <p className={styles.sessionAiCardTitle}>{formatDateTime(apt.appointment_date)}</p>
+                                <p className={styles.sessionAiCardMeta}>
+                                  {apt.service_name} · {apt.status}
+                                </p>
+                              </div>
+                              <Button
+                                type="button"
+                                className={styles.secondaryButton}
+                                disabled={loading}
+                                onClick={() => loadTranscriptForAppointment(apt.id)}
+                              >
+                                {loading ? 'Loading…' : t !== undefined ? 'Refresh transcript' : 'Load transcript & AI'}
+                              </Button>
+                            </div>
+                            {err && <p className={styles.notesText}>{err}</p>}
+                            {t && (
+                              <>
+                                <div className={styles.sessionAiBlock}>
+                                  <p className={styles.sessionAiBlockTitle}>Transcript status</p>
+                                  <p className={styles.sessionAiBody}>
+                                    {t.status_display}
+                                    {t.provider_display ? ` · ${t.provider_display}` : ''}
+                                  </p>
+                                </div>
+                                {(t.redacted_content || t.content) && (
+                                  <div className={styles.sessionAiBlock}>
+                                    <p className={styles.sessionAiBlockTitle}>Transcript (review)</p>
+                                    <p className={styles.sessionAiBody}>{t.redacted_content || t.content}</p>
+                                  </div>
+                                )}
+                                {t.clinician_summary && (
+                                  <div className={styles.sessionAiBlock}>
+                                    <p className={styles.sessionAiBlockTitle}>AI session summary (draft)</p>
+                                    <p className={styles.sessionAiBody}>{t.clinician_summary}</p>
+                                  </div>
+                                )}
+                                {t.clinician_draft_note && (
+                                  <div className={styles.sessionAiBlock}>
+                                    <p className={styles.sessionAiBlockTitle}>AI draft progress note (draft)</p>
+                                    <p className={styles.sessionAiBody}>{t.clinician_draft_note}</p>
+                                  </div>
+                                )}
+                                {t.clinician_assistant_error && (
+                                  <div className={styles.sessionAiBlock}>
+                                    <p className={styles.sessionAiBlockTitle}>Assistant notice</p>
+                                    <p className={styles.sessionAiBody}>{t.clinician_assistant_error}</p>
+                                  </div>
+                                )}
+                                <p className={styles.sessionAiDisclaimer}>
+                                  AI-generated text is assistive only and is not the legal clinical record until you
+                                  review, edit, and save your own progress note.
+                                </p>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })
+                  )}
+                </div>
+              )}
+
               {activeTab === 'appointments' && (
-                <div style={{ padding: '1.5rem 0' }}>
+                <div className={styles.patientProfileTabPanel}>
                   {detail.appointment_history.length === 0 ? (
                     <p>No appointments in your caseload for this patient.</p>
                   ) : (
-                    <ul className={styles.patientNotesList} style={{ listStyle: 'none', padding: 0 }}>
+                    <ul className={styles.patientAppointmentList}>
                       {detail.appointment_history.map((apt) => (
-                        <li key={apt.id} className={styles.patientNoteCard} style={{ marginBottom: '0.75rem' }}>
+                        <li key={apt.id} className={styles.patientNoteCard}>
                           <div className={styles.patientNoteHeader}>
                             <span>{formatDateTime(apt.appointment_date)}</span>
                             <span className={styles.patientNoteRating}>{apt.status}</span>
@@ -378,7 +526,7 @@ export const PsychologistPatientProfilePage: React.FC = () => {
               )}
 
               {activeTab === 'notes' && (
-                <div className={styles.notesTabContent} style={{ padding: '1.5rem 0' }}>
+                <div className={`${styles.notesTabContent} ${styles.patientProfileTabPanel}`}>
                   <div className={styles.notesTabHeader}>
                     <h4>Progress notes</h4>
                     <Button
@@ -448,6 +596,7 @@ export const PsychologistPatientProfilePage: React.FC = () => {
               <CloseIcon size="md" />
             </Button>
             <SOAPNoteForm
+              key={`profile-note-${idNum}-${selectedNote?.id ?? 'new'}`}
               patientId={idNum}
               noteId={selectedNote?.id}
               onSave={handleNoteFormClose}
