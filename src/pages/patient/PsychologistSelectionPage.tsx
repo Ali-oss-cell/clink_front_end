@@ -17,6 +17,7 @@ import { Button } from '../../components/ui/button';
 import { Select } from '../../components/ui/select';
 import {
   MATCH_PREFERENCES_STORAGE_KEY,
+  MATCH_STEP_STORAGE_KEY,
   parseMatchPreferences,
 } from '../../constants/matchPreferences';
 import styles from './PsychologistSelection.module.scss';
@@ -77,6 +78,7 @@ export const PsychologistSelectionPage: React.FC = () => {
       if (!prefs) return;
       appliedMatchPrefs.current = true;
       sessionStorage.removeItem(MATCH_PREFERENCES_STORAGE_KEY);
+      sessionStorage.removeItem(MATCH_STEP_STORAGE_KEY);
       setFilters((prev) => ({
         ...prev,
         specialization: prefs.specialization,

@@ -4,6 +4,9 @@
  */
 export const MATCH_PREFERENCES_STORAGE_KEY = 'tailored_match_preferences';
 
+/** Current wizard step (1–5) for /get-matched resume */
+export const MATCH_STEP_STORAGE_KEY = 'tailored_match_step';
+
 export type MatchSpecializationFilter =
   | 'all'
   | 'anxiety'

@@ -5,6 +5,8 @@ import { authService } from '../../services/api/auth';
 import { psychologistService, type MatchPreviewPsychologist } from '../../services/api/psychologist';
 import {
   MATCH_PREFERENCES_STORAGE_KEY,
+  MATCH_STEP_STORAGE_KEY,
+  parseMatchPreferences,
   type MatchPreferences,
   type MatchSpecializationFilter,
   type MatchSessionTypeFilter,
@@ -18,6 +20,27 @@ import styles from './GetMatchedPage.module.scss';
 
 const TOTAL_STEPS = 5;
 const MATCH_GOAL_STORAGE_KEY = 'tailored_match_goal';
+
+function readGoalFromStorage(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    return sessionStorage.getItem(MATCH_GOAL_STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+function readStepFromStorage(): number {
+  if (typeof window === 'undefined') return 1;
+  try {
+    const raw = sessionStorage.getItem(MATCH_STEP_STORAGE_KEY);
+    const n = raw ? parseInt(raw, 10) : NaN;
+    if (!Number.isNaN(n) && n >= 1 && n <= TOTAL_STEPS) return n;
+  } catch {
+    /* ignore */
+  }
+  return 1;
+}
 
 const FOCUS_OPTIONS: {
   value: MatchSpecializationFilter;
@@ -51,6 +74,24 @@ const AVAILABILITY_OPTIONS: { value: MatchAvailabilityFilter; label: string; des
   { value: 'next-week', label: 'Next week is fine', description: 'Slightly more flexibility.' },
 ];
 
+function prefsFromStorage():
+  | {
+      specialization: MatchSpecializationFilter;
+      sessionType: MatchSessionTypeFilter;
+      gender: MatchGenderFilter;
+      availability: MatchAvailabilityFilter;
+    }
+  | null {
+  if (typeof window === 'undefined') return null;
+  const prefs = parseMatchPreferences(sessionStorage.getItem(MATCH_PREFERENCES_STORAGE_KEY));
+  if (!prefs) return null;
+  if (!FOCUS_OPTIONS.some((f) => f.value === prefs.specialization)) return null;
+  if (!SESSION_OPTIONS.some((s) => s.value === prefs.sessionType)) return null;
+  if (!GENDER_OPTIONS.some((g) => g.value === prefs.gender)) return null;
+  if (!AVAILABILITY_OPTIONS.some((a) => a.value === prefs.availability)) return null;
+  return prefs;
+}
+
 function buildPreferences(
   specialization: MatchSpecializationFilter,
   sessionType: MatchSessionTypeFilter,
@@ -63,12 +104,42 @@ function buildPreferences(
 export const GetMatchedPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [step, setStep] = useState(() => Math.max(1, Math.min(TOTAL_STEPS, Number(searchParams.get('step')) || 1)));
-  const [specialization, setSpecialization] = useState<MatchSpecializationFilter>('all');
-  const [sessionType, setSessionType] = useState<MatchSessionTypeFilter>('both');
-  const [gender, setGender] = useState<MatchGenderFilter>('any');
-  const [availability, setAvailability] = useState<MatchAvailabilityFilter>('any');
-  const [goalText, setGoalText] = useState('');
+
+  const [step, setStep] = useState(() => {
+    const q = Number(searchParams.get('step'));
+    if (!Number.isNaN(q) && q >= 1 && q <= TOTAL_STEPS) return q;
+    return readStepFromStorage();
+  });
+
+  const [specialization, setSpecialization] = useState<MatchSpecializationFilter>(() => {
+    const q = searchParams.get('specialization') as MatchSpecializationFilter | null;
+    if (q && FOCUS_OPTIONS.some((f) => f.value === q)) return q;
+    return prefsFromStorage()?.specialization ?? 'all';
+  });
+
+  const [sessionType, setSessionType] = useState<MatchSessionTypeFilter>(() => {
+    const q = searchParams.get('sessionType') as MatchSessionTypeFilter | null;
+    if (q && SESSION_OPTIONS.some((s) => s.value === q)) return q;
+    return prefsFromStorage()?.sessionType ?? 'both';
+  });
+
+  const [gender, setGender] = useState<MatchGenderFilter>(() => {
+    const q = searchParams.get('gender') as MatchGenderFilter | null;
+    if (q && GENDER_OPTIONS.some((g) => g.value === q)) return q;
+    return prefsFromStorage()?.gender ?? 'any';
+  });
+
+  const [availability, setAvailability] = useState<MatchAvailabilityFilter>(() => {
+    const q = searchParams.get('availability') as MatchAvailabilityFilter | null;
+    if (q && AVAILABILITY_OPTIONS.some((a) => a.value === q)) return q;
+    return prefsFromStorage()?.availability ?? 'any';
+  });
+
+  const [goalText, setGoalText] = useState(() => {
+    const q = searchParams.get('goal');
+    if (q != null && q !== '') return q;
+    return readGoalFromStorage();
+  });
   const [previewMatches, setPreviewMatches] = useState<MatchPreviewPsychologist[]>([]);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState('');
@@ -89,20 +160,6 @@ export const GetMatchedPage: React.FC = () => {
   }, [availability, gender, goalText, sessionType, specialization]);
 
   useEffect(() => {
-    const qSpecialization = searchParams.get('specialization') as MatchSpecializationFilter | null;
-    const qSession = searchParams.get('sessionType') as MatchSessionTypeFilter | null;
-    const qGender = searchParams.get('gender') as MatchGenderFilter | null;
-    const qAvailability = searchParams.get('availability') as MatchAvailabilityFilter | null;
-    const qGoal = searchParams.get('goal') ?? '';
-    if (qSpecialization && FOCUS_OPTIONS.some((f) => f.value === qSpecialization)) setSpecialization(qSpecialization);
-    if (qSession && SESSION_OPTIONS.some((s) => s.value === qSession)) setSessionType(qSession);
-    if (qGender && GENDER_OPTIONS.some((g) => g.value === qGender)) setGender(qGender);
-    if (qAvailability && AVAILABILITY_OPTIONS.some((a) => a.value === qAvailability)) setAvailability(qAvailability);
-    if (qGoal) setGoalText(qGoal);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     const next = new URLSearchParams();
     next.set('step', String(step));
     next.set('specialization', specialization);
@@ -112,6 +169,17 @@ export const GetMatchedPage: React.FC = () => {
     if (goalText.trim()) next.set('goal', goalText.trim());
     setSearchParams(next, { replace: true });
   }, [availability, gender, goalText, sessionType, setSearchParams, specialization, step]);
+
+  useEffect(() => {
+    const prefs = buildPreferences(specialization, sessionType, gender, availability);
+    try {
+      sessionStorage.setItem(MATCH_STEP_STORAGE_KEY, String(step));
+      sessionStorage.setItem(MATCH_PREFERENCES_STORAGE_KEY, JSON.stringify(prefs));
+      sessionStorage.setItem(MATCH_GOAL_STORAGE_KEY, goalText);
+    } catch {
+      /* ignore */
+    }
+  }, [availability, gender, goalText, sessionType, specialization, step]);
 
   useEffect(() => {
     let active = true;
@@ -196,7 +264,7 @@ export const GetMatchedPage: React.FC = () => {
                   care. This short guide sets filters for when you choose your clinician — you can still change them
                   later.
                 </p>
-                <div className={styles.actions} style={{ justifyContent: 'flex-end' }}>
+                <div className={`${styles.actions} ${styles.actionsEnd}`}>
                   <Button type="button" className={styles.primaryBtn} onClick={goNext}>
                     Continue →
                   </Button>
@@ -241,7 +309,7 @@ export const GetMatchedPage: React.FC = () => {
                     placeholder="Example: I want support with sleep, overthinking, and feeling stuck at work."
                   />
                 </div>
-                <div className={styles.actions}>
+                <div className={`${styles.actions} ${styles.actionsSplit}`}>
                   <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
                   </Button>
@@ -276,7 +344,7 @@ export const GetMatchedPage: React.FC = () => {
                     </label>
                   ))}
                 </div>
-                <div className={styles.actions}>
+                <div className={`${styles.actions} ${styles.actionsSplit}`}>
                   <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
                   </Button>
@@ -308,7 +376,7 @@ export const GetMatchedPage: React.FC = () => {
                     </label>
                   ))}
                 </div>
-                <div className={styles.actions}>
+                <div className={`${styles.actions} ${styles.actionsSplit}`}>
                   <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
                   </Button>
@@ -451,7 +519,6 @@ export const GetMatchedPage: React.FC = () => {
                       <Button
                         type="button"
                         className={styles.backBtn}
-                        style={{ width: '100%', justifyContent: 'center' }}
                         onClick={() => {
                           const prefs = buildPreferences(
                             specialization,
@@ -478,7 +545,7 @@ export const GetMatchedPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className={styles.actions} style={{ marginTop: '1.25rem' }}>
+                <div className={`${styles.actions} ${styles.actionsStart}`} style={{ marginTop: '1.25rem' }}>
                   <Button type="button" className={styles.backBtn} onClick={goBack}>
                     ← Back
                   </Button>
