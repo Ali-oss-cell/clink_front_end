@@ -31,8 +31,9 @@ export const MedicareRebatesPage: React.FC = () => {
               <article className={styles.infoBlock}>
                 <h2>How claiming usually works</h2>
                 <p>
-                  Once your session is complete, eligible rebates are claimed through Medicare according to current
-                  rules. We can explain practical steps when you book.
+                  Once your session is complete, eligible rebates are handled through Medicare using the usual channels
+                  (for example your clinician&apos;s practice systems, Medicare Online, or HPOS)—not by submitting claims
+                  directly from this website. We can explain practical steps when you book.
                 </p>
               </article>
 
@@ -44,6 +45,12 @@ export const MedicareRebatesPage: React.FC = () => {
                 </p>
               </article>
             </div>
+
+            <p className={styles.disclaimer}>
+              Figures shown elsewhere in the app (fees, gap, rebate estimates) come from our service catalogue and are
+              indicative only. They are not a guarantee of Medicare payment; always confirm with your GP and the current
+              MBS schedule.
+            </p>
 
             <div className={styles.actions}>
               <Link to="/contact" className={styles.secondaryButton}>

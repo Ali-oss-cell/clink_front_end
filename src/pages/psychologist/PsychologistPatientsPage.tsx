@@ -203,7 +203,7 @@ export const PsychologistPatientsPage: React.FC = () => {
     <Layout user={user} isAuthenticated className={styles.psychologistLayout}>
       <div className={styles.patientsContainer}>
         <div className={shell.wrap}>
-          <header className={shell.pageHeader}>
+          <header className={`${shell.pageHeader} ${styles.patientsPageHeader}`}>
             <h1 className={shell.welcomeTitle}>My patients</h1>
             <p className={shell.welcomeSubtitle}>
               Patients linked through your appointments or progress notes. Open a profile for full details and PDF
@@ -250,7 +250,7 @@ export const PsychologistPatientsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.searchFilterSection}>
+          <div className={`${styles.searchFilterSection} ${styles.searchFilterSectionPatients}`}>
             <div className={styles.searchField}>
               <span className={styles.searchIconWrap} aria-hidden>
                 <SearchIcon size="md" />

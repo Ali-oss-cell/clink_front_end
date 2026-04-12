@@ -122,13 +122,16 @@ export const ServiceSelectionPage: React.FC = () => {
     loadConsent();
   }, []);
 
-  // Transform API services to display format
+  // Transform API services to display format (fees/rebates from `GET /api/services/` — admin-maintained)
   const services: Service[] = apiServices.map(apiService => {
     const standardFee = parseFloat(apiService.standard_fee) || 0;
-    // TODO: Get actual Medicare rebate from backend when available
-    const medicareRebate = standardFee > 0 ? 87.45 : 0; // Default Medicare rebate
-    const yourCost = Math.max(0, standardFee - medicareRebate);
-    
+    const medicareRebate = parseFloat(apiService.medicare_rebate ?? '0') || 0;
+    const oopRaw = apiService.out_of_pocket_cost;
+    const yourCost =
+      oopRaw !== undefined && oopRaw !== null && oopRaw !== ''
+        ? Math.max(0, parseFloat(String(oopRaw)) || 0)
+        : Math.max(0, standardFee - medicareRebate);
+
     return {
       id: apiService.id.toString(), // Convert to string for comparison with selectedService
       name: apiService.name,
@@ -137,7 +140,7 @@ export const ServiceSelectionPage: React.FC = () => {
       medicareRebate: medicareRebate,
       yourCost: yourCost,
       medicareApplicable: medicareRebate > 0,
-      specializations: [], // TODO: Get from backend when available
+      specializations: [], // TODO: expose from backend when ServiceSerializer includes specializations
       description: apiService.description || 'Professional psychological service',
       requiresTelehealthConsent: apiService.name.toLowerCase().includes('telehealth') || 
                                 apiService.name.toLowerCase().includes('video')
@@ -221,8 +224,9 @@ export const ServiceSelectionPage: React.FC = () => {
                 <span className={styles.bookingFlowKicker}>Step 1 of 5</span>
                 <h1 className={styles.bookingFlowHeroTitle}>How can we help today?</h1>
                 <p className={styles.bookingFlowHeroLead}>
-                  Pick the kind of session that matches what you need right now. You will see duration and your estimated
-                  out-of-pocket before you continue; Medicare may reduce that if you are eligible.
+                  Pick the kind of session that matches what you need right now. You will see duration and an estimated
+                  gap payment based on our listed fees and rebates; final amounts and Medicare eligibility depend on your
+                  situation and current Medicare rules.
                 </p>
               </div>
 
@@ -312,8 +316,8 @@ export const ServiceSelectionPage: React.FC = () => {
                     <h3 className={styles.serviceCardTitle}>{service.name}</h3>
                     <p className={styles.serviceCardDescription}>{service.description}</p>
                     <p className={styles.serviceCardMeta}>
-                      {service.duration} min · Est. out-of-pocket ${service.yourCost.toFixed(2)}
-                      {service.medicareApplicable ? ' · Medicare may apply' : ''}
+                      {service.duration} min · Est. gap ${service.yourCost.toFixed(2)}
+                      {service.medicareApplicable ? ' · indicative Medicare rebate on file' : ''}
                     </p>
                     <div className={styles.serviceCardCta} aria-hidden={false}>
                       {isSelected ? (
@@ -337,7 +341,8 @@ export const ServiceSelectionPage: React.FC = () => {
           <div className={`${styles.helpStrip} ${styles.bookingFlowCanvas}`}>
             <InfoIcon size="sm" aria-hidden />
             <span>
-              Not sure which service is right for you? Medicare rebates apply with a valid Mental Health Care Plan.{' '}
+              Not sure which service is right for you? You may be eligible for Medicare rebates with a valid Mental
+              Health Treatment Plan from your GP—your clinician can confirm.{' '}
               <strong>Call us on (03) 9xxx-xxxx</strong> for a free 10-minute consultation.
             </span>
           </div>

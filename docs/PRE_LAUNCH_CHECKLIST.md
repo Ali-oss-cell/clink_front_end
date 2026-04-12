@@ -95,7 +95,7 @@ Review before promising features in marketing or support.
 | Item | Location | Notes |
 |------|-----------|--------|
 | Legacy appointment request (no API) | `src/pages/patient/PatientAppointmentPage.tsx` | `TODO: Submit appointment request to API` — currently simulates success. If any navigation still points to **`/patient/appointment`**, users may believe a request was sent. Prefer **`/appointments/book-appointment`** or implement the API. |
-| Medicare / specializations | `src/pages/patient/ServiceSelectionPage.tsx` | TODOs: rebate from backend, specializations from backend — displayed fees/labels may not match server truth. |
+| Medicare (service step) | `src/pages/patient/ServiceSelectionPage.tsx` | **Rebate/gap:** uses `medicare_rebate` and `out_of_pocket_cost` from `GET /api/services/`. **Specializations:** still not exposed on the service list serializer—keep empty or extend API later. |
 | Add to calendar | `src/pages/patient/ConfirmationPage.tsx` | Placeholder `alert`; real calendar invites may depend on backend/notifications. |
 | WhatsApp reminder | `clink-backend/appointments/tasks.py` | `TODO: Send WhatsApp reminder` — align UI copy with what is deployed. |
 | `alert()` usage | Multiple patient pages | Functional but rough UX; consider toasts/modals when time allows. |

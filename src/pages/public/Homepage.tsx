@@ -532,11 +532,18 @@ export const Homepage: React.FC = () => {
             </article>
             <article className={styles.costCard} data-home-stagger-item>
               <h3>Medicare rebate (if eligible)</h3>
-              <p>With a valid GP Mental Health Treatment Plan, eligible sessions may be claimed through Medicare.</p>
+              <p>
+                With a valid GP Mental Health Treatment Plan, you may be eligible for a Medicare rebate on a limited
+                number of sessions. Claiming uses standard Medicare channels—your clinician or practice can explain the
+                steps.
+              </p>
             </article>
             <article className={styles.costCard} data-home-stagger-item>
-              <h3>Estimated out-of-pocket</h3>
-              <p>We make out-of-pocket expectations visible up front, so planning care feels manageable.</p>
+              <h3>Estimated gap</h3>
+              <p>
+                We show indicative gap amounts from our fee schedule before you confirm; your final cost depends on
+                eligibility and current Medicare rules.
+              </p>
             </article>
           </div>
           <Link to="/medicare-rebates" className={styles.costClarityLink}>
@@ -788,11 +795,11 @@ export const Homepage: React.FC = () => {
               <h2 className={styles.accessHeading}>Medicare &amp; care plans</h2>
               <p>
                 With a valid Mental Health Treatment Plan from your GP, you may be eligible for Medicare rebates on a
-                limited number of sessions per calendar year. We explain practical claiming steps once your booking is
-                confirmed.
+                limited number of sessions per calendar year. We can explain practical next steps once your booking is
+                confirmed—actual claiming follows Medicare&apos;s usual processes, not direct submission from this site.
               </p>
               <ul className={styles.accessList}>
-                <li>Rebates claimed through Medicare after eligible sessions</li>
+                <li>Eligible rebates are processed through Medicare (e.g. via your practitioner or standard channels)</li>
                 <li>Your GP helps determine eligibility and referral documentation</li>
                 <li>We are happy to answer practical questions when you contact us</li>
               </ul>

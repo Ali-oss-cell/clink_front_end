@@ -55,6 +55,17 @@
   }
 }
 
+.disclaimer {
+  margin: 1.25rem 0 0;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  background: rgba($text-dark, 0.04);
+  border: 1px solid $border-light;
+  color: $text-light;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
 .actions {
   margin-top: 1.6rem;
   display: flex;

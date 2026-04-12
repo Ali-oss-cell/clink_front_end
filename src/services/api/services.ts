@@ -6,6 +6,10 @@ export interface Service {
   name: string;
   description: string;
   standard_fee: string;
+  /** Scheduled rebate amount for this service (AUD); admin-maintained — eligibility still depends on the patient and Medicare rules. */
+  medicare_rebate?: string;
+  /** Patient gap after scheduled rebate: standard_fee − medicare_rebate (from API when present). */
+  out_of_pocket_cost?: string | number;
   duration_minutes: number;
   is_active: boolean;
 }

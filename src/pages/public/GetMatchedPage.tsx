@@ -14,9 +14,46 @@ import {
   type MatchAvailabilityFilter,
 } from '../../constants/matchPreferences';
 import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import styles from './GetMatchedPage.module.scss';
+
+/** Native radio, visually hidden — full card is the control (no visible circle). */
+function MatchChoiceCard({
+  name,
+  value,
+  checked,
+  onSelect,
+  title,
+  description,
+  compact,
+}: {
+  name: string;
+  value: string;
+  checked: boolean;
+  onSelect: () => void;
+  title: string;
+  description?: string;
+  compact?: boolean;
+}) {
+  return (
+    <label
+      className={`${styles.choiceCard} ${checked ? styles.choiceCardSelected : ''} ${compact ? styles.choiceCardCompact : ''}`}
+    >
+      <input
+        type="radio"
+        name={name}
+        value={value}
+        checked={checked}
+        onChange={onSelect}
+        className={styles.choiceInput}
+      />
+      <span className={styles.choiceCardBody}>
+        <span className={styles.choiceCardTitle}>{title}</span>
+        {description ? <span className={styles.choiceCardDesc}>{description}</span> : null}
+      </span>
+    </label>
+  );
+}
 
 const TOTAL_STEPS = 5;
 const MATCH_GOAL_STORAGE_KEY = 'tailored_match_goal';
@@ -230,7 +267,7 @@ export const GetMatchedPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className={styles.page}>
+      <div className={`resourcesShell ${styles.page}`}>
         <section className={styles.hero}>
           <div className="container">
             <div className={styles.heroInner}>
@@ -276,24 +313,17 @@ export const GetMatchedPage: React.FC = () => {
               <>
                 <h2 className={styles.stepTitle}>What would you like support with?</h2>
                 <p className={styles.stepHint}>Choose the closest fit. We’ll use this to filter specialisations.</p>
-                <div className={styles.optionGrid} role="radiogroup" aria-label="Area of focus">
+                <div className={styles.choiceGrid} role="radiogroup" aria-label="Area of focus">
                   {FOCUS_OPTIONS.map((opt) => (
-                    <label
+                    <MatchChoiceCard
                       key={opt.value}
-                      className={`${styles.option} ${specialization === opt.value ? styles.optionSelected : ''}`}
-                    >
-                      <Input
-                        type="radio"
-                        name="focus"
-                        value={opt.value}
-                        checked={specialization === opt.value}
-                        onChange={() => setSpecialization(opt.value)}
-                      />
-                      <span>
-                        <span className={styles.optionLabel}>{opt.label}</span>
-                        <span className={styles.optionDesc}>{opt.description}</span>
-                      </span>
-                    </label>
+                      name="focus"
+                      value={opt.value}
+                      checked={specialization === opt.value}
+                      onSelect={() => setSpecialization(opt.value)}
+                      title={opt.label}
+                      description={opt.description}
+                    />
                   ))}
                 </div>
                 <div className={styles.goalBox}>
@@ -324,24 +354,17 @@ export const GetMatchedPage: React.FC = () => {
               <>
                 <h2 className={styles.stepTitle}>How would you like to attend?</h2>
                 <p className={styles.stepHint}>We’ll show psychologists who offer your preferred session format.</p>
-                <div className={styles.optionGrid} role="radiogroup" aria-label="Session format">
+                <div className={styles.choiceGrid} role="radiogroup" aria-label="Session format">
                   {SESSION_OPTIONS.map((opt) => (
-                    <label
+                    <MatchChoiceCard
                       key={opt.value}
-                      className={`${styles.option} ${sessionType === opt.value ? styles.optionSelected : ''}`}
-                    >
-                      <Input
-                        type="radio"
-                        name="session"
-                        value={opt.value}
-                        checked={sessionType === opt.value}
-                        onChange={() => setSessionType(opt.value)}
-                      />
-                      <span>
-                        <span className={styles.optionLabel}>{opt.label}</span>
-                        <span className={styles.optionDesc}>{opt.description}</span>
-                      </span>
-                    </label>
+                      name="session"
+                      value={opt.value}
+                      checked={sessionType === opt.value}
+                      onSelect={() => setSessionType(opt.value)}
+                      title={opt.label}
+                      description={opt.description}
+                    />
                   ))}
                 </div>
                 <div className={`${styles.actions} ${styles.actionsSplit}`}>
@@ -359,21 +382,17 @@ export const GetMatchedPage: React.FC = () => {
               <>
                 <h2 className={styles.stepTitle}>Psychologist gender preference</h2>
                 <p className={styles.stepHint}>Optional preference — you can choose “No preference”.</p>
-                <div className={styles.optionGrid} role="radiogroup" aria-label="Gender preference">
+                <div className={styles.choiceGrid} role="radiogroup" aria-label="Gender preference">
                   {GENDER_OPTIONS.map((opt) => (
-                    <label
+                    <MatchChoiceCard
                       key={opt.value}
-                      className={`${styles.option} ${gender === opt.value ? styles.optionSelected : ''}`}
-                    >
-                      <Input
-                        type="radio"
-                        name="gender"
-                        value={opt.value}
-                        checked={gender === opt.value}
-                        onChange={() => setGender(opt.value)}
-                      />
-                      <span className={styles.optionLabel}>{opt.label}</span>
-                    </label>
+                      name="gender"
+                      value={opt.value}
+                      checked={gender === opt.value}
+                      onSelect={() => setGender(opt.value)}
+                      title={opt.label}
+                      compact
+                    />
                   ))}
                 </div>
                 <div className={`${styles.actions} ${styles.actionsSplit}`}>
@@ -391,24 +410,17 @@ export const GetMatchedPage: React.FC = () => {
               <>
                 <h2 className={styles.stepTitle}>When would you like to start?</h2>
                 <p className={styles.stepHint}>This refines availability filters on the next screen.</p>
-                <div className={styles.optionGrid} role="radiogroup" aria-label="Availability">
+                <div className={styles.choiceGrid} role="radiogroup" aria-label="Availability">
                   {AVAILABILITY_OPTIONS.map((opt) => (
-                    <label
+                    <MatchChoiceCard
                       key={opt.value}
-                      className={`${styles.option} ${availability === opt.value ? styles.optionSelected : ''}`}
-                    >
-                      <Input
-                        type="radio"
-                        name="availability"
-                        value={opt.value}
-                        checked={availability === opt.value}
-                        onChange={() => setAvailability(opt.value)}
-                      />
-                      <span>
-                        <span className={styles.optionLabel}>{opt.label}</span>
-                        <span className={styles.optionDesc}>{opt.description}</span>
-                      </span>
-                    </label>
+                      name="availability"
+                      value={opt.value}
+                      checked={availability === opt.value}
+                      onSelect={() => setAvailability(opt.value)}
+                      title={opt.label}
+                      description={opt.description}
+                    />
                   ))}
                 </div>
 
