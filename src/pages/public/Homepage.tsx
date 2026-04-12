@@ -683,10 +683,10 @@ export const Homepage: React.FC = () => {
             <div className={styles.spotlightMedia}>
               <img
                 src={homeProcessNotes}
-                alt="Psychology session planning notes prepared for structured follow-up care."
+                alt="Tablet resting on a soft blanket with on-screen text that reads mental health matters."
                 className={styles.spotlightImage}
                 width={640}
-                height={420}
+                height={427}
                 loading="lazy"
               />
             </div>
