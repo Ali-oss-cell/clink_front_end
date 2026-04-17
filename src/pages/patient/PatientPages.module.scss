@@ -2299,6 +2299,67 @@ button.submitButton {
   max-width: 42rem;
 }
 
+.billingPathPanel {
+  max-width: 42rem;
+  margin: 0 auto 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--cs-surface-lowest) 88%, var(--cs-primary) 12%);
+}
+
+.billingPathTitle {
+  margin: 0 0 0.65rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: $text-dark;
+}
+
+.billingPathOptions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+
+  @media (min-width: 860px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.billingPathOption {
+  border: 1px solid $border-light;
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+  background: var(--cs-surface-lowest);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--cs-primary) 36%, transparent);
+  }
+}
+
+.billingPathOptionSelected {
+  border-color: var(--cs-primary, $patient-primary);
+  background: color-mix(in srgb, var(--cs-surface-low) 86%, var(--cs-primary) 14%);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--cs-primary) 20%, transparent);
+}
+
+.billingPathLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $text-dark;
+}
+
+.billingPathHint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.79rem;
+  line-height: 1.45;
+  color: $text-light;
+}
+
 .serviceSearchWrap {
   max-width: 36rem;
   margin: 0 auto 1.5rem;
@@ -2939,6 +3000,18 @@ button.submitButton {
   border: 1px solid rgba(220, 53, 69, 0.4);
 }
 
+.statusExpired {
+  background: rgba(255, 145, 0, 0.2);
+  color: #7a4600;
+  border: 1px solid rgba(255, 145, 0, 0.4);
+}
+
+.statusMissing {
+  background: rgba(108, 117, 125, 0.2);
+  color: $text-dark;
+  border: 1px solid rgba(108, 117, 125, 0.4);
+}
+
 .statusCompleted {
   background: rgba(108, 117, 125, 0.2);
   color: $text-dark;
@@ -2949,6 +3022,16 @@ button.submitButton {
   background: rgba(108, 117, 125, 0.2);
   color: $text-dark;
   border: 1px solid rgba(108, 117, 125, 0.4);
+}
+
+.successMessage {
+  margin: 0.5rem 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(40, 167, 69, 0.35);
+  background: rgba(40, 167, 69, 0.12);
+  color: #1d5e2f;
+  font-size: 0.9rem;
 }
 
 .statusDetails {

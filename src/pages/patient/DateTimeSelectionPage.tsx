@@ -13,6 +13,8 @@ import bookingFlow from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
 
+const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
+
 /** Title-case each word for headings and summaries (e.g. API display names). */
 function formatPersonDisplayName(name: string): string {
   const t = name.trim();
@@ -28,6 +30,17 @@ export const DateTimeSelectionPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const selectedService = searchParams.get('service');
   const selectedPsychologist = searchParams.get('psychologist');
+  const bookingBillingPath: 'medicare' | 'private' = (() => {
+    const fromQuery = searchParams.get('billing_path');
+    if (fromQuery === 'private' || fromQuery === 'medicare') return fromQuery;
+    try {
+      const fromStorage = sessionStorage.getItem(BOOKING_BILLING_PATH_KEY);
+      if (fromStorage === 'private' || fromStorage === 'medicare') return fromStorage;
+    } catch {
+      /* ignore */
+    }
+    return 'medicare';
+  })();
   
   const [availabilityData, setAvailabilityData] = useState<AvailableSlotsResponse | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -237,6 +250,7 @@ export const DateTimeSelectionPage: React.FC = () => {
         service_id: serviceId,
         time_slot_id: selectedSlot.id,
         session_type: sessionType,
+        billing_path: bookingBillingPath,
         notes: ''
       };
 

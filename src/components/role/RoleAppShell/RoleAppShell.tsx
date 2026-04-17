@@ -53,6 +53,7 @@ export const RoleAppShell: React.FC<RoleAppShellProps> = ({ user, children }) =>
         { to: '/admin/patients', label: 'Patients', icon: <UserIcon size="sm" className={styles.navIcon} /> },
         { to: '/admin/staff', label: 'Staff', icon: <BriefcaseIcon size="sm" className={styles.navIcon} /> },
         { to: '/admin/billing', label: 'Billing', icon: <DollarIcon size="sm" className={styles.navIcon} /> },
+        { to: '/admin/referrals', label: 'Referrals', icon: <ClipboardIcon size="sm" className={styles.navIcon} /> },
         { to: '/admin/analytics', label: 'Analytics', icon: <ChartIcon size="sm" className={styles.navIcon} /> },
         { to: '/admin/resources', label: 'Resources', icon: <BookIcon size="sm" className={styles.navIcon} /> },
         { to: '/admin/audit-logs', label: 'Audit logs', icon: <ClipboardIcon size="sm" className={styles.navIcon} /> },

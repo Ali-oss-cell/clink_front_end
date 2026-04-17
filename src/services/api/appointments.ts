@@ -63,6 +63,7 @@ export interface BookAppointmentRequest {
   service_id: number;
   time_slot_id: number;
   session_type: 'telehealth' | 'in_person';
+  billing_path?: 'medicare' | 'private';
   notes?: string;
 }
 

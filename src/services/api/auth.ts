@@ -39,7 +39,7 @@ const authAPI = axios.create({
 // Request interceptor to add auth token and ensure correct headers
 authAPI.interceptors.request.use((config) => {
   // Ensure Content-Type is always set for JSON requests
-  if (config.data && typeof config.data === 'object') {
+  if (config.data && typeof config.data === 'object' && !(config.data instanceof FormData)) {
     config.headers['Content-Type'] = 'application/json';
   }
   
@@ -172,6 +172,28 @@ export interface DataAccessRequestResponse {
     total_payments: number;
     total_medicare_claims: number;
   };
+}
+
+export interface ReferralDocument {
+  id: number;
+  patient: number;
+  patient_name?: string;
+  file_url?: string | null;
+  file_name?: string | null;
+  original_filename?: string;
+  status: 'missing' | 'uploaded_pending_review' | 'verified' | 'rejected' | 'expired';
+  rejection_reason?: string;
+  review_notes?: string;
+  submitted_at?: string;
+  reviewed_at?: string | null;
+  reviewed_by?: number | null;
+  reviewed_by_name?: string | null;
+}
+
+export interface PatientReferralStatusResponse {
+  status: ReferralDocument['status'];
+  has_uploaded_referral: boolean;
+  latest_document: ReferralDocument | null;
 }
 
 export const authService = {
@@ -662,6 +684,73 @@ export const authService = {
         throw new Error(parseApiError(error, 'Failed to review deletion request'));
       }
       throw new Error('Network error. Please check your connection and try again.');
+    }
+  },
+
+  getReferralStatus: async (): Promise<PatientReferralStatusResponse> => {
+    try {
+      const response = await authAPI.get('/referrals/');
+      return response.data;
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status === 404) {
+        return { status: 'missing', has_uploaded_referral: false, latest_document: null };
+      }
+      throw new Error(parseApiError(error, 'Failed to load referral status'));
+    }
+  },
+
+  uploadReferralDocument: async (payload: {
+    file: File;
+    gp_name?: string;
+    gp_provider_number?: string;
+    gp_referral_date?: string;
+    gp_referral_expiry_date?: string;
+    gp_mhcp_reference?: string;
+    has_gp_referral?: boolean;
+  }): Promise<{ message: string; document: ReferralDocument }> => {
+    try {
+      const formData = new FormData();
+      formData.append('file', payload.file);
+      if (payload.gp_name) formData.append('gp_name', payload.gp_name);
+      if (payload.gp_provider_number) formData.append('gp_provider_number', payload.gp_provider_number);
+      if (payload.gp_referral_date) formData.append('gp_referral_date', payload.gp_referral_date);
+      if (payload.gp_referral_expiry_date) formData.append('gp_referral_expiry_date', payload.gp_referral_expiry_date);
+      if (payload.gp_mhcp_reference) formData.append('gp_mhcp_reference', payload.gp_mhcp_reference);
+      if (payload.has_gp_referral !== undefined) {
+        formData.append('has_gp_referral', payload.has_gp_referral ? 'true' : 'false');
+      }
+      const token = localStorage.getItem('access_token');
+      const response = await authAPI.post('/referrals/', formData, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to upload referral document'));
+    }
+  },
+
+  listReferralQueue: async (params?: { status?: string; patient?: string }) => {
+    try {
+      const response = await authAPI.get('/admin/referrals/', { params });
+      return response.data as { count: number; results: ReferralDocument[] };
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to load referral queue'));
+    }
+  },
+
+  reviewReferralDocument: async (
+    documentId: number,
+    payload: { action: 'verify' | 'reject' | 'mark_expired'; rejection_reason?: string; review_notes?: string }
+  ) => {
+    try {
+      const response = await authAPI.post(`/admin/referrals/${documentId}/review/`, payload);
+      return response.data as { message: string; document: ReferralDocument };
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to review referral document'));
     }
   },
 

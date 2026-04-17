@@ -43,6 +43,8 @@ interface Service {
   requiresTelehealthConsent?: boolean;
 }
 
+const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
+
 export const ServiceSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -55,6 +57,17 @@ export const ServiceSelectionPage: React.FC = () => {
   const [servicesLoading, setServicesLoading] = useState(true);
   const [servicesError, setServicesError] = useState<string | null>(null);
   const [serviceSearch, setServiceSearch] = useState('');
+  const [billingPath, setBillingPath] = useState<'medicare' | 'private'>(() => {
+    const fromQuery = searchParams.get('billing_path');
+    if (fromQuery === 'private' || fromQuery === 'medicare') return fromQuery;
+    try {
+      const fromStorage = sessionStorage.getItem(BOOKING_BILLING_PATH_KEY);
+      if (fromStorage === 'private' || fromStorage === 'medicare') return fromStorage;
+    } catch {
+      /* ignore */
+    }
+    return 'medicare';
+  });
 
   // Get user data from auth service
   const user = authService.getStoredUser();
@@ -192,7 +205,12 @@ export const ServiceSelectionPage: React.FC = () => {
     }
     
     // ✅ Navigate directly to wizard step 2
-    navigate(`/appointments/book-appointment?step=2&service=${serviceId}`);
+    try {
+      sessionStorage.setItem(BOOKING_BILLING_PATH_KEY, billingPath);
+    } catch {
+      /* ignore */
+    }
+    navigate(`/appointments/book-appointment?step=2&service=${serviceId}&billing_path=${billingPath}`);
   };
 
   const handleBack = () => {
@@ -231,6 +249,34 @@ export const ServiceSelectionPage: React.FC = () => {
               </div>
 
               <BookingFlowTrustPanel variant="service" />
+
+              <div className={styles.billingPathPanel}>
+                <p className={styles.billingPathTitle}>How are you booking this session?</p>
+                <div className={styles.billingPathOptions} role="radiogroup" aria-label="Booking payment path">
+                  <button
+                    type="button"
+                    className={`${styles.billingPathOption} ${billingPath === 'medicare' ? styles.billingPathOptionSelected : ''}`}
+                    onClick={() => setBillingPath('medicare')}
+                    aria-pressed={billingPath === 'medicare'}
+                  >
+                    <span className={styles.billingPathLabel}>Claim Medicare rebate</span>
+                    <span className={styles.billingPathHint}>
+                      Referral and eligibility checks apply before booking.
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.billingPathOption} ${billingPath === 'private' ? styles.billingPathOptionSelected : ''}`}
+                    onClick={() => setBillingPath('private')}
+                    aria-pressed={billingPath === 'private'}
+                  >
+                    <span className={styles.billingPathLabel}>Private booking</span>
+                    <span className={styles.billingPathHint}>
+                      No Medicare referral requirement; full private fee applies.
+                    </span>
+                  </button>
+                </div>
+              </div>
 
               {!servicesLoading && !servicesError && services.length > 0 && (
                 <div className={styles.serviceSearchWrap}>

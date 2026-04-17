@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { intakeService } from '../../services/api/intake';
-import { authService } from '../../services/api/auth';
+import { authService, type ReferralDocument } from '../../services/api/auth';
 import { PrivacyPolicyStatusCard, ThirdPartyDataSharing } from '../../components/privacy';
 import { TelehealthConsentCard } from '../../components/telehealth';
 import { UserIcon, HospitalIcon, SettingsIcon, LockIcon, ClipboardIcon, DownloadIcon } from '../../utils/icons';
@@ -45,6 +45,15 @@ export const PatientAccountPage: React.FC = () => {
   const [deletionLoading, setDeletionLoading] = useState(false);
   const [deletionReason, setDeletionReason] = useState('');
   const [deletionError, setDeletionError] = useState<string | null>(null);
+  const [referralStatus, setReferralStatus] = useState<{
+    status: 'missing' | 'uploaded_pending_review' | 'verified' | 'rejected' | 'expired';
+    has_uploaded_referral: boolean;
+    latest_document: ReferralDocument | null;
+  } | null>(null);
+  const [referralFile, setReferralFile] = useState<File | null>(null);
+  const [referralUploading, setReferralUploading] = useState(false);
+  const [referralError, setReferralError] = useState<string | null>(null);
+  const [referralSuccess, setReferralSuccess] = useState<string | null>(null);
   
   // Preferences type
   type PatientPreferences = {
@@ -129,11 +138,53 @@ export const PatientAccountPage: React.FC = () => {
         }
       }
     };
+    const fetchReferralStatus = async () => {
+      try {
+        const status = await authService.getReferralStatus();
+        setReferralStatus(status);
+      } catch (error: any) {
+        console.error('[PatientAccount] Error fetching referral status:', error);
+        setReferralError(error.message || 'Failed to load referral status');
+      }
+    };
     
     if (activeTab === 'privacy') {
       fetchDeletionStatus();
+      fetchReferralStatus();
     }
   }, [activeTab]);
+
+  const handleUploadReferral = async () => {
+    if (!referralFile) {
+      setReferralError('Please choose a referral PDF/image first.');
+      return;
+    }
+    setReferralUploading(true);
+    setReferralError(null);
+    setReferralSuccess(null);
+    try {
+      const result = await authService.uploadReferralDocument({
+        file: referralFile,
+        has_gp_referral: true,
+      });
+      setReferralSuccess(result.message || 'Referral uploaded successfully.');
+      setReferralFile(null);
+      const status = await authService.getReferralStatus();
+      setReferralStatus(status);
+    } catch (error: any) {
+      setReferralError(error.message || 'Failed to upload referral.');
+    } finally {
+      setReferralUploading(false);
+    }
+  };
+
+  const getReferralStatusClass = (status: string | undefined) => {
+    if (status === 'verified') return styles.statusApproved;
+    if (status === 'rejected') return styles.statusRejected;
+    if (status === 'expired') return styles.statusExpired;
+    if (status === 'uploaded_pending_review') return styles.statusPending;
+    return styles.statusMissing;
+  };
 
   const tabs: { id: AccountTab; label: string; icon: ReactNode }[] = [
     { id: 'personal', label: 'Personal Info', icon: <UserIcon size="md" /> },
@@ -545,6 +596,77 @@ export const PatientAccountPage: React.FC = () => {
                   <div className={styles.privacyWidgets}>
                     <PrivacyPolicyStatusCard />
                     <ThirdPartyDataSharing />
+                  </div>
+
+                  <div className={styles.privacySection}>
+                    <h3 className={styles.subsectionTitle}>Medicare referral status</h3>
+                    <p className={styles.privacyDescription}>
+                      If you want to claim Medicare rebates, upload your GP referral/MHTP document (usually PDF).
+                      Our admin team reviews it before Medicare-claiming bookings.
+                    </p>
+
+                    {referralError && (
+                      <div className={styles.errorAlert}>
+                        <span>{referralError}</span>
+                      </div>
+                    )}
+                    {referralSuccess && (
+                      <div className={styles.successMessage}>
+                        {referralSuccess}
+                      </div>
+                    )}
+
+                    <div className={styles.deletionStatusCard}>
+                      <div className={styles.statusHeader}>
+                        <h4>Current referral state</h4>
+                        <span
+                          className={`${styles.statusBadge} ${getReferralStatusClass(referralStatus?.status)}`}
+                        >
+                          {referralStatus?.status || 'missing'}
+                        </span>
+                      </div>
+                      {referralStatus?.latest_document && (
+                        <div className={styles.statusDetails}>
+                          {referralStatus.latest_document.file_name && (
+                            <div className={styles.statusRow}>
+                              <strong>Latest file:</strong>
+                              <span>{referralStatus.latest_document.file_name}</span>
+                            </div>
+                          )}
+                          {referralStatus.latest_document.submitted_at && (
+                            <div className={styles.statusRow}>
+                              <strong>Uploaded:</strong>
+                              <span>{new Date(referralStatus.latest_document.submitted_at).toLocaleDateString('en-AU')}</span>
+                            </div>
+                          )}
+                          {referralStatus.latest_document.rejection_reason && (
+                            <div className={styles.statusRow}>
+                              <strong>Admin note:</strong>
+                              <span>{referralStatus.latest_document.rejection_reason}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className={styles.deletionRequestForm}>
+                      <Input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"
+                        className={styles.input}
+                        onChange={(e) => setReferralFile(e.target.files?.[0] || null)}
+                      />
+                      <Button
+                        className={styles.primaryButton}
+                        onClick={handleUploadReferral}
+                        disabled={referralUploading}
+                      >
+                        {referralUploading ? 'Uploading referral...' : 'Upload referral document'}
+                      </Button>
+                      <p className={styles.dataAccessNote}>
+                        Accepted formats: PDF/image, max 8MB. You can still book private sessions while review is pending.
+                      </p>
+                    </div>
                   </div>
                   
                   <div className={styles.privacySection}>

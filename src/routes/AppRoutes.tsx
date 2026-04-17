@@ -63,7 +63,8 @@ import {
   AdminAnalyticsPage,
   AdminResourcesPage,
   AdminAuditLogsPage,
-  AdminDataDeletionPage
+  AdminDataDeletionPage,
+  AdminReferralsPage
 } from '../pages/admin';
 
 // Video call page
@@ -547,6 +548,16 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           allowedRoles={['admin', 'practice_manager']}
         >
           <AdminDataDeletionPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/referrals" element={
+        <ProtectedRoute
+          isAuthenticated={isAuthenticated}
+          user={user}
+          allowedRoles={['admin', 'practice_manager']}
+        >
+          <AdminReferralsPage />
         </ProtectedRoute>
       } />
 
