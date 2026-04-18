@@ -321,7 +321,6 @@ export const ServiceSelectionPage: React.FC = () => {
 
             <div className={styles.bookingFlowCanvas}>
               <div className={styles.bookingFlowHeroCenter}>
-                <span className={styles.bookingFlowKicker}>Step 1 of 5</span>
                 <h1 className={styles.bookingFlowHeroTitle}>How can we help today?</h1>
                 <p className={styles.bookingFlowHeroLead}>
                   Pick the kind of session that matches what you need right now. You will see duration and an estimated

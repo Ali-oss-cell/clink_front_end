@@ -527,7 +527,6 @@ export const DateTimeSelectionPage: React.FC = () => {
 
           <div className={styles.bookingDatetimeSplit}>
             <aside className={styles.bookingSummaryAside} aria-label="Booking summary">
-              <p className={styles.stepKickerDt}>Step 3 of 5</p>
               <div className={styles.summaryAsideName}>
                 {formatPersonDisplayName(availabilityData.psychologist_name)}
               </div>

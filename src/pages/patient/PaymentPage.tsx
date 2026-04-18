@@ -12,6 +12,7 @@ import { Button } from '../../components/ui/button';
 import { Checkbox } from '../../components/ui/checkbox';
 import styles from './Payment.module.scss';
 import bookingFlow from './PatientPages.module.scss';
+import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 
 const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
 
@@ -260,11 +261,14 @@ export const PaymentPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.paymentContainer}>
+      <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
+        <div className={`${styles.paymentContainer} ${bookingFlow.bookingFlowLayout}`}>
           <div className="container">
-            <div className={styles.summaryCard}>
-              <p>Loading payment details...</p>
+            <BookingFlowProgress currentStep={5} />
+            <div className={bookingFlow.bookingFlowMain}>
+              <div className={styles.summaryCard}>
+                <p>Loading payment details...</p>
+              </div>
             </div>
           </div>
         </div>
@@ -274,18 +278,21 @@ export const PaymentPage: React.FC = () => {
 
   if (error || !bookingData) {
     return (
-      <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.paymentContainer}>
+      <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
+        <div className={`${styles.paymentContainer} ${bookingFlow.bookingFlowLayout}`}>
           <div className="container">
-            <div className={styles.summaryCard}>
-              <h3>
-                <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                Unable to Load Payment
-              </h3>
-              <p>{error || 'Payment data unavailable.'}</p>
-              <Button variant="outline" className={styles.cancelButton} onClick={handleBack}>
-                Back
-              </Button>
+            <BookingFlowProgress currentStep={5} />
+            <div className={bookingFlow.bookingFlowMain}>
+              <div className={styles.summaryCard}>
+                <h3>
+                  <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                  Unable to Load Payment
+                </h3>
+                <p>{error || 'Payment data unavailable.'}</p>
+                <Button variant="outline" className={styles.cancelButton} onClick={handleBack}>
+                  Back
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -307,12 +314,13 @@ export const PaymentPage: React.FC = () => {
   const showCardStripe = stripeClientSecret && paymentIntentId && stripePromise;
 
   return (
-    <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+    <Layout user={user} isAuthenticated={true} patientShell className={bookingFlow.patientLayout}>
       <div
         className={`${styles.paymentContainer} ${bookingFlow.bookingFlowLayout}`}
         data-patient-booking-viewport=""
       >
         <div className="container">
+          <BookingFlowProgress currentStep={5} />
           <div className={bookingFlow.bookingFlowMain}>
           <div className={styles.pageHeader}>
             <Button className={styles.backButton} onClick={handleBack}>

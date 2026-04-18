@@ -34,7 +34,7 @@
 
 .segment {
   flex: 1;
-  height: 8px;
+  height: 4px;
   border-radius: 999px;
   transition: background 0.25s ease;
 }
@@ -70,7 +70,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--cs-primary);
+  color: var(--cs-on-surface, #1a1c1e);
 }
 
 .stepLabels {

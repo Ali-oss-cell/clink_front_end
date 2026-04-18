@@ -334,7 +334,6 @@ export const PsychologistSelectionPage: React.FC = () => {
 
             <main className={styles.bookingMainCanvas}>
               <header className={styles.editorialHeader}>
-                <p className={styles.stepKicker}>Step 2 of 5</p>
                 <h1 className={styles.editorialTitle}>Choose your psychologist</h1>
                 <p className={styles.editorialLead}>
                   Read a short bio, check specialties, and choose someone who feels like a fit—every profile is an

@@ -14,6 +14,7 @@ import { Textarea } from '../../components/ui/textarea';
 import { cn } from '../../lib/cn';
 import styles from './AppointmentDetails.module.scss';
 import patientPageStyles from './PatientPages.module.scss';
+import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 
 interface AppointmentDetailsFormData {
   therapyFocus: string;
@@ -109,8 +110,12 @@ export const AppointmentDetailsPage: React.FC = () => {
   if (loading) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
-        <div className={styles.appointmentDetailsContainer} data-patient-booking-viewport="">
+        <div
+          className={`${styles.appointmentDetailsContainer} ${patientPageStyles.bookingFlowLayout}`}
+          data-patient-booking-viewport=""
+        >
           <div className="container">
+            <BookingFlowProgress currentStep={4} />
             <div className={styles.loadingState}>
               <p>Loading appointment details...</p>
             </div>
@@ -123,8 +128,12 @@ export const AppointmentDetailsPage: React.FC = () => {
   if (error || !bookingData) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
-        <div className={styles.appointmentDetailsContainer} data-patient-booking-viewport="">
+        <div
+          className={`${styles.appointmentDetailsContainer} ${patientPageStyles.bookingFlowLayout}`}
+          data-patient-booking-viewport=""
+        >
           <div className="container">
+            <BookingFlowProgress currentStep={4} />
             <div className={styles.errorState}>
               <h3 className={styles.errorStateTitle}>
                 <span className={styles.errorStateIconWrap} aria-hidden>
@@ -150,8 +159,12 @@ export const AppointmentDetailsPage: React.FC = () => {
       patientShell
       className={patientPageStyles.patientLayout}
     >
-      <div className={styles.appointmentDetailsContainer} data-patient-booking-viewport="">
+      <div
+        className={`${styles.appointmentDetailsContainer} ${patientPageStyles.bookingFlowLayout}`}
+        data-patient-booking-viewport=""
+      >
         <div className="container">
+          <BookingFlowProgress currentStep={4} />
           <div className={styles.pageHeader}>
             <Button className={styles.backButton} onClick={handleBack}>
               ← Back
