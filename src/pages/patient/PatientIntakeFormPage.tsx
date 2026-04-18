@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import PhoneInput from 'react-phone-number-input';
 import { isValidPhoneNumber } from 'libphonenumber-js';
@@ -23,6 +23,7 @@ import type { IntakeFormData } from '../../services/api/intake';
 
 export const PatientIntakeFormPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingIntake, setIsLoadingIntake] = useState(true);
@@ -177,6 +178,23 @@ export const PatientIntakeFormPage: React.FC = () => {
       isMounted = false;
     };
   }, [getValues, reset]);
+
+  useEffect(() => {
+    const stepRaw = searchParams.get('step');
+    const parsed = stepRaw ? parseInt(stepRaw, 10) : NaN;
+    if (!Number.isNaN(parsed) && parsed >= 1 && parsed <= 6) {
+      setCurrentStep(parsed);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (isLoadingIntake) return;
+    if (searchParams.get('focus') !== 'gp_referral' || currentStep !== 3) return;
+    const t = window.setTimeout(() => {
+      document.getElementById('intake-gp-referral-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+    return () => window.clearTimeout(t);
+  }, [isLoadingIntake, searchParams, currentStep]);
 
   // Helper function to check if a value is truthy (handles both boolean and string)
   const isTruthy = (value: boolean | string | undefined): boolean => {
@@ -603,7 +621,7 @@ export const PatientIntakeFormPage: React.FC = () => {
 
       case 3:
         return (
-          <div className={styles.formSection}>
+          <div id="intake-gp-referral-section" className={styles.formSection}>
             <h3 className={styles.sectionTitle}>3. Referral Information</h3>
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>

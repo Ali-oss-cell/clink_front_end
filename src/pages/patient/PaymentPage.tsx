@@ -13,6 +13,8 @@ import { Checkbox } from '../../components/ui/checkbox';
 import styles from './Payment.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 
+const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
+
 interface CardPaymentFormProps {
   appointmentId: number;
   paymentIntentId: string;
@@ -92,6 +94,7 @@ export const PaymentPage: React.FC = () => {
     agreedReminderConsent &&
     agreedMedicareIfClaiming;
   const [bookingData, setBookingData] = useState<BookingSummaryResponse | null>(null);
+  const [bookingRevalidationBlocked, setBookingRevalidationBlocked] = useState(false);
 
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
@@ -103,6 +106,34 @@ export const PaymentPage: React.FC = () => {
 
   const user = authService.getStoredUser();
   const stripePromise = getStripePromise();
+  const billingPathFromState = (() => {
+    const fromQuery = searchParams.get('billing_path');
+    if (fromQuery === 'medicare' || fromQuery === 'private') return fromQuery;
+    try {
+      const fromStorage = sessionStorage.getItem(BOOKING_BILLING_PATH_KEY);
+      if (fromStorage === 'medicare' || fromStorage === 'private') return fromStorage;
+    } catch {
+      /* ignore */
+    }
+    return undefined;
+  })();
+
+  const runRevalidation = async (): Promise<boolean> => {
+    if (!appointmentId) return false;
+    const response = await appointmentsService.revalidateBooking(parseInt(appointmentId, 10), billingPathFromState);
+    if (response.is_valid) {
+      setBookingRevalidationBlocked(false);
+      return true;
+    }
+    setBookingRevalidationBlocked(true);
+    const nextPath =
+      response.actions.next ||
+      response.actions.wizard_medicare_referral ||
+      '/appointments/book-appointment?billing_path=medicare&focus=referral';
+    setPaymentError(`${response.message} Redirecting to resolve required steps...`);
+    window.setTimeout(() => navigate(nextPath), 700);
+    return false;
+  };
 
   useEffect(() => {
     if (!appointmentId) {
@@ -116,6 +147,7 @@ export const PaymentPage: React.FC = () => {
         setError(null);
         const summary = await appointmentsService.getBookingSummary(parseInt(appointmentId, 10));
         setBookingData(summary);
+        await runRevalidation();
       } catch (err: unknown) {
         console.error('Failed to load booking summary for payment:', err);
         setError(extractApiErrorMessage(err, 'Unable to load payment summary.'));
@@ -148,6 +180,8 @@ export const PaymentPage: React.FC = () => {
       try {
         setIsProcessing(true);
         setPaymentError(null);
+        const canProceed = await runRevalidation();
+        if (!canProceed) return;
         await paymentsService.confirm({
           appointment_id: parseInt(appointmentId, 10),
           payment_intent_id: paymentIntentFromUrl,
@@ -194,6 +228,8 @@ export const PaymentPage: React.FC = () => {
     setIsPreparingIntent(true);
     setPaymentError(null);
     try {
+      const canProceed = await runRevalidation();
+      if (!canProceed) return;
       const intent = await paymentsService.createIntent(
         {
           appointment_id: parseInt(appointmentId, 10),
@@ -215,8 +251,10 @@ export const PaymentPage: React.FC = () => {
     }
   };
 
-  const navigateToConfirmation = () => {
+  const navigateToConfirmation = async () => {
     if (!appointmentId) return;
+    const canProceed = await runRevalidation();
+    if (!canProceed) return;
     navigate(`/appointments/confirmation?appointment_id=${appointmentId}`);
   };
 
@@ -470,7 +508,7 @@ export const PaymentPage: React.FC = () => {
                 type="button"
                 className={styles.payButton}
                 onClick={prepareCardCheckout}
-                disabled={!paymentConsentsComplete || isPreparingIntent || isProcessing}
+                disabled={!paymentConsentsComplete || isPreparingIntent || isProcessing || bookingRevalidationBlocked}
               >
                 {isPreparingIntent ? 'Preparing secure checkout…' : 'Continue to secure payment'}
               </Button>

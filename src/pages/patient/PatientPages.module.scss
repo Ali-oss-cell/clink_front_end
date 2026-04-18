@@ -2360,6 +2360,84 @@ button.submitButton {
   color: $text-light;
 }
 
+.bookingReferralPanel {
+  max-width: 42rem;
+  margin: 0 auto 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--cs-tertiary) 24%, transparent);
+  background: color-mix(in srgb, var(--cs-surface-lowest) 92%, var(--cs-tertiary) 8%);
+}
+
+.bookingReferralHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+
+  h3 {
+    margin: 0;
+    font-size: 0.98rem;
+    color: $text-dark;
+  }
+}
+
+.bookingReferralBadge {
+  border-radius: 999px;
+  padding: 0.22rem 0.62rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.bookingReferralVerified {
+  background: color-mix(in srgb, #22c55e 16%, white);
+  color: #166534;
+}
+
+.bookingReferralPending {
+  background: color-mix(in srgb, #f59e0b 18%, white);
+  color: #92400e;
+}
+
+.bookingReferralMissing {
+  background: color-mix(in srgb, #ef4444 14%, white);
+  color: #991b1b;
+}
+
+.bookingReferralHint {
+  margin: 0.55rem 0 0.75rem;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: $text-light;
+}
+
+.bookingReferralActions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+.bookingReferralFileInput {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid $border-light;
+  background: var(--cs-surface-lowest);
+}
+
+.bookingReferralError {
+  margin: 0.55rem 0 0;
+  font-size: 0.8rem;
+  color: #b91c1c;
+}
+
+.bookingReferralSuccess {
+  margin: 0.55rem 0 0;
+  font-size: 0.8rem;
+  color: #166534;
+}
+
 .serviceSearchWrap {
   max-width: 36rem;
   margin: 0 auto 1.5rem;

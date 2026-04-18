@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
-import { authService } from '../../services/api/auth';
-import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
+import { authService, type BookingReadinessResponse, type PatientReferralStatusResponse } from '../../services/api/auth';
 import { servicesService, type Service as APIService } from '../../services/api/services';
 import {
   InfoIcon,
@@ -50,13 +49,21 @@ export const ServiceSelectionPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const serviceFromUrl = searchParams.get('service');
   const [selectedService, setSelectedService] = useState<string | null>(serviceFromUrl);
-  const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
-  const [consentLoading, setConsentLoading] = useState(true);
-  const [consentError, setConsentError] = useState<string | null>(null);
   const [apiServices, setApiServices] = useState<APIService[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
   const [servicesError, setServicesError] = useState<string | null>(null);
   const [serviceSearch, setServiceSearch] = useState('');
+  const [bookingReadiness, setBookingReadiness] = useState<BookingReadinessResponse | null>(null);
+  const [readinessLoading, setReadinessLoading] = useState(true);
+  const [readinessError, setReadinessError] = useState<string | null>(null);
+  const [referralStatus, setReferralStatus] = useState<PatientReferralStatusResponse | null>(null);
+  const [referralLoading, setReferralLoading] = useState(false);
+  const [referralFile, setReferralFile] = useState<File | null>(null);
+  const [referralUploading, setReferralUploading] = useState(false);
+  const [referralError, setReferralError] = useState<string | null>(null);
+  const [referralSuccess, setReferralSuccess] = useState<string | null>(null);
+  const referralPanelRef = useRef<HTMLDivElement | null>(null);
+  const billingPathPanelRef = useRef<HTMLDivElement | null>(null);
   const [billingPath, setBillingPath] = useState<'medicare' | 'private'>(() => {
     const fromQuery = searchParams.get('billing_path');
     if (fromQuery === 'private' || fromQuery === 'medicare') return fromQuery;
@@ -71,6 +78,31 @@ export const ServiceSelectionPage: React.FC = () => {
 
   // Get user data from auth service
   const user = authService.getStoredUser();
+
+  useEffect(() => {
+    const bp = searchParams.get('billing_path');
+    if (bp === 'medicare' || bp === 'private') {
+      setBillingPath(bp);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const focus = searchParams.get('focus');
+    if (focus === 'referral') {
+      const t = window.setTimeout(() => {
+        referralPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+      return () => window.clearTimeout(t);
+    }
+    if (focus === 'billing') {
+      setBillingPath('private');
+      const t = window.setTimeout(() => {
+        billingPathPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+      return () => window.clearTimeout(t);
+    }
+    return undefined;
+  }, [searchParams]);
 
   // ✅ Fetch services from backend API
   useEffect(() => {
@@ -118,22 +150,30 @@ export const ServiceSelectionPage: React.FC = () => {
   }, [serviceFromUrl, apiServices]);
 
   useEffect(() => {
-    const loadConsent = async () => {
+    const loadReferralStatus = async () => {
       try {
-        setConsentLoading(true);
-        const response = await TelehealthService.getConsent();
-        setTelehealthConsent(response);
-        setConsentError(null);
+        setReferralLoading(true);
+        setReadinessLoading(true);
+        setReadinessError(null);
+        const readiness = await authService.getBookingReadiness({ billing_path: billingPath });
+        setBookingReadiness(readiness);
+        if (billingPath !== 'medicare') {
+          setReferralStatus(null);
+          return;
+        }
+        const status = await authService.getReferralStatus();
+        setReferralStatus(status);
       } catch (err: any) {
-        setTelehealthConsent(null);
-        setConsentError(err.message || 'Unable to verify telehealth consent.');
+        const message = err.message || 'Could not load booking readiness';
+        setReadinessError(message);
+        setReferralError(message);
       } finally {
-        setConsentLoading(false);
+        setReferralLoading(false);
+        setReadinessLoading(false);
       }
     };
-
-    loadConsent();
-  }, []);
+    loadReferralStatus();
+  }, [billingPath]);
 
   // Transform API services to display format (fees/rebates from `GET /api/services/` — admin-maintained)
   const services: Service[] = apiServices.map(apiService => {
@@ -192,15 +232,29 @@ export const ServiceSelectionPage: React.FC = () => {
       return;
     }
 
+    if (billingPath === 'medicare') {
+      if (bookingReadiness && !bookingReadiness.is_ready_to_continue) {
+        const recovery = bookingReadiness.actions.next;
+        if (recovery) {
+          navigate(recovery);
+          return;
+        }
+        alert('Please complete required Medicare readiness steps before continuing.');
+        return;
+      }
+    }
+
     // Check if telehealth consent is required
     const requiresTelehealth = selectedServiceMeta.name.toLowerCase().includes('telehealth') || 
                                selectedServiceMeta.name.toLowerCase().includes('video');
     
     if (
       requiresTelehealth &&
-      (!telehealthConsent || !telehealthConsent.consent_to_telehealth)
+      (!bookingReadiness || !bookingReadiness.telehealth_consent_complete)
     ) {
-      alert('Telehealth consent is required before booking a video session. Please update your consent first.');
+      navigate(
+        bookingReadiness?.actions.telehealth_consent ?? '/patient/account?tab=privacy'
+      );
       return;
     }
     
@@ -211,6 +265,34 @@ export const ServiceSelectionPage: React.FC = () => {
       /* ignore */
     }
     navigate(`/appointments/book-appointment?step=2&service=${serviceId}&billing_path=${billingPath}`);
+  };
+
+  const handleUploadReferral = async () => {
+    if (!referralFile) {
+      setReferralError('Please choose a referral file first.');
+      return;
+    }
+    try {
+      setReferralUploading(true);
+      setReferralError(null);
+      setReferralSuccess(null);
+      await authService.uploadReferralDocument({
+        file: referralFile,
+        has_gp_referral: true,
+      });
+      setReferralSuccess('Referral uploaded. You can continue booking while admin review is pending.');
+      setReferralFile(null);
+      const [status, readiness] = await Promise.all([
+        authService.getReferralStatus(),
+        authService.getBookingReadiness({ billing_path: billingPath }),
+      ]);
+      setReferralStatus(status);
+      setBookingReadiness(readiness);
+    } catch (err: any) {
+      setReferralError(err.message || 'Failed to upload referral.');
+    } finally {
+      setReferralUploading(false);
+    }
   };
 
   const handleBack = () => {
@@ -250,7 +332,7 @@ export const ServiceSelectionPage: React.FC = () => {
 
               <BookingFlowTrustPanel variant="service" />
 
-              <div className={styles.billingPathPanel}>
+              <div ref={billingPathPanelRef} className={styles.billingPathPanel}>
                 <p className={styles.billingPathTitle}>How are you booking this session?</p>
                 <div className={styles.billingPathOptions} role="radiogroup" aria-label="Booking payment path">
                   <button
@@ -278,6 +360,57 @@ export const ServiceSelectionPage: React.FC = () => {
                 </div>
               </div>
 
+              {billingPath === 'medicare' && (
+                <div ref={referralPanelRef} className={styles.bookingReferralPanel}>
+                  <div className={styles.bookingReferralHeader}>
+                    <h3>Referral / MHTP upload</h3>
+                    <span className={`${styles.bookingReferralBadge} ${
+                      referralStatus?.status === 'verified'
+                        ? styles.bookingReferralVerified
+                        : referralStatus?.has_uploaded_referral
+                          ? styles.bookingReferralPending
+                          : styles.bookingReferralMissing
+                    }`}>
+                      {referralLoading ? 'Checking...' : referralStatus?.status || 'missing'}
+                    </span>
+                  </div>
+                  <p className={styles.bookingReferralHint}>
+                    For Medicare claiming, upload your GP referral or mental health treatment plan PDF/image here.
+                    You can also complete referral details in the intake form.
+                  </p>
+                  <div className={styles.bookingReferralActions}>
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"
+                      className={styles.bookingReferralFileInput}
+                      onChange={(e) => setReferralFile(e.target.files?.[0] || null)}
+                    />
+                    <Button
+                      type="button"
+                      className={styles.actionButton}
+                      onClick={handleUploadReferral}
+                      disabled={referralUploading}
+                    >
+                      {referralUploading ? 'Uploading…' : 'Upload referral'}
+                    </Button>
+                    <Button
+                      type="button"
+                      className={styles.backButton}
+                      onClick={() =>
+                        navigate(
+                          bookingReadiness?.actions.intake_referral_details ??
+                            '/patient/intake-form?step=3&focus=gp_referral'
+                        )
+                      }
+                    >
+                      Open intake form referral section
+                    </Button>
+                  </div>
+                  {referralError && <p className={styles.bookingReferralError}>{referralError}</p>}
+                  {referralSuccess && <p className={styles.bookingReferralSuccess}>{referralSuccess}</p>}
+                </div>
+              )}
+
               {!servicesLoading && !servicesError && services.length > 0 && (
                 <div className={styles.serviceSearchWrap}>
                   <span className={styles.serviceSearchIcon} aria-hidden>
@@ -295,7 +428,7 @@ export const ServiceSelectionPage: React.FC = () => {
               )}
             </div>
 
-          {!consentLoading && (!telehealthConsent || !telehealthConsent.consent_to_telehealth) && (
+          {!readinessLoading && bookingReadiness && !bookingReadiness.telehealth_consent_complete && (
             <div className={styles.telehealthWarning}>
               <div>
                 <h3>Telehealth consent pending</h3>
@@ -303,7 +436,7 @@ export const ServiceSelectionPage: React.FC = () => {
                   Complete the telehealth consent form before booking a telehealth session. This ensures we have an
                   emergency contact and plan on file.
                 </p>
-                {consentError && <p className={styles.placeholderSubtext}>{consentError}</p>}
+                {readinessError && <p className={styles.placeholderSubtext}>{readinessError}</p>}
               </div>
               <Button className={styles.actionButton} onClick={() => navigate('/patient/account?tab=privacy')}>
                 Update Consent

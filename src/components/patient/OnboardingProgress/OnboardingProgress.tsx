@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { dashboardService } from '../../../services/api/dashboard';
 import type { PatientDashboard } from '../../../services/api/dashboard';
+import { authService, type PatientReferralStatusResponse } from '../../../services/api/auth';
 import { TelehealthService, type TelehealthConsentResponse } from '../../../services/api/telehealth';
 import { CheckCircleIcon, LightbulbIcon } from '../../../utils/icons';
 import styles from './OnboardingProgress.module.scss';
@@ -27,6 +28,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinical
   const [loading, setLoading] = useState(true);
   const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
   const [telehealthLoading, setTelehealthLoading] = useState(true);
+  const [referralStatus, setReferralStatus] = useState<PatientReferralStatusResponse | null>(null);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -58,6 +60,19 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinical
     };
 
     fetchTelehealthConsent();
+  }, []);
+
+  useEffect(() => {
+    const fetchReferralStatus = async () => {
+      try {
+        const referral = await authService.getReferralStatus();
+        setReferralStatus(referral);
+      } catch (error) {
+        console.warn('Failed to load referral status:', error);
+      }
+    };
+
+    fetchReferralStatus();
   }, []);
 
   // Main steps (counted in progress)
@@ -128,6 +143,13 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinical
   
   // Combine main steps and extra step for display
   const allSteps = [...mainSteps, extraStep];
+  const referralCode = referralStatus?.status ?? 'missing';
+  const referralLabel =
+    referralCode === 'uploaded_pending_review'
+      ? 'Referral pending review'
+      : referralCode === 'verified'
+        ? 'Referral verified'
+        : 'Referral missing';
 
   if (loading || telehealthLoading) {
     return (
@@ -155,9 +177,23 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinical
       <section className={styles.clinical} aria-label="Onboarding progress">
         <div className={styles.clinicalHeader}>
           <h3 className={styles.clinicalTitle}>Onboarding progress</h3>
-          <span className={styles.clinicalMeta}>
-            {completedSteps} of {totalSteps}
-          </span>
+          <div className={styles.clinicalHeaderMeta}>
+            <span className={styles.clinicalMeta}>
+              {completedSteps} of {totalSteps}
+            </span>
+            <Link
+              to="/appointments/book-appointment?billing_path=medicare"
+              className={`${styles.referralChip} ${
+                referralCode === 'verified'
+                  ? styles.referralChipVerified
+                  : referralCode === 'uploaded_pending_review'
+                    ? styles.referralChipPending
+                    : styles.referralChipMissing
+              }`}
+            >
+              {referralLabel}
+            </Link>
+          </div>
         </div>
         <div className={styles.clinicalGrid}>
           {mainSteps.map((step) => (

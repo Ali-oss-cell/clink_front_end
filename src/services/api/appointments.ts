@@ -178,6 +178,25 @@ export interface AppointmentConfirmationResponse {
   receipt_id?: string;
 }
 
+export interface BookingRevalidationResponse {
+  appointment_id: number;
+  billing_path: 'medicare' | 'private';
+  is_valid: boolean;
+  blocking_reasons: string[];
+  message: string;
+  actions: {
+    next: string | null;
+    telehealth_consent: string;
+    intake_form: string;
+    intake_referral_details: string;
+    wizard_medicare: string;
+    wizard_medicare_referral: string;
+    wizard_private: string;
+    wizard_private_billing: string;
+    referral_upload: string;
+  };
+}
+
 export interface MedicareLimitCheckResponse {
   sessions_used: number;
   sessions_remaining: number;
@@ -462,6 +481,22 @@ export class AppointmentsService {
     } catch (error) {
       console.error('Failed to load appointment confirmation:', error);
       throw new Error(extractApiErrorMessage(error, 'Failed to load confirmation'));
+    }
+  }
+
+  async revalidateBooking(
+    appointmentId: number,
+    billingPath?: 'medicare' | 'private'
+  ): Promise<BookingRevalidationResponse> {
+    try {
+      const response = await axiosInstance.post<BookingRevalidationResponse>(
+        `/appointments/${appointmentId}/revalidate-booking/`,
+        billingPath ? { billing_path: billingPath } : {}
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Failed to revalidate booking:', error);
+      throw new Error(extractApiErrorMessage(error, 'Failed to revalidate booking'));
     }
   }
 

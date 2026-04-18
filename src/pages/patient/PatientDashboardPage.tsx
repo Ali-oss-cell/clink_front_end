@@ -4,9 +4,8 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { OnboardingProgress } from '../../components/patient/OnboardingProgress/OnboardingProgress';
 import { dashboardService } from '../../services/api/dashboard';
 import type { PatientDashboard } from '../../services/api/dashboard';
-import { authService } from '../../services/api/auth';
+import { authService, type BookingReadinessResponse } from '../../services/api/auth';
 import { videoCallService } from '../../services/api/videoCall';
-import { TelehealthService, type TelehealthConsentResponse } from '../../services/api/telehealth';
 import { appointmentsService } from '../../services/api/appointments';
 import type { PatientAppointment, MedicareSessionInfoResponse } from '../../services/api/appointments';
 import {
@@ -36,7 +35,7 @@ export const PatientDashboardPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [videoCallAppointments, setVideoCallAppointments] = useState<PatientAppointment[]>([]);
   const [medicareInfo, setMedicareInfo] = useState<MedicareSessionInfoResponse | null>(null);
-  const [telehealthConsent, setTelehealthConsent] = useState<TelehealthConsentResponse | null>(null);
+  const [bookingReadiness, setBookingReadiness] = useState<BookingReadinessResponse | null>(null);
 
   const user = authService.getStoredUser() || {
     id: 1,
@@ -84,17 +83,16 @@ export const PatientDashboardPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const loadTelehealthConsent = async () => {
+    const loadBookingReadiness = async () => {
       try {
-        const consent = await TelehealthService.getConsent();
-        setTelehealthConsent(consent);
+        const readiness = await authService.getBookingReadiness({ billing_path: 'medicare' });
+        setBookingReadiness(readiness);
       } catch {
-        console.warn('Failed to load telehealth consent');
-        setTelehealthConsent(null);
+        console.warn('Failed to load booking readiness');
+        setBookingReadiness(null);
       }
     };
-
-    loadTelehealthConsent();
+    loadBookingReadiness();
   }, []);
 
   useEffect(() => {
@@ -166,6 +164,12 @@ export const PatientDashboardPage: React.FC = () => {
   }
 
   const primaryVideo = videoCallAppointments[0];
+  const referralCode = bookingReadiness?.referral_status ?? 'missing';
+  const referralLabel =
+    referralCode === 'uploaded_pending_review'
+      ? 'Uploaded, pending review'
+      : referralCode.charAt(0).toUpperCase() + referralCode.slice(1);
+  const referralReady = referralCode === 'verified';
 
   return (
     <Layout {...layoutProps}>
@@ -179,7 +183,7 @@ export const PatientDashboardPage: React.FC = () => {
 
         <OnboardingProgress user={user} clinicalLayout />
 
-        {(!telehealthConsent || !telehealthConsent.consent_to_telehealth) && (
+        {bookingReadiness && !bookingReadiness.telehealth_consent_complete && (
           <div className={d.consentBanner}>
             <div>
               <h3>
@@ -194,7 +198,9 @@ export const PatientDashboardPage: React.FC = () => {
             <button
               type="button"
               className={d.btnPrimary}
-              onClick={() => navigate('/patient/account?tab=privacy')}
+              onClick={() =>
+                navigate(bookingReadiness?.actions.telehealth_consent ?? '/patient/account?tab=privacy')
+              }
             >
               Go to privacy settings
             </button>
@@ -401,11 +407,74 @@ export const PatientDashboardPage: React.FC = () => {
             ) : (
               <div>
                 <p className={d.placeholder}>Complete your intake so we can tailor your care.</p>
-                <button type="button" className={d.btnPrimary} onClick={() => navigate('/patient/intake-form')}>
+                <button
+                  type="button"
+                  className={d.btnPrimary}
+                  onClick={() => navigate(bookingReadiness?.actions.intake_form ?? '/patient/intake-form')}
+                >
                   Continue intake
                 </button>
               </div>
             )}
+          </section>
+
+          {/* Medicare referral */}
+          <section className={`${d.card} ${d.span4}`}>
+            <h3 className={d.cardTitle}>Referral for Medicare</h3>
+            <div className={d.referralStatusRow}>
+              <span
+                className={`${d.referralBadge} ${
+                  referralReady
+                    ? d.referralVerified
+                    : referralCode === 'uploaded_pending_review'
+                      ? d.referralPending
+                      : d.referralMissing
+                }`}
+              >
+                {referralLabel}
+              </span>
+              {bookingReadiness?.has_uploaded_referral && (
+                <span className={d.referralMeta}>A referral document is on file.</span>
+              )}
+            </div>
+            <p className={d.placeholder}>
+              Upload your GP referral or MHTP to make Medicare booking smoother through the wizard.
+            </p>
+            <div className={d.referralActions}>
+              <button
+                type="button"
+                className={d.btnPrimary}
+                onClick={() =>
+                  navigate(
+                    bookingReadiness?.actions.wizard_medicare_referral ??
+                      '/appointments/book-appointment?billing_path=medicare&focus=referral'
+                  )
+                }
+              >
+                {referralReady ? 'Book with Medicare' : 'Upload in booking wizard'}
+              </button>
+              <button
+                type="button"
+                className={d.btnGhost}
+                onClick={() =>
+                  navigate(
+                    bookingReadiness?.actions.intake_referral_details ??
+                      '/patient/intake-form?step=3&focus=gp_referral'
+                  )
+                }
+              >
+                Update intake referral details
+              </button>
+              <button
+                type="button"
+                className={d.linkSubtle}
+                onClick={() =>
+                  navigate(bookingReadiness?.actions.wizard_private ?? '/appointments/book-appointment?billing_path=private')
+                }
+              >
+                Continue as private booking
+              </button>
+            </div>
           </section>
 
           {/* Recent progress */}

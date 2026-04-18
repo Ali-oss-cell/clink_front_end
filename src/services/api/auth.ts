@@ -196,6 +196,63 @@ export interface PatientReferralStatusResponse {
   latest_document: ReferralDocument | null;
 }
 
+export interface PatientNotificationItem {
+  id: number;
+  kind: string;
+  title: string;
+  body: string;
+  cta_path: string;
+  referral_document_id: number | null;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface PatientNotificationsResponse {
+  unread_count: number;
+  results: PatientNotificationItem[];
+}
+
+export interface ReferralFunnelMetricsResponse {
+  window: { start: string; end: string; days: number };
+  queue: { pending_review_total: number; pending_review_over_48h: number };
+  decisions_in_window: {
+    verified: number;
+    rejected: number;
+    expired: number;
+    total_reviewed: number;
+  };
+  rates: {
+    approval_share_verified_over_decided: number | null;
+    median_hours_submitted_to_verified: number | null;
+  };
+  appointments_in_window: {
+    medicare_after_patient_had_verified_referral: number;
+    private_billing_path_total: number;
+  };
+}
+
+export interface BookingReadinessResponse {
+  billing_path: 'medicare' | 'private';
+  intake_completed: boolean;
+  telehealth_consent_complete: boolean;
+  referral_status: ReferralDocument['status'];
+  has_uploaded_referral: boolean;
+  medicare_sessions_remaining: number | null;
+  is_ready_to_continue: boolean;
+  blocking_reasons: string[];
+  actions: {
+    next: string | null;
+    wizard_medicare: string;
+    wizard_medicare_referral: string;
+    wizard_private: string;
+    wizard_private_billing: string;
+    referral_upload: string;
+    intake_form: string;
+    intake_referral_details: string;
+    telehealth_consent: string;
+  };
+}
+
 export const authService = {
   // Login user
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -700,6 +757,53 @@ export const authService = {
     }
   },
 
+  getBookingReadiness: async (params?: {
+    billing_path?: 'medicare' | 'private';
+    service_id?: number;
+  }): Promise<BookingReadinessResponse> => {
+    try {
+      const response = await authAPI.get('/booking-readiness/', { params });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to load booking readiness'));
+    }
+  },
+
+  listPatientNotifications: async (params?: {
+    unread?: boolean;
+    limit?: number;
+  }): Promise<PatientNotificationsResponse> => {
+    try {
+      const response = await authAPI.get('/notifications/', {
+        params: {
+          ...(params?.unread ? { unread: '1' } : {}),
+          ...(params?.limit != null ? { limit: params.limit } : {}),
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to load notifications'));
+    }
+  },
+
+  markPatientNotificationRead: async (notificationId: number): Promise<{ marked: boolean }> => {
+    try {
+      const response = await authAPI.post(`/notifications/${notificationId}/read/`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to update notification'));
+    }
+  },
+
+  markAllPatientNotificationsRead: async (): Promise<{ marked_count: number }> => {
+    try {
+      const response = await authAPI.post('/notifications/mark-all-read/');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to clear notifications'));
+    }
+  },
+
   uploadReferralDocument: async (payload: {
     file: File;
     gp_name?: string;
@@ -751,6 +855,19 @@ export const authService = {
       return response.data as { message: string; document: ReferralDocument };
     } catch (error: any) {
       throw new Error(parseApiError(error, 'Failed to review referral document'));
+    }
+  },
+
+  getReferralFunnelMetrics: async (params?: {
+    days?: number;
+    start_date?: string;
+    end_date?: string;
+  }): Promise<ReferralFunnelMetricsResponse> => {
+    try {
+      const response = await authAPI.get('/admin/referrals/metrics/', { params });
+      return response.data as ReferralFunnelMetricsResponse;
+    } catch (error: any) {
+      throw new Error(parseApiError(error, 'Failed to load referral funnel metrics'));
     }
   },
 

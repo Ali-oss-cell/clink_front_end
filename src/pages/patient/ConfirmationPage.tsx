@@ -24,6 +24,8 @@ import styles from './Confirmation.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 import homeGuidedSupport from '../../assets/imges/optimized/home-guided-support.jpg';
 
+const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
+
 export const ConfirmationPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -46,6 +48,26 @@ export const ConfirmationPage: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
+        const billingPath = (() => {
+          const fromQuery = searchParams.get('billing_path');
+          if (fromQuery === 'medicare' || fromQuery === 'private') return fromQuery;
+          try {
+            const fromStorage = sessionStorage.getItem(BOOKING_BILLING_PATH_KEY);
+            if (fromStorage === 'medicare' || fromStorage === 'private') return fromStorage;
+          } catch {
+            /* ignore */
+          }
+          return undefined;
+        })();
+        const revalidation = await appointmentsService.revalidateBooking(parseInt(appointmentId, 10), billingPath);
+        if (!revalidation.is_valid) {
+          navigate(
+            revalidation.actions.next ||
+              revalidation.actions.wizard_medicare_referral ||
+              '/appointments/book-appointment?billing_path=medicare&focus=referral'
+          );
+          return;
+        }
         const data = await appointmentsService.getAppointmentConfirmation(parseInt(appointmentId));
         setConfirmation(data);
       } catch (err: unknown) {
@@ -56,7 +78,7 @@ export const ConfirmationPage: React.FC = () => {
       }
     };
     load();
-  }, [appointmentId]);
+  }, [appointmentId, navigate, searchParams]);
 
   const handleAddToCalendar = () => {
     alert('Calendar invite support will be available from backend notifications.');

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import type { User } from '../../../types/simple-auth';
-import { authService } from '../../../services/api/auth';
+import { authService, type PatientNotificationItem } from '../../../services/api/auth';
 import {
   CalendarIcon,
   DashboardIcon,
@@ -9,7 +9,9 @@ import {
   DollarIcon,
   BookIcon,
   VideoIcon,
+  BellIcon,
 } from '../../../utils/icons';
+import { Button } from '../../ui/button';
 import styles from './PatientAppShell.module.scss';
 import { ShellBrandMark } from '../../shell/ShellBrandMark';
 
@@ -21,9 +23,12 @@ interface PatientAppShellProps {
 const navClass = ({ isActive }: { isActive: boolean }) =>
   `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`;
 
+const NOTIF_POLL_MS = 3 * 60 * 1000;
+
 export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [referralNotices, setReferralNotices] = useState<PatientNotificationItem[]>([]);
 
   const initials = [user.first_name?.[0], user.last_name?.[0]]
     .filter(Boolean)
@@ -43,6 +48,55 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
   const handleLogout = async () => {
     await authService.logout();
     navigate('/');
+  };
+
+  const refreshReferralNotifications = useCallback(async () => {
+    try {
+      const data = await authService.listPatientNotifications({ unread: true, limit: 8 });
+      const referralOnly = data.results.filter((n) => n.kind.startsWith('referral_'));
+      setReferralNotices(referralOnly);
+    } catch {
+      /* non-blocking */
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshReferralNotifications();
+    const id = window.setInterval(() => void refreshReferralNotifications(), NOTIF_POLL_MS);
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void refreshReferralNotifications();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, [refreshReferralNotifications]);
+
+  const primaryNotice = referralNotices[0];
+
+  const handleNoticeView = async () => {
+    if (!primaryNotice) return;
+    try {
+      await authService.markPatientNotificationRead(primaryNotice.id);
+    } catch {
+      /* still navigate */
+    }
+    setReferralNotices((prev) => prev.filter((n) => n.id !== primaryNotice.id));
+    if (primaryNotice.cta_path) {
+      navigate(primaryNotice.cta_path);
+    } else {
+      navigate('/patient/dashboard');
+    }
+  };
+
+  const handleNoticeDismissAll = async () => {
+    try {
+      await authService.markAllPatientNotificationsRead();
+    } catch {
+      /* ignore */
+    }
+    setReferralNotices([]);
   };
 
   return (
@@ -141,7 +195,41 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
         </div>
       </aside>
 
-      <div className={styles.main}>{children}</div>
+      <div className={styles.main}>
+        {primaryNotice && (
+          <div className={styles.referralNotifBanner} role="status" aria-live="polite">
+            <span className={styles.referralNotifIcon} aria-hidden>
+              <BellIcon size="sm" />
+            </span>
+            <div className={styles.referralNotifText}>
+              <p className={styles.referralNotifTitle}>{primaryNotice.title}</p>
+              <p className={styles.referralNotifBody}>
+                {primaryNotice.body.split('\n').find((line) => line.trim()) ?? primaryNotice.body}
+              </p>
+            </div>
+            <div className={styles.referralNotifActions}>
+              <Button
+                type="button"
+                size="sm"
+                className={styles.referralNotifPrimary}
+                onClick={() => void handleNoticeView()}
+              >
+                View next step
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className={styles.referralNotifDismiss}
+                onClick={() => void handleNoticeDismissAll()}
+              >
+                Dismiss all
+              </Button>
+            </div>
+          </div>
+        )}
+        {children}
+      </div>
     </div>
   );
 };

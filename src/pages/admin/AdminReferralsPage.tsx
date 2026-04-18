@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Layout } from '../../components/common/Layout/Layout';
-import { authService, type ReferralDocument } from '../../services/api/auth';
+import { authService, type ReferralDocument, type ReferralFunnelMetricsResponse } from '../../services/api/auth';
 import { Button } from '../../components/ui/button';
 import { Select } from '../../components/ui/select';
 import { Input } from '../../components/ui/input';
@@ -20,6 +20,22 @@ export const AdminReferralsPage: React.FC = () => {
   const [reviewNotes, setReviewNotes] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [metrics, setMetrics] = useState<ReferralFunnelMetricsResponse | null>(null);
+  const [metricsLoading, setMetricsLoading] = useState(true);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
+
+  const loadMetrics = async () => {
+    try {
+      setMetricsLoading(true);
+      setMetricsError(null);
+      const data = await authService.getReferralFunnelMetrics({ days: 30 });
+      setMetrics(data);
+    } catch (err: unknown) {
+      setMetricsError(err instanceof Error ? err.message : 'Failed to load funnel metrics');
+    } finally {
+      setMetricsLoading(false);
+    }
+  };
 
   const loadQueue = async () => {
     try {
@@ -40,6 +56,10 @@ export const AdminReferralsPage: React.FC = () => {
   useEffect(() => {
     loadQueue();
   }, [statusFilter]);
+
+  useEffect(() => {
+    void loadMetrics();
+  }, []);
 
   const openReview = (doc: ReferralDocument, nextAction: 'verify' | 'reject' | 'mark_expired') => {
     setSelected(doc);
@@ -63,6 +83,7 @@ export const AdminReferralsPage: React.FC = () => {
       });
       setSelected(null);
       await loadQueue();
+      await loadMetrics();
     } catch (err: any) {
       alert(err.message || 'Failed to submit review');
     } finally {
@@ -95,6 +116,62 @@ export const AdminReferralsPage: React.FC = () => {
             <h1 className={styles.pageTitle}>Referral verification queue</h1>
             <p className={styles.pageSubtitle}>Review uploaded GP referral / MHTP documents for Medicare workflows.</p>
           </div>
+
+          {metricsError && (
+            <div className={styles.errorAlert} role="status">
+              <WarningIcon size="md" />
+              <span>{metricsError}</span>
+            </div>
+          )}
+
+          {!metricsLoading && metrics && (
+            <div className={styles.secondaryStatsGrid}>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Pending review (total)</div>
+                <div className={styles.secondaryStatValue}>{metrics.queue.pending_review_total}</div>
+              </div>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Pending &gt; 48h</div>
+                <div className={styles.secondaryStatValue}>{metrics.queue.pending_review_over_48h}</div>
+              </div>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Verified (30d)</div>
+                <div className={styles.secondaryStatValue}>{metrics.decisions_in_window.verified}</div>
+              </div>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Rejected (30d)</div>
+                <div className={styles.secondaryStatValue}>{metrics.decisions_in_window.rejected}</div>
+              </div>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Approval share</div>
+                <div className={styles.secondaryStatValue}>
+                  {metrics.rates.approval_share_verified_over_decided != null
+                    ? `${(metrics.rates.approval_share_verified_over_decided * 100).toFixed(1)}%`
+                    : '—'}
+                </div>
+              </div>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Median hours upload → verify</div>
+                <div className={styles.secondaryStatValue}>
+                  {metrics.rates.median_hours_submitted_to_verified != null
+                    ? metrics.rates.median_hours_submitted_to_verified
+                    : '—'}
+                </div>
+              </div>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Medicare appts (proxy)</div>
+                <div className={styles.secondaryStatValue}>
+                  {metrics.appointments_in_window.medicare_after_patient_had_verified_referral}
+                </div>
+              </div>
+              <div className={styles.secondaryStatCard}>
+                <div className={styles.secondaryStatLabel}>Private appts (notes)</div>
+                <div className={styles.secondaryStatValue}>
+                  {metrics.appointments_in_window.private_billing_path_total}
+                </div>
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className={styles.errorAlert}>

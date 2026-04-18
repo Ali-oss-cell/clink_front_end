@@ -260,6 +260,14 @@
   margin-bottom: 1rem;
 }
 
+.clinicalHeaderMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .clinicalTitle {
   font-family: var(--cs-font-headline);
   font-size: 0.75rem;
@@ -274,6 +282,36 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--cs-on-surface-variant);
+}
+
+.referralChip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.22rem 0.62rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.referralChipVerified {
+  background: color-mix(in srgb, #22c55e 18%, white);
+  color: #166534;
+}
+
+.referralChipPending {
+  background: color-mix(in srgb, #f59e0b 20%, white);
+  color: #92400e;
+}
+
+.referralChipMissing {
+  background: color-mix(in srgb, #ef4444 14%, white);
+  color: #991b1b;
 }
 
 .clinicalGrid {
