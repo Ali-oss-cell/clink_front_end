@@ -13,7 +13,7 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 - **Wizard primitives:** `src/assets/styles/_wizardSystem.scss` (`wizard-step-band`, `wizard-sticky-actions`, `wizard-viewport-lock`)
 - **Form primitives:** `src/assets/styles/_formSystem.scss` (`form-card`, `form-field-cluster`, `form-input`, `form-actions`)
 - **Patient surface primitives:** `src/assets/styles/_patientSurface.scss` (`patient-card`, `patient-panel`, `patient-card-title`, `patient-action-bar`)
-- **Patient form row primitives:** `src/assets/styles/_patientFormRow.scss` (`input`, `textarea`, `input-row`, `checkbox-card`, `option-card`, `label`, `hint`)
+- **Patient form row primitives:** `src/assets/styles/_patientFormRow.scss` (`input`, `textarea`, `input-row`, `checkbox-card`, `option-card`, `label`, `hint`) — e.g. booking Step 1 `BookingBillingPathToggle` composes `option-card` for Medicare vs private.
 - **Patient tab primitives:** `src/assets/styles/_patientTabs.scss` (`tab-row`, `tab-pill`)
 - **Patient page chrome (shared partial):** `src/assets/styles/_patientPageChrome.scss` — consumed by `PatientShellPage.module.scss` and `PatientShellChrome.module.scss` for aligned headers/wrap/CTAs (do not fork duplicate headers in feature modules).
 - **Site-wide glass map (where to use it, where to hold back):** `docs/WEBSITE_GLASSMORPHISM_GUIDE.md`

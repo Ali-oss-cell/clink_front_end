@@ -1,7 +1,12 @@
 import type { FC } from 'react';
 import styles from './BookingFlowTrustPanel.module.scss';
 
-export type BookingFlowTrustVariant = 'service' | 'psychologist' | 'datetime';
+export type BookingFlowTrustVariant =
+  | 'service'
+  | 'psychologist'
+  | 'datetime'
+  | 'details'
+  | 'payment';
 
 const COPY: Record<
   BookingFlowTrustVariant,
@@ -11,6 +16,7 @@ const COPY: Record<
     title: 'Why you can trust this step',
     body:
       'Every session type here is delivered by AHPRA-registered psychologists using evidence-based approaches. Fees and rebates are shown clearly before you pay—no surprises at checkout.',
+    bullets: ['Fees and rebates are surfaced before you confirm payment.'],
   },
   psychologist: {
     title: 'Choosing your clinician',
@@ -22,6 +28,18 @@ const COPY: Record<
     title: 'Before you pick a time',
     body:
       'Choose what actually works for your week. After you confirm, you can still reschedule within our policy if something comes up—we would rather you attend than force a bad fit.',
+    bullets: ['Slots follow your browser’s local timezone.'],
+  },
+  details: {
+    title: 'Almost there',
+    body:
+      'Review the summary below before payment. Anything you share in the notes helps your psychologist prepare—you can still reschedule later within our cancellation policy.',
+  },
+  payment: {
+    title: 'Secure checkout',
+    body:
+      'Card payments are processed by Stripe using industry-standard encryption; we never store your full card number on our servers.',
+    bullets: ['You will receive confirmation once payment succeeds.'],
   },
 };
 

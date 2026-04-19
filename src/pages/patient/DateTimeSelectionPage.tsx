@@ -395,6 +395,9 @@ export const DateTimeSelectionPage: React.FC = () => {
           <div className="container">
             <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderKickerWrap}>
+                <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 3 of 5</span>
+              </div>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
                   <Button
@@ -428,6 +431,9 @@ export const DateTimeSelectionPage: React.FC = () => {
           <div className="container">
             <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderKickerWrap}>
+                <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 3 of 5</span>
+              </div>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
                   <Button
@@ -478,6 +484,9 @@ export const DateTimeSelectionPage: React.FC = () => {
           <div className="container">
             <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderKickerWrap}>
+                <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 3 of 5</span>
+              </div>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
                   <Button
@@ -518,6 +527,9 @@ export const DateTimeSelectionPage: React.FC = () => {
           <div className="container">
             <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderKickerWrap}>
+                <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 3 of 5</span>
+              </div>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
                   <Button
@@ -593,6 +605,9 @@ export const DateTimeSelectionPage: React.FC = () => {
           <div className="container">
             <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderKickerWrap}>
+                <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 3 of 5</span>
+              </div>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
                   <Button
@@ -639,6 +654,9 @@ export const DateTimeSelectionPage: React.FC = () => {
           <div className="container">
             <BookingFlowProgress currentStep={3} />
             <header className={styles.pageHeader}>
+              <div className={styles.pageHeaderKickerWrap}>
+                <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 3 of 5</span>
+              </div>
               <div className={styles.pageHeaderRow}>
                 <div className={styles.pageHeaderStart}>
                   <Button
@@ -688,6 +706,9 @@ export const DateTimeSelectionPage: React.FC = () => {
         <div className="container">
           <BookingFlowProgress currentStep={3} />
           <header className={styles.pageHeader}>
+            <div className={styles.pageHeaderKickerWrap}>
+              <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 3 of 5</span>
+            </div>
             <div className={styles.pageHeaderRow}>
               <div className={styles.pageHeaderStart}>
                 <Button

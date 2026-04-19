@@ -18,6 +18,7 @@ import {
 import { Button } from '../../components/ui/button';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
+import { BookingBillingPathToggle } from '../../components/patient/BookingBillingPathToggle/BookingBillingPathToggle';
 import styles from './PatientPages.module.scss';
 
 const SERVICE_BOOKING_ICONS = [
@@ -345,6 +346,7 @@ export const ServiceSelectionPage: React.FC = () => {
 
             <div className={styles.bookingFlowCanvas}>
               <div className={styles.bookingFlowHeroCenter}>
+                <span className={styles.bookingFlowKicker}>Book a session · Step 1 of 5</span>
                 <h1 className={styles.bookingFlowHeroTitle}>How can we help today?</h1>
                 <p className={styles.bookingFlowHeroLead}>
                   Pick the kind of session that matches what you need right now. You will see duration and an estimated
@@ -353,35 +355,13 @@ export const ServiceSelectionPage: React.FC = () => {
                 </p>
               </div>
 
-              <BookingFlowTrustPanel variant="service" />
-
-              <div ref={billingPathPanelRef} className={styles.billingPathPanel}>
-                <p className={styles.billingPathTitle}>How are you booking this session?</p>
-                <p className={styles.bookingFlowHelperText}>You can switch this option before you confirm payment.</p>
-                <div className={styles.billingPathOptions} role="radiogroup" aria-label="Booking payment path">
-                  <button
-                    type="button"
-                    className={`${styles.billingPathOption} ${billingPath === 'medicare' ? styles.billingPathOptionSelected : ''}`}
-                    onClick={() => setBillingPath('medicare')}
-                    aria-pressed={billingPath === 'medicare'}
-                  >
-                    <span className={styles.billingPathLabel}>Claim Medicare rebate</span>
-                    <span className={styles.billingPathHint}>
-                      Referral and eligibility checks apply before booking.
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.billingPathOption} ${billingPath === 'private' ? styles.billingPathOptionSelected : ''}`}
-                    onClick={() => setBillingPath('private')}
-                    aria-pressed={billingPath === 'private'}
-                  >
-                    <span className={styles.billingPathLabel}>Private booking</span>
-                    <span className={styles.billingPathHint}>
-                      No Medicare referral requirement; full private fee applies.
-                    </span>
-                  </button>
-                </div>
+              <div className={styles.bookingFlowDecisionStack}>
+                <BookingFlowTrustPanel variant="service" />
+                <BookingBillingPathToggle
+                  ref={billingPathPanelRef}
+                  value={billingPath}
+                  onChange={setBillingPath}
+                />
               </div>
 
               {billingPath === 'medicare' && (
@@ -435,22 +415,6 @@ export const ServiceSelectionPage: React.FC = () => {
                   </div>
                 </details>
               )}
-
-              {!servicesLoading && !servicesError && services.length > 0 && (
-                <div className={styles.serviceSearchWrap}>
-                  <span className={styles.serviceSearchIcon} aria-hidden>
-                    <SearchIcon size="sm" />
-                  </span>
-                  <input
-                    type="search"
-                    className={styles.serviceSearchInput}
-                    placeholder="Search services by name or description…"
-                    value={serviceSearch}
-                    onChange={(e) => setServiceSearch(e.target.value)}
-                    aria-label="Search services"
-                  />
-                </div>
-              )}
             </div>
 
           {!readinessLoading && bookingReadiness && !bookingReadiness.telehealth_consent_complete && (
@@ -469,6 +433,7 @@ export const ServiceSelectionPage: React.FC = () => {
             </div>
           )}
 
+          <div className={styles.bookingFlowServicesSection}>
           {servicesLoading ? (
             <div className={styles.loadingState}>
               <p>Loading services...</p>
@@ -486,76 +451,107 @@ export const ServiceSelectionPage: React.FC = () => {
               <h3>No Services Available</h3>
               <p>There are currently no services available for booking. Please check back later.</p>
             </div>
-          ) : filteredServices.length === 0 ? (
-            <div className={styles.errorState}>
-              <h3>No matching services</h3>
-              <p>Try a different search term or clear the search to see all services.</p>
-              <Button type="button" className={styles.actionButton} onClick={() => setServiceSearch('')}>
-                Clear search
-              </Button>
-            </div>
           ) : (
-            <div className={`${styles.servicesGrid} ${styles.bookingFlowCanvas}`} id="services-grid">
-              {visibleServices.map((service, index) => {
-                const serviceId = parseInt(service.id);
-                const Icon = SERVICE_BOOKING_ICONS[index % SERVICE_BOOKING_ICONS.length];
-                const isSelected = selectedService === service.id;
-                return (
-                  <div
-                    key={service.id}
-                    role="button"
-                    tabIndex={0}
-                    className={`${styles.serviceCard} ${isSelected ? styles.serviceCardSelected : ''}`}
-                    onClick={() => handleServiceSelect(serviceId)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleServiceSelect(serviceId);
-                      }
-                    }}
-                  >
-                    <div className={styles.serviceCardIconWell} aria-hidden>
-                      <Icon size="lg" />
-                    </div>
-                    <h3 className={styles.serviceCardTitle}>{service.name}</h3>
-                    <p className={styles.serviceCardDescription}>{service.description}</p>
-                    <p className={styles.serviceCardMeta}>
-                      {service.duration} min · Est. gap ${service.yourCost.toFixed(2)}
-                      {service.medicareApplicable ? ' · indicative Medicare rebate on file' : ''}
-                    </p>
-                    <div className={styles.serviceCardCta} aria-hidden={false}>
-                      {isSelected ? (
-                        <>
-                          <CheckCircleIcon size="sm" aria-hidden />
-                          <span>Selected</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Choose this service</span>
-                          <ForwardIcon size="sm" aria-hidden />
-                        </>
-                      )}
-                    </div>
+            <>
+              <div className={styles.bookingFlowServicesHeadingRow}>
+                <div className={styles.bookingFlowServicesHeadingMain}>
+                  <h2 className={styles.bookingFlowServicesSectionTitle}>Choose a session type</h2>
+                  <p className={styles.bookingFlowServicesCount}>
+                    {serviceSearch.trim()
+                      ? `Showing ${filteredServices.length} of ${services.length}`
+                      : `${filteredServices.length} available`}
+                  </p>
+                </div>
+                <div className={styles.serviceSearchWrap}>
+                  <span className={styles.serviceSearchIcon} aria-hidden>
+                    <SearchIcon size="sm" />
+                  </span>
+                  <input
+                    type="search"
+                    className={styles.serviceSearchInput}
+                    placeholder="Search services by name or description…"
+                    value={serviceSearch}
+                    onChange={(e) => setServiceSearch(e.target.value)}
+                    aria-label="Search services"
+                  />
+                </div>
+              </div>
+
+              {filteredServices.length === 0 ? (
+                <div className={styles.errorState}>
+                  <h3>No matching services</h3>
+                  <p>Try a different search term or clear the search to see all services.</p>
+                  <Button type="button" className={styles.actionButton} onClick={() => setServiceSearch('')}>
+                    Clear search
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <div className={`${styles.servicesGrid} ${styles.bookingFlowCanvas}`} id="services-grid">
+                    {visibleServices.map((service, index) => {
+                      const serviceId = parseInt(service.id);
+                      const Icon = SERVICE_BOOKING_ICONS[index % SERVICE_BOOKING_ICONS.length];
+                      const isSelected = selectedService === service.id;
+                      return (
+                        <div
+                          key={service.id}
+                          role="button"
+                          tabIndex={0}
+                          className={`${styles.serviceCard} ${isSelected ? styles.serviceCardSelected : ''}`}
+                          onClick={() => handleServiceSelect(serviceId)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleServiceSelect(serviceId);
+                            }
+                          }}
+                        >
+                          <div className={styles.serviceCardIconWell} aria-hidden>
+                            <Icon size="lg" />
+                          </div>
+                          <h3 className={styles.serviceCardTitle}>{service.name}</h3>
+                          <p className={styles.serviceCardDescription}>{service.description}</p>
+                          <p className={styles.serviceCardMeta}>
+                            {service.duration} min · Est. gap ${service.yourCost.toFixed(2)}
+                            {service.medicareApplicable ? ' · indicative Medicare rebate on file' : ''}
+                          </p>
+                          <div className={styles.serviceCardCta} aria-hidden={false}>
+                            {isSelected ? (
+                              <>
+                                <CheckCircleIcon size="sm" aria-hidden />
+                                <span>Selected</span>
+                              </>
+                            ) : (
+                              <>
+                                <span>Choose this service</span>
+                                <ForwardIcon size="sm" aria-hidden />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                  {!servicesLoading && !servicesError && filteredServices.length > 0 && canToggleServices && (
+                    <div className={styles.servicesDisclosureRow}>
+                      <Button
+                        type="button"
+                        className={styles.bookingBackButton}
+                        onClick={() => setShowAllServices((prev) => !prev)}
+                        aria-expanded={showAllServices}
+                        aria-controls="services-grid"
+                      >
+                        {showAllServices
+                          ? 'Show fewer services'
+                          : `Show all ${filteredServices.length} services`}
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
           )}
-          {!servicesLoading && !servicesError && filteredServices.length > 0 && canToggleServices && (
-            <div className={styles.servicesDisclosureRow}>
-              <Button
-                type="button"
-                className={styles.bookingBackButton}
-                onClick={() => setShowAllServices((prev) => !prev)}
-                aria-expanded={showAllServices}
-                aria-controls="services-grid"
-              >
-                {showAllServices
-                  ? 'Show fewer services'
-                  : `Show all ${filteredServices.length} services`}
-              </Button>
-            </div>
-          )}
+          </div>
 
           <div className={`${styles.helpStrip} ${styles.bookingFlowCanvas}`}>
             <InfoIcon size="sm" aria-hidden />

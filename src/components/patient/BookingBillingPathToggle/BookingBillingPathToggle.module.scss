@@ -1,0 +1,56 @@
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/patientFormRow' as pform;
+
+.panel {
+  max-width: 42rem;
+  margin: 0 auto 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--cs-radius-xl);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--cs-surface-lowest) 88%, var(--cs-primary) 12%);
+}
+
+.title {
+  margin: 0 0 0.65rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: $text-dark;
+}
+
+.helper {
+  margin: -0.2rem 0 0.7rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: $text-light;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+
+  @media (min-width: 860px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.option {
+  @include pform.option-card;
+  padding: 0.72rem 0.85rem;
+  min-height: 3.25rem;
+}
+
+.optionLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $text-dark;
+}
+
+.optionHint {
+  display: block;
+  margin-top: 0.22rem;
+  font-size: 0.76rem;
+  line-height: 1.42;
+  color: var(--cs-on-surface-variant, #{$text-light});
+}

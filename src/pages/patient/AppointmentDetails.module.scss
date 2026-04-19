@@ -16,6 +16,14 @@
   margin-bottom: 1rem;
 }
 
+.pageHeaderWithInsetTrust {
+  margin-bottom: 0.5rem;
+
+  .pageSubtitle {
+    margin-bottom: 0;
+  }
+}
+
 .backButton {
   background: white;
   border: 2px solid $border-light;

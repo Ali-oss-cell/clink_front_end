@@ -15,6 +15,7 @@ import { cn } from '../../lib/cn';
 import styles from './AppointmentDetails.module.scss';
 import patientPageStyles from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
+import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
 
 interface AppointmentDetailsFormData {
   therapyFocus: string;
@@ -165,7 +166,8 @@ export const AppointmentDetailsPage: React.FC = () => {
       >
         <div className="container">
           <BookingFlowProgress currentStep={4} />
-          <div className={styles.pageHeader}>
+          <div className={`${styles.pageHeader} ${styles.pageHeaderWithInsetTrust}`}>
+            <span className={patientPageStyles.bookingFlowKicker}>Book a session · Step 4 of 5</span>
             <Button className={styles.backButton} onClick={handleBack}>
               ← Back
             </Button>
@@ -173,6 +175,11 @@ export const AppointmentDetailsPage: React.FC = () => {
             <p className={styles.pageSubtitle}>
               Please review your appointment details before proceeding to payment
             </p>
+            <BookingFlowTrustPanel
+              variant="details"
+              wide
+              className={patientPageStyles.bookingFlowHeaderTrustPanel}
+            />
           </div>
 
           <div className={styles.appointmentSummary}>

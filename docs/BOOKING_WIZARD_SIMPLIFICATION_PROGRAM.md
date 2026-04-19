@@ -108,6 +108,7 @@ Status legend: `NOT_STARTED`, `IN_PROGRESS`, `DONE`, `BLOCKED`
 - [ ] `NOT_STARTED` Data check: completion click failure rate and blocker recovery rate.
 
 ### Wave 5 — Mobile polish and accessibility hardening
+- Step 1 (service selection) visual/UX backlog and tiered recommendations: [`BOOKING_WIZARD_STEP1_SERVICE_UI_SPEC.md`](BOOKING_WIZARD_STEP1_SERVICE_UI_SPEC.md).
 - [ ] `NOT_STARTED` Frontend: mobile-first step layout and touch spacing audit.
 - [ ] `NOT_STARTED` Frontend: keyboard/screen-reader pass for all controls and states.
 - [ ] `NOT_STARTED` QA: responsive and a11y sign-off checklist.

@@ -11,13 +11,14 @@ import {
 import { paymentsService } from '../../services/api/payments';
 import { extractApiErrorMessage } from '../../utils/apiError';
 import { getStripePromise, hasStripePublishableKey } from '../../lib/stripe';
-import { VideoIcon, BuildingIcon, CreditCardIcon, LockIcon, WarningIcon } from '../../utils/icons';
+import { VideoIcon, BuildingIcon, CreditCardIcon, LockIcon, WarningIcon, ReceiptIcon } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import { Checkbox } from '../../components/ui/checkbox';
 import { trackWizardEvent } from '../../services/analytics/wizardTelemetry';
 import styles from './Payment.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
+import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
 import { BookingBlockerBanner } from '../../components/patient/BookingBlockerBanner/BookingBlockerBanner';
 
 const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
@@ -351,12 +352,18 @@ export const PaymentPage: React.FC = () => {
         <div className="container">
           <BookingFlowProgress currentStep={5} />
           <div className={bookingFlow.bookingFlowMain}>
-          <div className={styles.pageHeader}>
+          <div className={`${styles.pageHeader} ${styles.pageHeaderWithInsetTrust}`}>
+            <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 5 of 5</span>
             <Button className={styles.backButton} onClick={handleBack}>
               ← Back to Appointment Details
             </Button>
             <h1 className={styles.pageTitle}>Payment</h1>
             <p className={styles.pageSubtitle}>Complete your payment to confirm your appointment</p>
+            <BookingFlowTrustPanel
+              variant="payment"
+              wide
+              className={bookingFlow.bookingFlowHeaderTrustPanel}
+            />
           </div>
 
           {bookingGate && (
@@ -378,7 +385,12 @@ export const PaymentPage: React.FC = () => {
           <div className={styles.paymentContent}>
             <div className={styles.paymentSummary}>
               <div className={styles.summaryCard}>
-                <h3>🧾 Payment Summary</h3>
+                <h3 className={styles.summarySectionHeading}>
+                  <span className={styles.summarySectionHeadingIcon} aria-hidden>
+                    <ReceiptIcon size="md" />
+                  </span>
+                  Payment Summary
+                </h3>
                 <div className={styles.summaryDetails}>
                   <div className={styles.summaryItem}>
                     <span className={styles.summaryLabel}>Service:</span>

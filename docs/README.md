@@ -17,6 +17,7 @@ This folder is the frontend documentation entry point.
 - `UI_PRIMITIVES_CATALOG.md` - shared surface/action/control primitive categories
 - `RESPONSIVE_SIZE_MATRIX.md` - breakpoints, spacing, control heights, typography rhythm
 - `REFRACTOR_TRACKER.md` - migration status and batch gates
+- `BOOKING_WIZARD_STEP1_SERVICE_UI_SPEC.md` - **Step 1 (service selection) UI enhancement** — diagnosis, tiered recommendations, verification (`BookingBillingPathToggle`, grid/card tightening; see Tier B shipped notes)
 - `DASHBOARD_BUTTON_AUDIT.md` - dashboard button class/state audit and standardization baseline
 - `ROLE_DASHBOARD_GLASS_ROLLOUT.md` - role dashboard glass rollout tracking
 

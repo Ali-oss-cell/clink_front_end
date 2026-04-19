@@ -332,6 +332,7 @@ export const PsychologistSelectionPage: React.FC = () => {
           <div className="container">
             <BookingFlowProgress currentStep={2} />
             <div className={styles.pageHeader}>
+              <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 2 of 5</span>
               <h1 className={styles.pageTitle}>Service selection required</h1>
               <p className={styles.pageSubtitle}>Please select a service before choosing a psychologist.</p>
             </div>
@@ -443,6 +444,7 @@ export const PsychologistSelectionPage: React.FC = () => {
 
             <main className={styles.bookingMainCanvas}>
               <header className={styles.editorialHeader}>
+                <span className={bookingFlow.bookingFlowKicker}>Book a session · Step 2 of 5</span>
                 <h1 className={styles.editorialTitle}>Choose your psychologist</h1>
                 <p className={styles.editorialLead}>
                   Read a short bio, check specialties, and choose someone who feels like a fit—every profile is an

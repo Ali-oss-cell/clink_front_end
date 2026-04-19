@@ -13,6 +13,14 @@
   margin-right: auto;
 }
 
+.pageHeaderWithInsetTrust {
+  margin-bottom: 0.5rem;
+
+  .pageSubtitle {
+    margin-bottom: 0;
+  }
+}
+
 .backButton {
   display: inline-block;
   margin-bottom: $spacing-md;
@@ -101,14 +109,26 @@
     box-shadow: var(--cs-shadow-atmospheric);
     position: sticky;
     top: $spacing-lg;
-    
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: $text-dark;
-      margin: 0 0 $spacing-lg 0;
-    }
   }
+}
+
+.summarySectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: $spacing-sm;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: $font-family-base;
+  letter-spacing: -0.02em;
+  color: var(--cs-on-surface, $text-dark);
+  margin: 0 0 $spacing-lg 0;
+}
+
+.summarySectionHeadingIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--cs-primary, $patient-primary);
 }
 
 .summaryDetails {
