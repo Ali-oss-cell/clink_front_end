@@ -4,7 +4,7 @@ import { dashboardService } from '../../../services/api/dashboard';
 import type { PatientDashboard } from '../../../services/api/dashboard';
 import { authService, type PatientReferralStatusResponse } from '../../../services/api/auth';
 import { TelehealthService, type TelehealthConsentResponse } from '../../../services/api/telehealth';
-import { CheckCircleIcon, LightbulbIcon } from '../../../utils/icons';
+import { CheckCircleIcon, LightbulbIcon, MedicalFileIcon } from '../../../utils/icons';
 import styles from './OnboardingProgress.module.scss';
 
 interface OnboardingStep {
@@ -144,12 +144,6 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinical
   // Combine main steps and extra step for display
   const allSteps = [...mainSteps, extraStep];
   const referralCode = referralStatus?.status ?? 'missing';
-  const referralLabel =
-    referralCode === 'uploaded_pending_review'
-      ? 'Referral pending review'
-      : referralCode === 'verified'
-        ? 'Referral verified'
-        : 'Referral missing';
 
   if (loading || telehealthLoading) {
     return (
@@ -172,28 +166,17 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinical
     );
   }
 
+  const referralVerified = referralCode === 'verified';
+  const referralPendingReview = referralCode === 'uploaded_pending_review';
+
   if (clinicalLayout) {
     return (
       <section className={styles.clinical} aria-label="Onboarding progress">
         <div className={styles.clinicalHeader}>
           <h3 className={styles.clinicalTitle}>Onboarding progress</h3>
-          <div className={styles.clinicalHeaderMeta}>
-            <span className={styles.clinicalMeta}>
-              {completedSteps} of {totalSteps}
-            </span>
-            <Link
-              to="/appointments/book-appointment?billing_path=medicare"
-              className={`${styles.referralChip} ${
-                referralCode === 'verified'
-                  ? styles.referralChipVerified
-                  : referralCode === 'uploaded_pending_review'
-                    ? styles.referralChipPending
-                    : styles.referralChipMissing
-              }`}
-            >
-              {referralLabel}
-            </Link>
-          </div>
+          <span className={styles.clinicalMeta}>
+            {completedSteps} of {totalSteps}
+          </span>
         </div>
         <div className={styles.clinicalGrid}>
           {mainSteps.map((step) => (
@@ -219,6 +202,55 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({ clinical
               </Link>
             </div>
           ))}
+        </div>
+
+        {/* Semi-step: Medicare referral (not counted in main 4 — keeps header clean) */}
+        <div
+          className={`${styles.clinicalReferralSemi} ${
+            referralVerified
+              ? styles.clinicalReferralSemiOk
+              : referralPendingReview
+                ? styles.clinicalReferralSemiWarn
+                : styles.clinicalReferralSemiAttention
+          }`}
+        >
+          <div className={styles.clinicalReferralSemiIcon} aria-hidden>
+            <MedicalFileIcon size="md" />
+          </div>
+          <div className={styles.clinicalReferralSemiCopy}>
+            <p className={styles.clinicalReferralSemiKicker}>Medicare · semi-step</p>
+            <p className={styles.clinicalReferralSemiTitle}>
+              {referralVerified ? 'GP referral / MHTP verified' : 'GP referral / MHTP'}
+            </p>
+            <p className={styles.clinicalReferralSemiDesc}>
+              {referralVerified
+                ? 'You can book with Medicare claiming when you are ready.'
+                : referralPendingReview
+                  ? 'Your upload is with the team for review.'
+                  : 'Add a referral in the booking wizard if you plan to claim Medicare.'}
+            </p>
+          </div>
+          <div className={styles.clinicalReferralSemiActions}>
+            <Link
+              to={
+                referralVerified
+                  ? '/appointments/book-appointment?billing_path=medicare'
+                  : '/appointments/book-appointment?billing_path=medicare&focus=referral'
+              }
+              className={styles.clinicalReferralSemiPrimary}
+            >
+              {referralVerified ? 'Book with Medicare' : 'Upload in booking wizard'}
+            </Link>
+            <Link
+              to="/patient/intake-form?step=3&focus=gp_referral"
+              className={styles.clinicalReferralSemiSecondary}
+            >
+              Intake referral details
+            </Link>
+            <Link to="/appointments/book-appointment?billing_path=private" className={styles.clinicalReferralSemiQuiet}>
+              Book as private
+            </Link>
+          </div>
         </div>
         <div className={styles.clinicalExtra}>
           <div className={styles.clinicalExtraIcon}>

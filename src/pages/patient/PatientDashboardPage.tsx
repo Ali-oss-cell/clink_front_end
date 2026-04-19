@@ -164,12 +164,6 @@ export const PatientDashboardPage: React.FC = () => {
   }
 
   const primaryVideo = videoCallAppointments[0];
-  const referralCode = bookingReadiness?.referral_status ?? 'missing';
-  const referralLabel =
-    referralCode === 'uploaded_pending_review'
-      ? 'Uploaded, pending review'
-      : referralCode.charAt(0).toUpperCase() + referralCode.slice(1);
-  const referralReady = referralCode === 'verified';
 
   return (
     <Layout {...layoutProps}>
@@ -418,65 +412,6 @@ export const PatientDashboardPage: React.FC = () => {
                 </button>
               </div>
             )}
-          </section>
-
-          {/* Medicare referral */}
-          <section className={d.card}>
-            <h3 className={d.cardTitle}>Referral for Medicare</h3>
-            <div className={d.referralStatusRow}>
-              <span
-                className={`${d.referralBadge} ${
-                  referralReady
-                    ? d.referralVerified
-                    : referralCode === 'uploaded_pending_review'
-                      ? d.referralPending
-                      : d.referralMissing
-                }`}
-              >
-                {referralLabel}
-              </span>
-              {bookingReadiness?.has_uploaded_referral && (
-                <span className={d.referralMeta}>A referral document is on file.</span>
-              )}
-            </div>
-            <p className={d.placeholder}>
-              Upload your GP referral or MHTP to make Medicare booking smoother through the wizard.
-            </p>
-            <div className={d.referralActions}>
-              <button
-                type="button"
-                className={d.btnPrimary}
-                onClick={() =>
-                  navigate(
-                    bookingReadiness?.actions.wizard_medicare_referral ??
-                      '/appointments/book-appointment?billing_path=medicare&focus=referral'
-                  )
-                }
-              >
-                {referralReady ? 'Book with Medicare' : 'Upload in booking wizard'}
-              </button>
-              <button
-                type="button"
-                className={d.btnGhost}
-                onClick={() =>
-                  navigate(
-                    bookingReadiness?.actions.intake_referral_details ??
-                      '/patient/intake-form?step=3&focus=gp_referral'
-                  )
-                }
-              >
-                Update intake referral details
-              </button>
-              <button
-                type="button"
-                className={d.linkSubtle}
-                onClick={() =>
-                  navigate(bookingReadiness?.actions.wizard_private ?? '/appointments/book-appointment?billing_path=private')
-                }
-              >
-                Continue as private booking
-              </button>
-            </div>
           </section>
           </div>
 
