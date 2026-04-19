@@ -158,6 +158,9 @@ export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
             </div>
 
             <div className={styles.acceptanceSection}>
+              <p className={styles.footerHint}>
+                Scroll this dialog if needed, then confirm below to continue.
+              </p>
               <label className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
