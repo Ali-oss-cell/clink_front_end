@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import type { User } from '../../../types/simple-auth';
 import { getPrivacyPolicyStatus, type PrivacyPolicyStatus } from '../../../services/api/privacy';
@@ -24,20 +24,34 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const [privacyStatus, setPrivacyStatus] = useState<PrivacyPolicyStatus | null>(null);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [privacyChecked, setPrivacyChecked] = useState(false);
+  /** Once the patient taps Accept on the modal, ignore stale re-fetches that reopen it. */
+  const privacyAcceptedRef = useRef(false);
 
-  // Check Privacy Policy status only for patients (not psychologists/admins)
+  useEffect(() => {
+    if (!user?.id) {
+      privacyAcceptedRef.current = false;
+    }
+  }, [user?.id]);
+
+  // Check Privacy Policy status only for patients (not psychologists/admins).
+  // Depend on stable ids, not `user` object identity — otherwise any parent re-fetch
+  // (new object reference) re-runs this effect, re-fetches status, and can reopen
+  // the modal after the patient just accepted (looks "stuck").
   useEffect(() => {
     const checkPrivacyPolicy = async () => {
       if (requireAuth && isAuthenticated && user && user.role === 'patient') {
         try {
           const status = await getPrivacyPolicyStatus();
           setPrivacyStatus(status);
-          
-          // Check if Privacy Policy needs to be accepted
-          if (!status.accepted || status.needs_update) {
-            setShowPrivacyModal(true);
-          } else {
+
+          if (status.accepted && !status.needs_update) {
+            setShowPrivacyModal(false);
             setPrivacyChecked(true);
+          } else if (privacyAcceptedRef.current) {
+            setShowPrivacyModal(false);
+            setPrivacyChecked(true);
+          } else {
+            setShowPrivacyModal(true);
           }
         } catch (error: any) {
           // If check fails (e.g., 403 for non-patients), skip it
@@ -55,7 +69,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     };
 
     checkPrivacyPolicy();
-  }, [requireAuth, isAuthenticated, user]);
+  }, [requireAuth, isAuthenticated, user?.id, user?.role]);
 
   // If authentication is required but user is not authenticated
   if (requireAuth && !isAuthenticated) {
@@ -74,9 +88,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             // Don't redirect, just close - user can still access but will be prompted again
           }}
           onAccept={() => {
+            privacyAcceptedRef.current = true;
             setShowPrivacyModal(false);
             setPrivacyChecked(true);
-            // Reload privacy status
             getPrivacyPolicyStatus().then(setPrivacyStatus).catch(console.error);
           }}
           required={true}

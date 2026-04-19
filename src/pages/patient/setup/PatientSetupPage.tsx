@@ -130,6 +130,45 @@ const PatientSetupPage: FC = () => {
   }, [state, activeStep, saving, error, saveStep, saveDraft, setStep]);
 
   if (loading || !state || !activeStep) {
+    if (!loading && !state && error) {
+      return (
+        <main
+          style={{
+            minHeight: '100vh',
+            padding: '3rem 1.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'var(--cs-surface, #f7faf9)',
+          }}
+        >
+          <div
+            style={{
+              maxWidth: '28rem',
+              padding: '1.5rem',
+              borderRadius: 'var(--cs-radius-xl, 12px)',
+              background: 'var(--cs-surface-lowest, #fff)',
+              border: '1px solid color-mix(in srgb, var(--cs-outline, #ccc) 40%, transparent)',
+              boxShadow: 'var(--cs-shadow-atmospheric, 0 8px 24px rgba(0,0,0,.08))',
+            }}
+          >
+            <h1 style={{ margin: '0 0 0.75rem', fontSize: '1.25rem' }}>
+              Could not load setup
+            </h1>
+            <p style={{ margin: '0 0 1rem', color: 'var(--cs-on-surface-variant, #444)', lineHeight: 1.5 }}>
+              {error}
+            </p>
+            <button
+              type="button"
+              className="patient-cta-primary"
+              onClick={() => void refresh()}
+            >
+              Try again
+            </button>
+          </div>
+        </main>
+      );
+    }
     return (
       <div style={{ padding: '3rem', textAlign: 'center' }}>
         <p>Loading your setup…</p>
