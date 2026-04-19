@@ -66,7 +66,20 @@ export function useSetupDraft(): UseSetupDraftResult {
     setError(null);
     try {
       const data = await patientSetupService.getState();
-      if (mounted.current) setState(data);
+      if (!mounted.current) return;
+      if (
+        !data ||
+        typeof data !== 'object' ||
+        !Array.isArray(data.steps) ||
+        data.steps.length === 0
+      ) {
+        setState(null);
+        setError(
+          'Setup data from the server was incomplete. Try again in a moment, or contact support if this persists.',
+        );
+        return;
+      }
+      setState(data);
     } catch (e) {
       if (mounted.current) {
         setError(e instanceof Error ? e.message : 'Failed to load setup');

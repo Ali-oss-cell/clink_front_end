@@ -2,20 +2,16 @@
  * Patient Setup Wizard host page.
  *
  * Composes:
- *  - `useSetupDraft`  -> canonical server state + step helpers
+ *  - `useSetupDraft`  -> canonical server state + draft helpers
  *  - `SetupWizardChrome` -> progress + title + actions shell
  *  - One step component per `SetupStepId`
- *
- * The page is intentionally thin: each step owns its own local form state.
- * The page wires saving/advance/draft into the shared hook so every wizard
- * phase behaves the same way.
  */
 
-import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import { useCallback, useEffect, useMemo, type FC } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSetupDraft } from '../../../hooks/useSetupDraft';
 import SetupWizardChrome from '../../../components/patient/SetupWizardChrome/SetupWizardChrome';
-import type { SetupStepId } from '../../../services/api/patientSetup';
+import type { PatientSetupState, SetupStepId } from '../../../services/api/patientSetup';
 import type { SetupStepComponentProps } from './steps/setupStepTypes';
 import WelcomeStep from './steps/WelcomeStep';
 import ContactStep from './steps/ContactStep';
@@ -38,7 +34,7 @@ const STEP_SUBTITLES: Record<SetupStepId, string> = {
     'A short summary so your psychologist can prepare for your first session.',
   intake_full:
     'Optional — a bit of clinical history if you want to share now.',
-  review: 'One last look before we unlock booking.',
+  review: 'Review & finish',
 };
 
 const STEP_TITLES: Record<SetupStepId, string> = {
@@ -51,6 +47,23 @@ const STEP_TITLES: Record<SetupStepId, string> = {
   intake_full: 'Your health history',
   review: 'Review & finish',
 };
+
+/** Resolve active step synchronously — avoids an extra render where `activeStep` is null forever. */
+function resolveActiveStep(
+  state: PatientSetupState | null,
+  searchParams: URLSearchParams,
+): SetupStepId | null {
+  if (!state?.steps?.length) return null;
+  const ids = state.steps.map((s) => s.id);
+  const q = searchParams.get('step');
+  if (q && ids.includes(q as SetupStepId)) {
+    return q as SetupStepId;
+  }
+  if (state.current_step && ids.includes(state.current_step)) {
+    return state.current_step;
+  }
+  return state.steps[0].id;
+}
 
 const PatientSetupPage: FC = () => {
   const navigate = useNavigate();
@@ -68,14 +81,10 @@ const PatientSetupPage: FC = () => {
     complete,
   } = useSetupDraft();
 
-  const [activeStep, setActiveStep] = useState<SetupStepId | null>(null);
-
-  useEffect(() => {
-    if (!state) return;
-    const fromQuery = searchParams.get('step') as SetupStepId | null;
-    const resume = (fromQuery || state.current_step) as SetupStepId;
-    setActiveStep(resume);
-  }, [state, searchParams]);
+  const activeStep = useMemo(
+    () => resolveActiveStep(state, searchParams),
+    [state, searchParams],
+  );
 
   useEffect(() => {
     if (state?.completed_at) {
@@ -85,7 +94,6 @@ const PatientSetupPage: FC = () => {
 
   const setStep = useCallback(
     (step: SetupStepId) => {
-      setActiveStep(step);
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
@@ -115,8 +123,7 @@ const PatientSetupPage: FC = () => {
         try {
           await saveDraft(activeStep, payload);
         } catch {
-          // swallow: draft save errors surface via hook.error but shouldn't
-          // block the user from continuing to type.
+          // Errors surface via hook.error; typing should not break.
         }
       },
       onBack: () => {
@@ -129,50 +136,65 @@ const PatientSetupPage: FC = () => {
     };
   }, [state, activeStep, saving, error, saveStep, saveDraft, setStep]);
 
-  if (loading || !state || !activeStep) {
-    if (!loading && !state && error) {
-      return (
-        <main
+  const errorPanel = (message: string) => (
+    <main
+      style={{
+        minHeight: '100vh',
+        padding: '3rem 1.25rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--cs-surface, #f7faf9)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '28rem',
+          padding: '1.5rem',
+          borderRadius: 'var(--cs-radius-xl, 12px)',
+          background: 'var(--cs-surface-lowest, #fff)',
+          border: '1px solid color-mix(in srgb, var(--cs-outline, #ccc) 40%, transparent)',
+          boxShadow: 'var(--cs-shadow-atmospheric, 0 8px 24px rgba(0,0,0,.08))',
+        }}
+      >
+        <h1 style={{ margin: '0 0 0.75rem', fontSize: '1.25rem' }}>
+          Could not load setup
+        </h1>
+        <p
           style={{
-            minHeight: '100vh',
-            padding: '3rem 1.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'var(--cs-surface, #f7faf9)',
+            margin: '0 0 1rem',
+            color: 'var(--cs-on-surface-variant, #444)',
+            lineHeight: 1.5,
           }}
         >
-          <div
-            style={{
-              maxWidth: '28rem',
-              padding: '1.5rem',
-              borderRadius: 'var(--cs-radius-xl, 12px)',
-              background: 'var(--cs-surface-lowest, #fff)',
-              border: '1px solid color-mix(in srgb, var(--cs-outline, #ccc) 40%, transparent)',
-              boxShadow: 'var(--cs-shadow-atmospheric, 0 8px 24px rgba(0,0,0,.08))',
-            }}
-          >
-            <h1 style={{ margin: '0 0 0.75rem', fontSize: '1.25rem' }}>
-              Could not load setup
-            </h1>
-            <p style={{ margin: '0 0 1rem', color: 'var(--cs-on-surface-variant, #444)', lineHeight: 1.5 }}>
-              {error}
-            </p>
-            <button
-              type="button"
-              className="patient-cta-primary"
-              onClick={() => void refresh()}
-            >
-              Try again
-            </button>
-          </div>
-        </main>
-      );
-    }
+          {message}
+        </p>
+        <button type="button" className="patient-cta-primary" onClick={() => void refresh()}>
+          Try again
+        </button>
+      </div>
+    </main>
+  );
+
+  if (loading) {
     return (
       <div style={{ padding: '3rem', textAlign: 'center' }}>
         <p>Loading your setup…</p>
       </div>
+    );
+  }
+
+  if (!state) {
+    return errorPanel(
+      error ??
+        'Setup could not be loaded. Check your connection, ensure the app is updated, then try again.',
+    );
+  }
+
+  if (!activeStep) {
+    return errorPanel(
+      error ??
+        'The server returned an empty setup wizard. Try again or contact support if this continues.',
     );
   }
 
@@ -189,7 +211,6 @@ const PatientSetupPage: FC = () => {
   };
 
   const saveAndExit = async () => {
-    if (!activeStep || !stepProps) return;
     await refresh();
     navigate('/patient/dashboard');
   };
@@ -229,9 +250,17 @@ const PatientSetupPage: FC = () => {
           />
         );
       default:
-        return null;
+        return (
+          <p style={{ color: 'var(--cs-error, #b3261e)', lineHeight: 1.5 }}>
+            This setup step isn&apos;t available in this version of the app. Refresh the page or remove
+            <code style={{ margin: '0 0.25rem' }}>?step=…</code>
+            from the address bar.
+          </p>
+        );
     }
   };
+
+  const stepBody = renderStep();
 
   return (
     <main
@@ -248,8 +277,8 @@ const PatientSetupPage: FC = () => {
         subtitle={subtitle}
         banner={
           <span>
-            We save your progress automatically — feel free to close the tab
-            and come back. <strong>You can finish this in about 5 minutes.</strong>
+            We save your progress automatically — feel free to close the tab and come back.{' '}
+            <strong>You can finish this in about 5 minutes.</strong>
           </span>
         }
         actions={
@@ -275,7 +304,7 @@ const PatientSetupPage: FC = () => {
           </>
         }
       >
-        {renderStep()}
+        {stepBody}
       </SetupWizardChrome>
     </main>
   );

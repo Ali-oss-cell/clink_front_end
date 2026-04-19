@@ -27,11 +27,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   /** Once the patient taps Accept on the modal, ignore stale re-fetches that reopen it. */
   const privacyAcceptedRef = useRef(false);
 
+  // Only clear the in-memory "already accepted" flag on full logout.
+  // Do not key off `user?.id` — some stored user objects omit `id`, and that
+  // was clearing the ref and re-blocking the patient after they accepted.
   useEffect(() => {
-    if (!user?.id) {
+    if (!isAuthenticated) {
       privacyAcceptedRef.current = false;
     }
-  }, [user?.id]);
+  }, [isAuthenticated]);
 
   // Check Privacy Policy status only for patients (not psychologists/admins).
   // Depend on stable ids, not `user` object identity — otherwise any parent re-fetch
