@@ -310,7 +310,6 @@ const PatientSetupPage: FC = () => {
           <ReviewStep
             {...stepProps}
             completing={completing}
-            onNavigateToStep={(step) => setStep(step)}
             onComplete={async () => {
               try {
                 await complete();

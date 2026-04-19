@@ -3,16 +3,22 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
-import { appointmentsService, type BookingSummaryResponse } from '../../services/api/appointments';
+import {
+  appointmentsService,
+  type BookingRevalidationResponse,
+  type BookingSummaryResponse,
+} from '../../services/api/appointments';
 import { paymentsService } from '../../services/api/payments';
 import { extractApiErrorMessage } from '../../utils/apiError';
 import { getStripePromise, hasStripePublishableKey } from '../../lib/stripe';
 import { VideoIcon, BuildingIcon, CreditCardIcon, LockIcon, WarningIcon } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import { Checkbox } from '../../components/ui/checkbox';
+import { trackWizardEvent } from '../../services/analytics/wizardTelemetry';
 import styles from './Payment.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
+import { BookingBlockerBanner } from '../../components/patient/BookingBlockerBanner/BookingBlockerBanner';
 
 const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
 
@@ -20,17 +26,31 @@ interface CardPaymentFormProps {
   appointmentId: number;
   paymentIntentId: string;
   totalAmount: number;
+  billingPath: 'medicare' | 'private' | 'unknown';
   onPaid: () => void;
   onError: (message: string) => void;
 }
 
-function CardPaymentForm({ appointmentId, paymentIntentId, totalAmount, onPaid, onError }: CardPaymentFormProps) {
+function CardPaymentForm({
+  appointmentId,
+  paymentIntentId,
+  totalAmount,
+  billingPath,
+  onPaid,
+  onError,
+}: CardPaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [submitting, setSubmitting] = useState(false);
 
   const handlePay = async () => {
     if (!stripe || !elements) return;
+    trackWizardEvent({
+      event_name: 'wizard_complete_clicked',
+      step_id: 'step_5',
+      billing_path: billingPath,
+      metadata: { payment_method: 'card' },
+    });
     setSubmitting(true);
     onError('');
     try {
@@ -95,7 +115,11 @@ export const PaymentPage: React.FC = () => {
     agreedReminderConsent &&
     agreedMedicareIfClaiming;
   const [bookingData, setBookingData] = useState<BookingSummaryResponse | null>(null);
-  const [bookingRevalidationBlocked, setBookingRevalidationBlocked] = useState(false);
+  /** Non-null when final-step revalidation failed — user fixes via banner CTA (no auto-redirect). */
+  const [bookingGate, setBookingGate] = useState<
+    Pick<BookingRevalidationResponse, 'blocking_reasons' | 'actions' | 'message'> | null
+  >(null);
+  const bookingRevalidationBlocked = bookingGate !== null;
 
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
@@ -118,21 +142,20 @@ export const PaymentPage: React.FC = () => {
     }
     return undefined;
   })();
+  const telemetryBillingPath = billingPathFromState ?? 'unknown';
 
   const runRevalidation = async (): Promise<boolean> => {
     if (!appointmentId) return false;
     const response = await appointmentsService.revalidateBooking(parseInt(appointmentId, 10), billingPathFromState);
     if (response.is_valid) {
-      setBookingRevalidationBlocked(false);
+      setBookingGate(null);
       return true;
     }
-    setBookingRevalidationBlocked(true);
-    const nextPath =
-      response.actions.next ||
-      response.actions.wizard_medicare_referral ||
-      '/appointments/book-appointment?billing_path=medicare&focus=referral';
-    setPaymentError(`${response.message} Redirecting to resolve required steps...`);
-    window.setTimeout(() => navigate(nextPath), 700);
+    setBookingGate({
+      blocking_reasons: response.blocking_reasons,
+      actions: response.actions,
+      message: response.message,
+    });
     return false;
   };
 
@@ -227,6 +250,12 @@ export const PaymentPage: React.FC = () => {
     }
 
     setIsPreparingIntent(true);
+    trackWizardEvent({
+      event_name: 'wizard_complete_clicked',
+      step_id: 'step_5',
+      billing_path: telemetryBillingPath,
+      metadata: { phase: 'prepare_checkout' },
+    });
     setPaymentError(null);
     try {
       const canProceed = await runRevalidation();
@@ -329,6 +358,16 @@ export const PaymentPage: React.FC = () => {
             <h1 className={styles.pageTitle}>Payment</h1>
             <p className={styles.pageSubtitle}>Complete your payment to confirm your appointment</p>
           </div>
+
+          {bookingGate && (
+            <BookingBlockerBanner
+              blockingReasons={bookingGate.blocking_reasons}
+              actions={bookingGate.actions}
+              supportingText={bookingGate.message}
+              variant="alert"
+              className={styles.blockerBanner}
+            />
+          )}
 
           {paymentError && (
             <div className={styles.inlineError} role="alert">
@@ -490,6 +529,7 @@ export const PaymentPage: React.FC = () => {
                       appointmentId={parseInt(appointmentId, 10)}
                       paymentIntentId={paymentIntentId}
                       totalAmount={totalAmount}
+                      billingPath={telemetryBillingPath}
                       onPaid={navigateToConfirmation}
                       onError={setPaymentError}
                     />

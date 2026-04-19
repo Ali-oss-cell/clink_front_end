@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import type { PatientSetupState } from '../../../services/api/patientSetup';
 import styles from './steps/SetupStep.module.scss';
+import { BookingBlockerBanner } from '../../../components/patient/BookingBlockerBanner/BookingBlockerBanner';
 
 function formatCompletedAt(iso: string): string {
   try {
@@ -14,20 +15,6 @@ function formatCompletedAt(iso: string): string {
     return iso;
   }
 }
-
-const BLOCKER_LABELS: Record<string, string> = {
-  telehealth_consent_missing: 'Privacy & telehealth consent',
-  intake_min_incomplete: 'Minimum intake (About you)',
-  intake_incomplete: 'Minimum intake questions',
-  referral_missing: 'GP referral (Medicare)',
-  referral_rejected: 'GP referral (previous upload rejected)',
-  referral_expired: 'GP referral (previous referral expired)',
-  medicare_session_limit_reached: 'Medicare session limit reached for this year',
-  setup_contact_incomplete: 'Emergency contact details',
-  setup_privacy_incomplete: 'Privacy & telehealth acknowledgements',
-  setup_billing_incomplete: 'How you pay',
-  referral_step_incomplete: 'GP referral',
-};
 
 export interface SetupCompleteStatusProps {
   state: PatientSetupState;
@@ -93,22 +80,20 @@ export const SetupCompleteStatus: FC<SetupCompleteStatusProps> = ({ state }) => 
       </ul>
 
       {blockers.length > 0 && (
-        <div
-          className={`${styles.formFull} ${styles.reviewPendingPanel}`}
-          role="status"
-        >
-          <p className={styles.reviewPendingLead}>
-            <strong>Booking checks</strong>
-          </p>
-          <p className={styles.reviewPendingHint}>
-            These items may still affect booking until they&apos;re resolved. You can update details
-            anytime from your account or by returning to setup steps.
-          </p>
-          <ul className={styles.reviewPendingList}>
-            {blockers.map((b) => (
-              <li key={b}>{BLOCKER_LABELS[b] ?? b.replace(/_/g, ' ')}</li>
-            ))}
-          </ul>
+        <div className={styles.formFull}>
+          <BookingBlockerBanner
+            blockingReasons={blockers}
+            actions={readiness.actions}
+            variant="status"
+          >
+            <p className={styles.reviewPendingLead} style={{ marginTop: 0 }}>
+              <strong>Booking checks</strong>
+            </p>
+            <p className={styles.reviewPendingHint}>
+              These items may still affect booking until they&apos;re resolved. You can update details
+              anytime from your account or by returning to setup steps.
+            </p>
+          </BookingBlockerBanner>
         </div>
       )}
     </div>

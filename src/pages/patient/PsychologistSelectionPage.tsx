@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
 import { psychologistService } from '../../services/api/psychologist';
+import { appointmentsService } from '../../services/api/appointments';
 import type { PsychologistProfile } from '../../services/api/psychologist';
 import { authService } from '../../services/api/auth';
 import {
@@ -24,6 +25,7 @@ import styles from './PsychologistSelection.module.scss';
 import bookingFlow from './PatientPages.module.scss';
 import { BookingFlowProgress } from '../../components/patient/BookingFlowProgress/BookingFlowProgress';
 import { BookingFlowTrustPanel } from '../../components/patient/BookingFlowTrustPanel/BookingFlowTrustPanel';
+import { trackWizardEvent } from '../../services/analytics/wizardTelemetry';
 
 interface Psychologist {
   id: number;
@@ -51,6 +53,10 @@ export const PsychologistSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedService = searchParams.get('service');
+  const billingPath =
+    searchParams.get('billing_path') === 'medicare' || searchParams.get('billing_path') === 'private'
+      ? (searchParams.get('billing_path') as 'medicare' | 'private')
+      : 'unknown';
   const psychologistFromUrl = searchParams.get('psychologist');
   const [selectedPsychologist, setSelectedPsychologist] = useState<number | null>(
     psychologistFromUrl ? parseInt(psychologistFromUrl) : null
@@ -64,7 +70,10 @@ export const PsychologistSelectionPage: React.FC = () => {
     availability: 'any',
     sessionType: 'both'
   });
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
   const appliedMatchPrefs = useRef(false);
+  const [recommendationLoading, setRecommendationLoading] = useState(false);
+  const [recommendationError, setRecommendationError] = useState<string | null>(null);
 
   // Get user data from auth service
   const user = authService.getStoredUser();
@@ -86,6 +95,9 @@ export const PsychologistSelectionPage: React.FC = () => {
         gender: prefs.gender,
         availability: prefs.availability,
       }));
+      if (prefs.gender !== 'any' || prefs.availability !== 'any') {
+        setFiltersExpanded(true);
+      }
     } catch {
       /* ignore */
     }
@@ -224,6 +236,84 @@ export const PsychologistSelectionPage: React.FC = () => {
     );
   };
 
+  const sessionTypeForRecommendation = (): 'telehealth' | 'in_person' | 'both' | undefined => {
+    if (filters.sessionType === 'telehealth') return 'telehealth';
+    if (filters.sessionType === 'in-person') return 'in_person';
+    return 'both';
+  };
+
+  const handleContinueWithRecommended = async () => {
+    if (!selectedService) return;
+    const serviceIdNum = parseInt(selectedService, 10);
+    if (Number.isNaN(serviceIdNum) || serviceIdNum <= 0) {
+      setRecommendationError('Could not determine the selected service. Go back to step 1 and pick a service.');
+      return;
+    }
+    setRecommendationLoading(true);
+    setRecommendationError(null);
+    try {
+      const st = sessionTypeForRecommendation();
+      const data = await appointmentsService.getBookingRecommendation({
+        serviceId: serviceIdNum,
+        sessionType: st,
+      });
+      const rec = data.recommendation;
+      if (!rec) {
+        setRecommendationError(
+          data.reason_code === 'no_offering_clinicians'
+            ? 'No clinicians are available for that service right now. Try again later or browse the list below.'
+            : 'No open appointments in the next booking window. Pick a psychologist below to see their calendar.'
+        );
+        trackWizardEvent({
+          event_name: 'wizard_recommended_selected',
+          step_id: 'step_2',
+          billing_path: billingPath,
+          metadata: { ok: false, reason: data.reason_code ?? 'unknown' },
+        });
+        return;
+      }
+      const params = new URLSearchParams({
+        step: '3',
+        service: selectedService,
+        psychologist: String(rec.psychologist_id),
+        slot_id: String(rec.time_slot_id),
+        booking_session_type: rec.session_type,
+      });
+      const bp = searchParams.get('billing_path');
+      if (bp === 'medicare' || bp === 'private') {
+        params.set('billing_path', bp);
+      }
+      trackWizardEvent({
+        event_name: 'wizard_recommended_selected',
+        step_id: 'step_2',
+        billing_path: billingPath,
+        metadata: { ok: true, psychologist_id: rec.psychologist_id, time_slot_id: rec.time_slot_id },
+      });
+      navigate(`/appointments/book-appointment?${params.toString()}`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Something went wrong. Try again or browse psychologists below.';
+      setRecommendationError(msg);
+      trackWizardEvent({
+        event_name: 'wizard_recommended_selected',
+        step_id: 'step_2',
+        billing_path: billingPath,
+        metadata: { ok: false, error: msg },
+      });
+    } finally {
+      setRecommendationLoading(false);
+    }
+  };
+
+  const handleBrowseAllPsychologists = () => {
+    trackWizardEvent({
+      event_name: 'wizard_manual_mode_enabled',
+      step_id: 'step_2',
+      billing_path: billingPath,
+      metadata: { source: 'browse_all_button' },
+    });
+    document.getElementById('booking-psychologist-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const handleBack = () => {
     navigate('/appointments/book-appointment?step=1', { replace: true });
   };
@@ -273,62 +363,81 @@ export const PsychologistSelectionPage: React.FC = () => {
               <div className={styles.filtersSection}>
                 <h3 className={styles.filtersTitle}>Filter psychologists</h3>
                 <div className={styles.filtersGrid}>
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}><ChartIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Specialization:</label>
-                <Select 
-                  className={styles.filterSelect}
-                  value={filters.specialization}
-                  onChange={(e) => handleFilterChange('specialization', e.target.value)}
+                  <div className={styles.filterGroup}>
+                    <label className={styles.filterLabel}><ChartIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Specialization:</label>
+                    <Select
+                      className={styles.filterSelect}
+                      value={filters.specialization}
+                      onChange={(e) => handleFilterChange('specialization', e.target.value)}
+                    >
+                      <option value="all">All</option>
+                      <option value="anxiety">Anxiety</option>
+                      <option value="depression">Depression</option>
+                      <option value="trauma">Trauma</option>
+                      <option value="adhd">ADHD</option>
+                      <option value="relationship">Relationship</option>
+                    </Select>
+                  </div>
+                  <div className={styles.filterGroup}>
+                    <label className={styles.filterLabel}><VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Session Type:</label>
+                    <Select
+                      className={styles.filterSelect}
+                      value={filters.sessionType}
+                      onChange={(e) => handleFilterChange('sessionType', e.target.value)}
+                    >
+                      <option value="both">Both</option>
+                      <option value="in-person">In-person</option>
+                      <option value="telehealth">Telehealth</option>
+                    </Select>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  className={styles.moreFiltersButton}
+                  aria-expanded={filtersExpanded}
+                  onClick={() => {
+                    const nextExpanded = !filtersExpanded;
+                    setFiltersExpanded(nextExpanded);
+                    trackWizardEvent({
+                      event_name: 'wizard_filter_expanded',
+                      step_id: 'step_2',
+                      billing_path: billingPath,
+                      metadata: { expanded: nextExpanded },
+                    });
+                  }}
                 >
-                  <option value="all">All</option>
-                  <option value="anxiety">Anxiety</option>
-                  <option value="depression">Depression</option>
-                  <option value="trauma">Trauma</option>
-                  <option value="adhd">ADHD</option>
-                  <option value="relationship">Relationship</option>
-                </Select>
-              </div>
+                  {filtersExpanded ? 'Hide extra filters' : 'More filters'}
+                </Button>
+                {filtersExpanded && (
+                  <div className={styles.filtersGrid} aria-label="Additional filters">
+                    <div className={styles.filterGroup}>
+                      <label className={styles.filterLabel}><UsersIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Gender:</label>
+                      <Select
+                        className={styles.filterSelect}
+                        value={filters.gender}
+                        onChange={(e) => handleFilterChange('gender', e.target.value)}
+                      >
+                        <option value="any">Any</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="non-binary">Non-binary</option>
+                      </Select>
+                    </div>
 
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}><UsersIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Gender:</label>
-                <Select 
-                  className={styles.filterSelect}
-                  value={filters.gender}
-                  onChange={(e) => handleFilterChange('gender', e.target.value)}
-                >
-                  <option value="any">Any</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="non-binary">Non-binary</option>
-                </Select>
-              </div>
-
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}><CalendarIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Availability:</label>
-                <Select 
-                  className={styles.filterSelect}
-                  value={filters.availability}
-                  onChange={(e) => handleFilterChange('availability', e.target.value)}
-                >
-                  <option value="any">Any time</option>
-                  <option value="this-week">This week</option>
-                  <option value="next-week">Next week</option>
-                </Select>
-              </div>
-
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}><VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Session Type:</label>
-                <Select 
-                  className={styles.filterSelect}
-                  value={filters.sessionType}
-                  onChange={(e) => handleFilterChange('sessionType', e.target.value)}
-                >
-                  <option value="both">Both</option>
-                  <option value="in-person">In-person</option>
-                  <option value="telehealth">Telehealth</option>
-                </Select>
-              </div>
-            </div>
+                    <div className={styles.filterGroup}>
+                      <label className={styles.filterLabel}><CalendarIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Availability:</label>
+                      <Select
+                        className={styles.filterSelect}
+                        value={filters.availability}
+                        onChange={(e) => handleFilterChange('availability', e.target.value)}
+                      >
+                        <option value="any">Any time</option>
+                        <option value="this-week">This week</option>
+                        <option value="next-week">Next week</option>
+                      </Select>
+                    </div>
+                  </div>
+                )}
               </div>
             </aside>
 
@@ -339,7 +448,42 @@ export const PsychologistSelectionPage: React.FC = () => {
                   Read a short bio, check specialties, and choose someone who feels like a fit—every profile is an
                   AHPRA-registered clinician.
                 </p>
+                <p className={styles.editorialHint}>You can change your clinician before you confirm payment.</p>
               </header>
+
+              {selectedService ? (
+                <section className={styles.recommendedPathCard} aria-labelledby="recommended-path-heading">
+                  <h2 id="recommended-path-heading" className={styles.recommendedPathTitle}>
+                    Prefer the fastest path?
+                  </h2>
+                  <p className={styles.recommendedPathLead}>
+                    Skip browsing—we&apos;ll send you to the earliest bookable time with a clinician who offers this
+                    service.
+                  </p>
+                  <div className={styles.recommendedPathActions}>
+                    <Button
+                      type="button"
+                      className={styles.continueButton}
+                      disabled={recommendationLoading || !!loading}
+                      onClick={() => void handleContinueWithRecommended()}
+                    >
+                      {recommendationLoading ? 'Finding earliest…' : 'Continue with first available'}
+                    </Button>
+                    <Button
+                      type="button"
+                      className={styles.cancelButton}
+                      onClick={handleBrowseAllPsychologists}
+                    >
+                      Browse all psychologists
+                    </Button>
+                  </div>
+                  {recommendationError ? (
+                    <p className={styles.recommendedPathError} role="alert">
+                      {recommendationError}
+                    </p>
+                  ) : null}
+                </section>
+              ) : null}
 
               <BookingFlowTrustPanel variant="psychologist" wide className={styles.bookingTrustPanel} />
 
@@ -366,7 +510,7 @@ export const PsychologistSelectionPage: React.FC = () => {
           ) : null}
 
           {!loading && !error && filteredPsychologists.length > 0 && (
-            <div className={styles.psychologistsGrid}>
+            <div id="booking-psychologist-grid" className={styles.psychologistsGrid}>
               {filteredPsychologists.map((psychologist) => {
                 const isSelected = selectedPsychologist === psychologist.id;
                 return (

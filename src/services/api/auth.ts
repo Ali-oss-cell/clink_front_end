@@ -242,6 +242,8 @@ export interface BookingReadinessResponse {
   blocking_reasons: string[];
   actions: {
     next: string | null;
+    /** Present on setup wizard GET/PATCH — deep link to current setup step */
+    setup_next?: string | null;
     wizard_medicare: string;
     wizard_medicare_referral: string;
     wizard_private: string;

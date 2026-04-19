@@ -81,6 +81,18 @@ Roll up **priority waves** from §6 when each wave completes (do not duplicate e
 - [x] `DONE` **Wave 3 — Video + overlays** — VideoCall sage bars; PrivacyPolicyModal + RecordingDetailModal token glass; PatientAppShell notif dropdown verified (`WEBSITE_GLASSMORPHISM_GUIDE.md` §6.G).
 - [x] **Wave 4 — Role dashboards + empty states** — Psychologist / Admin / Manager `*Pages.module.scss`: shared `role-empty-glass`, `role-empty-glass-table-cell`, `role-empty-glass-icon` in `_surfaceSystem.scss`; manager shell transparent under `.clinicalShell`; `npm run build` verified.
 
+### 10) Booking wizard simplification program (`BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md`)
+
+Cross-stack UX + funnel optimization plan for `/appointments/book-appointment`. Track this by waves with metrics gates.
+Rows in this section track wave deliverables only; goals/metrics are evaluated in `BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md` §§1–2.
+
+- [ ] **Wave 0 — Baseline instrumentation** — Backend: `WizardFunnelEvent` + `GET /api/auth/admin/wizard-funnel-metrics/` (see `clink-backend/docs/API_CONTRACT.md`). **Pending:** product baseline table capture.
+- [x] **Wave 1 — Quick UX wins** — progressive disclosure, simplified CTA hierarchy, reduced filter noise.
+- [x] **Wave 2 — Recommended path** — `Continue with first available` + `GET /api/appointments/booking-recommendation/`; browse-all manual path (`BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md` §4 Wave 2).
+- [x] **Wave 3 — Date/time simplification** — `time_window` on available-slots + band-first UX on step 3 (`BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md` §4 Wave 3).
+- [x] **Wave 4 — Blocker clarity** — shared `BookingBlockerBanner` + `bookingBlockers.ts`; backend `primary_recovery_next` maps setup wizard codes to `/patient/setup?step=…`; payment uses user-driven Fix now (`BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md` §4 Wave 4).
+- [ ] **Wave 5 — Mobile + accessibility polish** — responsive and keyboard/screen-reader hardening.
+
 ## Cleanup Targets
 
 - [x] Removed `--tp-*` variable definitions from `_base.scss` and all `var(--tp-*)` usages across 5 page modules.
@@ -96,5 +108,6 @@ Roll up **priority waves** from §6 when each wave completes (do not duplicate e
 - [x] No linter errors on new/edited files.
 - [ ] Responsive check (mobile/tablet/desktop) — visual QA pending.
 - [ ] Focus/contrast/touch-target check — visual QA pending.
+- [ ] **Wave 0 — Baseline instrumentation:** product baseline table capture remains pending (frontend + backend instrumentation shipped).
 - [ ] **Glass expansion (optional):** relevant §6 waves in [`WEBSITE_GLASSMORPHISM_GUIDE.md`](WEBSITE_GLASSMORPHISM_GUIDE.md) checked off + `npm run build` clean after each merged batch (see §7 in that doc).
 - [x] Docs updated (`CSS_GOVERNANCE.md`, `REFRACTOR_TRACKER.md`).

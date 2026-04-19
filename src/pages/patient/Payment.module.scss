@@ -54,6 +54,11 @@
   font-size: 0.95rem;
 }
 
+.blockerBanner {
+  max-width: 720px;
+  margin: 0 auto $spacing-lg;
+}
+
 .paymentContainer {
   padding: 1rem 0 0.9rem;
   min-height: 100vh;

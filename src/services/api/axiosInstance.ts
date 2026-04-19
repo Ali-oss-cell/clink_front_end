@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
+import { getWizardTelemetryHeaders } from '../analytics/wizardTelemetry';
 
 // Get API base URL from environment variable or use default
 // In production, this should be set via VITE_API_BASE_URL
@@ -72,6 +73,12 @@ axiosInstance.interceptors.request.use(
     const token = localStorage.getItem('access_token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (config.headers) {
+      const wizardHeaders = getWizardTelemetryHeaders();
+      Object.entries(wizardHeaders).forEach(([key, value]) => {
+        config.headers[key] = value;
+      });
     }
     return config;
   },

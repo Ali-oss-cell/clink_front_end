@@ -43,6 +43,7 @@ interface Service {
 }
 
 const BOOKING_BILLING_PATH_KEY = 'booking_billing_path';
+const INITIAL_VISIBLE_SERVICES = 6;
 
 export const ServiceSelectionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -62,7 +63,9 @@ export const ServiceSelectionPage: React.FC = () => {
   const [referralUploading, setReferralUploading] = useState(false);
   const [referralError, setReferralError] = useState<string | null>(null);
   const [referralSuccess, setReferralSuccess] = useState<string | null>(null);
-  const referralPanelRef = useRef<HTMLDivElement | null>(null);
+  const [showAllServices, setShowAllServices] = useState(false);
+  const [referralPrepExpanded, setReferralPrepExpanded] = useState(true);
+  const referralPanelRef = useRef<HTMLDetailsElement | null>(null);
   const billingPathPanelRef = useRef<HTMLDivElement | null>(null);
   const [billingPath, setBillingPath] = useState<'medicare' | 'private'>(() => {
     const fromQuery = searchParams.get('billing_path');
@@ -208,6 +211,27 @@ export const ServiceSelectionPage: React.FC = () => {
         s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
     );
   }, [services, serviceSearch]);
+  const referralNeedsAttention =
+    billingPath === 'medicare' &&
+    (referralLoading ||
+      !referralStatus ||
+      (referralStatus.status !== 'verified' && !referralStatus.has_uploaded_referral));
+  const visibleServices = showAllServices
+    ? filteredServices
+    : filteredServices.slice(0, INITIAL_VISIBLE_SERVICES);
+  const canToggleServices = filteredServices.length > INITIAL_VISIBLE_SERVICES;
+
+  useEffect(() => {
+    if (serviceSearch.trim()) {
+      setShowAllServices(true);
+      return;
+    }
+    setShowAllServices(false);
+  }, [serviceSearch]);
+
+  useEffect(() => {
+    setReferralPrepExpanded(referralNeedsAttention);
+  }, [referralNeedsAttention]);
 
   const handleServiceSelect = (serviceId: number) => {
     setSelectedService(serviceId.toString());
@@ -333,6 +357,7 @@ export const ServiceSelectionPage: React.FC = () => {
 
               <div ref={billingPathPanelRef} className={styles.billingPathPanel}>
                 <p className={styles.billingPathTitle}>How are you booking this session?</p>
+                <p className={styles.bookingFlowHelperText}>You can switch this option before you confirm payment.</p>
                 <div className={styles.billingPathOptions} role="radiogroup" aria-label="Booking payment path">
                   <button
                     type="button"
@@ -360,9 +385,14 @@ export const ServiceSelectionPage: React.FC = () => {
               </div>
 
               {billingPath === 'medicare' && (
-                <div ref={referralPanelRef} className={styles.bookingReferralPanel}>
-                  <div className={styles.bookingReferralHeader}>
-                    <h3>Referral / MHTP upload</h3>
+                <details
+                  ref={referralPanelRef}
+                  className={styles.bookingReferralPanel}
+                  open={referralPrepExpanded}
+                  onToggle={(event) => setReferralPrepExpanded((event.currentTarget as HTMLDetailsElement).open)}
+                >
+                  <summary className={styles.bookingReferralSummary}>
+                    <span>Referral / MHTP upload</span>
                     <span className={`${styles.bookingReferralBadge} ${
                       referralStatus?.status === 'verified'
                         ? styles.bookingReferralVerified
@@ -372,37 +402,38 @@ export const ServiceSelectionPage: React.FC = () => {
                     }`}>
                       {referralLoading ? 'Checking...' : referralStatus?.status || 'missing'}
                     </span>
+                  </summary>
+                  <div className={styles.bookingReferralBody}>
+                    <p className={styles.bookingReferralHint}>
+                      Upload your GP referral or mental health treatment plan now, or add it during intake.
+                    </p>
+                    <div className={styles.bookingReferralActions}>
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"
+                        className={styles.bookingReferralFileInput}
+                        onChange={(e) => setReferralFile(e.target.files?.[0] || null)}
+                      />
+                      <Button
+                        type="button"
+                        className={styles.bookingReferralButton}
+                        onClick={handleUploadReferral}
+                        disabled={referralUploading}
+                      >
+                        {referralUploading ? 'Uploading…' : 'Upload referral'}
+                      </Button>
+                      <Button
+                        type="button"
+                        className={styles.bookingReferralButton}
+                        onClick={() => navigate('/patient/setup?step=referral')}
+                      >
+                        Open setup referral step
+                      </Button>
+                    </div>
+                    {referralError && <p className={styles.bookingReferralError}>{referralError}</p>}
+                    {referralSuccess && <p className={styles.bookingReferralSuccess}>{referralSuccess}</p>}
                   </div>
-                  <p className={styles.bookingReferralHint}>
-                    For Medicare claiming, upload your GP referral or mental health treatment plan PDF/image here.
-                    You can also complete referral details in the intake form.
-                  </p>
-                  <div className={styles.bookingReferralActions}>
-                    <input
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"
-                      className={styles.bookingReferralFileInput}
-                      onChange={(e) => setReferralFile(e.target.files?.[0] || null)}
-                    />
-                    <Button
-                      type="button"
-                      className={styles.actionButton}
-                      onClick={handleUploadReferral}
-                      disabled={referralUploading}
-                    >
-                      {referralUploading ? 'Uploading…' : 'Upload referral'}
-                    </Button>
-                    <Button
-                      type="button"
-                      className={styles.backButton}
-                      onClick={() => navigate('/patient/setup?step=referral')}
-                    >
-                      Open setup referral step
-                    </Button>
-                  </div>
-                  {referralError && <p className={styles.bookingReferralError}>{referralError}</p>}
-                  {referralSuccess && <p className={styles.bookingReferralSuccess}>{referralSuccess}</p>}
-                </div>
+                </details>
               )}
 
               {!servicesLoading && !servicesError && services.length > 0 && (
@@ -432,7 +463,7 @@ export const ServiceSelectionPage: React.FC = () => {
                 </p>
                 {readinessError && <p className={styles.placeholderSubtext}>{readinessError}</p>}
               </div>
-              <Button className={styles.actionButton} onClick={() => navigate('/patient/account?tab=privacy')}>
+              <Button className={styles.bookingReferralButton} onClick={() => navigate('/patient/account?tab=privacy')}>
                 Update Consent
               </Button>
             </div>
@@ -464,8 +495,8 @@ export const ServiceSelectionPage: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <div className={`${styles.servicesGrid} ${styles.bookingFlowCanvas}`}>
-              {filteredServices.map((service, index) => {
+            <div className={`${styles.servicesGrid} ${styles.bookingFlowCanvas}`} id="services-grid">
+              {visibleServices.map((service, index) => {
                 const serviceId = parseInt(service.id);
                 const Icon = SERVICE_BOOKING_ICONS[index % SERVICE_BOOKING_ICONS.length];
                 const isSelected = selectedService === service.id;
@@ -508,6 +539,21 @@ export const ServiceSelectionPage: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+          )}
+          {!servicesLoading && !servicesError && filteredServices.length > 0 && canToggleServices && (
+            <div className={styles.servicesDisclosureRow}>
+              <Button
+                type="button"
+                className={styles.bookingBackButton}
+                onClick={() => setShowAllServices((prev) => !prev)}
+                aria-expanded={showAllServices}
+                aria-controls="services-grid"
+              >
+                {showAllServices
+                  ? 'Show fewer services'
+                  : `Show all ${filteredServices.length} services`}
+              </Button>
             </div>
           )}
 

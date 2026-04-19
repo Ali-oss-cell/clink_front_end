@@ -2334,6 +2334,13 @@ button.submitButton {
   color: $text-dark;
 }
 
+.bookingFlowHelperText {
+  margin: -0.2rem 0 0.7rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: $text-light;
+}
+
 .billingPathOptions {
   display: grid;
   grid-template-columns: 1fr;
@@ -2401,6 +2408,30 @@ button.submitButton {
   }
 }
 
+.bookingReferralSummary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  cursor: pointer;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  span:first-child {
+    margin: 0;
+    font-size: 0.98rem;
+    color: $text-dark;
+    font-weight: 700;
+  }
+}
+
+.bookingReferralBody {
+  margin-top: 0.55rem;
+}
+
 .bookingReferralBadge {
   border-radius: 999px;
   padding: 0.22rem 0.62rem;
@@ -2455,6 +2486,17 @@ button.submitButton {
   margin: 0.55rem 0 0;
   font-size: 0.8rem;
   color: #166534;
+}
+
+.bookingReferralButton {
+  padding: 0.7rem 1rem;
+  min-height: $min-touch-target;
+  border: 1px solid var(--cs-outline, #70787c);
+  background: transparent;
+  color: var(--cs-primary, $patient-primary);
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  font-weight: 600;
+  font-size: 0.86rem;
 }
 
 .serviceSearchWrap {
@@ -2512,6 +2554,13 @@ button.submitButton {
   @media (min-width: 1100px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+.servicesDisclosureRow {
+  max-width: 64rem;
+  margin: 0 auto 0.9rem;
+  display: flex;
+  justify-content: center;
 }
 
 // Stitch reference: clean cards, icon well, body copy, single meta line, text CTA row + left pillar.

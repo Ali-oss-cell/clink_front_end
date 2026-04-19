@@ -47,6 +47,10 @@ export interface AvailableSlotsResponse {
   booking_policy?: {
     max_advance_booking_days: number;
   };
+  /** Wave 3: echoed when `time_window` query was sent */
+  time_window?: 'morning' | 'afternoon' | 'evening' | null;
+  /** Present when the window filter removed all slots but some existed without the filter */
+  window_filter_message_code?: string | null;
 }
 
 export interface CalendarViewResponse {
@@ -56,6 +60,24 @@ export interface CalendarViewResponse {
   year: number;
   available_dates: string[];
   total_available_days: number;
+}
+
+/** Wave 2: earliest-slot recommendation across clinicians offering the service */
+export interface BookingRecommendationResponse {
+  recommendation: {
+    service_id: number;
+    psychologist_id: number;
+    psychologist_name: string;
+    time_slot_id: number;
+    slot_start: string;
+    session_type: 'telehealth' | 'in_person';
+  } | null;
+  rationale?: { strategy: string };
+  manual_path_available?: boolean;
+  reason_code?: string;
+  booking_policy?: {
+    max_advance_booking_days: number;
+  };
 }
 
 export interface BookAppointmentRequest {
@@ -186,6 +208,7 @@ export interface BookingRevalidationResponse {
   message: string;
   actions: {
     next: string | null;
+    setup_next?: string | null;
     telehealth_consent: string;
     intake_form: string;
     intake_referral_details: string;
@@ -271,6 +294,8 @@ export class AppointmentsService {
     endDate?: string;
     serviceId?: number;
     sessionType?: 'telehealth' | 'in_person';
+    /** Wave 3: morning | afternoon | evening — omit for full day */
+    timeWindow?: 'morning' | 'afternoon' | 'evening';
   }): Promise<AvailableSlotsResponse> {
     // ✅ Validate required parameters
     if (!params.psychologistId || isNaN(params.psychologistId)) {
@@ -306,6 +331,10 @@ export class AppointmentsService {
     
     if (params.sessionType) {
       queryParams.append('session_type', params.sessionType);
+    }
+
+    if (params.timeWindow) {
+      queryParams.append('time_window', params.timeWindow);
     }
 
     try {
@@ -347,6 +376,49 @@ export class AppointmentsService {
       
       console.error('[AppointmentsService] Failed to get available slots:', error);
       throw new Error(error.message || 'Failed to load available slots');
+    }
+  }
+
+  /**
+   * Wave 2: get earliest bookable slot among clinicians offering the service (patient-only).
+   */
+  async getBookingRecommendation(params: {
+    serviceId: number;
+    sessionType?: 'telehealth' | 'in_person' | 'both';
+  }): Promise<BookingRecommendationResponse> {
+    const queryParams = new URLSearchParams({
+      service_id: params.serviceId.toString(),
+    });
+    if (params.sessionType && params.sessionType !== 'both') {
+      queryParams.append('session_type', params.sessionType);
+    }
+
+    try {
+      try {
+        const response = await axiosInstance.get<BookingRecommendationResponse>(
+          `/appointments/booking-recommendation/?${queryParams.toString()}`
+        );
+        return response.data;
+      } catch (primaryError: any) {
+        if (primaryError?.response?.status !== 404) throw primaryError;
+        const fallback = await axiosInstance.get<BookingRecommendationResponse>(
+          `/auth/appointments/booking-recommendation/?${queryParams.toString()}`
+        );
+        return fallback.data;
+      }
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        const msg = error.response.data?.error || 'Invalid recommendation request';
+        throw new Error(msg);
+      }
+      if (error.response?.status === 403) {
+        throw new Error('Access denied');
+      }
+      if (error.response?.status === 404) {
+        throw new Error(error.response.data?.error || 'Service not found');
+      }
+      console.error('[AppointmentsService] getBookingRecommendation failed:', error);
+      throw new Error(error.message || 'Failed to load booking recommendation');
     }
   }
 
