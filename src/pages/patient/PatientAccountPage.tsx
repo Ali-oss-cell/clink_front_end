@@ -12,6 +12,7 @@ import { Checkbox } from '../../components/ui/checkbox';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import styles from './PatientPages.module.scss';
+import { PatientShellPage } from '../../components/patient/PatientShellPage/PatientShellPage';
 
 type AccountTab = 'personal' | 'medical' | 'preferences' | 'security' | 'privacy';
 
@@ -331,6 +332,7 @@ export const PatientAccountPage: React.FC = () => {
       patientShell
       className={styles.patientLayout}
     >
+      <PatientShellPage>
       <div className={styles.accountContainer}>
         <div className="container">
           <div className={styles.accountShellStack}>
@@ -882,10 +884,11 @@ export const PatientAccountPage: React.FC = () => {
               )}
             </div>
             </div>
-          </div>
+            </div>
           </div>
         </div>
       </div>
+      </PatientShellPage>
     </Layout>
   );
 };

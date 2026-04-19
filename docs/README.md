@@ -11,6 +11,7 @@ This folder is the frontend documentation entry point.
 - `../THEME_QUICK_REFERENCE.md` - quick operational theme reference
 - `CSS_GOVERNANCE.md` - CSS architecture and anti-churn standards
 - **`CROSS_SHELL_UI_REFACTOR_SPEC.md`** - **primary Cursor execution brief**: homepage-led UI for all shells, cards, forms (Register baseline), wizard no-scroll, all roles
+- **`PATIENT_CORE_PAGES_ENTERPRISE_GLASS_SPEC.md`** — patient dashboard / appointments / invoices / resources / recordings / account: enterprise glass, connected-app rhythm, phased rollout
 - `HOMEPAGE_STYLE_SYSTEM.md` - homepage as visual source of truth (direction + checklist)
 - `UI_PRIMITIVES_CATALOG.md` - shared surface/action/control primitive categories
 - `RESPONSIVE_SIZE_MATRIX.md` - breakpoints, spacing, control heights, typography rhythm

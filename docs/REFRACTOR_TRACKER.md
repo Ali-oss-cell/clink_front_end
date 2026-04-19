@@ -63,6 +63,15 @@ Tracks migration to homepage-led, token-driven, shared-primitives styling.
 - [x] `DONE` PatientAppShell — fully `--cs-*` tokenized, remaining hardcoded rgba replaced.
 - [x] `DONE` RoleAppShell — legacy `--shell-*` base removed, rewritten to use `--cs-*` tokens exclusively.
 
+### 8) Patient core enterprise glass (`PATIENT_CORE_PAGES_ENTERPRISE_GLASS_SPEC.md`)
+
+- [x] `DONE` Phase 1 — L1/L2 documented (`UI_PRIMITIVES_CATALOG.md`, `_patientSurface.scss`); shared `_patientPageChrome.scss`; PatientShellPage + PatientShellChrome deduped.
+- [x] `DONE` Phase 2 — PatientShellPage wrapper on dashboard, resources, invoices, account; `/recordings` (patient); shared chrome partial.
+- [x] `DONE` Phase 3 — Dashboard L1 `patient-card`; appointments list cards respect reduced-motion on stagger.
+- [x] `DONE` Phase 4 — Invoices tokenized surfaces + table shell; resources error icon tokenized.
+- [x] `DONE` Phase 5 — Account `PatientShellPage`; recording cards `patient-card`.
+- [x] `DONE` Phase 6 — PatientAppShell route enter + reduced-motion; QA: `npm run build` clean.
+
 ## Cleanup Targets
 
 - [x] Removed `--tp-*` variable definitions from `_base.scss` and all `var(--tp-*)` usages across 5 page modules.

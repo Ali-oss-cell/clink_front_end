@@ -1,33 +1,39 @@
-// Shared Clinical Sanctuary page chrome (main column inside PatientAppShell; uses --cs-* from .patientShell)
+@use '../../../assets/styles/patientPageChrome' as pchrome;
+
+// Main column inside PatientAppShell; uses --cs-* from .patientShell.
+// Page headers + welcome hero: shared with `PatientShellChrome.module.scss` via `_patientPageChrome.scss`.
 
 .page {
-  max-width: 80rem;
-  margin: 0 auto;
-  width: 100%;
-  font-family: var(--cs-font-body);
-  color: var(--cs-on-surface);
+  @include pchrome.patient-chrome-wrap;
+}
+
+// Alias for pages that used `shell.wrap` (same as .page)
+.wrap {
+  @include pchrome.patient-chrome-wrap;
 }
 
 .pageHeader {
-  margin-bottom: 2rem;
-  text-align: left;
+  @include pchrome.patient-chrome-page-header;
 }
 
 .pageTitle {
-  font-family: var(--cs-font-headline);
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--cs-primary);
-  margin: 0 0 0.5rem;
+  @include pchrome.patient-chrome-page-title;
 }
 
 .pageSubtitle {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--cs-on-surface-variant);
-  margin: 0;
-  max-width: 40rem;
+  @include pchrome.patient-chrome-page-subtitle;
+}
+
+.welcomeKicker {
+  @include pchrome.patient-chrome-welcome-kicker;
+}
+
+.welcomeTitle {
+  @include pchrome.patient-chrome-welcome-title;
+}
+
+.welcomeSubtitle {
+  @include pchrome.patient-chrome-welcome-subtitle;
 }
 
 .surfaceCard {
@@ -44,43 +50,11 @@
 }
 
 .btnPrimary {
-  font-family: var(--cs-font-body);
-  padding: 0.65rem 1.35rem;
-  border: none;
-  border-radius: var(--cs-radius-xl);
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--cs-on-primary);
-  cursor: pointer;
-  background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
-  box-shadow: var(--cs-shadow-atmospheric);
-  transition: filter 0.15s ease, transform 0.15s ease;
-
-  &:hover {
-    filter: saturate(1.08);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+  @include pchrome.patient-chrome-btn-primary-compact;
 }
 
 .btnGhost {
-  font-family: var(--cs-font-body);
-  padding: 0.65rem 1.15rem;
-  border: none;
-  border-radius: var(--cs-radius-xl);
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--cs-primary);
-  background: transparent;
-  cursor: pointer;
-  transition: background 0.15s ease;
-
-  &:hover {
-    background: var(--cs-surface-low);
-  }
+  @include pchrome.patient-chrome-btn-ghost-compact;
 }
 
 .section {

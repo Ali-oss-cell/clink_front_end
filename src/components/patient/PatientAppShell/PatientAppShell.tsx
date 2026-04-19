@@ -324,7 +324,9 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
             </div>
           </div>
         )}
-        {children}
+        <div className={styles.mainContent} key={location.pathname}>
+          {children}
+        </div>
       </div>
     </div>
   );

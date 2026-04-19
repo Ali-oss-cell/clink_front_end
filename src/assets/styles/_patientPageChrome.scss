@@ -1,0 +1,171 @@
+// -------------------------------------------------------------------------
+// Shared patient + role “page chrome” (max-width column, headers, CTA buttons)
+// Consumed by `PatientShellPage.module.scss` and `PatientShellChrome.module.scss`.
+// Tokens: `_clinicalSanctuary.scss` / `.patientShell`
+// -------------------------------------------------------------------------
+
+@mixin patient-chrome-wrap {
+  max-width: 80rem;
+  margin: 0 auto;
+  width: 100%;
+  font-family: var(--cs-font-body);
+  color: var(--cs-on-surface);
+}
+
+@mixin patient-chrome-page-header {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+@mixin patient-chrome-page-title {
+  font-family: var(--cs-font-headline);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--cs-primary);
+  margin: 0 0 0.5rem;
+}
+
+@mixin patient-chrome-page-subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--cs-on-surface-variant);
+  margin: 0;
+  max-width: 40rem;
+}
+
+@mixin patient-chrome-welcome-kicker {
+  margin: 0 0 0.45rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--cs-primary) 65%, var(--cs-on-surface-variant));
+}
+
+@mixin patient-chrome-welcome-title {
+  font-family: var(--cs-font-headline);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--cs-primary);
+  margin: 0 0 0.75rem;
+}
+
+@mixin patient-chrome-welcome-subtitle {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--cs-on-surface-variant);
+  max-width: 36rem;
+  margin: 0;
+}
+
+@mixin patient-chrome-btn-primary-dashboard {
+  font-family: var(--cs-font-body);
+  padding: 0.75rem 1.75rem;
+  border: none;
+  border-radius: var(--cs-radius-xl);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cs-on-primary);
+  cursor: pointer;
+  background-color: transparent;
+  background-image: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+  box-shadow: var(--cs-shadow-atmospheric);
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &::before {
+    content: none;
+    display: none;
+  }
+
+  &:hover:not(:disabled) {
+    filter: saturate(1.08);
+    transform: none;
+    box-shadow: var(--cs-shadow-atmospheric);
+    background-color: transparent;
+    background-image: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+@mixin patient-chrome-btn-ghost-dashboard {
+  font-family: var(--cs-font-body);
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: var(--cs-radius-xl);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cs-primary);
+  background-color: var(--cs-surface-lowest);
+  background-image: none;
+  cursor: pointer;
+  box-shadow: var(--cs-shadow-atmospheric);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &::before {
+    content: none;
+    display: none;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--cs-surface-low);
+    transform: none;
+    box-shadow: var(--cs-shadow-atmospheric);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+@mixin patient-chrome-btn-primary-compact {
+  font-family: var(--cs-font-body);
+  padding: 0.65rem 1.35rem;
+  border: none;
+  border-radius: var(--cs-radius-xl);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cs-on-primary);
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+  box-shadow: var(--cs-shadow-atmospheric);
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    filter: saturate(1.08);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin patient-chrome-btn-ghost-compact {
+  font-family: var(--cs-font-body);
+  padding: 0.65rem 1.15rem;
+  border: none;
+  border-radius: var(--cs-radius-xl);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cs-primary);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--cs-surface-low);
+  }
+}

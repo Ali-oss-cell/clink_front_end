@@ -4,6 +4,7 @@ This document is the **primary execution brief** for unifying the entire product
 
 | Document | Role |
 |----------|------|
+| `PATIENT_CORE_PAGES_ENTERPRISE_GLASS_SPEC.md` | Patient hub pages (dashboard, appointments, invoices, resources, recordings, account): enterprise glass + app-like continuity — phased execution |
 | `HOMEPAGE_STYLE_SYSTEM.md` | Visual direction and source-of-truth files |
 | `UI_PRIMITIVES_CATALOG.md` | Named primitive categories to implement and reuse |
 | `RESPONSIVE_SIZE_MATRIX.md` | Spacing, breakpoints, control sizes |

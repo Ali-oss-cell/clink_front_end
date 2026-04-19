@@ -16,7 +16,7 @@ import {
 } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import styles from './PatientPages.module.scss';
-import shell from './PatientShellChrome.module.scss';
+import { PatientShellPage, patientShellPageStyles as psp } from '../../components/patient/PatientShellPage/PatientShellPage';
 
 export const PatientResourcesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -99,18 +99,19 @@ export const PatientResourcesPage: React.FC = () => {
 
   return (
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <PatientShellPage>
       <div className={styles.pageContainer}>
         <div className="container">
-          <div className={shell.pageHeader}>
-            <h1 className={shell.welcomeTitle}>Mental Health Resources</h1>
-            <p className={shell.welcomeSubtitle}>
+          <div className={psp.pageHeader}>
+            <h1 className={psp.welcomeTitle}>Mental Health Resources</h1>
+            <p className={psp.welcomeSubtitle}>
               Educational materials and support resources for your mental health journey
             </p>
           </div>
 
           {/* Emergency Contacts */}
           <div className={styles.emergencySection}>
-            <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle', color: '#c0392b' }} /> Need Immediate Help?</h2>
+            <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle', color: 'var(--cs-error)' }} /> Need Immediate Help?</h2>
             <div className={styles.emergencyGrid}>
               {emergencyContacts.map((contact, index) => (
                 <div key={index} className={styles.emergencyCard}>
@@ -249,6 +250,7 @@ export const PatientResourcesPage: React.FC = () => {
           </div>
         </div>
       </div>
+      </PatientShellPage>
     </Layout>
   );
 };

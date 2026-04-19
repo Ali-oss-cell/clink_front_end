@@ -138,6 +138,10 @@
       animation-delay: #{$i * 0.1}s;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .cardStatusBadge {

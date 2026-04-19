@@ -9,6 +9,13 @@
 // Token source of truth: `_clinicalSanctuary.scss`
 // Typography / motion / radii come from `:root { --cs-* }` CSS variables so
 // dark mode and brand tweaks propagate automatically.
+//
+// **Elevation (patient hub — PATIENT_CORE_PAGES_ENTERPRISE_GLASS_SPEC.md):**
+// - **L1** — Primary section/card: use `@mixin patient-card` (or `surface-primary`
+//   from `_surfaceSystem.scss` when matching marketing glass lift).
+// - **L2** — Nested row/panel inside L1: use `@mixin patient-panel`.
+// Limit distinct glass tiers to two per viewport unless a third is already in
+// shared primitives.
 // -------------------------------------------------------------------------
 
 @use './mixins' as *;

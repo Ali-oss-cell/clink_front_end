@@ -620,6 +620,26 @@ $shell-collapse: 900px;
   }
 }
 
+// Subtle route enter — opacity + short translate; disabled when reduced-motion
+.mainContent {
+  animation: patientRouteEnter 0.22s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes patientRouteEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .main {
   flex: 1;
   margin-left: $sidebar-w;

@@ -54,7 +54,18 @@ This catalog defines reusable UI styling primitives and their intended usage.
 - Feature modules should consume primitives, not reinvent them.
 - Prefer `surface-primary` / `surface-secondary` over raw `glass-card` calls in new code.
 
-## 6) Migration Notes
+## 6) Patient hub elevation — `_patientSurface.scss` (L1 / L2)
+
+Used by the patient portal core pages (dashboard, appointments, invoices, resources, account, recordings). See `docs/PATIENT_CORE_PAGES_ENTERPRISE_GLASS_SPEC.md`.
+
+| Tier | Mixin / primitive | Use |
+|------|-------------------|-----|
+| **L1** | `@mixin patient-card` (or `@include surface-primary` from `_surfaceSystem.scss` when the homepage-style glass lift is required) | Primary page sections, outer list containers, hero cards |
+| **L2** | `@mixin patient-panel` | Rows, nested summaries, inset metadata inside an L1 card |
+
+Rules: prefer at most **two** distinct surface depths per viewport; no ad-hoc `backdrop-filter` in feature modules — compose from `patient-card` / `patient-panel` / `surface-*` / `glass-card`.
+
+## 7) Migration Notes
 
 When refactoring legacy modules:
 

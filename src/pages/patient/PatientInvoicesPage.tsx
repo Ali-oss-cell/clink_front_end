@@ -8,7 +8,7 @@ import { DocumentIcon, CreditCardIcon, ClockIcon } from '../../utils/icons';
 import { Button } from '../../components/ui/button';
 import { Select } from '../../components/ui/select';
 import styles from './PatientPages.module.scss';
-import shell from './PatientShellChrome.module.scss';
+import { PatientShellPage, patientShellPageStyles as psp } from '../../components/patient/PatientShellPage/PatientShellPage';
 import invoiceStyles from './PatientInvoicesPage.module.scss';
 
 export const PatientInvoicesPage: React.FC = () => {
@@ -150,109 +150,61 @@ export const PatientInvoicesPage: React.FC = () => {
   if (loading) {
     return (
       <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
-        <div className={styles.pageContainer}>
-          <div className="container">
-            <div style={{ textAlign: 'center', padding: '3rem' }}>
-              <p>Loading your invoices...</p>
+        <PatientShellPage>
+          <div className={styles.pageContainer}>
+            <div className="container">
+              <div className={invoiceStyles.loadingWrap}>
+                <p>Loading your invoices...</p>
+              </div>
             </div>
           </div>
-        </div>
+        </PatientShellPage>
       </Layout>
     );
   }
 
   return (
     <Layout user={user} isAuthenticated={true} patientShell className={styles.patientLayout}>
+      <PatientShellPage>
       <div className={styles.pageContainer}>
         <div className="container">
-          <div className={shell.pageHeader}>
-            <h1 className={shell.welcomeTitle}>My Invoices</h1>
-            <p className={shell.welcomeSubtitle}>View and download your invoices</p>
+          <div className={psp.pageHeader}>
+            <h1 className={psp.welcomeTitle}>My Invoices</h1>
+            <p className={psp.welcomeSubtitle}>View and download your invoices</p>
           </div>
 
           {error && (
-            <div style={{
-              background: '#fee2e2',
-              border: '1px solid #c0392b',
-              borderRadius: '8px',
-              padding: '1rem',
-              marginBottom: '2rem',
-              color: '#991b1b'
-            }}>
+            <div className={invoiceStyles.errorBanner} role="alert">
               <p>{error}</p>
             </div>
           )}
 
-          {/* Stats Summary */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '1rem',
-            marginBottom: '2rem'
-          }}>
-            <div style={{
-              background: 'var(--cs-surface-lowest)',
-              padding: '1.5rem',
-              borderRadius: 'var(--cs-radius-2xl)',
-              boxShadow: 'var(--cs-shadow-atmospheric)',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-primary)' }}>
-                {formatCurrency(totals.total)}
-              </div>
-              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Total Invoiced</div>
+          {/* Stats Summary — L1 surfaces */}
+          <div className={invoiceStyles.summaryGrid}>
+            <div className={invoiceStyles.statCard}>
+              <div className={invoiceStyles.statValue}>{formatCurrency(totals.total)}</div>
+              <div className={invoiceStyles.statLabel}>Total Invoiced</div>
             </div>
-            <div style={{
-              background: 'var(--cs-surface-lowest)',
-              padding: '1.5rem',
-              borderRadius: 'var(--cs-radius-2xl)',
-              boxShadow: 'var(--cs-shadow-atmospheric)',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-on-secondary-fixed-variant)' }}>
-                {formatCurrency(totals.paid)}
-              </div>
-              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Paid</div>
+            <div className={invoiceStyles.statCard}>
+              <div className={`${invoiceStyles.statValue} ${invoiceStyles.statPaid}`}>{formatCurrency(totals.paid)}</div>
+              <div className={invoiceStyles.statLabel}>Paid</div>
             </div>
-            <div style={{
-              background: 'var(--cs-surface-lowest)',
-              padding: '1.5rem',
-              borderRadius: 'var(--cs-radius-2xl)',
-              boxShadow: 'var(--cs-shadow-atmospheric)',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-on-tertiary-fixed-variant)' }}>
-                {formatCurrency(totals.pending)}
-              </div>
-              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Pending</div>
+            <div className={invoiceStyles.statCard}>
+              <div className={`${invoiceStyles.statValue} ${invoiceStyles.statPending}`}>{formatCurrency(totals.pending)}</div>
+              <div className={invoiceStyles.statLabel}>Pending</div>
             </div>
-            <div style={{
-              background: 'var(--cs-surface-lowest)',
-              padding: '1.5rem',
-              borderRadius: 'var(--cs-radius-2xl)',
-              boxShadow: 'var(--cs-shadow-atmospheric)',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--cs-primary)' }}>
-                {invoices.length}
-              </div>
-              <div style={{ color: 'var(--cs-on-surface-variant)', marginTop: '0.5rem' }}>Total Invoices</div>
+            <div className={invoiceStyles.statCard}>
+              <div className={invoiceStyles.statValue}>{invoices.length}</div>
+              <div className={invoiceStyles.statLabel}>Total Invoices</div>
             </div>
           </div>
 
           {/* Filter */}
-          <div style={{ marginBottom: '1.5rem' }}>
+          <div className={invoiceStyles.filterRow}>
             <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '8px',
-                border: '1px solid #c8c5c0',
-                fontSize: '1rem',
-                background: 'white',
-                cursor: 'pointer'
-              }}
+              className={invoiceStyles.statusSelect}
             >
               <option value="all">All Statuses</option>
               <option value="paid">Paid</option>
@@ -262,91 +214,56 @@ export const PatientInvoicesPage: React.FC = () => {
             </Select>
           </div>
 
-          {/* Invoices Table */}
-          <div style={{
-            background: 'white',
-            borderRadius: '12px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            overflow: 'hidden'
-          }}>
+          {/* Invoices Table — L1 glass container */}
+          <div className={invoiceStyles.tableShell}>
             {invoices.length === 0 ? (
-              <div style={{ padding: '3rem', textAlign: 'center', color: '#7a7b7a' }}>
-                <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>No invoices found</p>
-                <p>You don't have any invoices yet.</p>
+              <div className={invoiceStyles.emptyState}>
+                <p className={invoiceStyles.emptyTitle}>No invoices found</p>
+                <p>You don&apos;t have any invoices yet.</p>
               </div>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <table className={invoiceStyles.table}>
                 <thead>
-                  <tr style={{ background: '#f6efe7', borderBottom: '2px solid #e2dfd9' }}>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
-                      Invoice #
-                    </th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
-                      Date
-                    </th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
-                      Psychologist
-                    </th>
-                    <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', color: '#1e1f1e' }}>
-                      Amount
-                    </th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
-                      GST
-                    </th>
-                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: '#1e1f1e' }}>
-                      Status
-                    </th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: '#1e1f1e' }}>
-                      Due Date
-                    </th>
-                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: '#1e1f1e' }}>
-                      Actions
-                    </th>
+                  <tr>
+                    <th>Invoice #</th>
+                    <th>Date</th>
+                    <th>Psychologist</th>
+                    <th className={invoiceStyles.thNum}>Amount</th>
+                    <th>GST</th>
+                    <th className={invoiceStyles.thCenter}>Status</th>
+                    <th>Due Date</th>
+                    <th className={invoiceStyles.thCenter}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoices.map((invoice, index) => (
                     <tr
                       key={invoice.id}
-                      style={{
-                        borderBottom: index < invoices.length - 1 ? '1px solid #e2dfd9' : 'none'
-                      }}
+                      className={index < invoices.length - 1 ? invoiceStyles.trBorder : undefined}
                     >
-                      <td style={{ padding: '1rem', color: '#111827' }}>
-                        #{invoice.id}
-                      </td>
-                      <td style={{ padding: '1rem', color: '#7a7b7a' }}>
-                        {formatDate(invoice.created_at)}
-                      </td>
-                      <td style={{ padding: '1rem', color: '#111827' }}>
-                        {invoice.psychologist_name || 'N/A'}
-                      </td>
-                      <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', color: '#111827' }}>
+                      <td className={invoiceStyles.tdStrong}>#{invoice.id}</td>
+                      <td className={invoiceStyles.tdMuted}>{formatDate(invoice.created_at)}</td>
+                      <td className={invoiceStyles.tdStrong}>{invoice.psychologist_name || 'N/A'}</td>
+                      <td className={`${invoiceStyles.tdStrong} ${invoiceStyles.tdNum}`}>
                         {formatCurrency(invoice.total_amount ?? invoice.amount)}
                       </td>
-                      <td style={{ padding: '1rem', color: '#4a4b4a', fontSize: '0.9rem' }}>
+                      <td className={invoiceStyles.tdGst}>
                         {invoice.is_gst_free ? 'GST-free' : 'Inc. GST'}
                       </td>
-                      <td style={{ padding: '1rem', textAlign: 'center' }}>
+                      <td className={invoiceStyles.tdCenter}>
                         <span
+                          className={invoiceStyles.statusChip}
                           style={{
-                            display: 'inline-block',
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '12px',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
                             backgroundColor: getStatusChipColors(invoice.status).bg,
-                            color: getStatusChipColors(invoice.status).color
+                            color: getStatusChipColors(invoice.status).color,
                           }}
                         >
                           {invoice.status?.toUpperCase() || 'N/A'}
                         </span>
                       </td>
-                      <td style={{ padding: '1rem', color: '#7a7b7a' }}>
-                        {formatDate(invoice.due_date)}
-                      </td>
-                      <td style={{ padding: '1rem', textAlign: 'center' }}>
-                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                      <td className={invoiceStyles.tdMuted}>{formatDate(invoice.due_date)}</td>
+                      <td className={invoiceStyles.tdCenter}>
+                        <div className={invoiceStyles.actionCell}>
                           <Button
                             onClick={() => handleDownloadPDF(invoice.id)}
                             disabled={downloadingId === invoice.id}
@@ -385,6 +302,7 @@ export const PatientInvoicesPage: React.FC = () => {
           </div>
         </div>
       </div>
+      </PatientShellPage>
     </Layout>
   );
 };

@@ -2,7 +2,7 @@
 
 This document defines the styling contract for `clink_front_end` to keep CSS clean, consistent, and maintainable.
 
-**Cross-shell refactor (homepage navbar → sidebars, homepage cards, Register-style forms, booking wizard no-scroll, all roles):** follow `docs/CROSS_SHELL_UI_REFACTOR_SPEC.md` together with `HOMEPAGE_STYLE_SYSTEM.md`, `UI_PRIMITIVES_CATALOG.md`, `RESPONSIVE_SIZE_MATRIX.md`, and `REFRACTOR_TRACKER.md`.
+**Cross-shell refactor (homepage navbar → sidebars, homepage cards, Register-style forms, booking wizard no-scroll, all roles):** follow `docs/CROSS_SHELL_UI_REFACTOR_SPEC.md` together with `HOMEPAGE_STYLE_SYSTEM.md`, `UI_PRIMITIVES_CATALOG.md`, `RESPONSIVE_SIZE_MATRIX.md`, and `REFRACTOR_TRACKER.md`. For the six core patient portal routes (dashboard, appointments, invoices, resources, recordings, account settings), follow **`docs/PATIENT_CORE_PAGES_ENTERPRISE_GLASS_SPEC.md`** as the phased playbook for enterprise glass + connected-app UX.
 
 ## 1) Authoritative Style Layers
 
@@ -14,6 +14,7 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 - **Patient surface primitives:** `src/assets/styles/_patientSurface.scss` (`patient-card`, `patient-panel`, `patient-card-title`, `patient-action-bar`)
 - **Patient form row primitives:** `src/assets/styles/_patientFormRow.scss` (`input`, `textarea`, `input-row`, `checkbox-card`, `option-card`, `label`, `hint`)
 - **Patient tab primitives:** `src/assets/styles/_patientTabs.scss` (`tab-row`, `tab-pill`)
+- **Patient page chrome (shared partial):** `src/assets/styles/_patientPageChrome.scss` — consumed by `PatientShellPage.module.scss` and `PatientShellChrome.module.scss` for aligned headers/wrap/CTAs (do not fork duplicate headers in feature modules).
 - Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
 - Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
 - Shared compact portal sizing/surfaces: `src/assets/styles/_portalCompact.scss`

@@ -1,4 +1,167 @@
 @use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/patientSurface' as *;
+
+// Patient invoices — Clinical Sanctuary + L1/L2 (glass on container, not every cell)
+
+.loadingWrap {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--cs-on-surface-variant);
+  font-family: var(--cs-font-body);
+}
+
+.errorBanner {
+  background: color-mix(in srgb, var(--cs-error) 12%, var(--cs-surface-lowest));
+  border: 1px solid color-mix(in srgb, var(--cs-error) 35%, transparent);
+  border-radius: var(--cs-radius-lg);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.5rem;
+  color: var(--cs-on-error-container);
+  font-size: 0.9rem;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.statCard {
+  @include patient-card;
+  text-align: center;
+  padding: 1.25rem 1rem;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 800;
+  font-family: var(--cs-font-headline);
+  color: var(--cs-primary);
+  line-height: 1.2;
+}
+
+.statPaid {
+  color: var(--cs-on-secondary-fixed-variant);
+}
+
+.statPending {
+  color: var(--cs-on-tertiary-fixed-variant);
+}
+
+.statLabel {
+  color: var(--cs-on-surface-variant);
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.filterRow {
+  margin-bottom: 1.25rem;
+}
+
+.statusSelect {
+  padding: 0.65rem 1rem;
+  border-radius: var(--cs-radius-lg);
+  border: 1px solid color-mix(in srgb, var(--cs-outline) 45%, transparent);
+  font-size: 0.9375rem;
+  background: var(--cs-surface-lowest);
+  color: var(--cs-on-surface);
+  cursor: pointer;
+  font-family: var(--cs-font-body);
+}
+
+.tableShell {
+  @include surface-primary-no-hover;
+  border-radius: var(--cs-radius-2xl);
+  overflow: hidden;
+}
+
+.emptyState {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--cs-on-surface-variant);
+}
+
+.emptyTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--cs-on-surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--cs-font-body);
+  font-size: 0.875rem;
+
+  thead tr {
+    background: color-mix(in srgb, var(--cs-primary-container) 14%, var(--cs-surface-lowest));
+    border-bottom: 2px solid color-mix(in srgb, var(--cs-outline) 28%, transparent);
+  }
+
+  th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-weight: 700;
+    color: var(--cs-on-surface);
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+  }
+}
+
+.thNum {
+  text-align: right;
+}
+
+.thCenter {
+  text-align: center;
+}
+
+.tdStrong {
+  color: var(--cs-on-surface);
+}
+
+.tdMuted {
+  color: var(--cs-on-surface-variant);
+}
+
+.tdNum {
+  text-align: right;
+  font-weight: 700;
+}
+
+.tdGst {
+  color: var(--cs-on-surface-variant);
+  font-size: 0.82rem;
+}
+
+.tdCenter {
+  text-align: center;
+}
+
+.trBorder td {
+  border-bottom: 1px solid color-mix(in srgb, var(--cs-outline) 22%, transparent);
+}
+
+.statusChip {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--cs-radius-lg);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.actionCell {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
 // Patient invoices — Clinical Sanctuary button styling (no inline styles)
 

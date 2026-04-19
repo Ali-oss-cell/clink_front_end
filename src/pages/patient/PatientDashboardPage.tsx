@@ -21,7 +21,7 @@ import {
 import { Button } from '../../components/ui/button';
 import pageStyles from './PatientPages.module.scss';
 import d from './PatientDashboard.module.scss';
-import shell from './PatientShellChrome.module.scss';
+import { PatientShellPage, patientShellPageStyles as psp } from '../../components/patient/PatientShellPage/PatientShellPage';
 import { formatSessionDurationMinutes } from '../../utils/formatSessionDuration';
 
 const RING_R = 58;
@@ -148,10 +148,12 @@ export const PatientDashboardPage: React.FC = () => {
   if (loading) {
     return (
       <Layout {...layoutProps}>
-        <div className={d.loadingBox}>
-          <div className={d.spinner} />
-          <p>Loading your dashboard…</p>
-        </div>
+        <PatientShellPage>
+          <div className={d.loadingBox}>
+            <div className={d.spinner} />
+            <p>Loading your dashboard…</p>
+          </div>
+        </PatientShellPage>
       </Layout>
     );
   }
@@ -159,6 +161,7 @@ export const PatientDashboardPage: React.FC = () => {
   if (error) {
     return (
       <Layout {...layoutProps}>
+        <PatientShellPage>
         <div className={d.errorBox}>
           <h2>
             <WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
@@ -169,6 +172,7 @@ export const PatientDashboardPage: React.FC = () => {
             Try again
           </Button>
         </div>
+        </PatientShellPage>
       </Layout>
     );
   }
@@ -177,11 +181,11 @@ export const PatientDashboardPage: React.FC = () => {
 
   return (
     <Layout {...layoutProps}>
-      <div className={shell.wrap}>
-        <header className={shell.pageHeader}>
-          <p className={shell.welcomeKicker}>{todayLabel}</p>
-          <h1 className={shell.welcomeTitle}>Welcome back, {user.first_name}.</h1>
-          <p className={shell.welcomeSubtitle}>
+      <PatientShellPage>
+        <header className={psp.pageHeader}>
+          <p className={psp.welcomeKicker}>{todayLabel}</p>
+          <h1 className={psp.welcomeTitle}>Welcome back, {user.first_name}.</h1>
+          <p className={psp.welcomeSubtitle}>
             Your journey to well-being is our priority. Here is an overview of your care with us.
           </p>
         </header>
@@ -498,7 +502,7 @@ export const PatientDashboardPage: React.FC = () => {
           </section>
           </div>
         </div>
-      </div>
+      </PatientShellPage>
     </Layout>
   );
 };

@@ -1,17 +1,26 @@
 @use 'sass:color';
 @use '../../assets/styles/variables' as *;
+@use '../../assets/styles/patientSurface' as *;
 
 .recordingCard {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-  border: 1px solid $border-light;
+  @include patient-card;
+  padding: 1.35rem;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
 
   &:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
+    box-shadow:
+      var(--cs-shadow-atmospheric),
+      0 12px 28px color-mix(in srgb, var(--cs-primary) 12%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:hover {
+      transform: none;
+    }
   }
 }
 

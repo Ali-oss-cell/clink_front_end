@@ -1,33 +1,7 @@
 @use '../../assets/styles/surfaceSystem' as *;
+@use '../../assets/styles/patientSurface' as *;
 
-// Patient dashboard — bento layout (React + SCSS; reference: new/DESIGN.md / new/code.html)
-
-.wrap {
-  max-width: 80rem;
-  margin: 0 auto;
-}
-
-.pageHeader {
-  margin-bottom: 1.5rem;
-  text-align: left;
-}
-
-.welcomeTitle {
-  font-family: var(--cs-font-headline);
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--cs-primary);
-  margin: 0 0 0.75rem;
-}
-
-.welcomeSubtitle {
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  color: var(--cs-on-surface-variant);
-  max-width: 36rem;
-  margin: 0;
-}
+// Patient dashboard — bento layout (L1 `patient-card`, nested L2 via surface-secondary tiles)
 
 .consentBanner {
   @include surface-compact;
@@ -127,9 +101,7 @@
 }
 
 .card {
-  @include surface-compact;
-  border-radius: var(--cs-radius-2xl);
-  padding: 1.1rem 1.2rem;
+  @include patient-card;
   position: relative;
   overflow: hidden;
 }
@@ -763,10 +735,8 @@ button.btnGhost {
   font-size: 1.25rem;
 }
 
-// Glassmorphism card migration
-.card,
+// Nested tiles / muted strips (L2-ish); primary sections use `.card` + `patient-card` above
 .cardMuted,
-.resourceTile,
-.consentBanner {
+.resourceTile {
   @include surface-secondary;
 }
