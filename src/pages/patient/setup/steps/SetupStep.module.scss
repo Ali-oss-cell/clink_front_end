@@ -59,6 +59,37 @@
   margin: 0;
 }
 
+.reviewPendingPanel {
+  padding: 1rem 1.15rem;
+  border-radius: var(--cs-radius-xl);
+  background: color-mix(in srgb, var(--cs-tertiary-fixed, #efe1c7) 42%, var(--cs-surface-lowest));
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 18%, transparent);
+  color: var(--cs-on-surface);
+}
+
+.reviewPendingLead {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.reviewPendingHint {
+  margin: 0 0 0.65rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--cs-on-surface-variant);
+}
+
+.reviewPendingList {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.reviewNavButton {
+  margin-top: 0.75rem;
+}
+
 .checkboxRow {
   display: flex;
   align-items: flex-start;

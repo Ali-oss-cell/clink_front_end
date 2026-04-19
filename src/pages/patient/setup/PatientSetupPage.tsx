@@ -58,14 +58,24 @@ function resolveActiveStep(
 ): SetupStepId | null {
   if (!state?.steps?.length) return null;
   const ids = state.steps.map((s) => s.id);
+  const serverCurrent =
+    state.current_step && ids.includes(state.current_step)
+      ? state.current_step
+      : state.steps[0].id;
+
   const q = searchParams.get('step');
+  let candidate = serverCurrent;
   if (q && ids.includes(q as SetupStepId)) {
-    return q as SetupStepId;
+    candidate = q as SetupStepId;
   }
-  if (state.current_step && ids.includes(state.current_step)) {
-    return state.current_step;
+
+  // Never open "Review" from ?step= until the server says that step is current
+  // (prevents bookmark / manual URL skips ahead of incomplete required steps).
+  if (candidate === 'review' && serverCurrent !== 'review') {
+    return serverCurrent;
   }
-  return state.steps[0].id;
+
+  return candidate;
 }
 
 const PatientSetupPage: FC = () => {
@@ -117,6 +127,25 @@ const PatientSetupPage: FC = () => {
       navigate('/patient/dashboard', { replace: true });
     }
   }, [state?.completed_at, navigate]);
+
+  /** Sync `?step=` when the URL jumps to Review before requirements are met. */
+  useEffect(() => {
+    if (!state?.steps?.length || !state.current_step) return;
+    const ids = state.steps.map((s) => s.id);
+    const serverCurrent = ids.includes(state.current_step)
+      ? state.current_step
+      : state.steps[0].id;
+    if (searchParams.get('step') === 'review' && serverCurrent !== 'review') {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set('step', serverCurrent);
+          return next;
+        },
+        { replace: true },
+      );
+    }
+  }, [state?.current_step, state?.steps, searchParams, setSearchParams]);
 
   const setStep = useCallback(
     (step: SetupStepId) => {
@@ -273,6 +302,7 @@ const PatientSetupPage: FC = () => {
           <ReviewStep
             {...stepProps}
             completing={completing}
+            onNavigateToStep={(step) => setStep(step)}
             onComplete={async () => {
               try {
                 const res = await complete();
