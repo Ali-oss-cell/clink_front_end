@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from '../components/common/ProtectedRoute/ProtectedRoute';
 
 // Public pages
@@ -23,7 +23,7 @@ import { PatientDashboardPage } from '../pages/patient/PatientDashboardPage';
 import { PatientAccountPage } from '../pages/patient/PatientAccountPage';
 import { PatientResourcesPage } from '../pages/patient/PatientResourcesPage';
 import { ResourceDetailPage } from '../pages/patient/ResourceDetailPage';
-import { PatientIntakeFormPage } from '../pages/patient/PatientIntakeFormPage';
+import PatientSetupPage from '../pages/patient/setup/PatientSetupPage';
 import { PatientAppointmentPage } from '../pages/patient/PatientAppointmentPage';
 import { PatientAppointmentsPage } from '../pages/patient/PatientAppointmentsPage';
 import { PatientInvoicesPage } from '../pages/patient/PatientInvoicesPage';
@@ -157,15 +157,20 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
         </ProtectedRoute>
       } />
       
-      {/* Patient Intake Form */}
-      <Route path="/patient/intake-form" element={
-        <ProtectedRoute 
-          isAuthenticated={isAuthenticated} 
-          user={user} 
+      {/* Patient Setup Wizard (replaces legacy intake form) */}
+      <Route path="/patient/setup" element={
+        <ProtectedRoute
+          isAuthenticated={isAuthenticated}
+          user={user}
           allowedRoles={['patient']}
         >
-          <PatientIntakeFormPage />
+          <PatientSetupPage />
         </ProtectedRoute>
+      } />
+
+      {/* Legacy intake-form URL — redirect to unified setup wizard. */}
+      <Route path="/patient/intake-form" element={
+        <Navigate to="/patient/setup" replace />
       } />
       
       {/* Patient Appointment Booking */}

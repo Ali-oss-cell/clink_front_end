@@ -395,14 +395,9 @@ export const ServiceSelectionPage: React.FC = () => {
                     <Button
                       type="button"
                       className={styles.backButton}
-                      onClick={() =>
-                        navigate(
-                          bookingReadiness?.actions.intake_referral_details ??
-                            '/patient/intake-form?step=3&focus=gp_referral'
-                        )
-                      }
+                      onClick={() => navigate('/patient/setup?step=referral')}
                     >
-                      Open intake form referral section
+                      Open setup referral step
                     </Button>
                   </div>
                   {referralError && <p className={styles.bookingReferralError}>{referralError}</p>}

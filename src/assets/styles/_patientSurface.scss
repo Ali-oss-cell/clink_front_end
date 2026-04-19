@@ -1,0 +1,67 @@
+// -------------------------------------------------------------------------
+// Patient surface system
+//
+// Shared, token-driven surface primitives for patient-role pages (dashboard,
+// setup wizard, account, appointments). New patient features should
+// `@use './patientSurface' as psurface;` and reach for these mixins instead of
+// writing one-off card/section shells.
+//
+// Token source of truth: `_clinicalSanctuary.scss`
+// Typography / motion / radii come from `:root { --cs-* }` CSS variables so
+// dark mode and brand tweaks propagate automatically.
+// -------------------------------------------------------------------------
+
+@use './mixins' as *;
+
+// Base card surface — Clinical Sanctuary "atmospheric" feel.
+@mixin patient-card {
+  background: var(--cs-surface-lowest);
+  color: var(--cs-on-surface);
+  border-radius: var(--cs-radius-2xl);
+  border: 1px solid color-mix(in srgb, var(--cs-outline) 35%, transparent);
+  box-shadow: var(--cs-shadow-atmospheric);
+  padding: clamp(1.1rem, 2.6vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+// Sub-card / inline panel, for nested content inside a larger card.
+@mixin patient-panel {
+  background: color-mix(
+    in srgb,
+    var(--cs-surface-lowest) 94%,
+    var(--cs-primary) 6%
+  );
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 14%, transparent);
+  border-radius: var(--cs-radius-lg);
+  padding: 0.85rem 1rem;
+}
+
+// Section heading used across patient cards.
+@mixin patient-card-title {
+  font-family: var(--cs-font-headline);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--cs-on-surface);
+  margin: 0;
+}
+
+// Sticky action bar (used by wizard + edit screens).
+@mixin patient-action-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.9rem 1rem;
+  border-radius: var(--cs-radius-xl);
+  background: color-mix(in srgb, var(--cs-surface-lowest) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cs-outline) 30%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -6px 18px color-mix(in srgb, var(--cs-primary) 10%, transparent);
+  z-index: 2;
+}

@@ -1,0 +1,101 @@
+// -------------------------------------------------------------------------
+// Patient form-row primitives
+//
+// Shared controls for inputs, textareas, checkbox cards, and option cards
+// inside patient-role forms (setup wizard, account pages, booking).
+//
+// Usage:
+//   @use '../../assets/styles/patientFormRow' as pform;
+//   .email { @include pform.input-row; }
+// -------------------------------------------------------------------------
+
+@mixin label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--cs-on-surface);
+  margin-bottom: 0.35rem;
+}
+
+@mixin hint {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--cs-on-surface-variant);
+  margin-top: 0.3rem;
+}
+
+@mixin input {
+  font: inherit;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--cs-radius-lg);
+  border: 1px solid color-mix(in srgb, var(--cs-outline) 55%, transparent);
+  background: var(--cs-surface-lowest);
+  color: var(--cs-on-surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--cs-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cs-primary) 20%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+@mixin textarea {
+  @include input;
+  resize: vertical;
+  min-height: 6.5rem;
+  line-height: 1.5;
+}
+
+@mixin input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+// Card-like checkbox row (gentle coloured background). Good for consent
+// acknowledgements and opt-ins where visibility matters.
+@mixin checkbox-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--cs-radius-lg);
+  background: color-mix(in srgb, var(--cs-surface-low) 94%, var(--cs-primary) 6%);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 15%, transparent);
+}
+
+// Big "option" card (Medicare vs Private, etc.).
+@mixin option-card {
+  text-align: left;
+  padding: 1rem 1.1rem;
+  border-radius: var(--cs-radius-xl);
+  border: 1.5px solid color-mix(in srgb, var(--cs-outline) 45%, transparent);
+  background: var(--cs-surface-lowest);
+  cursor: pointer;
+  color: var(--cs-on-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    border-color: var(--cs-primary);
+  }
+
+  &[aria-pressed='true'],
+  &[data-selected='true'] {
+    border-color: var(--cs-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cs-primary) 20%, transparent);
+    background: color-mix(in srgb, var(--cs-primary) 6%, var(--cs-surface-lowest));
+  }
+}

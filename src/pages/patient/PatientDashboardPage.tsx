@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/common/Layout/Layout';
-import { OnboardingProgress } from '../../components/patient/OnboardingProgress/OnboardingProgress';
 import { dashboardService } from '../../services/api/dashboard';
 import type { PatientDashboard } from '../../services/api/dashboard';
 import { authService, type BookingReadinessResponse } from '../../services/api/auth';
@@ -175,28 +174,24 @@ export const PatientDashboardPage: React.FC = () => {
           </p>
         </header>
 
-        <OnboardingProgress user={user} clinicalLayout />
-
-        {bookingReadiness && !bookingReadiness.telehealth_consent_complete && (
+        {bookingReadiness && !bookingReadiness.is_ready_to_continue && (
           <div className={d.consentBanner}>
             <div>
               <h3>
                 <WarningIcon size="sm" style={{ verticalAlign: 'middle' }} />
-                Telehealth consent required
+                Finish setup to unlock booking
               </h3>
               <p>
-                Complete the telehealth consent form and emergency plan before booking or joining video
-                appointments.
+                You&rsquo;re a few quick steps away from being able to book. We&rsquo;ll
+                take you straight to the next thing that needs attention.
               </p>
             </div>
             <button
               type="button"
               className={d.btnPrimary}
-              onClick={() =>
-                navigate(bookingReadiness?.actions.telehealth_consent ?? '/patient/account?tab=privacy')
-              }
+              onClick={() => navigate('/patient/setup')}
             >
-              Go to privacy settings
+              Continue setup
             </button>
           </div>
         )}
@@ -392,23 +387,27 @@ export const PatientDashboardPage: React.FC = () => {
             </div>
           </section>
 
-          {/* Intake */}
+          {/* Setup / intake readiness */}
           <section className={d.card}>
-            <h3 className={d.cardTitle}>Intake</h3>
-            {dashboardData?.intake_completed ? (
+            <h3 className={d.cardTitle}>Setup</h3>
+            {bookingReadiness?.is_ready_to_continue ? (
               <div>
-                <p className={d.intakeDone}>Completed</p>
-                <p className={d.intakeSub}>Your intake form is on file.</p>
+                <p className={d.intakeDone}>Complete</p>
+                <p className={d.intakeSub}>
+                  You&rsquo;re good to book. Update any details from your account.
+                </p>
               </div>
             ) : (
               <div>
-                <p className={d.placeholder}>Complete your intake so we can tailor your care.</p>
+                <p className={d.placeholder}>
+                  Finish a few quick steps so you can book your first session.
+                </p>
                 <button
                   type="button"
                   className={d.btnPrimary}
-                  onClick={() => navigate(bookingReadiness?.actions.intake_form ?? '/patient/intake-form')}
+                  onClick={() => navigate('/patient/setup')}
                 >
-                  Continue intake
+                  Continue setup
                 </button>
               </div>
             )}

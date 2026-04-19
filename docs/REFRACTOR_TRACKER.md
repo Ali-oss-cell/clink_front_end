@@ -33,6 +33,10 @@ Tracks migration to homepage-led, token-driven, shared-primitives styling.
 - [x] `DONE` Booking wizard (steps bar via `wizard-step-band`, search surface, `wizard-sticky-actions` shell, unified surfaces).
 - [x] `DONE` PatientPages.module.scss + 9 sub-modules migrated to surface primitives and `--cs-*` tokens.
 - [x] `DONE` Appointments/invoices/resources visual normalization (shadow + border-radius tokenized).
+- [x] `DONE` Patient setup wizard (`/patient/setup`) replaces `PatientIntakeFormPage`. Shell: `SetupWizardChrome`, steps: `src/pages/patient/setup/steps/*`, state hook: `useSetupDraft`.
+- [x] `DONE` Post-auth redirect: `getPostAuthRedirect(user)` in `utils/authRedirects.ts` sends patients to `/patient/setup`; the page itself redirects to `/patient/dashboard` when the server reports wizard completion.
+- [x] `DONE` Dashboard simplified: removed `OnboardingProgress`; single readiness banner + setup card driven by `GET /api/auth/booking-readiness/`.
+- [x] `DONE` Extracted `_patientSurface.scss`, `_patientFormRow.scss`, `_patientTabs.scss` as shared primitives for the patient area to consume going forward.
 
 ### 3) Psychologist Area
 

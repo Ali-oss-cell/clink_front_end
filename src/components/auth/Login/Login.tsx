@@ -7,7 +7,7 @@ import { getPrivacyPolicyStatus } from '../../../services/api/privacy';
 import { WarningIcon, CheckCircleIcon } from '../../../utils/icons';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
-import { getDashboardPathForRole } from '../../../utils/authRedirects';
+import { getPostAuthRedirect } from '../../../utils/authRedirects';
 import styles from './Login.module.scss';
 
 interface LoginProps {
@@ -78,7 +78,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onLoginSuccess }) => {
         
         // Small delay to show success message
         setTimeout(() => {
-          navigate(getDashboardPathForRole(user.role));
+          navigate(getPostAuthRedirect(user));
         }, 1000);
       }
     } catch (err: any) {

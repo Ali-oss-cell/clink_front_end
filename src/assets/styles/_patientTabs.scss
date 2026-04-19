@@ -1,0 +1,51 @@
+// -------------------------------------------------------------------------
+// Patient tab / pill navigation primitives
+//
+// Used by account page, invoices, appointments list. Replaces per-page
+// tab SCSS drift with a single token-driven system.
+// -------------------------------------------------------------------------
+
+@mixin tab-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cs-surface-low) 96%, var(--cs-primary) 4%);
+  border: 1px solid color-mix(in srgb, var(--cs-outline) 35%, transparent);
+  flex-wrap: wrap;
+}
+
+@mixin tab-pill {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  color: var(--cs-on-surface-variant);
+  background: transparent;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--cs-primary) 8%, transparent);
+    color: var(--cs-on-surface);
+  }
+
+  &[aria-selected='true'],
+  &.active {
+    background: var(--cs-primary);
+    color: var(--cs-on-primary, #fff);
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--cs-primary) 25%, transparent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cs-primary) 25%, transparent);
+  }
+}

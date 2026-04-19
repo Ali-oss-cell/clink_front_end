@@ -27,3 +27,23 @@ export function getDashboardPathForRole(role: string | undefined): string {
   const n = normalizeAuthRole(role);
   return n ? ROLE_PATHS[n] : '/';
 }
+
+/**
+ * Post-auth redirect resolver.
+ *
+ * Patients always land on `/patient/setup` after login/register. The setup
+ * page calls `/api/auth/patient/setup/` and, if the wizard has already been
+ * completed, redirects to `/patient/dashboard` itself. That keeps all
+ * "have-we-finished-onboarding" logic on the server. Other roles go straight
+ * to their role dashboard.
+ */
+export function getPostAuthRedirect(user: {
+  role?: string;
+} | null | undefined): string {
+  if (!user) return '/';
+  const role = normalizeAuthRole(user.role);
+  if (role === 'patient') {
+    return '/patient/setup';
+  }
+  return getDashboardPathForRole(user.role);
+}

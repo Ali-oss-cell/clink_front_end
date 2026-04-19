@@ -13,6 +13,7 @@ import { Button } from '../../../components/ui/button';
 import { Checkbox } from '../../../components/ui/checkbox';
 import { Input } from '../../../components/ui/input';
 import { Select } from '../../../components/ui/select';
+import { getPostAuthRedirect } from '../../../utils/authRedirects';
 import styles from './Register.module.scss';
 
 interface RegisterProps {
@@ -158,7 +159,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegister, onRegisterSucces
 
         setTimeout(() => {
           if (loggedIn) {
-            navigate('/patient/dashboard');
+            navigate(getPostAuthRedirect(response.user));
           } else {
             navigate('/login');
           }

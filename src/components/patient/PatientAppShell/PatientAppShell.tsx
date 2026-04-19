@@ -152,9 +152,9 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
             <CalendarIcon size="sm" className={styles.navIcon} />
             <span className={styles.navText}>Appointments</span>
           </NavLink>
-          <NavLink to="/patient/intake-form" className={navClass} onClick={closeMenu}>
+          <NavLink to="/patient/setup" className={navClass} onClick={closeMenu}>
             <ClipboardIcon size="sm" className={styles.navIcon} />
-            <span className={styles.navText}>Intake form</span>
+            <span className={styles.navText}>Setup</span>
           </NavLink>
           <NavLink to="/patient/invoices" className={navClass} onClick={closeMenu}>
             <DollarIcon size="sm" className={styles.navIcon} />

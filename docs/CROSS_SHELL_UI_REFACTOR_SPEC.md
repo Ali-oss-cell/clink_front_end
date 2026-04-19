@@ -104,7 +104,7 @@ This document is the **primary execution brief** for unifying the entire product
 
 Apply the above **across every surface** for:
 
-- **Patient** — dashboard, appointments, booking wizard, intake, invoices, resources, recordings, account/settings as present in app.
+- **Patient** — dashboard, appointments, booking wizard, **setup wizard (`/patient/setup`)**, invoices, resources, recordings, account/settings as present in app. *(The legacy `PatientIntakeFormPage` has been removed; `/patient/intake-form` redirects to `/patient/setup`.)*
 - **Psychologist** — dashboard and all sub-routes.
 - **Admin** — dashboard and all sub-routes.
 - **Practice Manager** — dashboard and all sub-routes.

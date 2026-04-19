@@ -11,6 +11,9 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 - **Surface primitives:** `src/assets/styles/_surfaceSystem.scss` (`surface-primary`, `surface-secondary`, `surface-flat`, `surface-compact`, `surface-compact-interactive`, `surface-compact-selected`)
 - **Wizard primitives:** `src/assets/styles/_wizardSystem.scss` (`wizard-step-band`, `wizard-sticky-actions`, `wizard-viewport-lock`)
 - **Form primitives:** `src/assets/styles/_formSystem.scss` (`form-card`, `form-field-cluster`, `form-input`, `form-actions`)
+- **Patient surface primitives:** `src/assets/styles/_patientSurface.scss` (`patient-card`, `patient-panel`, `patient-card-title`, `patient-action-bar`)
+- **Patient form row primitives:** `src/assets/styles/_patientFormRow.scss` (`input`, `textarea`, `input-row`, `checkbox-card`, `option-card`, `label`, `hint`)
+- **Patient tab primitives:** `src/assets/styles/_patientTabs.scss` (`tab-row`, `tab-pill`)
 - Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
 - Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
 - Shared compact portal sizing/surfaces: `src/assets/styles/_portalCompact.scss`
@@ -111,3 +114,13 @@ When token/theme values change, update:
 - **Wizard spacing rhythm:** keep booking step wrappers on a shared baseline (`~1rem` top, `~0.9rem` bottom), keep top header blocks at `~1rem` bottom margin, and keep sticky action regions at `>= 0.6rem` bottom safe-area padding so steps 1–5 feel visually continuous.
 - Date/time booking step: root sets `data-patient-booking-viewport`; `PatientAppShell` `.main:has([data-patient-booking-viewport])` keeps the shell from scrolling so the page owns overflow. Compose `bookingFlowMain` with `DateTimeSelection.module.scss` `bookingMainLock` (no vertical scroll on the happy path). Page title uses `clamp(1.35rem, 3vw, 2rem)`. Header is flat (no glass-card). Date and time options live in horizontal strips (`overflow-x: auto` only). At `lg+`, fee summary lives in `bookingSummaryAside` beside `bookingDatetimeMain`; mobile stacks aside above strips.
 - For API query params that represent a **local calendar date** (e.g. `start_date`), use `src/utils/dateLocal.ts` `formatLocalDateYYYYMMDD` instead of `toISOString().split('T')[0]` to avoid UTC day boundary drift.
+
+## 12) Patient setup wizard (2026-04-19)
+
+- Post-auth for patients always routes through `/patient/setup`. The server is the source of truth via `GET/PATCH /api/auth/patient/setup/` and `POST /api/auth/patient/setup/complete/`; draft state must not live in `localStorage`.
+- Wizard chrome: `src/components/patient/SetupWizardChrome/SetupWizardChrome.{tsx,module.scss}` — progress band + title block + sticky action bar. Uses Clinical Sanctuary tokens only.
+- Step content: `src/pages/patient/setup/steps/*` (`WelcomeStep`, `ContactStep`, `PrivacyTelehealthStep`, `BillingPathStep`, `ReferralStep`, `IntakeMinStep`, `IntakeFullStep`, `ReviewStep`). Steps share styles from `SetupStep.module.scss`.
+- Global wizard CTAs: `patient-cta-primary` / `patient-cta-secondary` are exposed from `SetupWizardChrome.module.scss` via `:global`. Do not redefine per step.
+- Legacy `PatientIntakeFormPage` is removed. `/patient/intake-form` is now a `<Navigate>` redirect to `/patient/setup`.
+- Dashboard: the patient dashboard no longer renders `OnboardingProgress` and instead surfaces a single readiness banner + setup card driven by `GET /api/auth/booking-readiness/`.
+- Shared primitives planned for adoption across patient pages: `_patientSurface.scss`, `_patientFormRow.scss`, `_patientTabs.scss`. New patient feature work should consume these mixins instead of growing `PatientPages.module.scss`.

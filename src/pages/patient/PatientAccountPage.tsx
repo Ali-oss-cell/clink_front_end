@@ -398,8 +398,8 @@ export const PatientAccountPage: React.FC = () => {
                       <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                       <h3>Complete Your Intake Form</h3>
                       <p>Provide comprehensive information about your health and preferences.</p>
-                      <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
-                        Complete Intake Form
+                      <Button className={styles.primaryButton} onClick={() => navigate('/patient/setup')}>
+                        Continue setup
                       </Button>
                     </div>
                   )}
@@ -414,18 +414,18 @@ export const PatientAccountPage: React.FC = () => {
                     <div className={styles.noticeIcon}><ClipboardIcon size="lg" /></div>
                     {intakeCompleted ? (
                       <>
-                        <h3>You already completed your intake form</h3>
-                        <p>Want to update your details? Open the intake form and edit anything that changed.</p>
-                        <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
-                          Update Intake Form
+                        <h3>Your intake is on file</h3>
+                        <p>Need to update medical history? Jump back into the setup wizard at any time.</p>
+                        <Button className={styles.primaryButton} onClick={() => navigate('/patient/setup')}>
+                          Update intake
                         </Button>
                       </>
                     ) : (
                       <>
-                        <h3>Complete Your Intake Form</h3>
-                        <p>To add your medical information, please complete your intake form first.</p>
-                        <Button className={styles.primaryButton} onClick={() => navigate('/patient/intake-form')}>
-                          Complete Intake Form
+                        <h3>Finish setup to add medical info</h3>
+                        <p>Complete the quick intake steps so your psychologist can prepare properly.</p>
+                        <Button className={styles.primaryButton} onClick={() => navigate('/patient/setup')}>
+                          Continue setup
                         </Button>
                       </>
                     )}
