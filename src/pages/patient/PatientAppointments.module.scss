@@ -4,6 +4,13 @@
 
 // patientLayout: use PatientPages.module.scss (single source) on Layout className
 
+// Banded vertical rhythm (matches patient dashboard shellStack / tile-band pattern)
+.pageStack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.35rem);
+}
+
 .dashboardContainer {
   padding: 1.5rem 0;
   max-width: 1400px;
@@ -51,7 +58,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-xl;
+  margin-bottom: 0;
   gap: $spacing-md;
   flex-wrap: wrap;
 }
@@ -90,9 +97,10 @@
 
 .appointmentsList {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: $spacing-sm;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: $spacing-md;
   padding: $spacing-xs 0;
+  align-items: stretch;
 }
 
 .appointmentCard {
@@ -479,6 +487,7 @@
 }
 
 .emptyState {
+  grid-column: 1 / -1;
   text-align: center;
   padding: $spacing-3xl $spacing-lg;
   background: var(--cs-surface-lowest);
@@ -569,10 +578,6 @@
 
 // Mobile responsiveness for appointments
 @include mobile {
-  .appointmentsList {
-    grid-template-columns: 1fr;
-  }
-
   .actionBar {
     flex-direction: column;
     align-items: stretch;

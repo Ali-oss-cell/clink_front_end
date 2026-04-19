@@ -333,6 +333,7 @@ export const PatientAccountPage: React.FC = () => {
     >
       <div className={styles.accountContainer}>
         <div className="container">
+          <div className={styles.accountShellStack}>
           <div className={styles.accountHeader}>
             <h1 className={styles.pageTitle}>My Account</h1>
             <p className={styles.pageSubtitle}>
@@ -878,6 +879,7 @@ export const PatientAccountPage: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
           </div>
         </div>
       </div>

@@ -1384,6 +1384,17 @@ button.toolButton {
   background: linear-gradient(135deg, $patient-bg-gradient-start 0%, $patient-bg-gradient-end 100%);
 }
 
+// Banded stack (matches dashboard / appointments page rhythm inside patient shell)
+.accountShellStack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 3vw, 2rem);
+}
+
+.accountShellStack .accountHeader {
+  margin-bottom: 0;
+}
+
 .accountHeader {
   text-align: center;
   margin-bottom: 3rem;
@@ -1411,10 +1422,11 @@ button.toolButton {
 
 .accountContent {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 2rem;
-  max-width: 1400px;
+  grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
+  gap: clamp(1rem, 2.5vw, 2rem);
+  max-width: min(90rem, 100%);
   margin: 0 auto;
+  align-items: start;
 }
 
 .sidebar {
@@ -1543,7 +1555,7 @@ button.toolButton {
 // Form Styles
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }

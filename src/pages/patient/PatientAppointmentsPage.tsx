@@ -212,6 +212,7 @@ export const PatientAppointmentsPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} patientShell className={patientPageStyles.patientLayout}>
       <PatientShellPage>
+        <div className={styles.pageStack}>
         <header className={patientShellPageStyles.pageHeader}>
           <h1 className={patientShellPageStyles.pageTitle}>Your appointments</h1>
           <p className={patientShellPageStyles.pageSubtitle}>
@@ -489,6 +490,7 @@ export const PatientAppointmentsPage: React.FC = () => {
               </Button>
             </div>
           )}
+        </div>
       </PatientShellPage>
 
       {/* Cancel Confirmation Modal */}
