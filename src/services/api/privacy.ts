@@ -121,7 +121,10 @@ export const acceptPrivacyPolicy = async (): Promise<AcceptPrivacyPolicyResponse
       throw new Error('User not authenticated. Please log in first.');
     }
 
-    const response = await axiosInstance.post<AcceptPrivacyPolicyResponse>('/auth/privacy-policy/');
+    const response = await axiosInstance.post<AcceptPrivacyPolicyResponse>(
+      '/auth/privacy-policy/',
+      {},
+    );
     console.log('[PrivacyService] Privacy Policy accepted successfully:', response.data);
     return response.data;
   } catch (error: any) {

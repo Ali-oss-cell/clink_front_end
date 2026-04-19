@@ -19,7 +19,8 @@ export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
   const [status, setStatus] = useState<PrivacyPolicyStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [accepting, setAccepting] = useState(false);
-  const [accepted, setAccepted] = useState(false);
+  /** User checked "I have read and agree" — must not be named `accepted` or it masks the POST call. */
+  const [policyAcknowledged, setPolicyAcknowledged] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,7 +35,8 @@ export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
     try {
       const data = await getPrivacyPolicyStatus();
       setStatus(data);
-      setAccepted(data.accepted && !data.needs_update);
+      // Fresh open: user must tick the box (even if re-checking after an update).
+      setPolicyAcknowledged(false);
     } catch (err: any) {
       console.error('[PrivacyPolicyModal] Failed to load Privacy Policy status:', err);
       
@@ -59,40 +61,35 @@ export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
   };
 
   const handleAccept = async () => {
-    if (!accepted) {
-      setAccepting(true);
-      setError(null);
-      try {
-        await acceptPrivacyPolicy();
-        setAccepted(true);
-        onAccept();
-        // Small delay to show success before closing
-        setTimeout(() => {
-          onClose();
-        }, 500);
-      } catch (err: any) {
-        console.error('[PrivacyPolicyModal] Failed to accept Privacy Policy:', err);
-        
-        // Provide user-friendly error messages
-        let errorMessage = 'Failed to accept Privacy Policy. Please try again.';
-        if (err.message?.includes('not authenticated')) {
-          errorMessage = 'Your session has expired. Please log in again.';
-        } else if (err.message?.includes('Access denied')) {
-          errorMessage = 'This feature is only available for patients.';
-        } else if (err.message?.includes('endpoint not found')) {
-          errorMessage = 'Privacy Policy service is not available. Please contact support.';
-        } else if (err.message?.includes('Network error')) {
-          errorMessage = 'Unable to connect to server. Please check your connection and try again.';
-        } else {
-          errorMessage = err.message || errorMessage;
-        }
-        
-        setError(errorMessage);
-      } finally {
-        setAccepting(false);
+    if (!policyAcknowledged) return;
+
+    setAccepting(true);
+    setError(null);
+    try {
+      await acceptPrivacyPolicy();
+      onAccept();
+      setTimeout(() => {
+        onClose();
+      }, 500);
+    } catch (err: any) {
+      console.error('[PrivacyPolicyModal] Failed to accept Privacy Policy:', err);
+
+      let errorMessage = 'Failed to accept Privacy Policy. Please try again.';
+      if (err.message?.includes('not authenticated')) {
+        errorMessage = 'Your session has expired. Please log in again.';
+      } else if (err.message?.includes('Access denied')) {
+        errorMessage = 'This feature is only available for patients.';
+      } else if (err.message?.includes('endpoint not found')) {
+        errorMessage = 'Privacy Policy service is not available. Please contact support.';
+      } else if (err.message?.includes('Network error')) {
+        errorMessage = 'Unable to connect to server. Please check your connection and try again.';
+      } else {
+        errorMessage = err.message || errorMessage;
       }
-    } else {
-      onClose();
+
+      setError(errorMessage);
+    } finally {
+      setAccepting(false);
     }
   };
 
@@ -164,8 +161,8 @@ export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
               <label className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
-                  checked={accepted}
-                  onChange={(e) => setAccepted(e.target.checked)}
+                  checked={policyAcknowledged}
+                  onChange={(e) => setPolicyAcknowledged(e.target.checked)}
                   className={styles.checkbox}
                   disabled={accepting}
                 />
@@ -186,8 +183,8 @@ export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
                 </button>
               )}
               <button
-                onClick={handleAccept}
-                disabled={!accepted || accepting}
+                onClick={() => void handleAccept()}
+                disabled={!policyAcknowledged || accepting}
                 className={styles.acceptButton}
               >
                 {accepting ? (
