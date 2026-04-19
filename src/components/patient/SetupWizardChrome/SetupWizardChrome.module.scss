@@ -231,7 +231,7 @@
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cs-primary) 25%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cs-primary, #364539) 25%, transparent);
   }
 
   &:disabled {
@@ -243,27 +243,34 @@
 }
 
 :global(.patient-cta-primary) {
+  // Fallback token so primary CTAs stay visible outside `.patientShell` (invalid gradient → white-on-white).
+  --_cta-primary: var(--cs-primary, #364539);
+
   background: linear-gradient(
     135deg,
-    var(--cs-primary) 0%,
-    color-mix(in srgb, var(--cs-primary) 80%, black 20%) 100%
+    var(--_cta-primary) 0%,
+    color-mix(in srgb, var(--_cta-primary) 80%, black 20%) 100%
   );
-  color: var(--cs-on-primary, #fff);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--cs-primary) 28%, transparent);
+  color: var(--cs-on-primary, #ffffff);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--_cta-primary) 28%, transparent);
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 10px 22px color-mix(in srgb, var(--cs-primary) 36%, transparent);
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--_cta-primary) 36%, transparent);
   }
 }
 
 :global(.patient-cta-secondary) {
-  background: var(--cs-surface-lowest);
-  color: var(--cs-primary);
-  border-color: color-mix(in srgb, var(--cs-primary) 40%, transparent);
+  background: var(--cs-surface-lowest, #ffffff);
+  color: var(--cs-primary, #364539);
+  border-color: color-mix(in srgb, var(--cs-primary, #364539) 40%, transparent);
 
   &:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--cs-primary) 8%, var(--cs-surface-lowest));
-    border-color: var(--cs-primary);
+    background: color-mix(
+      in srgb,
+      var(--cs-primary, #364539) 8%,
+      var(--cs-surface-lowest, #ffffff)
+    );
+    border-color: var(--cs-primary, #364539);
   }
 }

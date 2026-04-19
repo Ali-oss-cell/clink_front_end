@@ -9,8 +9,11 @@
 
 import { useCallback, useEffect, useMemo, type FC } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Layout } from '../../../components/common/Layout/Layout';
+import { authService } from '../../../services/api/auth';
 import { useSetupDraft } from '../../../hooks/useSetupDraft';
 import SetupWizardChrome from '../../../components/patient/SetupWizardChrome/SetupWizardChrome';
+import pageStyles from '../PatientPages.module.scss';
 import type { PatientSetupState, SetupStepId } from '../../../services/api/patientSetup';
 import type { SetupStepComponentProps } from './steps/setupStepTypes';
 import WelcomeStep from './steps/WelcomeStep';
@@ -68,6 +71,29 @@ function resolveActiveStep(
 const PatientSetupPage: FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const user =
+    authService.getStoredUser() || {
+      id: 1,
+      email: 'john@example.com',
+      username: 'john.smith',
+      first_name: 'John',
+      last_name: 'Smith',
+      full_name: 'John Smith',
+      role: 'patient' as const,
+      phone_number: '+61412345678',
+      date_of_birth: '1990-01-15',
+      age: 34,
+      is_verified: true,
+      created_at: '2024-01-01',
+    };
+
+  const layoutProps = {
+    user,
+    isAuthenticated: true as const,
+    patientShell: true as const,
+    className: pageStyles.patientLayout,
+  };
 
   const {
     state,
@@ -178,23 +204,33 @@ const PatientSetupPage: FC = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '3rem', textAlign: 'center' }}>
-        <p>Loading your setup…</p>
-      </div>
+      <Layout {...layoutProps}>
+        <div style={{ padding: '3rem', textAlign: 'center' }}>
+          <p>Loading your setup…</p>
+        </div>
+      </Layout>
     );
   }
 
   if (!state) {
-    return errorPanel(
-      error ??
-        'Setup could not be loaded. Check your connection, ensure the app is updated, then try again.',
+    return (
+      <Layout {...layoutProps}>
+        {errorPanel(
+          error ??
+            'Setup could not be loaded. Check your connection, ensure the app is updated, then try again.',
+        )}
+      </Layout>
     );
   }
 
   if (!activeStep) {
-    return errorPanel(
-      error ??
-        'The server returned an empty setup wizard. Try again or contact support if this continues.',
+    return (
+      <Layout {...layoutProps}>
+        {errorPanel(
+          error ??
+            'The server returned an empty setup wizard. Try again or contact support if this continues.',
+        )}
+      </Layout>
     );
   }
 
@@ -263,50 +299,52 @@ const PatientSetupPage: FC = () => {
   const stepBody = renderStep();
 
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        padding: '1.5rem 0 4rem',
-        background: 'var(--cs-surface, #f7faf9)',
-      }}
-    >
-      <SetupWizardChrome
-        steps={state.steps}
-        currentStepId={activeStep}
-        title={title}
-        subtitle={subtitle}
-        banner={
-          <span>
-            We save your progress automatically — feel free to close the tab and come back.{' '}
-            <strong>You can finish this in about 5 minutes.</strong>
-          </span>
-        }
-        actions={
-          <>
-            {canBack && (
+    <Layout {...layoutProps}>
+      <main
+        style={{
+          minHeight: '100vh',
+          padding: '1.5rem 0 4rem',
+          background: 'var(--cs-surface, #f7faf9)',
+        }}
+      >
+        <SetupWizardChrome
+          steps={state.steps}
+          currentStepId={activeStep}
+          title={title}
+          subtitle={subtitle}
+          banner={
+            <span>
+              We save your progress automatically — feel free to close the tab and come back.{' '}
+              <strong>You can finish this in about 5 minutes.</strong>
+            </span>
+          }
+          actions={
+            <>
+              {canBack && (
+                <button
+                  type="button"
+                  className="patient-cta-secondary"
+                  onClick={goBack}
+                  disabled={saving || completing}
+                >
+                  Back
+                </button>
+              )}
               <button
                 type="button"
                 className="patient-cta-secondary"
-                onClick={goBack}
+                onClick={() => void saveAndExit()}
                 disabled={saving || completing}
               >
-                Back
+                Save &amp; exit
               </button>
-            )}
-            <button
-              type="button"
-              className="patient-cta-secondary"
-              onClick={() => void saveAndExit()}
-              disabled={saving || completing}
-            >
-              Save &amp; exit
-            </button>
-          </>
-        }
-      >
-        {stepBody}
-      </SetupWizardChrome>
-    </main>
+            </>
+          }
+        >
+          {stepBody}
+        </SetupWizardChrome>
+      </main>
+    </Layout>
   );
 };
 
