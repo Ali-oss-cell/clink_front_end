@@ -68,28 +68,31 @@ export const ForgotPassword: React.FC = () => {
           </div>
         )}
 
-        <div className={styles.formGroup}>
-          <label htmlFor="forgot-email" className={styles.label}>
-            Email address
-          </label>
-          <Input
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Please enter a valid email address',
-              },
-            })}
-            type="email"
-            id="forgot-email"
-            autoComplete="email"
-            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-            placeholder="your.email@example.com"
-            disabled={isLoading}
-          />
-          {errors.email && (
-            <span className={styles.fieldError}>{errors.email.message}</span>
-          )}
+        <div className={styles.credentialCluster}>
+          <p className={styles.clusterLabel}>Your email</p>
+          <div className={styles.formGroup}>
+            <label htmlFor="forgot-email" className={styles.label}>
+              Email address
+            </label>
+            <Input
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Please enter a valid email address',
+                },
+              })}
+              type="email"
+              id="forgot-email"
+              autoComplete="email"
+              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+              placeholder="your.email@example.com"
+              disabled={isLoading}
+            />
+            {errors.email && (
+              <span className={styles.fieldError}>{errors.email.message}</span>
+            )}
+          </div>
         </div>
 
         <Button type="submit" disabled={isLoading} className={styles.submitButton}>
@@ -104,6 +107,12 @@ export const ForgotPassword: React.FC = () => {
         </Button>
 
         <div className={styles.formFooter}>
+          <p className={styles.footerText}>
+            Don&apos;t have an account?{' '}
+            <Link to="/register" className={styles.footerLink}>
+              Create one here
+            </Link>
+          </p>
           <p className={styles.footerText}>
             <Link to="/login" className={styles.footerLink}>
               Back to sign in

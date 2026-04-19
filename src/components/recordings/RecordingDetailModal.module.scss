@@ -4,22 +4,25 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: color-mix(in srgb, var(--cs-on-surface, #1e1f1e) 48%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .modalContent {
-  background: white;
-  border-radius: 12px;
+  background: var(--cs-glass-bg-strong, rgba(255, 255, 255, 0.92));
+  border: 1px solid var(--cs-glass-border, rgba(97, 99, 98, 0.22));
+  border-radius: var(--cs-radius-2xl, 1rem);
   max-width: 900px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--cs-glass-shadow, 0 20px 48px rgba(44, 45, 44, 0.16));
 }
 
 .modalHeader {
@@ -27,14 +30,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid $border-light;
+  border-bottom: 1px solid color-mix(in srgb, var(--cs-outline, #{$border-light}) 35%, transparent);
 }
 
 .modalTitle {
+  font-family: var(--cs-font-headline, $font-family-heading);
   font-size: 1.5rem;
-  font-weight: 700;
-  color: $text-dark;
+  font-weight: 800;
+  color: var(--cs-on-surface, $text-dark);
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .closeButton {

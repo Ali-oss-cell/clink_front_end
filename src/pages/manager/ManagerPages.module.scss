@@ -9,6 +9,10 @@
 .managerLayout {
   min-height: 100vh;
   background: linear-gradient(135deg, $background-light 0%, $patient-bg-gradient-end 100%);
+
+  &:global(.clinicalShell) {
+    background: transparent;
+  }
 }
 
 // Dashboard Container
@@ -337,12 +341,9 @@
   color: $text-dark;
 }
 
-// Empty State
-.emptyState {
-  text-align: center;
-  padding: 2rem;
-  color: $text-light;
-  font-style: italic;
+// Empty State — block empty (div); table rows use td.emptyState below
+.emptyState:not(td) {
+  @include role-empty-glass;
 }
 
 // Loading & Error States
@@ -592,10 +593,7 @@
       line-height: 1.5;
       
       &.emptyState {
-        text-align: center;
-        color: $text-light;
-        font-style: italic;
-        padding: 3rem;
+        @include role-empty-glass-table-cell;
       }
     }
   }

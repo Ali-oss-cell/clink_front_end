@@ -10,17 +10,6 @@
 // This file: container, header, summary, horizontal strips, CTAs, states only.
 // -----------------------------------------------------------------------------
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @mixin horizontal-strip {
   display: grid;
   gap: pc.$portal-gap * 0.45;
@@ -200,7 +189,7 @@
   min-height: 0;
   margin: 0;
   padding: 1rem 0.75rem;
-  animation: fadeInUp 0.45s ease-out;
+  animation: fadeInUpShort 0.45s ease-out;
 
   h3 {
     font-size: 1.05rem;
@@ -244,7 +233,7 @@
 .pageHeader {
   flex-shrink: 0;
   margin-bottom: 1rem;
-  animation: fadeInUp 0.4s ease-out;
+  animation: fadeInUpShort 0.4s ease-out;
   // Flat header — no glass/blur (matches reference)
   background: transparent;
   border-radius: 0;
@@ -301,7 +290,7 @@
   text-align: center;
   max-width: min(24rem, 88vw);
   justify-self: center;
-  animation: fadeInUp 0.45s ease-out 0.05s both;
+  animation: fadeInUpShort 0.45s ease-out 0.05s both;
   color: var(--cs-on-surface, $text-dark);
   letter-spacing: -0.025em;
 }
@@ -345,7 +334,7 @@
   border-radius: var(--cs-radius-2xl, 1rem);
   padding: 1rem 1rem 1.05rem;
   min-height: 12.5rem;
-  animation: fadeInUp 0.5s ease-out;
+  animation: fadeInUpShort 0.5s ease-out;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
@@ -451,7 +440,7 @@
   @include pc.compact-surface;
   border-radius: var(--cs-radius-xl, 0.75rem);
   padding: pc.$portal-gap * 0.6;
-  animation: fadeInUp 0.55s ease-out;
+  animation: fadeInUpShort 0.55s ease-out;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
@@ -530,7 +519,7 @@
   padding: 1.5rem 1rem;
   @include pc.compact-surface;
   border-radius: 14px;
-  animation: fadeInUp 0.45s ease-out;
+  animation: fadeInUpShort 0.45s ease-out;
 
   p {
     font-size: 0.92rem;
@@ -544,7 +533,7 @@
   padding: 1.25rem 1rem;
   @include pc.compact-surface;
   border-radius: 14px;
-  animation: fadeInUp 0.45s ease-out;
+  animation: fadeInUpShort 0.45s ease-out;
 
   h3.errorStateHeading {
     display: flex;

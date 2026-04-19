@@ -9,18 +9,6 @@ $home-card-radius: 22px;
 $home-glow-sage: rgba(143, 159, 136, 0.45);
 $home-glow-deep: rgba(54, 69, 57, 0.14);
 
-// Animation keyframes
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

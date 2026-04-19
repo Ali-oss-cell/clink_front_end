@@ -453,10 +453,7 @@
 
 // Empty State
 .emptyState {
-  text-align: center;
-  padding: 2rem;
-  color: $text-light;
-  font-style: italic;
+  @include role-empty-glass;
 }
 
 // Loading & Error States

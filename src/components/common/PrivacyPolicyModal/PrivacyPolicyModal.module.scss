@@ -7,26 +7,27 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: color-mix(in srgb, var(--cs-on-surface, #1e1f1e) 52%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10000;
   padding: 1rem;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   animation: fadeIn 0.3s ease-out;
 }
 
 .modalContent {
-  background: white;
-  border-radius: 24px;
+  background: var(--cs-glass-bg-strong, rgba(255, 255, 255, 0.92));
+  border: 1px solid var(--cs-glass-border, rgba(97, 99, 98, 0.22));
+  border-radius: var(--cs-radius-2xl, 1rem);
   width: 100%;
   max-width: 900px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--cs-glass-shadow, 0 20px 48px rgba(44, 45, 44, 0.18));
   animation: slideUp 0.3s ease-out;
   // Allow scrolling when header + iframe + footer exceed the viewport — otherwise
   // the checkbox and Accept button sit below the fold with no way to reach them.
@@ -40,7 +41,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 2rem 2rem 1rem;
-  border-bottom: 2px solid $border-light;
+  border-bottom: 1px solid color-mix(in srgb, var(--cs-outline, #{$border-light}) 35%, transparent);
 
   @include mobile {
     padding: 1.5rem 1.5rem 1rem;
@@ -48,10 +49,12 @@
 }
 
 .modalTitle {
-  font-size: 2rem;
+  font-family: var(--cs-font-headline, $font-family-heading);
+  font-size: clamp(1.45rem, 3vw, 2rem);
   font-weight: 800;
-  color: $text-dark;
+  color: var(--cs-on-surface, $text-dark);
   margin: 0;
+  letter-spacing: -0.02em;
 
   @include mobile {
     font-size: 1.5rem;
@@ -61,18 +64,18 @@
 .closeButton {
   background: transparent;
   border: none;
-  color: $text-light;
+  color: var(--cs-on-surface-variant, $text-light);
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  transition: background 0.2s ease, color 0.2s ease;
 
   &:hover {
-    background: rgba($text-light, 0.1);
-    color: $text-dark;
+    background: color-mix(in srgb, var(--cs-primary, #{$primary-color}) 8%, transparent);
+    color: var(--cs-on-surface, $text-dark);
   }
 }
 
@@ -181,9 +184,9 @@
   display: block;
   min-height: 280px;
   height: min(480px, 50vh);
-  border: 2px solid $border-light;
-  border-radius: 12px;
-  background: white;
+  border: 1px solid var(--cs-glass-border, rgba(97, 99, 98, 0.24));
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  background: var(--cs-surface-lowest, #fff);
 
   @include mobile {
     min-height: 220px;
@@ -194,9 +197,9 @@
 .acceptanceSection {
   flex-shrink: 0;
   padding: 0 2rem 1.5rem;
-  border-top: 2px solid $border-light;
+  border-top: 1px solid color-mix(in srgb, var(--cs-outline, #{$border-light}) 35%, transparent);
   padding-top: 1.5rem;
-  background: white;
+  background: color-mix(in srgb, var(--cs-surface-lowest, #fff) 96%, var(--cs-primary, #{$primary-color}) 4%);
 
   @include mobile {
     padding: 0 1.5rem 1rem;
@@ -230,7 +233,7 @@
 
 .checkboxText {
   font-size: 1rem;
-  color: $text-dark;
+  color: var(--cs-on-surface, $text-dark);
   line-height: 1.6;
 
   .required {
@@ -245,7 +248,7 @@
   gap: 1rem;
   padding: 0 2rem 2rem;
   justify-content: flex-end;
-  background: white;
+  background: var(--cs-surface-lowest, #fff);
 
   @include mobile {
     flex-direction: column-reverse;
@@ -257,22 +260,22 @@
 .cancelButton {
   @include button-base;
   background: transparent;
-  color: $text-dark;
-  border: 2px solid $border-medium;
+  color: var(--cs-on-surface, $text-dark);
+  border: 1px solid var(--cs-outline, $border-medium);
   padding: 0.875rem 2rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl, 0.75rem);
   font-weight: 600;
 
   &:hover {
-    background: $background-light;
-    border-color: $border-dark;
+    background: var(--cs-surface-high, $background-light);
+    border-color: var(--cs-on-surface-variant, $border-dark);
   }
 }
 
 .acceptButton {
   @include button-primary;
   padding: 0.875rem 2rem;
-  border-radius: 12px;
+  border-radius: var(--cs-radius-xl, 0.75rem);
   font-weight: 600;
   display: flex;
   align-items: center;

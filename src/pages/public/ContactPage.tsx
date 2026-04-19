@@ -54,11 +54,11 @@ export const ContactPage: React.FC = () => {
         </div>
       </section>
 
-      <section className={`${styles.contactSection} tp-brand-softBg`}>
+      <section className={styles.contactSection}>
         <div className="container">
           <div className={styles.contactGrid}>
             {/* Contact Info */}
-            <div className={`${styles.contactInfo} tp-brand-card`}>
+            <div className={styles.contactInfo}>
               <h2 className={styles.infoTitle}>Contact information</h2>
               <p className={styles.infoSubtitle}>
                 Reach us by phone or email, or use the form—we usually reply within one business day.

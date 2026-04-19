@@ -152,27 +152,6 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
           <ShellBrandMark to="/patient/dashboard" onClick={closeMenu} />
         </div>
 
-        <div className={styles.userBlock}>
-          <NavLink
-            to="/patient/account"
-            className={styles.avatarLink}
-            aria-label={profileLabel}
-            onClick={closeMenu}
-          >
-            <span className={styles.avatar}>{initials}</span>
-          </NavLink>
-          <div className={styles.userMeta}>
-            <NavLink
-              to="/patient/account"
-              className={styles.profileNameLink}
-              aria-label={profileLabel}
-              onClick={closeMenu}
-            >
-              {displayName}
-            </NavLink>
-          </div>
-        </div>
-
         <nav className={styles.nav} aria-label="Patient">
           <NavLink to="/patient/dashboard" className={navClass} onClick={closeMenu}>
             <DashboardIcon size="sm" className={styles.navIcon} />
@@ -232,7 +211,23 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
               <p className={styles.topBarEyebrow}>Patient portal</p>
               <p className={styles.topBarTitle}>{pageTitle}</p>
             </div>
-            <div className={styles.topBarActions}>
+            <div className={styles.topBarTrailing}>
+              <div className={styles.topBarUser}>
+                <NavLink
+                  to="/patient/account"
+                  className={styles.topBarAvatarLink}
+                  aria-label={profileLabel}
+                >
+                  <span className={styles.topBarAvatar}>{initials}</span>
+                </NavLink>
+                <NavLink
+                  to="/patient/account"
+                  className={styles.topBarProfileLink}
+                  aria-label={profileLabel}
+                >
+                  {displayName}
+                </NavLink>
+              </div>
               <div className={styles.notifWrap} ref={notifWrapRef}>
                 <button
                   type="button"

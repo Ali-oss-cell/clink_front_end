@@ -80,8 +80,8 @@
 
   .emptyState {
     grid-column: 1 / -1;
-    margin-left: 0;
-    margin-right: 0;
+    margin-inline: auto;
+    max-width: min(36rem, 100%);
   }
 }
 
@@ -333,23 +333,12 @@
   box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid var(--cs-glass-border);
   margin-bottom: 2rem;
-  animation: fadeInUp 0.8s ease-out;
+  animation: fadeInUpMedium 0.8s ease-out;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
     box-shadow: var(--cs-glass-shadow);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -1340,7 +1329,7 @@
   font-size: 1.1rem;
   margin: 0;
   color: rgba(255, 255, 255, 0.9);
-  animation: fadeInUp 0.6s ease 0.1s both;
+  animation: fadeInUpMedium 0.6s ease 0.1s both;
 }
 
 .headerActions {
@@ -1491,7 +1480,7 @@
   margin-bottom: 2rem;
   flex-wrap: wrap;
   padding: 0 2rem;
-  animation: fadeInUp 0.6s ease 0.4s both;
+  animation: fadeInUpMedium 0.6s ease 0.4s both;
   
   button {
     padding: 1rem 2rem;
@@ -1551,8 +1540,8 @@
 
   .emptyState {
     grid-column: 1 / -1;
-    margin-left: 0;
-    margin-right: 0;
+    margin-inline: auto;
+    max-width: min(36rem, 100%);
   }
 }
 
@@ -1591,7 +1580,7 @@
   }
 
   // Add subtle animation on mount with stagger
-  animation: fadeInUp 0.5s ease-out;
+  animation: fadeInUpMedium 0.5s ease-out;
   
   // Stagger animation for multiple cards
   @for $i from 1 through 10 {
@@ -2042,19 +2031,16 @@
 }
 
 .emptyState {
-  background: var(--cs-surface-lowest);
-  border-radius: $border-radius-lg;
-  padding: 4rem 2rem;
-  text-align: center;
-  box-shadow: var(--cs-shadow-atmospheric);
-  margin: 0 2rem 2rem 2rem;
-  border: 2px dashed $border-light;
+  @include role-empty-glass;
 }
 
 .emptyIcon {
-  font-size: 5rem;
-  margin-bottom: 1.5rem;
+  @include role-empty-glass-icon;
   animation: float 3s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .modalOverlay {
@@ -2140,17 +2126,6 @@
   from {
     opacity: 0;
     transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -2389,7 +2364,7 @@
   gap: 1.5rem;
   margin: 2rem 0 3rem 0;
   padding: 0 2rem;
-  animation: fadeInUp 0.6s ease 0.5s both;
+  animation: fadeInUpMedium 0.6s ease 0.5s both;
 }
 
 // Flex row: icon never overlaps placeholder text (avoids fighting .tp-ui-input padding)
@@ -2455,8 +2430,8 @@
 
   .emptyState {
     grid-column: 1 / -1;
-    margin-left: 0;
-    margin-right: 0;
+    margin-inline: auto;
+    max-width: min(36rem, 100%);
   }
 }
 

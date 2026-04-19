@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/surfaceSystem' as surface;
 
 .page {
   padding-bottom: 4rem;
@@ -87,11 +88,9 @@
 }
 
 .card {
-  background: $background-white;
-  border-radius: 16px;
+  @include surface.surface-primary-no-hover;
   padding: 2rem 1.75rem;
-  border: 1px solid $border-light;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  border-radius: var(--cs-radius-2xl, 1rem);
 }
 
 .stepTitle {

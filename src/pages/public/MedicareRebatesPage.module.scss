@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/surfaceSystem' as surface;
 
 .hero {
   background: $hero-bg;
@@ -9,13 +10,15 @@
 }
 
 .heroTitle {
-  font-size: 2.5rem;
+  font-family: var(--cs-font-headline, $font-family-heading);
+  font-size: clamp(2rem, 4vw, 2.5rem);
   font-weight: 800;
+  letter-spacing: -0.02em;
   color: $text-white;
   margin-bottom: 1rem;
 
   @include mobile {
-    font-size: 2rem;
+    font-size: clamp(1.75rem, 6vw, 2rem);
   }
 }
 
@@ -24,11 +27,17 @@
   margin: 0 auto;
   color: rgba($text-white, 0.92);
   line-height: 1.7;
-  font-size: 1.05rem;
+  font-size: clamp(1rem, 1.35vw, 1.05rem);
 }
 
 .contentSection {
-  padding: 4rem 0;
+  padding: clamp(3rem, 6vw, 4rem) 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, $hero-bg 7%, $background-light) 0%,
+    $background-light 22%,
+    $background-light 100%
+  );
 }
 
 .contentGrid {
@@ -37,20 +46,20 @@
 }
 
 .infoBlock {
-  border: 1px solid $border-light;
-  border-radius: 14px;
-  padding: 1.25rem 1.1rem;
-  background: $background-white;
+  @include surface.surface-secondary;
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  padding: 1.25rem 1.15rem;
 
   h2 {
+    font-family: var(--cs-font-headline, $font-family-heading);
     font-size: 1.25rem;
     margin: 0 0 0.65rem;
-    color: $text-dark;
+    color: var(--cs-on-surface, $text-dark);
   }
 
   p {
     margin: 0;
-    color: $text-light;
+    color: var(--cs-on-surface-variant, $text-light);
     line-height: 1.65;
   }
 }
@@ -58,10 +67,9 @@
 .disclaimer {
   margin: 1.25rem 0 0;
   padding: 1rem 1.1rem;
-  border-radius: 12px;
-  background: rgba($text-dark, 0.04);
-  border: 1px solid $border-light;
-  color: $text-light;
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  @include surface.surface-flat;
+  color: var(--cs-on-surface-variant, $text-light);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -83,7 +91,7 @@
   background: $button-primary-bg;
   color: $text-white;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--cs-radius-xl, 0.75rem);
 
   &:hover {
     background: $button-primary-hover;
@@ -95,10 +103,10 @@
 .secondaryButton {
   @include button-base;
   background: transparent;
-  color: $text-dark;
-  border: 1px solid $border-medium;
+  color: var(--cs-on-surface, $text-dark);
+  border: 1px solid var(--cs-outline, $border-medium);
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--cs-radius-xl, 0.75rem);
 
   &:hover {
     background: $background-gray;

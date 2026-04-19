@@ -83,47 +83,50 @@ export const ResetPassword: React.FC = () => {
           </div>
         )}
 
-        <div className={styles.formGroup}>
-          <label htmlFor="new_password" className={styles.label}>
-            New password
-          </label>
-          <Input
-            {...register('new_password', {
-              required: 'Password is required',
-              minLength: {
-                value: 8,
-                message: 'Use at least 8 characters (backend may require more)',
-              },
-            })}
-            type="password"
-            id="new_password"
-            autoComplete="new-password"
-            className={`${styles.input} ${errors.new_password ? styles.inputError : ''}`}
-            disabled={isLoading || !token}
-          />
-          {errors.new_password && (
-            <span className={styles.fieldError}>{errors.new_password.message}</span>
-          )}
-        </div>
+        <div className={styles.credentialCluster}>
+          <p className={styles.clusterLabel}>New password</p>
+          <div className={styles.formGroup}>
+            <label htmlFor="new_password" className={styles.label}>
+              New password
+            </label>
+            <Input
+              {...register('new_password', {
+                required: 'Password is required',
+                minLength: {
+                  value: 8,
+                  message: 'Use at least 8 characters (backend may require more)',
+                },
+              })}
+              type="password"
+              id="new_password"
+              autoComplete="new-password"
+              className={`${styles.input} ${errors.new_password ? styles.inputError : ''}`}
+              disabled={isLoading || !token}
+            />
+            {errors.new_password && (
+              <span className={styles.fieldError}>{errors.new_password.message}</span>
+            )}
+          </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="new_password_confirm" className={styles.label}>
-            Confirm new password
-          </label>
-          <Input
-            {...register('new_password_confirm', {
-              required: 'Please confirm your password',
-              validate: (v) => v === pwd || 'Passwords do not match',
-            })}
-            type="password"
-            id="new_password_confirm"
-            autoComplete="new-password"
-            className={`${styles.input} ${errors.new_password_confirm ? styles.inputError : ''}`}
-            disabled={isLoading || !token}
-          />
-          {errors.new_password_confirm && (
-            <span className={styles.fieldError}>{errors.new_password_confirm.message}</span>
-          )}
+          <div className={styles.formGroup}>
+            <label htmlFor="new_password_confirm" className={styles.label}>
+              Confirm new password
+            </label>
+            <Input
+              {...register('new_password_confirm', {
+                required: 'Please confirm your password',
+                validate: (v) => v === pwd || 'Passwords do not match',
+              })}
+              type="password"
+              id="new_password_confirm"
+              autoComplete="new-password"
+              className={`${styles.input} ${errors.new_password_confirm ? styles.inputError : ''}`}
+              disabled={isLoading || !token}
+            />
+            {errors.new_password_confirm && (
+              <span className={styles.fieldError}>{errors.new_password_confirm.message}</span>
+            )}
+          </div>
         </div>
 
         <Button type="submit" disabled={isLoading || !token} className={styles.submitButton}>
@@ -138,6 +141,12 @@ export const ResetPassword: React.FC = () => {
         </Button>
 
         <div className={styles.formFooter}>
+          <p className={styles.footerText}>
+            Don&apos;t have an account?{' '}
+            <Link to="/register" className={styles.footerLink}>
+              Create one here
+            </Link>
+          </p>
           <p className={styles.footerText}>
             <Link to="/login" className={styles.footerLink}>
               Back to sign in

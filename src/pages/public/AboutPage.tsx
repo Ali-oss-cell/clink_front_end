@@ -16,9 +16,9 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      <section className={`${styles.content} tp-brand-softBg`}>
+      <section className={styles.content}>
         <div className="container">
-          <div className={`${styles.contentInner} tp-brand-card`}>
+          <div className={styles.contentInner}>
             <div className={styles.section}>
               <p className="tp-brand-kicker">Our approach</p>
               <h2>Our mission</h2>
@@ -63,7 +63,7 @@ export const AboutPage: React.FC = () => {
               </div>
             </div>
 
-            <div className={`${styles.ctaBlock} tp-brand-card tp-brand-card--accent`}>
+            <div className={styles.ctaBlock}>
               <h2>Ready when you are</h2>
               <p>Book online in minutes, or browse services first—no pressure, just a clear next step.</p>
               <div className={styles.ctaButtons}>

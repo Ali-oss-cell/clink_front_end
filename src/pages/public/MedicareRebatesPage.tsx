@@ -16,50 +16,48 @@ export const MedicareRebatesPage: React.FC = () => {
         </div>
       </section>
 
-      <section className={`${styles.contentSection} tp-brand-softBg`}>
+      <section className={styles.contentSection}>
         <div className="container">
-          <div className="tp-brand-card">
-            <div className={styles.contentGrid}>
-              <article className={styles.infoBlock}>
-                <h2>Who may be eligible</h2>
-                <p>
-                  Medicare eligibility is generally based on GP assessment and referral documentation. Your GP can
-                  advise if a Mental Health Treatment Plan is appropriate for your situation.
-                </p>
-              </article>
+          <div className={styles.contentGrid}>
+            <article className={styles.infoBlock}>
+              <h2>Who may be eligible</h2>
+              <p>
+                Medicare eligibility is generally based on GP assessment and referral documentation. Your GP can advise
+                if a Mental Health Treatment Plan is appropriate for your situation.
+              </p>
+            </article>
 
-              <article className={styles.infoBlock}>
-                <h2>How claiming usually works</h2>
-                <p>
-                  Once your session is complete, eligible rebates are handled through Medicare using the usual channels
-                  (for example your clinician&apos;s practice systems, Medicare Online, or HPOS)—not by submitting claims
-                  directly from this website. We can explain practical steps when you book.
-                </p>
-              </article>
+            <article className={styles.infoBlock}>
+              <h2>How claiming usually works</h2>
+              <p>
+                Once your session is complete, eligible rebates are handled through Medicare using the usual channels (for
+                example your clinician&apos;s practice systems, Medicare Online, or HPOS)—not by submitting claims directly
+                from this website. We can explain practical steps when you book.
+              </p>
+            </article>
 
-              <article className={styles.infoBlock}>
-                <h2>Need help deciding your next step?</h2>
-                <p>
-                  If you are unsure about eligibility, contact us and we can guide you on what to prepare before your
-                  first appointment.
-                </p>
-              </article>
-            </div>
+            <article className={styles.infoBlock}>
+              <h2>Need help deciding your next step?</h2>
+              <p>
+                If you are unsure about eligibility, contact us and we can guide you on what to prepare before your first
+                appointment.
+              </p>
+            </article>
+          </div>
 
-            <p className={styles.disclaimer}>
-              Figures shown elsewhere in the app (fees, gap, rebate estimates) come from our service catalogue and are
-              indicative only. They are not a guarantee of Medicare payment; always confirm with your GP and the current
-              MBS schedule.
-            </p>
+          <p className={styles.disclaimer}>
+            Figures shown elsewhere in the app (fees, gap, rebate estimates) come from our service catalogue and are
+            indicative only. They are not a guarantee of Medicare payment; always confirm with your GP and the current
+            MBS schedule.
+          </p>
 
-            <div className={styles.actions}>
-              <Link to="/contact" className={styles.secondaryButton}>
-                Ask a question
-              </Link>
-              <Link to="/register" className={styles.primaryButton}>
-                Book appointment
-              </Link>
-            </div>
+          <div className={styles.actions}>
+            <Link to="/contact" className={styles.secondaryButton}>
+              Ask a question
+            </Link>
+            <Link to="/register" className={styles.primaryButton}>
+              Book appointment
+            </Link>
           </div>
         </div>
       </section>

@@ -8,13 +8,15 @@ This document defines the styling contract for `clink_front_end` to keep CSS cle
 
 - Sass design tokens: `src/assets/styles/_variables.scss`
 - Clinical Sanctuary CSS custom properties: `src/assets/styles/_clinicalSanctuary.scss` (`.patientShell`, `.clinicalShell`)
-- **Surface primitives:** `src/assets/styles/_surfaceSystem.scss` (`surface-primary`, `surface-secondary`, `surface-flat`, `surface-compact`, `surface-compact-interactive`, `surface-compact-selected`)
+- **Global motion (imported once in `index.scss` — not in CSS Modules):** `src/assets/styles/_animations.scss` — `fadeInUp` (24px), `fadeInUpShort` (12px), `fadeInUpMedium` (20px), `fadeInUpDeep` (30px)
+- **Surface primitives:** `src/assets/styles/_surfaceSystem.scss` (`surface-primary`, `surface-secondary`, `surface-flat`, `surface-compact`, `surface-compact-interactive`, `surface-compact-selected`, `role-empty-glass`, `role-empty-glass-table-cell`, `role-empty-glass-icon` for role dashboard list/table empty states)
 - **Wizard primitives:** `src/assets/styles/_wizardSystem.scss` (`wizard-step-band`, `wizard-sticky-actions`, `wizard-viewport-lock`)
 - **Form primitives:** `src/assets/styles/_formSystem.scss` (`form-card`, `form-field-cluster`, `form-input`, `form-actions`)
 - **Patient surface primitives:** `src/assets/styles/_patientSurface.scss` (`patient-card`, `patient-panel`, `patient-card-title`, `patient-action-bar`)
 - **Patient form row primitives:** `src/assets/styles/_patientFormRow.scss` (`input`, `textarea`, `input-row`, `checkbox-card`, `option-card`, `label`, `hint`)
 - **Patient tab primitives:** `src/assets/styles/_patientTabs.scss` (`tab-row`, `tab-pill`)
 - **Patient page chrome (shared partial):** `src/assets/styles/_patientPageChrome.scss` — consumed by `PatientShellPage.module.scss` and `PatientShellChrome.module.scss` for aligned headers/wrap/CTAs (do not fork duplicate headers in feature modules).
+- **Site-wide glass map (where to use it, where to hold back):** `docs/WEBSITE_GLASSMORPHISM_GUIDE.md`
 - Shared glassmorphism mixins: `src/assets/styles/_mixins.scss` (`glass-card`, `glass-hover`)
 - Shared dashboard button system: `src/assets/styles/_buttonSystem.scss`
 - Shared compact portal sizing/surfaces: `src/assets/styles/_portalCompact.scss`

@@ -1011,7 +1011,7 @@ button.toolButton {
   box-shadow: var(--cs-shadow-atmospheric);
   border: 1px solid var(--cs-glass-border, rgba($border-medium, 0.22));
   transition: all 0.3s ease;
-  animation: fadeInUp 0.8s ease-out;
+  animation: fadeInUpDeep 0.8s ease-out;
   position: relative;
   overflow: hidden;
 
@@ -1073,17 +1073,6 @@ button.toolButton {
         box-shadow: 0 10px 30px rgba($patient-primary, 0.4);
       }
     }
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -1807,7 +1796,7 @@ button.toolButton {
   padding: 2.5rem;
   max-width: 900px;
   margin: 0 auto;
-  animation: fadeInUp 0.8s ease-out;
+  animation: fadeInUpDeep 0.8s ease-out;
 }
 
 .progressIndicator {
@@ -2115,7 +2104,7 @@ button.submitButton {
   max-width: 900px;
   margin: 0 auto;
   padding: 2.5rem;
-  animation: fadeInUp 0.8s ease-out;
+  animation: fadeInUpDeep 0.8s ease-out;
 }
 
 .formActions {
@@ -2541,7 +2530,7 @@ button.submitButton {
     box-shadow 0.16s ease,
     border-color 0.16s ease;
   position: relative;
-  animation: fadeInUp 0.55s ease-out both;
+  animation: fadeInUpDeep 0.55s ease-out both;
   overflow: hidden;
 
   &::before {

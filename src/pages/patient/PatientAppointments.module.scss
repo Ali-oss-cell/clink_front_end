@@ -130,7 +130,7 @@
   }
 
   // Add subtle animation on mount with stagger
-  animation: fadeInUp 0.5s ease-out;
+  animation: fadeInUpMedium 0.5s ease-out;
   
   // Stagger animation for multiple cards
   @for $i from 1 through 10 {
@@ -156,17 +156,6 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .psychologistSection {

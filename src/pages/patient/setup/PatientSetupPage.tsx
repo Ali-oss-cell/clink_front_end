@@ -24,6 +24,7 @@ import ReferralStep from './steps/ReferralStep';
 import IntakeMinStep from './steps/IntakeMinStep';
 import IntakeFullStep from './steps/IntakeFullStep';
 import ReviewStep from './steps/ReviewStep';
+import SetupCompleteStatus from './SetupCompleteStatus';
 
 const STEP_SUBTITLES: Record<SetupStepId, string> = {
   welcome: "Here's what we'll cover and how long it takes.",
@@ -117,19 +118,19 @@ const PatientSetupPage: FC = () => {
     complete,
   } = useSetupDraft();
 
-  const activeStep = useMemo(
-    () => resolveActiveStep(state, searchParams),
-    [state, searchParams],
-  );
-
-  useEffect(() => {
-    if (state?.completed_at) {
-      navigate('/patient/dashboard', { replace: true });
+  const activeStep = useMemo(() => {
+    if (!state?.steps?.length) return null;
+    if (state.completed_at) {
+      const ids = state.steps.map((s) => s.id);
+      if (ids.includes('review')) return 'review';
+      return state.steps[state.steps.length - 1]!.id;
     }
-  }, [state?.completed_at, navigate]);
+    return resolveActiveStep(state, searchParams);
+  }, [state, searchParams]);
 
   /** Sync `?step=` when the URL jumps to Review before requirements are met. */
   useEffect(() => {
+    if (state?.completed_at) return;
     if (!state?.steps?.length || !state.current_step) return;
     const ids = state.steps.map((s) => s.id);
     const serverCurrent = ids.includes(state.current_step)
@@ -264,10 +265,14 @@ const PatientSetupPage: FC = () => {
   }
 
   const currentMeta = state.steps.find((s) => s.id === activeStep);
-  const title = STEP_TITLES[activeStep] || currentMeta?.title || 'Setup';
-  const subtitle = STEP_SUBTITLES[activeStep];
+  const title = state.completed_at
+    ? 'Setup complete'
+    : STEP_TITLES[activeStep] || currentMeta?.title || 'Setup';
+  const subtitle = state.completed_at
+    ? 'Your profile status and booking readiness'
+    : STEP_SUBTITLES[activeStep];
   const idx = state.steps.findIndex((s) => s.id === activeStep);
-  const canBack = idx > 0;
+  const canBack = !state.completed_at && idx > 0;
 
   const goBack = () => {
     if (canBack) {
@@ -281,6 +286,9 @@ const PatientSetupPage: FC = () => {
   };
 
   const renderStep = () => {
+    if (state?.completed_at) {
+      return <SetupCompleteStatus state={state} />;
+    }
     if (!stepProps) return null;
     switch (activeStep) {
       case 'welcome':
@@ -305,10 +313,7 @@ const PatientSetupPage: FC = () => {
             onNavigateToStep={(step) => setStep(step)}
             onComplete={async () => {
               try {
-                const res = await complete();
-                if (res.completed) {
-                  navigate('/patient/dashboard', { replace: true });
-                }
+                await complete();
               } catch {
                 // surfaced via hook.error
               }
@@ -343,32 +348,48 @@ const PatientSetupPage: FC = () => {
           title={title}
           subtitle={subtitle}
           banner={
-            <span>
-              We save your progress automatically — feel free to close the tab and come back.{' '}
-              <strong>You can finish this in about 5 minutes.</strong>
-            </span>
+            state.completed_at ? (
+              <span>
+                Onboarding is complete. Review your details below, then head to your dashboard anytime.
+              </span>
+            ) : (
+              <span>
+                We save your progress automatically — feel free to close the tab and come back.{' '}
+                <strong>You can finish this in about 5 minutes.</strong>
+              </span>
+            )
           }
           actions={
-            <>
-              {canBack && (
+            state.completed_at ? (
+              <button
+                type="button"
+                className="patient-cta-primary"
+                onClick={() => navigate('/patient/dashboard')}
+              >
+                Go to dashboard
+              </button>
+            ) : (
+              <>
+                {canBack && (
+                  <button
+                    type="button"
+                    className="patient-cta-secondary"
+                    onClick={goBack}
+                    disabled={saving || completing}
+                  >
+                    Back
+                  </button>
+                )}
                 <button
                   type="button"
                   className="patient-cta-secondary"
-                  onClick={goBack}
+                  onClick={() => void saveAndExit()}
                   disabled={saving || completing}
                 >
-                  Back
+                  Save &amp; exit
                 </button>
-              )}
-              <button
-                type="button"
-                className="patient-cta-secondary"
-                onClick={() => void saveAndExit()}
-                disabled={saving || completing}
-              >
-                Save &amp; exit
-              </button>
-            </>
+              </>
+            )
           }
         >
           {stepBody}

@@ -1,6 +1,19 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
 
+// Frosted sage bars — same language as PatientAppShell / marketing header pill (dark band + blur).
+@mixin video-top-bar-glass {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: linear-gradient(
+    120deg,
+    rgba(18, 26, 18, 0.88) 0%,
+    rgba($btn-admin-primary, 0.72) 46%,
+    rgba(32, 42, 32, 0.88) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
 .videoCallContainer {
   width: 100vw;
   height: 100vh;
@@ -15,7 +28,7 @@
   justify-content: space-between;
   align-items: center;
   padding: $spacing-lg $spacing-xl;
-  background: rgba(0, 0, 0, 0.8);
+  @include video-top-bar-glass;
   color: white;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -28,9 +41,9 @@
 
 .telehealthBoard {
   padding: $spacing-md $spacing-xl;
-  background: rgba(0, 0, 0, 0.95);
+  @include video-top-bar-glass;
   color: white;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
@@ -147,8 +160,10 @@
   height: 210px;
   border-radius: $border-radius-lg;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .localVideo {
@@ -176,7 +191,7 @@
   align-items: center;
   gap: $spacing-md;
   padding: $spacing-xl;
-  background: rgba(0, 0, 0, 0.8);
+  @include video-top-bar-glass;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -187,13 +202,18 @@
   gap: $spacing-xs;
   padding: $spacing-md $spacing-lg;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: $border-radius-lg;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--cs-radius-xl, #{$border-radius-lg});
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: all $transition-normal ease;
+  transition:
+    background $transition-normal ease,
+    border-color $transition-normal ease,
+    transform $transition-normal ease;
   min-width: 100px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   span {
     font-size: 0.875rem;
@@ -201,7 +221,8 @@
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
     transform: translateY(-2px);
   }
 
@@ -311,6 +332,16 @@
     span {
       font-size: 0.75rem;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controlButton:hover {
+    transform: none;
+  }
+
+  .backButton:hover {
+    transform: none;
   }
 }
 

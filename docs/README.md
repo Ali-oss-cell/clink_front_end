@@ -10,6 +10,7 @@ This folder is the frontend documentation entry point.
 - `../COLOR_THEME_GUIDE.md` - canonical theme and token documentation
 - `../THEME_QUICK_REFERENCE.md` - quick operational theme reference
 - `CSS_GOVERNANCE.md` - CSS architecture and anti-churn standards
+- **`WEBSITE_GLASSMORPHISM_GUIDE.md`** - where and how to apply glassmorphism site-wide (tokens, primitives, per-area map, anti-patterns); **execution backlog §6**, follow-up rhythm **§7**, rollup in **`REFRACTOR_TRACKER.md` §9**
 - **`CROSS_SHELL_UI_REFACTOR_SPEC.md`** - **primary Cursor execution brief**: homepage-led UI for all shells, cards, forms (Register baseline), wizard no-scroll, all roles
 - **`PATIENT_CORE_PAGES_ENTERPRISE_GLASS_SPEC.md`** — patient dashboard / appointments / invoices / resources / recordings / account: enterprise glass, connected-app rhythm, phased rollout
 - `HOMEPAGE_STYLE_SYSTEM.md` - homepage as visual source of truth (direction + checklist)

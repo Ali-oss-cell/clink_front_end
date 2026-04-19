@@ -72,6 +72,15 @@ Tracks migration to homepage-led, token-driven, shared-primitives styling.
 - [x] `DONE` Phase 5 — Account `PatientShellPage`; recording cards `patient-card`.
 - [x] `DONE` Phase 6 — PatientAppShell route enter + reduced-motion; QA: `npm run build` clean.
 
+### 9) Website-wide glass expansion (`WEBSITE_GLASSMORPHISM_GUIDE.md`)
+
+Roll up **priority waves** from §6 when each wave completes (do not duplicate every page-level checkbox here). Detailed backlog: [`WEBSITE_GLASSMORPHISM_GUIDE.md`](WEBSITE_GLASSMORPHISM_GUIDE.md) §6.
+
+- [x] `DONE` **Wave 1 — Public secondary & long-form** — Services, About, Contact, Resources, GetMatched; Medicare/Rebates/Telehealth/Privacy; Header/Layout alignment (`WEBSITE_GLASSMORPHISM_GUIDE.md` §6.A).
+- [x] `DONE` **Wave 2 — Auth** — ForgotPassword + ResetPassword parity with Login/Register shells (`credentialCluster`, shared `Login.module.scss`, split layout via `AuthPages.module.scss`).
+- [x] `DONE` **Wave 3 — Video + overlays** — VideoCall sage bars; PrivacyPolicyModal + RecordingDetailModal token glass; PatientAppShell notif dropdown verified (`WEBSITE_GLASSMORPHISM_GUIDE.md` §6.G).
+- [x] **Wave 4 — Role dashboards + empty states** — Psychologist / Admin / Manager `*Pages.module.scss`: shared `role-empty-glass`, `role-empty-glass-table-cell`, `role-empty-glass-icon` in `_surfaceSystem.scss`; manager shell transparent under `.clinicalShell`; `npm run build` verified.
+
 ## Cleanup Targets
 
 - [x] Removed `--tp-*` variable definitions from `_base.scss` and all `var(--tp-*)` usages across 5 page modules.
@@ -79,7 +88,7 @@ Tracks migration to homepage-led, token-driven, shared-primitives styling.
 - [x] Removed `--shell-*` custom property system from RoleAppShell.
 - [x] Replaced duplicate `.formActionsSticky` blocks with `@include wizard-sticky-actions` mixin.
 - [x] Consolidated duplicate `.pageHeader` definitions in PatientPages (3 → 1).
-- [ ] Duplicate `@keyframes fadeInUp` across 7 files (CSS Modules scopes them independently — low priority).
+- [x] **`fadeInUp` keyframes:** centralized in `_animations.scss`, `@use` from `index.scss`; modules reference `fadeInUp` / `fadeInUpShort` / `fadeInUpMedium` / `fadeInUpDeep` by intent (homepage-led 24px baseline).
 
 ## Quality Gates
 
@@ -87,4 +96,5 @@ Tracks migration to homepage-led, token-driven, shared-primitives styling.
 - [x] No linter errors on new/edited files.
 - [ ] Responsive check (mobile/tablet/desktop) — visual QA pending.
 - [ ] Focus/contrast/touch-target check — visual QA pending.
+- [ ] **Glass expansion (optional):** relevant §6 waves in [`WEBSITE_GLASSMORPHISM_GUIDE.md`](WEBSITE_GLASSMORPHISM_GUIDE.md) checked off + `npm run build` clean after each merged batch (see §7 in that doc).
 - [x] Docs updated (`CSS_GOVERNANCE.md`, `REFRACTOR_TRACKER.md`).

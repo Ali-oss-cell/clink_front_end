@@ -1,5 +1,6 @@
 @use '../../assets/styles/variables' as *;
 @use '../../assets/styles/mixins' as *;
+@use '../../assets/styles/surfaceSystem' as surface;
 
 // Hero
 .hero {
@@ -10,13 +11,15 @@
 }
 
 .heroTitle {
-  font-size: 2.75rem;
+  font-family: var(--cs-font-headline, $font-family-heading);
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
   font-weight: 800;
+  letter-spacing: -0.02em;
   margin-bottom: 1rem;
   color: $text-white;
 
   @include mobile {
-    font-size: 2rem;
+    font-size: clamp(1.75rem, 6vw, 2rem);
   }
 }
 
@@ -34,7 +37,13 @@
 
 // Contact Section
 .contactSection {
-  padding: 4rem 0;
+  padding: clamp(3rem, 6vw, 4rem) 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, $hero-bg 7%, $background-light) 0%,
+    $background-light 22%,
+    $background-light 100%
+  );
 
   @include mobile {
     padding: 2.5rem 0;
@@ -63,8 +72,8 @@
 // Contact Info
 .contactInfo {
   padding: 2rem;
-  background: $background-light;
-  border-radius: 12px;
+  @include surface.surface-primary-no-hover;
+  border-radius: var(--cs-radius-2xl, 1rem);
 
   @include mobile {
     padding: 1.5rem;
@@ -72,9 +81,10 @@
 }
 
 .infoTitle {
+  font-family: var(--cs-font-headline, $font-family-heading);
   font-size: 1.5rem;
-  font-weight: 700;
-  color: $text-dark;
+  font-weight: 800;
+  color: var(--cs-on-surface, $text-dark);
   margin-bottom: 0.5rem;
 }
 
@@ -117,18 +127,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: $background-white;
-  border-radius: 10px;
-  color: $text-muted;
+  background: color-mix(in srgb, var(--cs-surface-high, $background-white) 88%, var(--cs-primary, $primary-color) 12%);
+  border-radius: var(--cs-radius-lg, 0.5rem);
+  color: var(--cs-on-surface-variant, $text-muted);
   flex-shrink: 0;
 }
 
 // Contact Form
 .contactForm {
-  background: $background-white;
-  border: 1px solid $border-light;
-  border-radius: 12px;
+  @include surface.surface-primary-no-hover;
   padding: 2rem;
+  border-radius: var(--cs-radius-2xl, 1rem);
 
   @include mobile {
     padding: 1.5rem;
@@ -136,9 +145,10 @@
 }
 
 .formTitle {
+  font-family: var(--cs-font-headline, $font-family-heading);
   font-size: 1.5rem;
-  font-weight: 700;
-  color: $text-dark;
+  font-weight: 800;
+  color: var(--cs-on-surface, $text-dark);
   margin-bottom: 1.5rem;
 }
 
@@ -170,7 +180,7 @@
     width: 100%;
     padding: 0.65rem 0.85rem;
     border: 1.5px solid $border-light;
-    border-radius: 8px;
+    border-radius: var(--cs-radius-lg, 0.5rem);
     font-size: 0.925rem;
     color: $text-dark;
     background: $background-white;
@@ -211,7 +221,7 @@
   padding: 0.85rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--cs-radius-xl, 0.75rem);
   transition: all 0.2s ease;
   margin-top: 0.5rem;
 
