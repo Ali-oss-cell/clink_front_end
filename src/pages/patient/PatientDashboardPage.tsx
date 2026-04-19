@@ -207,9 +207,10 @@ export const PatientDashboardPage: React.FC = () => {
           </div>
         )}
 
-        <div className={d.bento}>
-          {/* Video hero */}
-          <section className={`${d.card} ${d.videoHero} ${d.span8}`}>
+        <div className={d.dashboardStack}>
+          <div className={d.dashboardHeroRow}>
+          {/* Video hero — full width when Medicare widget is absent */}
+          <section className={`${d.card} ${d.videoHero} ${medicareInfo ? d.span8 : d.span12}`}>
             <span className={d.decoIcon} aria-hidden>
               <VideoIcon size="lg" />
             </span>
@@ -265,7 +266,6 @@ export const PatientDashboardPage: React.FC = () => {
             </div>
           </section>
 
-          {/* Medicare */}
           {medicareInfo && (
             <section className={`${d.card} ${d.medicareCard} ${d.span4}`}>
               <h3 className={d.medicareTitle}>Medicare usage {medicareInfo.current_year}</h3>
@@ -306,9 +306,11 @@ export const PatientDashboardPage: React.FC = () => {
               )}
             </section>
           )}
+          </div>
 
+          <div className={d.dashboardTileBand} aria-label="Quick overview">
           {/* Next appointment */}
-          <section className={`${d.card} ${d.span4}`}>
+          <section className={d.card}>
             <h3 className={d.cardTitle}>Following session</h3>
             {hasNextAppt ? (
               <div className={d.nextBlock}>
@@ -359,7 +361,7 @@ export const PatientDashboardPage: React.FC = () => {
           </section>
 
           {/* Total sessions */}
-          <section className={`${d.card} ${d.span4}`}>
+          <section className={d.card}>
             <div className={d.statBlock}>
               <div className={d.statIconBox}>
                 <ChartIcon size="lg" />
@@ -374,7 +376,7 @@ export const PatientDashboardPage: React.FC = () => {
           </section>
 
           {/* Invoices */}
-          <section className={`${d.card} ${d.span4}`}>
+          <section className={d.card}>
             <div className={d.invoiceRow}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <div className={d.invoiceIcon}>
@@ -397,7 +399,7 @@ export const PatientDashboardPage: React.FC = () => {
           </section>
 
           {/* Intake */}
-          <section className={`${d.card} ${d.span4}`}>
+          <section className={d.card}>
             <h3 className={d.cardTitle}>Intake</h3>
             {dashboardData?.intake_completed ? (
               <div>
@@ -419,7 +421,7 @@ export const PatientDashboardPage: React.FC = () => {
           </section>
 
           {/* Medicare referral */}
-          <section className={`${d.card} ${d.span4}`}>
+          <section className={d.card}>
             <h3 className={d.cardTitle}>Referral for Medicare</h3>
             <div className={d.referralStatusRow}>
               <span
@@ -476,7 +478,9 @@ export const PatientDashboardPage: React.FC = () => {
               </button>
             </div>
           </section>
+          </div>
 
+          <div className={d.dashboardBottomRow}>
           {/* Recent progress */}
           <section className={`${d.card} ${d.span6}`}>
             <div className={d.progressHead}>
@@ -546,6 +550,7 @@ export const PatientDashboardPage: React.FC = () => {
               </button>
             </div>
           </section>
+          </div>
         </div>
       </div>
     </Layout>

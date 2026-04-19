@@ -65,6 +65,41 @@
   }
 }
 
+// Vertical stack for dashboard sections — clearer rhythm than one flat 12-col grid.
+.dashboardStack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.35rem);
+}
+
+// Row 1: featured video + Medicare (12-col grid)
+.dashboardHeroRow {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+// Row 2: compact tiles — equal min-width columns, wraps cleanly at all breakpoints
+.dashboardTileBand {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.dashboardTileBand .card {
+  height: 100%;
+}
+
+// Row 3: wider widgets (recent progress + resources)
+.dashboardBottomRow {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
 .bento {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -100,6 +135,10 @@
   font-weight: 700;
   color: var(--cs-primary);
   margin: 0 0 0.5rem;
+}
+
+.span12 {
+  grid-column: span 12;
 }
 
 .span8 {
