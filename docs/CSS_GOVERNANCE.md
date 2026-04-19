@@ -89,6 +89,7 @@ When token/theme values change, update:
 - All role dashboard surfaces use `@include surface-primary` / `surface-secondary` from `_surfaceSystem.scss`.
 - Legacy systems removed: `--shell-*` (RoleAppShell), `--tp-*` (all pages), `$admin-primary/$admin-accent` (AdminPages), `glass-card(admin/manager)` calls.
 - All role shells (PatientAppShell, RoleAppShell) now use `--cs-*` tokens exclusively.
+- Patient workspace chrome: sticky top bar (`topBar`, `notifBtn`, `notifDropdown`) in `PatientAppShell.module.scss` shows route context (`patientShellPageTitle.ts`) and a notifications bell fed by the existing referral notification poll — tokens only, no parallel header system.
 - Track completion in `docs/REFRACTOR_TRACKER.md`.
 
 ## 10) Compact dashboard contract

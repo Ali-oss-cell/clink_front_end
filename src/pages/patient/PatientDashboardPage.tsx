@@ -127,6 +127,17 @@ export const PatientDashboardPage: React.FC = () => {
     return RING_C * (1 - ratio);
   }, [medicareInfo]);
 
+  const todayLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat('en-AU', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date()),
+    [],
+  );
+
   const layoutProps = {
     user,
     isAuthenticated: true as const,
@@ -168,6 +179,7 @@ export const PatientDashboardPage: React.FC = () => {
     <Layout {...layoutProps}>
       <div className={shell.wrap}>
         <header className={shell.pageHeader}>
+          <p className={shell.welcomeKicker}>{todayLabel}</p>
           <h1 className={shell.welcomeTitle}>Welcome back, {user.first_name}.</h1>
           <p className={shell.welcomeSubtitle}>
             Your journey to well-being is our priority. Here is an overview of your care with us.

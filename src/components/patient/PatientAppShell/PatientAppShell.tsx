@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import type { User } from '../../../types/simple-auth';
 import { authService, type PatientNotificationItem } from '../../../services/api/auth';
+import { getPatientShellPageTitle } from './patientShellPageTitle';
 import {
   CalendarIcon,
   DashboardIcon,
@@ -27,8 +28,13 @@ const NOTIF_POLL_MS = 3 * 60 * 1000;
 
 export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [referralNotices, setReferralNotices] = useState<PatientNotificationItem[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifWrapRef = useRef<HTMLDivElement>(null);
+
+  const pageTitle = getPatientShellPageTitle(location.pathname);
 
   const initials = [user.first_name?.[0], user.last_name?.[0]]
     .filter(Boolean)
@@ -74,21 +80,45 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
   }, [refreshReferralNotifications]);
 
   const primaryNotice = referralNotices[0];
+  const unreadCount = referralNotices.length;
 
-  const handleNoticeView = async () => {
-    if (!primaryNotice) return;
+  const openNotice = async (notice: PatientNotificationItem) => {
     try {
-      await authService.markPatientNotificationRead(primaryNotice.id);
+      await authService.markPatientNotificationRead(notice.id);
     } catch {
       /* still navigate */
     }
-    setReferralNotices((prev) => prev.filter((n) => n.id !== primaryNotice.id));
-    if (primaryNotice.cta_path) {
-      navigate(primaryNotice.cta_path);
+    setReferralNotices((prev) => prev.filter((n) => n.id !== notice.id));
+    setNotifOpen(false);
+    if (notice.cta_path) {
+      navigate(notice.cta_path);
     } else {
       navigate('/patient/dashboard');
     }
   };
+
+  const handleNoticeView = async () => {
+    if (!primaryNotice) return;
+    await openNotice(primaryNotice);
+  };
+
+  useEffect(() => {
+    if (!notifOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (notifWrapRef.current && !notifWrapRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setNotifOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [notifOpen]);
 
   const handleNoticeDismissAll = async () => {
     try {
@@ -97,6 +127,7 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
       /* ignore */
     }
     setReferralNotices([]);
+    setNotifOpen(false);
   };
 
   return (
@@ -196,6 +227,66 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
       </aside>
 
       <div className={styles.main}>
+        <header className={styles.topBar} aria-label="Workspace">
+          <div className={styles.topBarLead}>
+            <p className={styles.topBarEyebrow}>Patient portal</p>
+            <p className={styles.topBarTitle}>{pageTitle}</p>
+          </div>
+          <div className={styles.topBarActions}>
+            <div className={styles.notifWrap} ref={notifWrapRef}>
+              <button
+                type="button"
+                className={styles.notifBtn}
+                aria-label={
+                  unreadCount > 0
+                    ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}`
+                    : 'Notifications — no new updates'
+                }
+                aria-expanded={notifOpen}
+                aria-haspopup="true"
+                onClick={() => setNotifOpen((o) => !o)}
+              >
+                <BellIcon size="sm" aria-hidden />
+                {unreadCount > 0 ? (
+                  <span className={styles.notifBadge}>{unreadCount > 9 ? '9+' : unreadCount}</span>
+                ) : null}
+              </button>
+              {notifOpen && (
+                <div className={styles.notifDropdown} role="dialog" aria-label="Notifications">
+                  {referralNotices.length === 0 ? (
+                    <p className={styles.notifEmpty}>You&apos;re all caught up.</p>
+                  ) : (
+                    <ul className={styles.notifList}>
+                      {referralNotices.map((n) => (
+                        <li key={n.id} className={styles.notifItem}>
+                          <div className={styles.notifItemText}>
+                            <p className={styles.notifItemTitle}>{n.title}</p>
+                            <p className={styles.notifItemBody}>
+                              {n.body.split('\n').find((line) => line.trim()) ?? n.body}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            className={styles.notifItemCta}
+                            onClick={() => void openNotice(n)}
+                          >
+                            Open
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {referralNotices.length > 1 ? (
+                    <button type="button" className={styles.notifDismissAll} onClick={() => void handleNoticeDismissAll()}>
+                      Mark all read
+                    </button>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
         {primaryNotice && (
           <div className={styles.referralNotifBanner} role="status" aria-live="polite">
             <span className={styles.referralNotifIcon} aria-hidden>
