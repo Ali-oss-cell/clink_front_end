@@ -1421,74 +1421,85 @@ button.toolButton {
 }
 
 .accountContent {
-  display: grid;
-  grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
-  gap: clamp(1rem, 2.5vw, 2rem);
   max-width: min(90rem, 100%);
   margin: 0 auto;
-  align-items: start;
 }
 
-.sidebar {
-  @include surface-primary-no-hover;
-  padding: 1.5rem;
-  height: fit-content;
-  position: sticky;
-  top: 2rem;
+// Single surface: nav | content — aligns tops/bottoms, no twin floating cards
+.accountPanel {
+  display: grid;
+  grid-template-columns: minmax(12.5rem, 15rem) minmax(0, 1fr);
+  align-items: stretch;
+  border-radius: var(--cs-radius-2xl);
+  overflow: hidden;
+  background: var(--cs-surface-lowest, #fff);
+  border: 1px solid color-mix(in srgb, var(--cs-outline, #70787c) 22%, transparent);
+  box-shadow: var(--cs-shadow-atmospheric, 0 12px 28px rgba(25, 28, 29, 0.08));
+}
+
+.accountNav {
+  padding: 0.65rem 0.45rem;
+  background: color-mix(in srgb, var(--cs-surface-low, #eef1f1) 92%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--cs-outline, #70787c) 18%, transparent);
 }
 
 .tabNavigation {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
   width: 100%;
 }
 
+// Native <button> — not tp-ui-btn default (was causing pill shadows per tab)
 .tabButton {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  font: inherit;
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  padding: 1rem 1.125rem;
+  gap: 0.65rem;
+  padding: 0.62rem 0.72rem;
   border: none;
-  background: transparent;
-  border-radius: var(--cs-radius-xl);
+  border-radius: var(--cs-radius-lg, 0.65rem);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
   text-align: left;
   width: 100%;
   color: $text-light;
   font-weight: 500;
   position: relative;
   justify-content: flex-start;
+  background: transparent;
+  box-shadow: none;
 
   &:hover {
-    background: rgba($patient-primary, 0.06);
+    background: color-mix(in srgb, var(--cs-primary, $patient-primary) 8%, transparent);
     color: $patient-primary;
-    transform: translateX(4px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cs-primary, $patient-primary);
+    outline-offset: 2px;
   }
 
   &.active {
-    background: linear-gradient(135deg, rgba($patient-primary, 0.1) 0%, rgba($patient-light, 0.12) 100%);
+    background: color-mix(in srgb, var(--cs-surface-lowest, #fff) 70%, var(--cs-primary, $patient-primary) 8%);
     color: $patient-primary;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba($patient-primary, 0.12);
-    
+    box-shadow: none;
+
     &::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 0.2rem;
+      bottom: 0.2rem;
       width: 3px;
-      height: 60%;
-      background: linear-gradient(135deg, $patient-primary 0%, $patient-light 100%);
-      border-radius: 0 3px 3px 0;
-    }
-    
-    &:hover {
-      background: linear-gradient(135deg, rgba($patient-primary, 0.12) 0%, rgba($patient-light, 0.15) 100%);
-      color: $patient-primary;
-      box-shadow: 0 4px 12px rgba($patient-primary, 0.18);
+      border-radius: 0 2px 2px 0;
+      background: linear-gradient(180deg, var(--cs-primary, $patient-primary), var(--cs-primary-container, $patient-light));
     }
   }
 }
@@ -1504,19 +1515,26 @@ button.toolButton {
 }
 
 .tabLabel {
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.4;
   flex: 1;
 }
 
-.mainContent {
-  @include surface-primary-no-hover;
-  padding: 2.5rem;
-  animation: fadeInUp 0.8s ease-out;
+.accountMain {
+  padding: 1.25rem 1.35rem 1.5rem;
+  min-width: 0;
+  background: var(--cs-surface-lowest, #fff);
+  display: flex;
+  flex-direction: column;
 }
 
 .tabContent {
-  max-width: 900px;
+  width: 100%;
+  max-width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .privacyWidgets {
@@ -3174,28 +3192,41 @@ button.submitButton {
 
 // Mobile Responsiveness
 @include mobile {
-  .accountContent {
+  .accountPanel {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
   }
 
-  .sidebar {
-    order: 2;
-  }
-
-  .mainContent {
-    order: 1;
+  .accountNav {
+    border-right: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--cs-outline, #70787c) 18%, transparent);
+    padding: 0.5rem 0.4rem;
   }
 
   .tabNavigation {
     flex-direction: row;
     overflow-x: auto;
-    gap: 0.5rem;
+    gap: 0.35rem;
+    padding-bottom: 0.15rem;
+    scrollbar-width: thin;
   }
 
   .tabButton {
     white-space: nowrap;
     min-width: fit-content;
+    flex-shrink: 0;
+
+    &.active::before {
+      display: none;
+    }
+
+    &.active {
+      border-bottom: 2px solid var(--cs-primary, $patient-primary);
+      border-radius: var(--cs-radius-lg, 0.65rem);
+    }
+  }
+
+  .accountMain {
+    padding: 1rem 1rem 1.25rem;
   }
 
   .formGrid, .infoGrid {
@@ -3282,37 +3313,70 @@ button.submitButton {
     max-width: 80rem;
   }
 
-  .sidebar {
-    background: var(--cs-surface-lowest);
-    border-radius: var(--cs-radius-2xl);
+  .accountPanel {
+    border-color: color-mix(in srgb, var(--cs-primary) 14%, transparent);
     box-shadow: var(--cs-shadow-atmospheric);
-    border: none;
   }
 
-  .mainContent {
+  .accountNav {
+    background: color-mix(in srgb, var(--cs-surface-low) 94%, var(--cs-primary) 4%);
+    border-right-color: color-mix(in srgb, var(--cs-primary) 12%, transparent);
+  }
+
+  .accountMain {
     background: var(--cs-surface-lowest);
-    border-radius: var(--cs-radius-2xl);
-    box-shadow: var(--cs-shadow-atmospheric);
-    border: none;
   }
 
   .tabButton {
     color: var(--cs-on-surface-variant);
 
     &:hover {
-      background: rgba(0, 52, 65, 0.06);
+      background: color-mix(in srgb, var(--cs-primary) 10%, transparent);
       color: var(--cs-primary);
     }
 
     &.active {
-      background: var(--cs-surface-low);
+      background: color-mix(in srgb, var(--cs-surface-lowest) 82%, var(--cs-primary) 10%);
       color: var(--cs-primary);
       box-shadow: none;
 
       &::before {
-        background: linear-gradient(135deg, var(--cs-primary) 0%, var(--cs-primary-container) 100%);
+        background: linear-gradient(180deg, var(--cs-primary), var(--cs-primary-container));
       }
     }
+  }
+
+  // Inner account panels: flat subdivisions (avoid nested heavy glass vs sidebar)
+  .accountMain .preferenceSection {
+    background: color-mix(in srgb, var(--cs-surface-low) 88%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cs-primary) 12%, transparent);
+    border-radius: var(--cs-radius-xl);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 1rem 1.15rem;
+  }
+
+  .accountMain .sectionTitle {
+    font-family: var(--cs-font-headline);
+    font-size: clamp(1.15rem, 2.2vw, 1.35rem);
+    font-weight: 700;
+    color: var(--cs-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--cs-outline) 28%, transparent);
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .accountMain .subsectionTitle {
+    font-family: var(--cs-font-headline);
+    font-size: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--cs-outline) 22%, transparent);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .serviceSelectionContainer {

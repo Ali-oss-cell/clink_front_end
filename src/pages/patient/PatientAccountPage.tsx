@@ -342,22 +342,24 @@ export const PatientAccountPage: React.FC = () => {
           </div>
 
           <div className={styles.accountContent}>
-            <div className={styles.sidebar}>
-              <nav className={styles.tabNavigation}>
-                {tabs.map((tab) => (
-                  <Button
-                    key={tab.id}
-                    className={`${styles.tabButton} ${activeTab === tab.id ? styles.active : ''}`}
-                    onClick={() => setActiveTab(tab.id as any)}
-                  >
-                    <span className={styles.tabIcon}>{tab.icon}</span>
-                    <span className={styles.tabLabel}>{tab.label}</span>
-                  </Button>
-                ))}
-              </nav>
-            </div>
+            <div className={styles.accountPanel}>
+              <aside className={styles.accountNav} aria-label="Account sections">
+                <nav className={styles.tabNavigation}>
+                  {tabs.map((tab) => (
+                    <button
+                      type="button"
+                      key={tab.id}
+                      className={`${styles.tabButton} ${activeTab === tab.id ? styles.active : ''}`}
+                      onClick={() => setActiveTab(tab.id as AccountTab)}
+                    >
+                      <span className={styles.tabIcon}>{tab.icon}</span>
+                      <span className={styles.tabLabel}>{tab.label}</span>
+                    </button>
+                  ))}
+                </nav>
+              </aside>
 
-            <div className={styles.mainContent}>
+            <div className={styles.accountMain}>
               {activeTab === 'personal' && (
                 <div className={styles.tabContent}>
                   <h2 className={styles.sectionTitle}>Personal Information</h2>
@@ -878,6 +880,7 @@ export const PatientAccountPage: React.FC = () => {
                   </div>
                 </div>
               )}
+            </div>
             </div>
           </div>
           </div>
