@@ -30,7 +30,7 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [referralNotices, setReferralNotices] = useState<PatientNotificationItem[]>([]);
+  const [patientNotices, setPatientNotices] = useState<PatientNotificationItem[]>([]);
   const [notifOpen, setNotifOpen] = useState(false);
   const notifWrapRef = useRef<HTMLDivElement>(null);
 
@@ -56,31 +56,30 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
     navigate('/');
   };
 
-  const refreshReferralNotifications = useCallback(async () => {
+  const refreshPatientNotifications = useCallback(async () => {
     try {
-      const data = await authService.listPatientNotifications({ unread: true, limit: 8 });
-      const referralOnly = data.results.filter((n) => n.kind.startsWith('referral_'));
-      setReferralNotices(referralOnly);
+      const data = await authService.listPatientNotifications({ unread: true, limit: 12 });
+      setPatientNotices(data.results);
     } catch {
       /* non-blocking */
     }
   }, []);
 
   useEffect(() => {
-    void refreshReferralNotifications();
-    const id = window.setInterval(() => void refreshReferralNotifications(), NOTIF_POLL_MS);
+    void refreshPatientNotifications();
+    const id = window.setInterval(() => void refreshPatientNotifications(), NOTIF_POLL_MS);
     const onVis = () => {
-      if (document.visibilityState === 'visible') void refreshReferralNotifications();
+      if (document.visibilityState === 'visible') void refreshPatientNotifications();
     };
     document.addEventListener('visibilitychange', onVis);
     return () => {
       window.clearInterval(id);
       document.removeEventListener('visibilitychange', onVis);
     };
-  }, [refreshReferralNotifications]);
+  }, [refreshPatientNotifications]);
 
-  const primaryNotice = referralNotices[0];
-  const unreadCount = referralNotices.length;
+  const primaryNotice = patientNotices[0];
+  const unreadCount = patientNotices.length;
 
   const openNotice = async (notice: PatientNotificationItem) => {
     try {
@@ -88,7 +87,7 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
     } catch {
       /* still navigate */
     }
-    setReferralNotices((prev) => prev.filter((n) => n.id !== notice.id));
+    setPatientNotices((prev) => prev.filter((n) => n.id !== notice.id));
     setNotifOpen(false);
     if (notice.cta_path) {
       navigate(notice.cta_path);
@@ -126,7 +125,7 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
     } catch {
       /* ignore */
     }
-    setReferralNotices([]);
+    setPatientNotices([]);
     setNotifOpen(false);
   };
 
@@ -228,61 +227,67 @@ export const PatientAppShell: React.FC<PatientAppShellProps> = ({ user, children
 
       <div className={styles.main}>
         <header className={styles.topBar} aria-label="Workspace">
-          <div className={styles.topBarLead}>
-            <p className={styles.topBarEyebrow}>Patient portal</p>
-            <p className={styles.topBarTitle}>{pageTitle}</p>
-          </div>
-          <div className={styles.topBarActions}>
-            <div className={styles.notifWrap} ref={notifWrapRef}>
-              <button
-                type="button"
-                className={styles.notifBtn}
-                aria-label={
-                  unreadCount > 0
-                    ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}`
-                    : 'Notifications — no new updates'
-                }
-                aria-expanded={notifOpen}
-                aria-haspopup="true"
-                onClick={() => setNotifOpen((o) => !o)}
-              >
-                <BellIcon size="sm" aria-hidden />
-                {unreadCount > 0 ? (
-                  <span className={styles.notifBadge}>{unreadCount > 9 ? '9+' : unreadCount}</span>
-                ) : null}
-              </button>
-              {notifOpen && (
-                <div className={styles.notifDropdown} role="dialog" aria-label="Notifications">
-                  {referralNotices.length === 0 ? (
-                    <p className={styles.notifEmpty}>You&apos;re all caught up.</p>
-                  ) : (
-                    <ul className={styles.notifList}>
-                      {referralNotices.map((n) => (
-                        <li key={n.id} className={styles.notifItem}>
-                          <div className={styles.notifItemText}>
-                            <p className={styles.notifItemTitle}>{n.title}</p>
-                            <p className={styles.notifItemBody}>
-                              {n.body.split('\n').find((line) => line.trim()) ?? n.body}
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            className={styles.notifItemCta}
-                            onClick={() => void openNotice(n)}
-                          >
-                            Open
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {referralNotices.length > 1 ? (
-                    <button type="button" className={styles.notifDismissAll} onClick={() => void handleNoticeDismissAll()}>
-                      Mark all read
-                    </button>
+          <div className={styles.topBarPill}>
+            <div className={styles.topBarLead}>
+              <p className={styles.topBarEyebrow}>Patient portal</p>
+              <p className={styles.topBarTitle}>{pageTitle}</p>
+            </div>
+            <div className={styles.topBarActions}>
+              <div className={styles.notifWrap} ref={notifWrapRef}>
+                <button
+                  type="button"
+                  className={styles.notifBtn}
+                  aria-label={
+                    unreadCount > 0
+                      ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}`
+                      : 'Notifications — no new updates'
+                  }
+                  aria-expanded={notifOpen}
+                  aria-haspopup="true"
+                  onClick={() => setNotifOpen((o) => !o)}
+                >
+                  <BellIcon size="md" aria-hidden />
+                  {unreadCount > 0 ? (
+                    <span className={styles.notifBadge}>{unreadCount > 9 ? '9+' : unreadCount}</span>
                   ) : null}
-                </div>
-              )}
+                </button>
+                {notifOpen && (
+                  <div className={styles.notifDropdown} role="dialog" aria-label="Notifications">
+                    {patientNotices.length === 0 ? (
+                      <p className={styles.notifEmpty}>You&apos;re all caught up.</p>
+                    ) : (
+                      <ul className={styles.notifList}>
+                        {patientNotices.map((n) => (
+                          <li key={n.id} className={styles.notifItem}>
+                            <div className={styles.notifItemText}>
+                              <p className={styles.notifItemTitle}>{n.title}</p>
+                              <p className={styles.notifItemBody}>
+                                {n.body.split('\n').find((line) => line.trim()) ?? n.body}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              className={styles.notifItemCta}
+                              onClick={() => void openNotice(n)}
+                            >
+                              Open
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {patientNotices.length > 1 ? (
+                      <button
+                        type="button"
+                        className={styles.notifDismissAll}
+                        onClick={() => void handleNoticeDismissAll()}
+                      >
+                        Mark all read
+                      </button>
+                    ) : null}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>
