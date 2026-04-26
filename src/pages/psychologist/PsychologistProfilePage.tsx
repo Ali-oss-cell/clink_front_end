@@ -276,7 +276,7 @@ export const PsychologistProfilePage: React.FC = () => {
                         id="profile-image-upload"
                         accept="image/*"
                         onChange={handleImageUpload}
-                        style={{ display: 'none' }}
+                        className={styles.hiddenFileInput}
                         disabled={uploadingImage}
                       />
                       <label htmlFor="profile-image-upload" className={styles.uploadButton}>
@@ -291,7 +291,7 @@ export const PsychologistProfilePage: React.FC = () => {
                       id="profile-image-upload"
                       accept="image/*"
                       onChange={handleImageUpload}
-                      style={{ display: 'none' }}
+                      className={styles.hiddenFileInput}
                       disabled={uploadingImage}
                     />
                     <label htmlFor="profile-image-upload" className={styles.placeholderUploadButton}>
@@ -789,20 +789,20 @@ export const PsychologistProfilePage: React.FC = () => {
             {/* Action Buttons */}
             <div className={styles.profileActions}>
               {!isEditing ? (
-                <Button className={styles.editButton} onClick={handleEditClick}>
+                <Button className={styles.secondaryButton} onClick={handleEditClick}>
                   Edit Profile
                 </Button>
               ) : (
                 <>
                   <Button 
-                    className={styles.saveButton} 
+                    className={styles.primaryButton} 
                     onClick={handleSaveProfile}
                     disabled={saving}
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </Button>
                   <Button 
-                    className={styles.cancelButton} 
+                    className={styles.secondaryButton} 
                     onClick={handleCancelEdit}
                     disabled={saving}
                   >

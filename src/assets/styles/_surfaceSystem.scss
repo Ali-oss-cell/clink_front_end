@@ -198,3 +198,73 @@
     flex-shrink: 0;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Role shared header + status primitives (Wave 1)
+// ---------------------------------------------------------------------------
+
+@mixin role-page-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+
+  h1,
+  .title {
+    margin: 0 0 0.4rem;
+    font-size: clamp(1.45rem, 2.8vw, 2.1rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--cs-on-surface, #{$text-dark});
+    font-family: var(--cs-font-headline, #{$font-family-base});
+  }
+
+  p,
+  .subtitle {
+    margin: 0;
+    color: var(--cs-on-surface-variant, #{$text-light});
+    font-size: 0.96rem;
+    line-height: 1.5;
+  }
+}
+
+@mixin role-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.85rem;
+  color: var(--cs-on-surface, #{$text-dark});
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+@mixin role-status-chip($tone: neutral) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.24rem 0.7rem;
+  border-radius: var(--cs-radius-xl, 0.75rem);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+
+  @if $tone == success {
+    background: color-mix(in srgb, var(--cs-primary) 15%, var(--cs-surface-lowest) 85%);
+    color: color-mix(in srgb, var(--cs-primary) 76%, #0b3a22 24%);
+    border-color: color-mix(in srgb, var(--cs-primary) 32%, transparent);
+  } @else if $tone == warning {
+    background: color-mix(in srgb, var(--cs-secondary-container) 65%, var(--cs-surface-lowest) 35%);
+    color: var(--cs-on-secondary-container, #{$text-dark});
+    border-color: color-mix(in srgb, var(--cs-secondary) 30%, transparent);
+  } @else if $tone == danger {
+    background: color-mix(in srgb, var(--cs-error) 14%, var(--cs-surface-lowest) 86%);
+    color: color-mix(in srgb, var(--cs-error) 76%, #5a1111 24%);
+    border-color: color-mix(in srgb, var(--cs-error) 32%, transparent);
+  } @else {
+    background: color-mix(in srgb, var(--cs-surface-low) 76%, var(--cs-outline) 24%);
+    color: var(--cs-on-surface-variant, #{$text-light});
+    border-color: color-mix(in srgb, var(--cs-outline) 35%, transparent);
+  }
+}

@@ -15,6 +15,7 @@ import {
   BriefcaseIcon
 } from '../../utils/icons';
 import styles from './ManagerPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 
 export const PracticeManagerDashboardPage: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<PracticeManagerDashboard | null>(null);
@@ -143,7 +144,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className="container">
             <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h3>
+              <h3><WarningIcon size="md" className={styles.inlineIconLg} /> Error Loading Dashboard</h3>
               <p>{error}</p>
             </div>
           </div>
@@ -165,15 +166,16 @@ export const PracticeManagerDashboardPage: React.FC = () => {
       className={styles.managerLayout}
     >
       <div className={styles.dashboardContainer}>
-        <div className="container">
-          <div ref={headerRef} className={styles.dashboardHeader}>
-            <h1 className={styles.welcomeTitle}>Welcome, {user?.first_name || 'Manager'}!</h1>
-            <p className={styles.welcomeSubtitle}>
+        <div className={shell.wrap}>
+          <header ref={headerRef} className={`${shell.pageHeader} ${styles.dashboardHeader}`}>
+            <h1 className={shell.welcomeTitle}>Welcome, {user?.first_name || 'Manager'}!</h1>
+            <p className={shell.welcomeSubtitle}>
               Practice overview and management dashboard
             </p>
-          </div>
+          </header>
 
           {/* Main Stats Cards */}
+          <p className={styles.sectionGroupTitle}>Overview</p>
           <div ref={statsGridRef} className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}><CalendarIcon size="xl" /></div>
@@ -247,10 +249,16 @@ export const PracticeManagerDashboardPage: React.FC = () => {
             </div>
           </div>
 
+          <p className={styles.sectionGroupTitle}>Operations</p>
           <div ref={dashboardGridRef} className={styles.dashboardGrid}>
             {/* Recent Appointments */}
             <div className={styles.dashboardCard}>
-              <h3><ClipboardIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Appointments</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <ClipboardIcon size="lg" />
+                </span>
+                Recent appointments
+              </h3>
               {dashboardData.recent_appointments.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No recent appointments</p>
@@ -276,7 +284,12 @@ export const PracticeManagerDashboardPage: React.FC = () => {
 
             {/* Upcoming Appointments */}
             <div className={styles.dashboardCard}>
-              <h3><ClockIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Upcoming Appointments</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <ClockIcon size="lg" />
+                </span>
+                Upcoming appointments
+              </h3>
               {dashboardData.upcoming_appointments.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No upcoming appointments</p>
@@ -302,7 +315,12 @@ export const PracticeManagerDashboardPage: React.FC = () => {
 
             {/* Top Psychologists */}
             <div className={styles.dashboardCard}>
-              <h3><StarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Top Psychologists</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <StarIcon size="lg" />
+                </span>
+                Top psychologists
+              </h3>
               {dashboardData.top_psychologists.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No psychologist data available</p>
@@ -317,7 +335,7 @@ export const PracticeManagerDashboardPage: React.FC = () => {
                         {psychologist.rating && (
                           <>
                             <span>•</span>
-                            <span><StarIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> {psychologist.rating.toFixed(1)}</span>
+                            <span><StarIcon size="sm" className={styles.inlineIconSm} /> {psychologist.rating.toFixed(1)}</span>
                           </>
                         )}
                       </div>
@@ -329,7 +347,12 @@ export const PracticeManagerDashboardPage: React.FC = () => {
 
             {/* Financial Summary */}
             <div className={styles.dashboardCard}>
-              <h3><BriefcaseIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Financial Summary</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <BriefcaseIcon size="lg" />
+                </span>
+                Financial summary
+              </h3>
               <div className={styles.financialSummary}>
                 <div className={styles.financialItem}>
                   <span className={styles.financialLabel}>Today</span>

@@ -127,16 +127,16 @@ export const AdminDashboardPage: React.FC = () => {
     });
   };
 
-  const getStatusColor = (status: string) => {
+  const getSystemHealthTone = (status: string) => {
     switch (status.toLowerCase()) {
       case 'good':
-        return '#2e7d42';
+        return 'Good';
       case 'warning':
-        return '#d4841a';
+        return 'Warning';
       case 'error':
-        return '#c0392b';
+        return 'Error';
       default:
-        return '#7a7b7a';
+        return 'Neutral';
     }
   };
 
@@ -160,7 +160,7 @@ export const AdminDashboardPage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className={shell.wrap}>
             <div className={styles.errorState}>
-              <h3><WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Error Loading Dashboard</h3>
+              <h3><WarningIcon size="md" className={styles.inlineIconLg} /> Error Loading Dashboard</h3>
               <p>{error}</p>
             </div>
           </div>
@@ -174,6 +174,7 @@ export const AdminDashboardPage: React.FC = () => {
   }
 
   const { stats, system_health } = dashboardData;
+  const healthTone = getSystemHealthTone(system_health.status);
 
   return (
     <Layout 
@@ -192,11 +193,10 @@ export const AdminDashboardPage: React.FC = () => {
           <div className={styles.systemHealthCard}>
             <div className={styles.healthStatus}>
               <div 
-                className={styles.healthIndicator}
-                style={{ backgroundColor: getStatusColor(system_health.status) }}
+                className={`${styles.healthIndicator} ${styles[`healthIndicator${healthTone}`]}`}
               ></div>
               <div>
-                <h3>System Status: <span style={{ color: getStatusColor(system_health.status) }}>
+                <h3>System Status: <span className={styles[`healthStatus${healthTone}`]}>
                   {system_health.status.toUpperCase()}
                 </span></h3>
                 <p>Verified Users: {system_health.verified_users_percentage.toFixed(1)}%</p>
@@ -205,6 +205,7 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
 
           {/* Main Stats Cards */}
+          <p className={styles.sectionGroupTitle}>Overview</p>
           <div ref={statsGridRef} className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}><UsersIcon size="xl" /></div>
@@ -294,10 +295,16 @@ export const AdminDashboardPage: React.FC = () => {
             </div>
           </div>
 
+          <p className={styles.sectionGroupTitle}>Operations</p>
           <div ref={dashboardGridRef} className={styles.dashboardGrid}>
             {/* User Statistics */}
             <div className={styles.dashboardCard}>
-              <h3><UsersIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> User Statistics</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <UsersIcon size="lg" />
+                </span>
+                User statistics
+              </h3>
               <div className={styles.statisticsList}>
                 <div className={styles.statisticItem}>
                   <span className={styles.statisticLabel}>Total Patients</span>
@@ -320,7 +327,12 @@ export const AdminDashboardPage: React.FC = () => {
 
             {/* Appointment Statistics */}
             <div className={styles.dashboardCard}>
-              <h3><CalendarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Appointment Statistics</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <CalendarIcon size="lg" />
+                </span>
+                Appointment statistics
+              </h3>
               <div className={styles.statisticsList}>
                 <div className={styles.statisticItem}>
                   <span className={styles.statisticLabel}>Total</span>
@@ -343,7 +355,12 @@ export const AdminDashboardPage: React.FC = () => {
 
             {/* Financial Overview */}
             <div className={styles.dashboardCard}>
-              <h3><DollarIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Financial Overview</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <DollarIcon size="lg" />
+                </span>
+                Financial overview
+              </h3>
               <div className={styles.financialSummary}>
                 <div className={styles.financialItem}>
                   <span className={styles.financialLabel}>Total Revenue</span>
@@ -362,7 +379,12 @@ export const AdminDashboardPage: React.FC = () => {
 
             {/* Recent Users */}
             <div className={styles.dashboardCard}>
-              <h3><UserPlusIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Recent Users</h3>
+              <h3 className={styles.sectionHeading}>
+                <span className={styles.sectionHeadingIcon} aria-hidden>
+                  <UserPlusIcon size="lg" />
+                </span>
+                Recent users
+              </h3>
               {dashboardData.recent_users.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No recent users</p>
@@ -381,12 +403,12 @@ export const AdminDashboardPage: React.FC = () => {
                         <span className={user.is_verified ? styles.verified : styles.unverified}>
                           {user.is_verified ? (
                             <>
-                              <CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                              <CheckCircleIcon size="xs" className={styles.inlineIconXs} />
                               Verified
                             </>
                           ) : (
                             <>
-                              <WarningIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                              <WarningIcon size="xs" className={styles.inlineIconXs} />
                               Unverified
                             </>
                           )}
@@ -403,6 +425,7 @@ export const AdminDashboardPage: React.FC = () => {
 
           {/* Quick Actions / Navigation Cards */}
           <div ref={quickActionsRef} className={styles.quickActionsGrid}>
+            <p className={styles.sectionGroupTitle}>Actions</p>
             <h2 className={styles.quickActionsTitle}>Quick Actions</h2>
             <div className={styles.quickActionsCards}>
               <div 

@@ -8,6 +8,7 @@ import { Input } from '../../components/ui/input';
 import { Select } from '../../components/ui/select';
 import { Badge } from '../../components/ui/badge';
 import styles from './AdminPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 
 export const AdminResourcesPage: React.FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -334,10 +335,10 @@ export const AdminResourcesPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
       <div className={styles.dashboardContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1 className={styles.welcomeTitle}>Resource Management</h1>
-            <p className={styles.welcomeSubtitle}>Create, edit, and manage mental health resources</p>
+        <div className={shell.wrap}>
+          <div className={`${styles.pageHeader} ${shell.pageHeader}`}>
+            <h1 className={shell.welcomeTitle}>Resource management</h1>
+            <p className={shell.welcomeSubtitle}>Create, edit, and maintain patient-facing resource content.</p>
           </div>
 
           {error && (
@@ -477,12 +478,13 @@ export const AdminResourcesPage: React.FC = () => {
           {showCreateModal && (
             <div className={styles.modalOverlay} onClick={() => setShowCreateModal(false)}>
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div className={styles.modalHeaderInline}>
                   <h2>Create New Resource</h2>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
+                    className={styles.modalCloseGhost}
                     onClick={() => setShowCreateModal(false)}
                   >
                     <CloseIcon size="sm" />
@@ -600,42 +602,25 @@ export const AdminResourcesPage: React.FC = () => {
                         type="file"
                         accept="image/*"
                         onChange={(e) => handleImageChange(e, false)}
-                        style={{ marginBottom: '0.5rem' }}
+                        className={styles.fileInput}
                       />
                       {imagePreview && (
-                        <div style={{ marginTop: '0.5rem', position: 'relative', display: 'inline-block' }}>
+                        <div className={styles.previewWrap}>
                           <img
                             src={imagePreview}
                             alt="Preview"
-                            style={{
-                              maxWidth: '200px',
-                              maxHeight: '200px',
-                              borderRadius: '8px',
-                              border: '1px solid #c8c5c0'
-                            }}
+                            className={styles.previewImage}
                           />
                           <button
                             type="button"
                             onClick={() => removeImage(false)}
-                            style={{
-                              position: 'absolute',
-                              top: '-8px',
-                              right: '-8px',
-                              background: '#c0392b',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '50%',
-                              width: '24px',
-                              height: '24px',
-                              cursor: 'pointer',
-                              fontSize: '14px'
-                            }}
+                            className={styles.previewRemove}
                           >
                             <CloseIcon size="sm" />
                           </button>
                         </div>
                       )}
-                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                      <small className={styles.formHint}>
                         Upload an image file (JPEG, PNG, GIF, WebP)
                       </small>
                     </div>
@@ -646,33 +631,24 @@ export const AdminResourcesPage: React.FC = () => {
                         type="file"
                         accept="application/pdf"
                         onChange={(e) => handlePdfChange(e, false)}
-                        style={{ marginBottom: '0.5rem' }}
+                        className={styles.fileInput}
                       />
                       {pdfFile && (
-                        <div style={{ marginTop: '0.5rem' }}>
-                          <span style={{ color: '#2e7d42', fontSize: '0.875rem' }}>
-                            <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                        <div className={styles.fileMetaRow}>
+                          <span className={styles.fileMetaLabel}>
+                            <DocumentIcon size="sm" className={styles.inlineIconXs} />
                             {pdfFile.name}
                           </span>
                           <button
                             type="button"
                             onClick={() => removePdf(false)}
-                            style={{
-                              marginLeft: '0.5rem',
-                              background: '#c0392b',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              padding: '0.25rem 0.5rem',
-                              cursor: 'pointer',
-                              fontSize: '0.75rem'
-                            }}
+                            className={styles.inlineActionBtn}
                           >
                             Remove
                           </button>
                         </div>
                       )}
-                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                      <small className={styles.formHint}>
                         Upload a PDF file
                       </small>
                     </div>
@@ -687,7 +663,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setCreateForm({ ...createForm, thumbnail_url: e.target.value || undefined })}
                       placeholder="https://example.com/image.jpg"
                     />
-                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                    <small className={styles.formHint}>
                       Use this if you want to use an external image URL instead of uploading a file
                     </small>
                   </div>
@@ -700,7 +676,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setCreateForm({ ...createForm, media_url: e.target.value || undefined })}
                       placeholder="https://www.youtube.com/watch?v=... or https://soundcloud.com/..."
                     />
-                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                    <small className={styles.formHint}>
                       For video/audio resources: YouTube, Vimeo, SoundCloud, or direct media links
                     </small>
                   </div>
@@ -713,7 +689,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setCreateForm({ ...createForm, download_url: e.target.value || undefined })}
                       placeholder="https://example.com/document.pdf"
                     />
-                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                    <small className={styles.formHint}>
                       Use this if you want to use an external download URL instead of uploading a PDF file
                     </small>
                   </div>
@@ -759,7 +735,7 @@ export const AdminResourcesPage: React.FC = () => {
           {showEditModal && selectedResource && (
             <div className={styles.modalOverlay} onClick={() => setShowEditModal(false)}>
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div className={styles.modalHeaderInline}>
                   <h2>Edit Resource</h2>
                   <Button
                     type="button"
@@ -879,78 +855,44 @@ export const AdminResourcesPage: React.FC = () => {
                         type="file"
                         accept="image/*"
                         onChange={(e) => handleImageChange(e, true)}
-                        style={{ marginBottom: '0.5rem' }}
+                        className={styles.fileInput}
                       />
                       {editImagePreview && (
-                        <div style={{ marginTop: '0.5rem', position: 'relative', display: 'inline-block' }}>
+                        <div className={styles.previewWrap}>
                           <img
                             src={editImagePreview}
                             alt="Preview"
-                            style={{
-                              maxWidth: '200px',
-                              maxHeight: '200px',
-                              borderRadius: '8px',
-                              border: '1px solid #c8c5c0'
-                            }}
+                            className={styles.previewImage}
                           />
                           <button
                             type="button"
                             onClick={() => removeImage(true)}
-                            style={{
-                              position: 'absolute',
-                              top: '-8px',
-                              right: '-8px',
-                              background: '#c0392b',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '50%',
-                              width: '24px',
-                              height: '24px',
-                              cursor: 'pointer',
-                              fontSize: '14px'
-                            }}
+                            className={styles.previewRemove}
                           >
                             <CloseIcon size="sm" />
                           </button>
                         </div>
                       )}
                       {existingImageUrl && !editImagePreview && (
-                        <div style={{ marginTop: '0.5rem', position: 'relative', display: 'inline-block' }}>
+                        <div className={styles.previewWrap}>
                           <img
                             src={existingImageUrl}
                             alt="Current"
-                            style={{
-                              maxWidth: '200px',
-                              maxHeight: '200px',
-                              borderRadius: '8px',
-                              border: '1px solid #c8c5c0'
-                            }}
+                            className={styles.previewImage}
                           />
                           <button
                             type="button"
                             onClick={() => removeImage(true)}
-                            style={{
-                              position: 'absolute',
-                              top: '-8px',
-                              right: '-8px',
-                              background: '#c0392b',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '50%',
-                              width: '24px',
-                              height: '24px',
-                              cursor: 'pointer',
-                              fontSize: '14px'
-                            }}
+                            className={styles.previewRemove}
                           >
                             <CloseIcon size="sm" />
                           </button>
-                          <small style={{ display: 'block', marginTop: '0.25rem', color: '#7a7b7a' }}>
+                          <small className={styles.formHint}>
                             Current image
                           </small>
                         </div>
                       )}
-                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                      <small className={styles.formHint}>
                         Upload a new image or remove existing one
                       </small>
                     </div>
@@ -961,62 +903,44 @@ export const AdminResourcesPage: React.FC = () => {
                         type="file"
                         accept="application/pdf"
                         onChange={(e) => handlePdfChange(e, true)}
-                        style={{ marginBottom: '0.5rem' }}
+                        className={styles.fileInput}
                       />
                       {editPdfFile && (
-                        <div style={{ marginTop: '0.5rem' }}>
-                          <span style={{ color: '#2e7d42', fontSize: '0.875rem' }}>
-                            <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                        <div className={styles.fileMetaRow}>
+                          <span className={styles.fileMetaLabel}>
+                            <DocumentIcon size="sm" className={styles.inlineIconXs} />
                             {editPdfFile.name}
                           </span>
                           <button
                             type="button"
                             onClick={() => removePdf(true)}
-                            style={{
-                              marginLeft: '0.5rem',
-                              background: '#c0392b',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              padding: '0.25rem 0.5rem',
-                              cursor: 'pointer',
-                              fontSize: '0.75rem'
-                            }}
+                            className={styles.inlineActionBtn}
                           >
                             Remove
                           </button>
                         </div>
                       )}
                       {existingPdfUrl && !editPdfFile && (
-                        <div style={{ marginTop: '0.5rem' }}>
+                        <div className={styles.fileMetaRow}>
                           <a
                             href={existingPdfUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: '#6e8c6a', fontSize: '0.875rem', textDecoration: 'none' }}
+                            className={styles.fileMetaLink}
                           >
-                            <DocumentIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                            <DocumentIcon size="sm" className={styles.inlineIconXs} />
                             View current PDF
                           </a>
                           <button
                             type="button"
                             onClick={() => removePdf(true)}
-                            style={{
-                              marginLeft: '0.5rem',
-                              background: '#c0392b',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              padding: '0.25rem 0.5rem',
-                              cursor: 'pointer',
-                              fontSize: '0.75rem'
-                            }}
+                            className={styles.inlineActionBtn}
                           >
                             Remove
                           </button>
                         </div>
                       )}
-                      <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                      <small className={styles.formHint}>
                         Upload a new PDF or remove existing one
                       </small>
                     </div>
@@ -1031,7 +955,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setEditForm({ ...editForm, thumbnail_url: e.target.value || undefined })}
                       placeholder="https://example.com/image.jpg"
                     />
-                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                    <small className={styles.formHint}>
                       Use this if you want to use an external image URL instead of uploading a file
                     </small>
                   </div>
@@ -1044,7 +968,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setEditForm({ ...editForm, media_url: e.target.value || undefined })}
                       placeholder="https://www.youtube.com/watch?v=... or https://soundcloud.com/..."
                     />
-                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                    <small className={styles.formHint}>
                       For video/audio resources: YouTube, Vimeo, SoundCloud, or direct media links
                     </small>
                   </div>
@@ -1057,7 +981,7 @@ export const AdminResourcesPage: React.FC = () => {
                       onChange={(e) => setEditForm({ ...editForm, download_url: e.target.value || undefined })}
                       placeholder="https://example.com/document.pdf"
                     />
-                    <small style={{ color: '#7a7b7a', display: 'block', marginTop: '0.25rem' }}>
+                    <small className={styles.formHint}>
                       Use this if you want to use an external download URL instead of uploading a PDF file
                     </small>
                   </div>

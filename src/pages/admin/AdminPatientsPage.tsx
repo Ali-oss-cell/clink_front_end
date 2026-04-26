@@ -4,6 +4,7 @@ import { authService } from '../../services/api/auth';
 import { adminService, type Patient } from '../../services/api/admin';
 import { CloseIcon } from '../../utils/icons';
 import styles from './AdminPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 
@@ -68,7 +69,7 @@ export const AdminPatientsPage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
         <div className={styles.pageContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.loadingState}>
               <p>Loading patients...</p>
             </div>
@@ -81,9 +82,14 @@ export const AdminPatientsPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
       <div className={styles.pageContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1>All Patients</h1>
+        <div className={shell.wrap}>
+          <div className={`${styles.pageHeader} ${shell.pageHeader}`}>
+            <div>
+              <h1 className={shell.welcomeTitle}>All patients</h1>
+              <p className={shell.welcomeSubtitle}>
+                Search and review patient records ({patients.length} loaded).
+              </p>
+            </div>
             <div className={styles.statsSummary}>
               <span>Total: {patients.length}</span>
             </div>
@@ -92,7 +98,9 @@ export const AdminPatientsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <Button onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setError(null)} aria-label="Dismiss error">
+                <CloseIcon size="sm" />
+              </Button>
             </div>
           )}
 

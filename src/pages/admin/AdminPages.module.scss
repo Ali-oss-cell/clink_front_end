@@ -4,6 +4,7 @@
 @use '../../assets/styles/buttonSystem' as btn;
 @use '../../assets/styles/surfaceSystem' as *;
 @use '../../assets/styles/formSystem' as *;
+@use '../../assets/styles/patientPageChrome' as pchrome;
 
 // Admin Layout
 .adminLayout {
@@ -86,40 +87,56 @@
 }
 
 .dashboardHeader {
-  margin-bottom: 2rem;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-
-  &.isVisible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  @include role-page-header;
+  margin-bottom: 1.25rem;
 }
 
 .welcomeTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: $text-dark;
-  margin: 0 0 0.5rem 0;
   color: var(--cs-primary);
 }
 
 .welcomeSubtitle {
-  font-size: 1.1rem;
-  color: $text-light;
-  margin: 0;
+  color: var(--cs-on-surface-variant);
+}
+
+.inlineIconLg {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.inlineIconXs {
+  margin-right: 0.25rem;
+  vertical-align: middle;
+}
+
+.formHint {
+  color: var(--cs-on-surface-variant);
+  font-size: 0.875rem;
+}
+
+.requiredAsterisk {
+  color: var(--cs-error);
+}
+
+.infoCallout {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: color-mix(in srgb, var(--cs-primary) 14%, white 86%);
+  border: 1px solid color-mix(in srgb, var(--cs-primary) 28%, transparent);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--cs-on-surface-variant);
+}
+
+.infoCalloutSpaced {
+  margin-top: 1rem;
 }
 
 // System Health Card
 .systemHealthCard {
-  background: $background-white;
-  border-radius: $border-radius-lg;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: var(--cs-shadow-atmospheric);
-  border: 1px solid $border-light;
+  @include surface-compact;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .healthStatus {
@@ -147,6 +164,38 @@
   animation: pulse 2s infinite;
 }
 
+.healthIndicatorGood {
+  background: color-mix(in srgb, var(--cs-primary) 72%, #1f5b34 28%);
+}
+
+.healthIndicatorWarning {
+  background: color-mix(in srgb, var(--cs-secondary) 72%, #8a5a1d 28%);
+}
+
+.healthIndicatorError {
+  background: color-mix(in srgb, var(--cs-error) 76%, #7c2020 24%);
+}
+
+.healthIndicatorNeutral {
+  background: color-mix(in srgb, var(--cs-outline) 68%, #666 32%);
+}
+
+.healthStatusGood {
+  color: color-mix(in srgb, var(--cs-primary) 72%, #1f5b34 28%);
+}
+
+.healthStatusWarning {
+  color: color-mix(in srgb, var(--cs-secondary) 76%, #8a5a1d 24%);
+}
+
+.healthStatusError {
+  color: color-mix(in srgb, var(--cs-error) 78%, #7c2020 22%);
+}
+
+.healthStatusNeutral {
+  color: var(--cs-on-surface-variant, $text-light);
+}
+
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -160,30 +209,22 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0 2rem 0;
-  padding: 0 2rem;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0 1rem;
 }
 
 .statCard {
-  background: $background-white;
-  border-radius: $border-radius-lg;
-  padding: 2rem;
-  box-shadow: var(--cs-shadow-atmospheric);
+  @include surface-compact-interactive;
+  padding: 1.15rem;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  border: 1px solid var(--cs-glass-border);
+  gap: 0.85rem;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
   position: relative;
   overflow: hidden;
-  opacity: 0;
-  transform: translateY(24px);
-  
-  &.isVisible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  opacity: 1;
+  transform: none;
   
   &::before {
     content: '';
@@ -198,7 +239,7 @@
   }
   
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-1px);
     box-shadow: var(--cs-glass-shadow);
     border-color: var(--cs-primary);
     
@@ -212,7 +253,7 @@
   }
   
   &.isVisible:hover {
-    transform: translateY(-3px);
+    transform: translateY(-1px);
   }
 }
 
@@ -253,17 +294,14 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
-  margin: 1.5rem 0 2rem 0;
-  padding: 0 2rem;
+  margin: 1rem 0;
+  padding: 0 1rem;
 }
 
 .secondaryStatCard {
-  background: $background-white;
-  border-radius: $border-radius;
+  @include surface-compact;
   padding: 1.25rem;
-  box-shadow: var(--cs-shadow-atmospheric);
-  border: 1px solid $border-light;
-  transition: all 0.3s ease;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -289,43 +327,50 @@
 .dashboardGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .dashboardCard {
-  background: $background-white;
-  border-radius: $border-radius-lg;
-  padding: 2rem;
-  box-shadow: var(--cs-shadow-atmospheric);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid $border-light;
-  opacity: 0;
-  transform: translateY(50px);
-
-  &.isVisible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  @include surface-compact-interactive;
+  padding: 1.15rem;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  opacity: 1;
+  transform: none;
 
   &:hover {
-    transform: translateY(-6px) scale(1.02);
+    transform: translateY(-1px);
     box-shadow: var(--cs-glass-shadow);
   }
   
   &.isVisible:hover {
-    transform: translateY(-6px) scale(1.02);
+    transform: translateY(-1px);
   }
   
   h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: $text-dark;
-    margin: 0 0 1.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    margin: 0 0 1rem;
   }
+}
+
+.sectionHeading {
+  @include role-section-heading;
+  margin-bottom: 1rem;
+}
+
+.sectionHeadingIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cs-primary, $text-dark);
+}
+
+.sectionGroupTitle {
+  margin: 0.2rem 0 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--cs-on-surface-variant, $text-light);
 }
 
 // Statistics List
@@ -531,22 +576,37 @@
 
 // Page Container (for all admin pages)
 .pageContainer {
-  padding: 2rem 0;
+  padding: 1rem 0 0.9rem;
   min-height: calc(100vh - 200px);
+
+  > :global(.container) {
+    @include pchrome.patient-chrome-wrap;
+  }
 }
 
 .pageHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  align-items: flex-end;
+  gap: 0.8rem 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
   
   h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: $text-dark;
+    font-family: var(--cs-font-headline, $font-family-base);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
     margin: 0;
-    color: var(--cs-primary);
+    color: var(--cs-primary, $text-dark);
+  }
+
+  p {
+    margin: 0;
+    max-width: 40rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--cs-on-surface-variant, $text-light);
   }
 }
 
@@ -786,23 +846,11 @@
 
 // Status Badges
 .statusBadge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: capitalize;
+  @include role-status-chip(neutral);
 }
 
 .roleBadge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: capitalize;
+  @include role-status-chip(neutral);
 }
 
 .sessionTypeBadge {
@@ -1096,6 +1144,79 @@
   }
 }
 
+.modalHeaderInline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modalCloseGhost {
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0;
+  color: var(--cs-on-surface-variant);
+}
+
+.fileInput {
+  margin-bottom: 0.5rem;
+}
+
+.previewWrap {
+  margin-top: 0.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.previewImage {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  border: 1px solid var(--cs-outline-variant);
+}
+
+.previewRemove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 0;
+  border-radius: 999px;
+}
+
+.fileMetaRow {
+  margin-top: 0.5rem;
+}
+
+.fileMetaLabel {
+  color: var(--cs-success);
+  font-size: 0.875rem;
+}
+
+.fileMetaLink {
+  color: var(--cs-primary);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.fileMetaLink:hover {
+  text-decoration: underline;
+}
+
+.inlineActionBtn {
+  margin-left: 0.5rem;
+  background: var(--cs-error);
+  color: var(--cs-on-error);
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
 .modalHeader {
   display: flex;
   justify-content: space-between;
@@ -1116,8 +1237,9 @@
     color: $text-light;
     cursor: pointer;
     padding: 0;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1627,33 +1749,23 @@
 
 // Status Badge Styles for Deletion Requests
 .statusPending {
-  background: rgba($warning-orange, 0.15);
-  color: $warning-orange;
-  border: 1px solid rgba($warning-orange, 0.35);
+  @include role-status-chip(warning);
 }
 
 .statusApproved {
-  background: rgba($success-green, 0.15);
-  color: $success-green;
-  border: 1px solid rgba($success-green, 0.35);
+  @include role-status-chip(success);
 }
 
 .statusRejected {
-  background: rgba($error-red, 0.15);
-  color: $error-red;
-  border: 1px solid rgba($error-red, 0.35);
+  @include role-status-chip(danger);
 }
 
 .statusCompleted {
-  background: rgba($border-medium, 0.2);
-  color: $text-light;
-  border: 1px solid rgba($border-medium, 0.35);
+  @include role-status-chip(neutral);
 }
 
 .statusCancelled {
-  background: rgba($border-medium, 0.2);
-  color: $text-light;
-  border: 1px solid rgba($border-medium, 0.35);
+  @include role-status-chip(neutral);
 }
 
 // Filter Section

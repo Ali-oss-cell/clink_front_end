@@ -340,10 +340,10 @@ export const PsychologistSchedulePage: React.FC = () => {
         <div className={styles.dashboardContainer}>
           <div className={shell.wrap}>
             <div className={styles.errorState}>
-              <h2><WarningIcon size="lg" style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Unable to Load Schedule</h2>
+              <h2><WarningIcon size="lg" className={styles.inlineIcon} /> Unable to Load Schedule</h2>
               <p>{error}</p>
               <Button className={styles.retryButton} onClick={fetchAppointments}>
-                <EditIcon size="sm" style={{ marginRight: '6px' }} />
+                <EditIcon size="sm" className={styles.inlineIcon} />
                 Retry
               </Button>
             </div>
@@ -551,7 +551,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                       {/* Notes Section */}
                       {appointment.notes && (
                         <div className={styles.notesSection}>
-                          <span className={styles.notesLabel}><NotesIcon size="sm" style={{ marginRight: '4px', verticalAlign: 'middle' }} /> Notes</span>
+                          <span className={styles.notesLabel}><NotesIcon size="sm" className={styles.inlineIcon} /> Notes</span>
                           <p className={styles.notesText}>{appointment.notes}</p>
                         </div>
                       )}
@@ -598,7 +598,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                               : 'Join video session'
                           }
                         >
-                          <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                          <VideoIcon size="sm" className={styles.inlineIcon} />
                           {
                             appointment.can_join_session === true || 
                             (appointment.can_join_session === undefined && videoCallService.canJoinNow(appointment))
@@ -609,10 +609,10 @@ export const PsychologistSchedulePage: React.FC = () => {
                       )}
                       {appointment.status !== 'completed' && appointment.status !== 'cancelled' && (
                         <Button
-                          className={styles.successButton}
+                          className={styles.primaryButton}
                           onClick={() => handleCompleteSession(appointment.id)}
                         >
-                          <CheckCircleIcon size="sm" style={{ marginRight: '6px' }} />
+                          <CheckCircleIcon size="sm" className={styles.inlineIcon} />
                           Complete Session
                         </Button>
                       )}
@@ -659,9 +659,17 @@ export const PsychologistSchedulePage: React.FC = () => {
                       key={index} 
                       className={`${styles.calendarDay} ${
                         !day.isCurrentMonth ? styles.calendarDayOtherMonth : ''
-                      } ${day.isToday ? styles.calendarDayToday : ''}`}
+                      } ${day.isToday ? styles.calendarDayToday : ''} ${styles.calendarDayInteractive}`}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open ${new Date(day.date).toLocaleDateString('en-AU')} appointments (${day.appointments.length})`}
                       onClick={() => openDayModal(day)}
-                      style={{ cursor: 'pointer' }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          openDayModal(day);
+                        }
+                      }}
                     >
                       <div className={styles.calendarDayNumber}>{new Date(day.date).getDate()}</div>
                       {day.appointments.length > 0 && (
@@ -691,12 +699,14 @@ export const PsychologistSchedulePage: React.FC = () => {
       {/* Day Modal */}
       {showDayModal && (
         <div className={styles.modalOverlay} onClick={closeDayModal}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '720px' }}>
+          <div className={`${styles.modal} ${styles.modalWide}`} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>
                 Appointments on {dayModalDate ? new Date(dayModalDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
               </h3>
-              <Button className={styles.closeButton} onClick={closeDayModal}><CloseIcon size="md" /></Button>
+              <Button type="button" className={styles.closeButton} onClick={closeDayModal} aria-label="Close day appointments">
+                <CloseIcon size="md" />
+              </Button>
             </div>
             <div className={styles.modalBody}>
               {dayModalAppointments.length === 0 ? (
@@ -707,7 +717,7 @@ export const PsychologistSchedulePage: React.FC = () => {
               ) : (
                 <div className={styles.patientNotesList}>
                   {dayModalAppointments.map((apt) => (
-                    <div key={apt.id} className={styles.patientNoteCard} style={{ cursor: 'default' }}>
+                    <div key={apt.id} className={`${styles.patientNoteCard} ${styles.patientNoteCardStatic}`}>
                       <div className={styles.patientNoteHeader}>
                         <span className={styles.patientNoteSession}>{apt.formatted_time}</span>
                         <span className={`${styles.statusBadge} ${getStatusColor(apt.status)}`}>
@@ -738,7 +748,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                           {/* Video Call Button - Use can_join_session if available, otherwise fallback to old logic */}
                           {videoCallService.isVideoCallAvailable(apt) && (
                             <Button 
-                              className={`${styles.videoCallButton} ${
+                              className={`${styles.videoCallButton} ${styles.compactActionButton} ${
                                 (apt.can_join_session === false || 
                                  (apt.can_join_session === undefined && !videoCallService.canJoinNow(apt))) 
                                 ? styles.disabledButton : ''
@@ -762,9 +772,8 @@ export const PsychologistSchedulePage: React.FC = () => {
                                   ? 'Video call will be available 15 minutes before the appointment'
                                   : 'Join video session'
                               }
-                              style={{ marginRight: '0.5rem', padding: '0.5rem 1rem' }}
                             >
-                              <VideoIcon size="sm" style={{ marginRight: '6px' }} />
+                              <VideoIcon size="sm" className={styles.inlineIcon} />
                               {
                                 apt.can_join_session === true || 
                                 (apt.can_join_session === undefined && videoCallService.canJoinNow(apt))
@@ -774,23 +783,21 @@ export const PsychologistSchedulePage: React.FC = () => {
                             </Button>
                           )}
                           <Button
-                            className={styles.secondaryButton}
+                            className={`${styles.secondaryButton} ${styles.compactActionButton}`}
                             onClick={() => {
                               setSelectedAppointmentId(apt.id);
                               setShowCancelModal(true);
                             }}
-                            style={{ marginRight: '0.5rem', padding: '0.5rem 1rem' }}
                           >
                             Cancel
                           </Button>
                           <Button
-                            className={styles.secondaryButton}
+                            className={`${styles.secondaryButton} ${styles.compactActionButton} ${styles.compactActionButtonLast}`}
                             onClick={() => {
                               setSelectedAppointmentId(apt.id);
                               setNewAppointmentDate(new Date(apt.appointment_date).toISOString().slice(0, 16));
                               setShowRescheduleModal(true);
                             }}
-                            style={{ padding: '0.5rem 1rem' }}
                           >
                             Reschedule
                           </Button>
@@ -811,10 +818,12 @@ export const PsychologistSchedulePage: React.FC = () => {
       {/* Cancel Appointment Modal */}
       {showCancelModal && (
         <div className={styles.modalOverlay} onClick={() => setShowCancelModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+          <div className={`${styles.modal} ${styles.modalNarrow}`} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>Cancel Appointment</h3>
-              <Button className={styles.closeButton} onClick={() => setShowCancelModal(false)}><CloseIcon size="md" /></Button>
+              <Button type="button" className={styles.closeButton} onClick={() => setShowCancelModal(false)} aria-label="Close cancel appointment dialog">
+                <CloseIcon size="md" />
+              </Button>
             </div>
             <div className={styles.modalBody}>
               <p>Are you sure you want to cancel this appointment?</p>
@@ -825,7 +834,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                   onChange={(e) => setCancelReason(e.target.value)}
                   placeholder="Enter cancellation reason..."
                   rows={3}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                  className={styles.compactField}
                 />
               </div>
             </div>
@@ -844,10 +853,12 @@ export const PsychologistSchedulePage: React.FC = () => {
       {/* Reschedule Appointment Modal */}
       {showRescheduleModal && (
         <div className={styles.modalOverlay} onClick={() => setShowRescheduleModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+          <div className={`${styles.modal} ${styles.modalNarrow}`} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>Reschedule Appointment</h3>
-              <Button className={styles.closeButton} onClick={() => setShowRescheduleModal(false)}><CloseIcon size="md" /></Button>
+              <Button type="button" className={styles.closeButton} onClick={() => setShowRescheduleModal(false)} aria-label="Close reschedule appointment dialog">
+                <CloseIcon size="md" />
+              </Button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.formGroup}>
@@ -856,7 +867,7 @@ export const PsychologistSchedulePage: React.FC = () => {
                   type="datetime-local"
                   value={newAppointmentDate}
                   onChange={(e) => setNewAppointmentDate(e.target.value)}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                  className={styles.compactField}
                 />
               </div>
             </div>

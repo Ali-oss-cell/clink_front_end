@@ -122,7 +122,7 @@ export const PsychologistDashboardPage: React.FC = () => {
       <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
         <div className={d.errorBox}>
           <h2>
-            <WarningIcon size="md" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            <WarningIcon size="md" className={d.inlineIconMd} />
             Error loading dashboard
           </h2>
           <p>{error}</p>
@@ -156,7 +156,7 @@ export const PsychologistDashboardPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.psychologistLayout}>
       <div className={d.root}>
-        <div className={d.inner}>
+        <div className={`${shell.wrap} ${d.inner}`}>
           <header className={shell.pageHeader}>
             <h1 className={shell.welcomeTitle}>
               {timeGreeting()}, {firstName}.
@@ -166,6 +166,7 @@ export const PsychologistDashboardPage: React.FC = () => {
             </p>
           </header>
 
+          <p className={d.sectionGroupTitle}>Overview</p>
           <div className={d.statsStrip} aria-label="Key metrics">
             {statItems.map((s) => (
               <div key={s.label} className={d.statChip}>
@@ -175,6 +176,7 @@ export const PsychologistDashboardPage: React.FC = () => {
             ))}
           </div>
 
+          <p className={d.sectionGroupTitle}>Operations</p>
           <div className={d.bento}>
             <section className={`${d.card} ${d.videoHero} ${d.span8}`}>
               <span className={d.decoIcon} aria-hidden>
@@ -291,7 +293,7 @@ export const PsychologistDashboardPage: React.FC = () => {
             <section className={`${d.card} ${d.span4Row2}`}>
               <h2 className={d.cardTitle}>Practice overview</h2>
               <p className={d.bodyText}>
-                <HospitalIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                <HospitalIcon size="sm" className={d.inlineIconSm} />
                 You have <strong>{dashboardData.today_appointments_count}</strong> appointment
                 {dashboardData.today_appointments_count !== 1 ? 's' : ''} today
                 {dashboardData.pending_notes_count > 0 ? (

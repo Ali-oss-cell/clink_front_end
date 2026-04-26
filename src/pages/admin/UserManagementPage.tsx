@@ -12,6 +12,7 @@ import { Input } from '../../components/ui/input';
 import { Select } from '../../components/ui/select';
 import { Badge } from '../../components/ui/badge';
 import styles from './AdminPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 
 export const UserManagementPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -462,7 +463,7 @@ export const UserManagementPage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
         <div className={styles.pageContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.loadingState}>
               <p>Loading users...</p>
             </div>
@@ -475,9 +476,10 @@ export const UserManagementPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
       <div className={styles.pageContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1>User Management</h1>
+        <div className={shell.wrap}>
+          <div className={`${styles.pageHeader} ${shell.pageHeader}`}>
+            <h1 className={shell.welcomeTitle}>User management</h1>
+            <p className={shell.welcomeSubtitle}>Manage user roles, verification status, and account lifecycle.</p>
             <Button onClick={() => setShowCreateModal(true)}>
               + Create User
             </Button>
@@ -486,7 +488,9 @@ export const UserManagementPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <button onClick={() => setError(null)}><CloseIcon size="sm" /></button>
+              <button type="button" onClick={() => setError(null)} aria-label="Dismiss error">
+                <CloseIcon size="sm" />
+              </button>
             </div>
           )}
 
@@ -558,12 +562,12 @@ export const UserManagementPage: React.FC = () => {
                           <span className={user.is_verified ? styles.verified : styles.unverified}>
                             {user.is_verified ? (
                               <>
-                                <CheckCircleIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                              <CheckCircleIcon size="xs" className={styles.inlineIconXs} />
                                 Verified
                               </>
                             ) : (
                               <>
-                                <WarningIcon size="xs" style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                              <WarningIcon size="xs" className={styles.inlineIconXs} />
                                 Unverified
                               </>
                             )}
@@ -597,7 +601,9 @@ export const UserManagementPage: React.FC = () => {
               <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
                   <h2>Create New User</h2>
-                  <button onClick={() => setShowCreateModal(false)}><CloseIcon size="sm" /></button>
+                  <button type="button" onClick={() => setShowCreateModal(false)} aria-label="Close create user dialog">
+                    <CloseIcon size="sm" />
+                  </button>
                 </div>
                 <form onSubmit={handleCreateUser} className={styles.modalForm}>
                   <div className={styles.formGroup}>
@@ -654,7 +660,7 @@ export const UserManagementPage: React.FC = () => {
                         if (out) setCreateForm((f) => ({ ...f, phone_number: out }));
                       }}
                     />
-                    <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
+                    <small className={styles.formHint}>
                       Use international E.164 format (starts with +)
                     </small>
                   </div>
@@ -662,20 +668,12 @@ export const UserManagementPage: React.FC = () => {
                   {/* Psychologist-specific fields */}
                   {createForm.role === 'psychologist' && (
                     <>
-                      <div style={{ 
-                        padding: '12px', 
-                        marginBottom: '16px',
-                        backgroundColor: 'rgba(90, 140, 184, 0.15)', 
-                        border: '1px solid #aeb8aa', 
-                        borderRadius: '4px',
-                        fontSize: '0.875rem',
-                        color: '#4d5a48'
-                      }}>
-                        <strong><InfoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Psychologist Profile:</strong> The psychologist profile will be created automatically with the information below.
+                      <div className={styles.infoCallout}>
+                        <strong><InfoIcon size="sm" className={styles.inlineIconXs} /> Psychologist Profile:</strong> The psychologist profile will be created automatically with the information below.
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label>AHPRA Registration Number <span style={{ color: '#c0392b' }}>*</span></label>
+                        <label>AHPRA Registration Number <span className={styles.requiredAsterisk}>*</span></label>
                         <AHPRAInput
                           value={createForm.ahpra_registration_number || ''}
                           onChange={(value, validation) => {
@@ -693,7 +691,7 @@ export const UserManagementPage: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label>AHPRA Expiry Date <span style={{ color: '#c0392b' }}>*</span></label>
+                        <label>AHPRA Expiry Date <span className={styles.requiredAsterisk}>*</span></label>
                         <input
                           type="date"
                           value={createForm.ahpra_expiry_date || ''}
@@ -743,7 +741,7 @@ export const UserManagementPage: React.FC = () => {
                           value={createForm.consultation_fee || '180.00'}
                           onChange={(e) => setCreateForm({ ...createForm, consultation_fee: e.target.value })}
                         />
-                        <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
+                        <small className={styles.formHint}>
                           Default: $180.00 (full fee before Medicare rebate)
                         </small>
                       </div>
@@ -756,7 +754,7 @@ export const UserManagementPage: React.FC = () => {
                           value={createForm.medicare_rebate_amount || '87.45'}
                           onChange={(e) => setCreateForm({ ...createForm, medicare_rebate_amount: e.target.value })}
                         />
-                        <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
+                        <small className={styles.formHint}>
                           Default: $87.45 (standard Medicare rebate for clinical psychology)
                         </small>
                       </div>
@@ -812,7 +810,9 @@ export const UserManagementPage: React.FC = () => {
               <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
                   <h2>Edit User</h2>
-                  <button onClick={() => setShowEditModal(false)}><CloseIcon size="sm" /></button>
+                  <button type="button" onClick={() => setShowEditModal(false)} aria-label="Close edit user dialog">
+                    <CloseIcon size="sm" />
+                  </button>
                 </div>
                 <form onSubmit={handleEditUser} className={styles.modalForm}>
                   <div className={styles.formGroup}>
@@ -860,7 +860,7 @@ export const UserManagementPage: React.FC = () => {
                         if (out) setEditForm((f) => ({ ...f, phone_number: out }));
                       }}
                     />
-                    <small style={{ color: '#7a7b7a', fontSize: '0.875rem' }}>
+                    <small className={styles.formHint}>
                       Use international E.164 format (starts with +)
                     </small>
                   </div>
@@ -896,17 +896,8 @@ export const UserManagementPage: React.FC = () => {
                   {/* Psychologist-specific fields */}
                   {editForm.role === 'psychologist' && (
                     <>
-                      <div style={{ 
-                        padding: '12px', 
-                        marginTop: '16px',
-                        marginBottom: '16px',
-                        backgroundColor: 'rgba(90, 140, 184, 0.15)', 
-                        border: '1px solid #aeb8aa', 
-                        borderRadius: '4px',
-                        fontSize: '0.875rem',
-                        color: '#4d5a48'
-                      }}>
-                        <strong><InfoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Psychologist Profile:</strong> Update psychologist profile information below.
+                      <div className={`${styles.infoCallout} ${styles.infoCalloutSpaced}`}>
+                        <strong><InfoIcon size="sm" className={styles.inlineIconXs} /> Psychologist Profile:</strong> Update psychologist profile information below.
                       </div>
 
                       <div className={styles.formGroup}>

@@ -3,6 +3,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type Patient } from '../../services/api/admin';
 import styles from './ManagerPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { Input } from '../../components/ui/input';
 
 export const ManagerPatientsPage: React.FC = () => {
@@ -53,7 +54,7 @@ export const ManagerPatientsPage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.managerLayout}>
         <div className={styles.pageContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.loadingState}>
               <p>Loading patients...</p>
             </div>
@@ -66,10 +67,10 @@ export const ManagerPatientsPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.managerLayout}>
       <div className={styles.pageContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1>Patient Management</h1>
-            <p>View and manage patient information</p>
+        <div className={shell.wrap}>
+          <div className={`${styles.pageHeader} ${shell.pageHeader}`}>
+            <h1 className={shell.welcomeTitle}>Patient management</h1>
+            <p className={shell.welcomeSubtitle}>View and manage patient information for your practice.</p>
           </div>
 
           {error && (

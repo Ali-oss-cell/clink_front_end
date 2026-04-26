@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import type { User } from '../../../types/simple-auth';
 import { authService } from '../../../services/api/auth';
 import {
@@ -18,6 +18,7 @@ import {
 } from '../../../utils/icons';
 import styles from './RoleAppShell.module.scss';
 import { ShellBrandMark } from '../../shell/ShellBrandMark';
+import { getRoleShellPageTitle } from './roleShellPageTitle';
 
 interface RoleAppShellProps {
   user: User;
@@ -42,7 +43,9 @@ const roleTitle = (role: User['role']) => {
 
 export const RoleAppShell: React.FC<RoleAppShellProps> = ({ user, children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const pageTitle = getRoleShellPageTitle(location.pathname, user.role);
 
   const navItems = useMemo<RoleNavItem[]>(() => {
     if (user.role === 'admin') {
@@ -95,6 +98,7 @@ export const RoleAppShell: React.FC<RoleAppShellProps> = ({ user, children }) =>
 
   const initials = `${user.first_name?.[0] ?? ''}${user.last_name?.[0] ?? ''}`.toUpperCase() || 'U';
   const displayName = user.full_name || `${user.first_name} ${user.last_name}`.trim() || user.email;
+  const roleLabel = roleTitle(user.role);
 
   return (
     <div className={`${styles.root} ${styles[`role_${user.role}`] ?? ''}`}>
@@ -139,7 +143,21 @@ export const RoleAppShell: React.FC<RoleAppShellProps> = ({ user, children }) =>
         </div>
       </aside>
 
-      <div className={styles.main}>{children}</div>
+      <div className={styles.main}>
+        <header className={styles.topBar} aria-label="Workspace">
+          <div className={styles.topBarPill}>
+            <div className={styles.topBarLead}>
+              <p className={styles.topBarEyebrow}>{roleLabel} portal</p>
+              <p className={styles.topBarTitle}>{pageTitle}</p>
+            </div>
+            <div className={styles.topBarUser}>
+              <span className={styles.topBarAvatar}>{initials}</span>
+              <span className={styles.topBarProfileName}>{displayName}</span>
+            </div>
+          </div>
+        </header>
+        <div className={styles.mainContent}>{children}</div>
+      </div>
     </div>
   );
 };

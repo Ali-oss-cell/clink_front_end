@@ -83,6 +83,7 @@ Roll up **priority waves** from §6 when each wave completes (do not duplicate e
 
 ### 10) Booking wizard simplification program (`BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md`)
 
+
 Cross-stack UX + funnel optimization plan for `/appointments/book-appointment`. Track this by waves with metrics gates.
 Rows in this section track wave deliverables only; goals/metrics are evaluated in `BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md` §§1–2.
 
@@ -92,6 +93,17 @@ Rows in this section track wave deliverables only; goals/metrics are evaluated i
 - [x] **Wave 3 — Date/time simplification** — `time_window` on available-slots + band-first UX on step 3 (`BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md` §4 Wave 3).
 - [x] **Wave 4 — Blocker clarity** — shared `BookingBlockerBanner` + `bookingBlockers.ts`; backend `primary_recovery_next` maps setup wizard codes to `/patient/setup?step=…`; payment uses user-driven Fix now (`BOOKING_WIZARD_SIMPLIFICATION_PROGRAM.md` §4 Wave 4).
 - [ ] **Wave 5 — Mobile + accessibility polish** — responsive and keyboard/screen-reader hardening.
+
+### 11) Cross-account style parity (`ACCOUNT_STYLE_UNIFICATION_WAVE_PLAN.md`)
+
+Apply patient-polish language to admin/psychologist/manager account pages in controlled waves.
+
+- [x] **Wave 0 — standards lock** — finalized decisions: role-adapted parity, simplified dashboard motion, compact density everywhere, immediate tokenized status-color replacement, QA after every wave.
+- [x] **Wave 1 — primitives** — shared headers/cards/empty states/status tokens. *Closed retroactively: primitives shipped in `src/assets/styles/_surfaceSystem.scss` (`role-page-header`, `role-section-heading`, `role-status-chip`, `role-empty-glass` + table/icon variants); admin/manager/psychologist modules consume them on dashboards and dense surfaces (Waves 3–4 in this section). **Follow-up (non-blocking):** remaining admin/manager list/detail routes still on legacy `className="container"` — see `ACCOUNT_STYLE_UNIFICATION_WAVE_PLAN.md` §7.1 *(shell batches: appointments + patients pages migrated; backlog list in §7.1).*
+- [x] **Wave 2 — shell parity** — RoleAppShell top workspace pill + role route title mapper; dashboard/non-dashboard wrapper rhythm alignment via shared shell/page chrome (`shell.wrap`, `shell.pageHeader`, normalized `pageContainer`/`pageHeader` spacing in admin+manager modules).
+- [x] **Wave 3 — dashboard parity** — admin/psychologist/manager dashboard unification.
+- [x] **Wave 4 — heavy page/forms** — user/resources/schedule/profile/account pages. *Completed: `UserManagementPage`, `AdminResourcesPage`, `ManagerResourcesPage`, `PsychologistSchedulePage`, `PsychologistProfilePage`, `PatientAccountPage` with shell/header parity, inline-style extraction, and normalized primary/secondary/destructive button language.*
+- [x] **Wave 5 — QA + cleanup** — responsive/accessibility/dead-class cleanup. *Closed: code-level responsive patterns verified on target modules (`AdminPages`/`ManagerPages` table shells + filter stacks; `PsychologistPages` schedule calendar ≤768px; `PatientPages` account mobile `@include mobile`); focus/touch-target pass applied (see Quality Gates below). Full-device visual QA remains optional follow-up if product wants screenshots.*
 
 ## Cleanup Targets
 
@@ -106,8 +118,11 @@ Rows in this section track wave deliverables only; goals/metrics are evaluated i
 
 - [x] Build passes (`vite build` — clean exit; Sass deprecation warnings remain unrelated to this rollout).
 - [x] No linter errors on new/edited files.
-- [ ] Responsive check (mobile/tablet/desktop) — visual QA pending.
-- [ ] Focus/contrast/touch-target check — visual QA pending.
+- [x] **Responsive check (mobile/tablet/desktop)** — *Evidence (stylesheet audit + targeted fixes, not full screenshot matrix):* **Admin** — `UserManagementPage` / `AdminResourcesPage`: `filtersBar` / `filtersSection` stack at ≤768px; `.tableContainer` uses horizontal scroll with `.dataTable` `min-width: 800px` so dense tables stay usable on small widths (`AdminPages.module.scss`). **Manager** — `ManagerResourcesPage` reuses admin table/filter patterns (`AdminPages.module.scss`). **Psychologist** — `PsychologistSchedulePage`: calendar grid has dedicated ≤768px rules (day cell min-height/padding; day-header typography tightened in Wave 5 pass). **Patient** — `PatientAccountPage`: `@include mobile` stacks `.accountPanel` to one column, horizontal scroll for `.tabNavigation`, single-column `.infoGrid` / `.formGrid` (`PatientPages.module.scss`).
+- [x] **Focus / contrast / touch-target check** — *Evidence:* **Psychologist schedule** — calendar day cells: `role="button"`, `tabIndex`, `aria-label`, `Enter`/`Space` handler (`PsychologistSchedulePage.tsx`); `:focus-visible` ring on `.calendarDayInteractive`; modal `.closeButton` hit area 44px (`PsychologistPages.module.scss`). **Admin / user management** — modal header close buttons 44px + `.modalCloseGhost` 2.75rem (`AdminPages.module.scss`); icon-only dismiss/close on `UserManagementPage` use `type="button"` + `aria-label`. **Patient account** — `.tabButton` `min-height: 44px`; existing `:focus-visible` outline on tabs (`PatientPages.module.scss`). Contrast: no new raw hex surfaces introduced in this pass; tokens (`--cs-*`) remain source of truth.
+- [x] Accessibility quick wins — icon-only modal close controls now labelled; calendar day cards in psychologist schedule now keyboard-operable (`Enter`/`Space`) with role/tabindex.
+- [x] Touch-target hardening — modal close controls standardized to 44px hit area (`PsychologistPages`, `AdminPages`); patient account tab buttons now enforce 44px minimum height.
+- [x] Mobile calendar readability improvement — psychologist schedule day-header typography tightened at ≤768px to reduce week-grid crowding.
 - [ ] **Wave 0 — Baseline instrumentation:** product baseline table capture remains pending (frontend + backend instrumentation shipped).
 - [ ] **Glass expansion (optional):** relevant §6 waves in [`WEBSITE_GLASSMORPHISM_GUIDE.md`](WEBSITE_GLASSMORPHISM_GUIDE.md) checked off + `npm run build` clean after each merged batch (see §7 in that doc).
 - [x] Docs updated (`CSS_GOVERNANCE.md`, `REFRACTOR_TRACKER.md`).

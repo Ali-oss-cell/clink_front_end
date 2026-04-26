@@ -7,6 +7,7 @@ import { Select } from '../../components/ui/select';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import styles from './AdminPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 
 export const AdminAppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
@@ -77,22 +78,6 @@ export const AdminAppointmentsPage: React.FC = () => {
     return formattedDate;
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return '#2e7d42';
-      case 'scheduled':
-      case 'confirmed':
-        return '#5f7260';
-      case 'cancelled':
-        return '#c0392b';
-      case 'pending':
-        return '#d4841a';
-      default:
-        return '#7a7b7a';
-    }
-  };
-
   const getStatusBadgeVariant = (status: string): 'default' | 'success' | 'warning' | 'danger' => {
     switch (status.toLowerCase()) {
       case 'completed':
@@ -112,7 +97,7 @@ export const AdminAppointmentsPage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
         <div className={styles.pageContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.loadingState}>
               <p>Loading appointments...</p>
             </div>
@@ -125,9 +110,14 @@ export const AdminAppointmentsPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.adminLayout}>
       <div className={styles.pageContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1>All Appointments</h1>
+        <div className={shell.wrap}>
+          <div className={`${styles.pageHeader} ${shell.pageHeader}`}>
+            <div>
+              <h1 className={shell.welcomeTitle}>All appointments</h1>
+              <p className={shell.welcomeSubtitle}>
+                Review and filter appointments across the practice ({appointments.length} loaded).
+              </p>
+            </div>
             <div className={styles.statsSummary}>
               <span>Total: {appointments.length}</span>
             </div>
@@ -136,7 +126,9 @@ export const AdminAppointmentsPage: React.FC = () => {
           {error && (
             <div className={styles.errorBanner}>
               <p>{error}</p>
-              <Button variant="ghost" size="sm" onClick={() => setError(null)}><CloseIcon size="sm" /></Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setError(null)} aria-label="Dismiss error">
+                <CloseIcon size="sm" />
+              </Button>
             </div>
           )}
 
@@ -198,12 +190,12 @@ export const AdminAppointmentsPage: React.FC = () => {
                         <span className={styles.sessionTypeBadge}>
                           {appointment.session_type === 'telehealth' ? (
                             <>
-                              <VideoIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                              <VideoIcon size="sm" className={styles.inlineIconXs} />
                               Telehealth
                             </>
                           ) : (
                             <>
-                              <HospitalIcon size="sm" style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                              <HospitalIcon size="sm" className={styles.inlineIconXs} />
                               In-Person
                             </>
                           )}
@@ -213,7 +205,6 @@ export const AdminAppointmentsPage: React.FC = () => {
                         <Badge
                           variant={getStatusBadgeVariant(appointment.status)}
                           className={styles.statusBadge}
-                          style={{ backgroundColor: getStatusColor(appointment.status) }}
                         >
                           {appointment.status_display || appointment.status}
                         </Badge>

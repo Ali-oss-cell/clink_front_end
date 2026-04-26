@@ -3,6 +3,7 @@ import { Layout } from '../../components/common/Layout/Layout';
 import { authService } from '../../services/api/auth';
 import { adminService, type AdminAppointment } from '../../services/api/admin';
 import styles from './ManagerPages.module.scss';
+import shell from '../patient/PatientShellChrome.module.scss';
 import { Input } from '../../components/ui/input';
 import { Select } from '../../components/ui/select';
 
@@ -71,7 +72,7 @@ export const ManagerAppointmentsPage: React.FC = () => {
     return (
       <Layout user={user} isAuthenticated={true} className={styles.managerLayout}>
         <div className={styles.pageContainer}>
-          <div className="container">
+          <div className={shell.wrap}>
             <div className={styles.loadingState}>
               <p>Loading appointments...</p>
             </div>
@@ -84,10 +85,10 @@ export const ManagerAppointmentsPage: React.FC = () => {
   return (
     <Layout user={user} isAuthenticated={true} className={styles.managerLayout}>
       <div className={styles.pageContainer}>
-        <div className="container">
-          <div className={styles.pageHeader}>
-            <h1>Appointment Management</h1>
-            <p>View and manage clinic appointments</p>
+        <div className={shell.wrap}>
+          <div className={`${styles.pageHeader} ${shell.pageHeader}`}>
+            <h1 className={shell.welcomeTitle}>Appointment management</h1>
+            <p className={shell.welcomeSubtitle}>View and manage clinic appointments.</p>
           </div>
 
           {error && (

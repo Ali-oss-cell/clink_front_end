@@ -18,6 +18,7 @@ This folder is the frontend documentation entry point.
 - `RESPONSIVE_SIZE_MATRIX.md` - breakpoints, spacing, control heights, typography rhythm
 - `REFRACTOR_TRACKER.md` - migration status and batch gates
 - `BOOKING_WIZARD_STEP1_SERVICE_UI_SPEC.md` - **Step 1 (service selection) UI enhancement** — diagnosis, tiered recommendations, verification (`BookingBillingPathToggle`, grid/card tightening; see Tier B shipped notes)
+- `ACCOUNT_STYLE_UNIFICATION_WAVE_PLAN.md` - cross-account style parity plan (patient style baseline -> admin/psychologist/manager), unclear-items checklist, and wave-by-wave rollout
 - `DASHBOARD_BUTTON_AUDIT.md` - dashboard button class/state audit and standardization baseline
 - `ROLE_DASHBOARD_GLASS_ROLLOUT.md` - role dashboard glass rollout tracking
 

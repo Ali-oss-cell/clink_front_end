@@ -13,6 +13,7 @@ import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import styles from './PatientPages.module.scss';
 import { PatientShellPage } from '../../components/patient/PatientShellPage/PatientShellPage';
+import shell from './PatientShellChrome.module.scss';
 
 type AccountTab = 'personal' | 'medical' | 'preferences' | 'security' | 'privacy';
 
@@ -334,11 +335,11 @@ export const PatientAccountPage: React.FC = () => {
     >
       <PatientShellPage>
       <div className={styles.accountContainer}>
-        <div className="container">
+        <div className={shell.wrap}>
           <div className={styles.accountShellStack}>
-          <div className={styles.accountHeader}>
-            <h1 className={styles.pageTitle}>My Account</h1>
-            <p className={styles.pageSubtitle}>
+          <div className={`${styles.accountHeader} ${shell.pageHeader}`}>
+            <h1 className={shell.welcomeTitle}>My account</h1>
+            <p className={shell.welcomeSubtitle}>
               Manage your personal information, medical details, and account preferences
             </p>
           </div>
@@ -525,7 +526,7 @@ export const PatientAccountPage: React.FC = () => {
                       </div>
                       
                       <Button
-                        className={styles.saveButton}
+                        className={styles.primaryButton}
                         onClick={handleSavePreferences}
                         disabled={preferencesSaving}
                       >
@@ -854,7 +855,7 @@ export const PatientAccountPage: React.FC = () => {
 
                         {['pending', 'approved'].includes(deletionStatus.request.status) && (
                           <Button
-                            className={styles.cancelButton}
+                            className={styles.secondaryButton}
                             onClick={handleCancelDeletion}
                             disabled={deletionLoading}
                           >

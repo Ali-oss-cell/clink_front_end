@@ -1463,6 +1463,7 @@ button.toolButton {
   justify-content: flex-start;
   background: transparent;
   box-shadow: none;
+  min-height: 44px;
 
   &:hover {
     background: color-mix(in srgb, var(--cs-primary, $patient-primary) 8%, transparent);
